@@ -62,8 +62,9 @@ void FullScreen(HWND hWnd) {
   }
 }
 
-int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                      PWSTR pCmdLine, int nCmdShow) {
+int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
+                      _In_opt_ HINSTANCE hPrevInstance, _In_ PWSTR pCmdLine,
+                      _In_ int nCmdShow) {
   SetEnvironmentVariableW(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR", L"0");
   SetEnvironmentVariableW(L"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
                           L"--enable-features=OverlayScrollbar,"
@@ -173,9 +174,6 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
                                          *args) -> HRESULT {
                                 wil::unique_cotaskmem_string message;
                                 args->TryGetWebMessageAsString(&message);
-
-                                auto topmost =
-                                    GetWindowLongPtrW(hWnd, GWL_EXSTYLE);
                                 if ((std::wstring)message.get() == L"F1") {
                                   OnTop(hWnd);
                                 }
