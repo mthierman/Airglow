@@ -7,8 +7,6 @@
 
 #include <SDKDDKVer.h>
 
-#include "Resource.h"
-
 #include <dwmapi.h>
 #include <shellapi.h>
 #include <string>
@@ -24,9 +22,8 @@
 #include "winrt/Windows.UI.ViewManagement.h"
 #include "winrt/base.h"
 
+#include "Resource.h"
 #include "WebView2/WebView2.h"
 
 #pragma comment(lib, "dwmapi")
 #pragma comment(lib, "gdi32")
-#pragma comment(lib, "windowsapp")
-// #pragma comment(lib, "WebView2LoaderStatic")

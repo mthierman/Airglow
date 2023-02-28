@@ -14,7 +14,7 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 void DarkMode(HWND hWnd) {
   auto dwmtrue = TRUE;
   auto dwmfalse = FALSE;
-  auto settings = UI::ViewManagement::UISettings::UISettings();
+  auto settings = UI::ViewManagement::UISettings();
   auto foreground =
       settings.GetColorValue(UI::ViewManagement::UIColorType::Foreground);
   auto modecheck =
