@@ -64,6 +64,13 @@ void FullScreen(HWND hWnd) {
 
 int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
                       PWSTR pCmdLine, int nCmdShow) {
+  SetEnvironmentVariableW(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR", L"0");
+  SetEnvironmentVariableW(L"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
+                          L"--enable-features=OverlayScrollbar,"
+                          L"msOverlayScrollbarWinStyle:scrollbar_mode/"
+                          L"full_mode,msOverlayScrollbarWinStyleAnimation "
+                          L"--disable-features=msWebOOUI,msPdfOOUI");
+
   WNDCLASSEXW wcex = {};
 
   wcex.cbSize = sizeof(WNDCLASSEX);
