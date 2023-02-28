@@ -14,7 +14,7 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 void DarkMode(HWND hWnd) {
   auto dwmtrue = TRUE;
   auto dwmfalse = FALSE;
-  auto settings = UI::ViewManagement::UISettings();
+  auto settings = UI::ViewManagement::UISettings::UISettings();
   auto foreground =
       settings.GetColorValue(UI::ViewManagement::UIColorType::Foreground);
   auto modecheck =
@@ -165,6 +165,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                       LocalFree(szArglist);
 
                       EventRegistrationToken token;
+
+                      webview->AddScriptToExecuteOnDocumentCreated(
+                          L"document.onreadystatechange = () => {if "
+                          L"(document.readyState === 'complete') "
+                          L"{onkeydown = (e) => "
+                          L"{window.chrome.webview.postMessage(e.key);}}}"
+                          L";",
+                          nullptr);
 
                       webview->add_WebMessageReceived(
                           Microsoft::WRL::Callback<
