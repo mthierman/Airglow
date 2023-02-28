@@ -12,6 +12,21 @@ function Initialize-DevShell32 {
 }
 Set-Alias -Name dev32 -Value Initialize-DevShell32
 
+function Install-WebView2 {
+    nuget install Microsoft.Web.WebView2 -OutputDirectory packages
+}
+Set-Alias -Name webview2 -Value Install-WebView2
+
+function Install-CppWinRT {
+    nuget install Microsoft.Windows.CppWinRT -OutputDirectory packages
+}
+Set-Alias -Name cppwinrt -Value Install-CppWinRT
+
+function Install-ImplementationLibrary {
+    nuget install Microsoft.Windows.ImplementationLibrary -OutputDirectory packages
+}
+Set-Alias -Name wil -Value Install-ImplementationLibrary
+
 function Restore-Packages {
     msbuild -t:restore -p:RestorePackagesConfig=true
 }
