@@ -1,4 +1,3 @@
 Import-Module $PSScriptRoot\dev
-dev
-release
-export
+webview2
+wil
