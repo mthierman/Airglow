@@ -8,9 +8,6 @@
 #include <SDKDDKVer.h>
 
 #include <dwmapi.h>
-#include <shellapi.h>
-#include <string>
-#include <wingdi.h>
 
 #include "wil/com.h"
 #include <wrl.h>
@@ -26,4 +23,3 @@
 #include "WebView2/WebView2.h"
 
 #pragma comment(lib, "dwmapi")
-#pragma comment(lib, "gdi32")

@@ -27,20 +27,23 @@ function Install-ImplementationLibrary {
 }
 Set-Alias -Name wil -Value Install-ImplementationLibrary
 
-function Restore-Packages {
-    msbuild -t:restore -p:RestorePackagesConfig=true
+function Build-Debug {
+    cmake --no-warn-unused-cli -Bbuild\Debug -GNinja -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_BUILD_TYPE="Debug" -DCMAKE_C_COMPILER="clang" -DCMAKE_CXX_COMPILER="clang++"
+    cmake --build build\Debug
 }
-Set-Alias -Name restore -Value Restore-Packages
+Set-Alias -Name debug -Value Build-Debug
 
-function Build-WebView2Debug {
-    msbuild Gooey.vcxproj -property:Configuration=Debug -property:Platform=x64
+function Build-Release {
+    cmake --no-warn-unused-cli -Bbuild\Release -GNinja -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_BUILD_TYPE="Release" -DCMAKE_C_COMPILER="clang" -DCMAKE_CXX_COMPILER="clang++"
+    cmake --build build\Release
 }
-Set-Alias -Name debug -Value Build-WebView2Debug
+Set-Alias -Name release -Value Build-Release
 
-function Build-WebView2Release {
-    msbuild Gooey.vcxproj -property:Configuration=Release -property:Platform=x64
+function Build-Preset {
+    cmake --preset $args
+    cmake --build --preset $args
 }
-Set-Alias -Name release -Value Build-WebView2Release
+Set-Alias -Name preset -Value Build-WebView2Preset
 
 function Build-ReleaseNotes {
     New-Item -Path notes.md
@@ -49,9 +52,10 @@ function Build-ReleaseNotes {
 }
 Set-Alias -Name notes -Value Build-ReleaseNotes
 
-function Copy-Release {
-    $output = "C:\Programs\Gooey"
-    if (!(Test-Path $output)) { New-Item -ItemType Directory $output }
-    Copy-Item "x64\Release\Gooey.exe" -Destination "$output\Gooey.exe" -Force
+function Export-Release {
+    $build = Split-Path $PSScriptRoot | Split-Path | Join-Path -ChildPath "build" -AdditionalChildPath "Release"
+    $programs = "C:\Programs\Gooey"
+    if (!(Test-Path $programs)) { New-Item -ItemType Directory $programs }
+    Copy-Item "$build\Gooey.exe" -Destination "$programs\Gooey.exe" -Force
 }
-Set-Alias -Name export -Value Copy-Release
+Set-Alias -Name export -Value Export-Release
