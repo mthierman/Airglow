@@ -10,5 +10,6 @@ message(STATUS "CMake ${CMAKE_VERSION}, ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COM
 message(STATUS "${PROJECT_NAME} (${BITNESS}-bit) v${PROJECT_VERSION}")
 message(STATUS "${CMAKE_BUILD_TYPE} build")
 
-add_executable(${PROJECT_NAME} WIN32 Gooey.cpp Gooey.manifest Gooey.rc)
-target_precompile_headers(${PROJECT_NAME} PUBLIC pch.hpp)
+add_executable(${PROJECT_NAME} WIN32 ${CMAKE_CURRENT_SOURCE_DIR}/Gooey.cpp ${CMAKE_CURRENT_SOURCE_DIR}/Gooey.manifest ${CMAKE_CURRENT_SOURCE_DIR}/Gooey.rc)
+target_precompile_headers(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/pch.hpp)
+target_link_libraries(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/packages/Microsoft.Web.WebView2.1.0.1587.40/build/native/x64/WebView2LoaderStatic.lib)

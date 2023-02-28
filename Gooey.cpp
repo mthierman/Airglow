@@ -7,6 +7,8 @@ enum PreferredAppMode { Default, AllowDark, ForceDark, ForceLight, Max };
 using fnSetPreferredAppMode =
     PreferredAppMode(WINAPI *)(PreferredAppMode appMode);
 RECT position;
+static wil::com_ptr<ICoreWebView2Controller> webviewController;
+static wil::com_ptr<ICoreWebView2> webview;
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 void DarkMode(HWND hWnd) {
@@ -116,6 +118,75 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
   ShowWindow(hWnd, nCmdShow);
 
+  CreateCoreWebView2EnvironmentWithOptions(
+      nullptr, nullptr, nullptr,
+      Microsoft::WRL::Callback<
+          ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
+          [hWnd](HRESULT result, ICoreWebView2Environment *env) -> HRESULT {
+            env->CreateCoreWebView2Controller(
+                hWnd,
+                Microsoft::WRL::Callback<
+                    ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+                    [hWnd](HRESULT result,
+                           ICoreWebView2Controller *controller) -> HRESULT {
+                      if (controller != nullptr) {
+                        webviewController = controller;
+                        webviewController->get_CoreWebView2(&webview);
+                      }
+                      wil::com_ptr<ICoreWebView2Settings> settings;
+                      webview->get_Settings(&settings);
+                      settings->put_IsScriptEnabled(TRUE);
+                      settings->put_AreDefaultScriptDialogsEnabled(TRUE);
+                      settings->put_IsWebMessageEnabled(TRUE);
+
+                      RECT bounds;
+                      GetClientRect(hWnd, &bounds);
+                      webviewController->put_Bounds(bounds);
+
+                      auto commandline = GetCommandLineW();
+                      LPWSTR *szArglist;
+                      int nArgs;
+                      int i;
+                      szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
+                      if (NULL == szArglist[1]) {
+                        webview->Navigate(L"https://google.com/");
+                      }
+                      for (i = 1; i < nArgs; i++) {
+                        webview->Navigate(szArglist[i]);
+                      }
+                      LocalFree(szArglist);
+
+                      EventRegistrationToken token;
+
+                      webview->add_WebMessageReceived(
+                          Microsoft::WRL::Callback<
+                              ICoreWebView2WebMessageReceivedEventHandler>(
+                              [hWnd](ICoreWebView2 *webview,
+                                     ICoreWebView2WebMessageReceivedEventArgs
+                                         *args) -> HRESULT {
+                                wil::unique_cotaskmem_string message;
+                                args->TryGetWebMessageAsString(&message);
+
+                                auto topmost =
+                                    GetWindowLongPtrW(hWnd, GWL_EXSTYLE);
+                                if ((std::wstring)message.get() == L"F1") {
+                                  OnTop(hWnd);
+                                }
+                                if ((std::wstring)message.get() == L"F11") {
+                                  FullScreen(hWnd);
+                                }
+                                webview->PostWebMessageAsString(message.get());
+                                return S_OK;
+                              })
+                              .Get(),
+                          &token);
+                      return S_OK;
+                    })
+                    .Get());
+            return S_OK;
+          })
+          .Get());
+
   MSG msg = {};
   while (GetMessage(&msg, nullptr, 0, 0)) {
     TranslateMessage(&msg);
@@ -130,6 +201,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
   case WM_SETTINGCHANGE: {
     DarkMode(hWnd);
   } break;
+  case WM_SIZE:
+    if (webviewController != nullptr) {
+      RECT b;
+      GetClientRect(hWnd, &b);
+      webviewController->put_Bounds(b);
+    }
+    break;
   case WM_GETMINMAXINFO: {
     LPMINMAXINFO lp = (LPMINMAXINFO)lParam;
     lp->ptMinTrackSize.x = 600;

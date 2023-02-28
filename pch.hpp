@@ -14,6 +14,9 @@
 #include <string>
 #include <wingdi.h>
 
+#include "wil/com.h"
+#include <wrl.h>
+
 #include "winrt/Windows.Foundation.Collections.h"
 #include "winrt/Windows.Foundation.h"
 #include "winrt/Windows.System.h"
@@ -21,6 +24,9 @@
 #include "winrt/Windows.UI.ViewManagement.h"
 #include "winrt/base.h"
 
+#include "WebView2/WebView2.h"
+
 #pragma comment(lib, "dwmapi")
+#pragma comment(lib, "gdi32")
 #pragma comment(lib, "windowsapp")
-// #pragma comment(lib, "gdi32")
+// #pragma comment(lib, "WebView2LoaderStatic")
