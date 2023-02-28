@@ -1,6 +1,10 @@
 name: Build
 
 on:
+  push:
+    branches:
+      - "main"
+      - "dev"
   workflow_dispatch:
 
 permissions:
@@ -19,25 +23,23 @@ jobs:
 
       - name: Restore nuget
         if: steps.nuget-cache.outputs.cache-hit != 'true'
-        run: Import-Module .\scripts\dev && dev && restore
+        run: .\scripts\packages.ps1
 
       - name: Cache
         id: nuget-cache
         uses: actions/cache@v3
         with:
           path: packages
-          key: ${{ runner.os }}-${{ matrix.node-version }}-nuget-cache-${{ hashFiles('**/packages.config') }}
+          key: ${{ runner.os }}-${{ matrix.node-version }}-nuget-cache-${{ hashFiles('**/CMakeLists.txt') }}
 
-      - name: Developer PowerShell & Build
-        run: Import-Module .\scripts\dev && dev && release && notes
-
-      - name: Create Release
+      - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if ("${{ github.ref_name }}" -eq "main") {$title = "Stable"; $tag = "stable"}
           if ("${{ github.ref_name }}" -eq "dev") {$title = "Development"; $tag = "development"}
-          $path = Get-Item ".\x64\Release\Gooey.exe"
+          .\scripts\gh_release.ps1
+          $path = Get-Item ".\build\Release\Gooey.exe"
           $notes = Get-Item ".\notes.md"
           gh release delete $tag -y
           gh release create $tag $path -F $notes -t $title
