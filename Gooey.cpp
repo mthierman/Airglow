@@ -73,14 +73,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
   WNDCLASSEXW wcex = {};
 
   wcex.cbSize = sizeof(WNDCLASSEX);
-  wcex.style = CS_HREDRAW | CS_VREDRAW;
+  wcex.style = 0;
   wcex.lpfnWndProc = WndProc;
   wcex.cbClsExtra = 0;
   wcex.cbWndExtra = 0;
   wcex.hInstance = hInstance;
   wcex.hCursor =
       (HCURSOR)LoadImageW(nullptr, IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED);
-  wcex.hbrBackground = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
+  wcex.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
   wcex.lpszMenuName = L"menu";
   wcex.lpszClassName = L"window";
   wcex.hIcon = (HICON)LoadImageW(hInstance, L"PROGRAM_ICON", IMAGE_ICON, 0, 0,
@@ -91,19 +91,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
   RegisterClassExW(&wcex);
 
-  HWND hWnd = CreateWindowExW(WS_EX_COMPOSITED, L"window", L"Gooey",
-                              WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
-                              CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
-                              hInstance, nullptr);
-
-  MARGINS m = {-1};
-  DwmExtendFrameIntoClientArea(hWnd, &m);
-
-  auto backdrop = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
-  DwmSetWindowAttribute(hWnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop,
-                        sizeof(&backdrop));
-
-  DarkMode(hWnd);
+  HWND hWnd = CreateWindowExW(
+      0, L"window", L"Gooey", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
+      CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, hInstance, nullptr);
 
   auto hUxtheme =
       LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
@@ -121,6 +111,15 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
   if (!hWnd) {
     return 0;
   }
+
+  MARGINS m = {-1};
+  DwmExtendFrameIntoClientArea(hWnd, &m);
+
+  auto backdrop = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
+  DwmSetWindowAttribute(hWnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop,
+                        sizeof(&backdrop));
+
+  DarkMode(hWnd);
 
   ShowWindow(hWnd, nCmdShow);
 
@@ -154,7 +153,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                       int nArgs;
                       int i;
                       szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
-                      if (NULL == szArglist[1]) {
+                      if (0 == szArglist[1]) {
+                        // webview->Navigate(L"about:blank");
                         webview->Navigate(L"https://google.com/");
                       }
                       for (i = 1; i < nArgs; i++) {
