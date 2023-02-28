@@ -1,0 +1,43 @@
+name: Build
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  Build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Restore nuget
+        if: steps.nuget-cache.outputs.cache-hit != 'true'
+        run: Import-Module .\scripts\dev && dev && restore
+
+      - name: Cache
+        id: nuget-cache
+        uses: actions/cache@v3
+        with:
+          path: packages
+          key: ${{ runner.os }}-${{ matrix.node-version }}-nuget-cache-${{ hashFiles('**/packages.config') }}
+
+      - name: Developer PowerShell & Build
+        run: Import-Module .\scripts\dev && dev && release && notes
+
+      - name: Create Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if ("${{ github.ref_name }}" -eq "main") {$title = "Stable"; $tag = "stable"}
+          if ("${{ github.ref_name }}" -eq "dev") {$title = "Development"; $tag = "development"}
+          $path = Get-Item ".\x64\Release\Gooey.exe"
+          $notes = Get-Item ".\notes.md"
+          gh release delete $tag -y
+          gh release create $tag $path -F $notes -t $title

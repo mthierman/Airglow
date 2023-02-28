@@ -1,0 +1,14 @@
+cmake_minimum_required(VERSION 3.25)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
+
+project(Gooey VERSION 0.0.1 LANGUAGES CXX)
+
+math(EXPR BITNESS "${CMAKE_SIZEOF_VOID_P} * 8" OUTPUT_FORMAT DECIMAL)
+
+message(STATUS "CMake ${CMAKE_VERSION}, ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}, C++${CMAKE_CXX_STANDARD}")
+message(STATUS "${PROJECT_NAME} (${BITNESS}-bit) v${PROJECT_VERSION}")
+message(STATUS "${CMAKE_BUILD_TYPE} build")
+
+add_executable(${PROJECT_NAME} WIN32 Gooey.cpp Gooey.manifest Gooey.rc)
+target_precompile_headers(${PROJECT_NAME} PUBLIC pch.hpp)

@@ -1,0 +1,157 @@
+#include "pch.hpp"
+
+using namespace winrt;
+using namespace winrt::Windows;
+
+enum PreferredAppMode { Default, AllowDark, ForceDark, ForceLight, Max };
+using fnSetPreferredAppMode =
+    PreferredAppMode(WINAPI *)(PreferredAppMode appMode);
+RECT position;
+LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+
+void DarkMode(HWND hWnd) {
+  auto dwmtrue = TRUE;
+  auto dwmfalse = FALSE;
+  auto settings = UI::ViewManagement::UISettings::UISettings();
+  auto foreground =
+      settings.GetColorValue(UI::ViewManagement::UIColorType::Foreground);
+  auto modecheck =
+      (((5 * foreground.G) + (2 * foreground.R) + foreground.B) > (8 * 128));
+  if (modecheck) {
+    DwmSetWindowAttribute(hWnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmtrue,
+                          sizeof(dwmtrue));
+  }
+  if (!modecheck) {
+    DwmSetWindowAttribute(hWnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmfalse,
+                          sizeof(dwmfalse));
+  }
+}
+
+void OnTop(HWND hWnd) {
+  auto topmost = GetWindowLongPtrW(hWnd, GWL_EXSTYLE);
+  if (topmost & WS_EX_TOPMOST) {
+    SetWindowPos(hWnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+  } else {
+    SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+  }
+}
+
+void FullScreen(HWND hWnd) {
+  auto style = GetWindowLongPtrW(hWnd, GWL_STYLE);
+  if (style & WS_OVERLAPPEDWINDOW) {
+    MONITORINFO mi = {sizeof(mi)};
+    GetWindowRect(hWnd, &position);
+    if (GetMonitorInfoW(MonitorFromWindow(hWnd, MONITOR_DEFAULTTONEAREST),
+                        &mi)) {
+      SetWindowLongPtrW(hWnd, GWL_STYLE, style & ~WS_OVERLAPPEDWINDOW);
+      SetWindowPos(hWnd, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top,
+                   mi.rcMonitor.right - mi.rcMonitor.left,
+                   mi.rcMonitor.bottom - mi.rcMonitor.top,
+                   SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
+    }
+  } else {
+    SetWindowLongPtrW(hWnd, GWL_STYLE, style | WS_OVERLAPPEDWINDOW);
+    SetWindowPos(hWnd, nullptr, 0, 0, 0, 0,
+                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER |
+                     SWP_FRAMECHANGED);
+    SetWindowPos(hWnd, nullptr, position.left, position.top,
+                 (position.right - position.left),
+                 (position.bottom - position.top), 0);
+  }
+}
+
+int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+                      PWSTR pCmdLine, int nCmdShow) {
+  WNDCLASSEXW wcex = {};
+
+  wcex.cbSize = sizeof(WNDCLASSEX);
+  wcex.style = CS_HREDRAW | CS_VREDRAW;
+  wcex.lpfnWndProc = WndProc;
+  wcex.cbClsExtra = 0;
+  wcex.cbWndExtra = 0;
+  wcex.hInstance = hInstance;
+  wcex.hCursor =
+      (HCURSOR)LoadImageW(nullptr, IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED);
+  wcex.hbrBackground = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
+  wcex.lpszMenuName = L"menu";
+  wcex.lpszClassName = L"window";
+  wcex.hIcon = (HICON)LoadImageW(hInstance, L"PROGRAM_ICON", IMAGE_ICON, 0, 0,
+                                 LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
+  wcex.hIconSm =
+      (HICON)LoadImageW(hInstance, L"PROGRAM_ICON", IMAGE_ICON, 0, 0,
+                        LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
+
+  RegisterClassExW(&wcex);
+
+  HWND hWnd = CreateWindowExW(WS_EX_COMPOSITED, L"window", L"Gooey",
+                              WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
+                              CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
+                              hInstance, nullptr);
+
+  MARGINS m = {-1};
+  DwmExtendFrameIntoClientArea(hWnd, &m);
+
+  auto backdrop = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
+  DwmSetWindowAttribute(hWnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop,
+                        sizeof(&backdrop));
+
+  DarkMode(hWnd);
+
+  auto hUxtheme =
+      LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
+  if (hUxtheme) {
+    auto ord135 =
+        GetProcAddress(_In_ hUxtheme, _In_ PCSTR MAKEINTRESOURCEW(135));
+    if (ord135) {
+      auto SetPreferredAppMode =
+          reinterpret_cast<fnSetPreferredAppMode>(ord135);
+      SetPreferredAppMode(PreferredAppMode::AllowDark);
+    }
+    FreeLibrary(hUxtheme);
+  }
+
+  if (!hWnd) {
+    return 0;
+  }
+
+  ShowWindow(hWnd, nCmdShow);
+
+  MSG msg = {};
+  while (GetMessage(&msg, nullptr, 0, 0)) {
+    TranslateMessage(&msg);
+    DispatchMessage(&msg);
+  }
+
+  return 0;
+}
+
+LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+  switch (uMsg) {
+  case WM_SETTINGCHANGE: {
+    DarkMode(hWnd);
+  } break;
+  case WM_GETMINMAXINFO: {
+    LPMINMAXINFO lp = (LPMINMAXINFO)lParam;
+    lp->ptMinTrackSize.x = 600;
+    lp->ptMinTrackSize.y = 600;
+  } break;
+  case WM_KEYDOWN:
+    if (wParam == VK_F1) {
+      OnTop(hWnd);
+    }
+    if (wParam == VK_F11) {
+      FullScreen(hWnd);
+    }
+    break;
+  case WM_CLOSE:
+    DestroyWindow(hWnd);
+    break;
+  case WM_DESTROY:
+    PostQuitMessage(0);
+    break;
+  default:
+    return DefWindowProcW(hWnd, uMsg, wParam, lParam);
+  }
+
+  return 0;
+}
