@@ -53,9 +53,27 @@ function Build-ReleaseNotes {
 Set-Alias -Name notes -Value Build-ReleaseNotes
 
 function Export-Release {
-    $build = Split-Path $PSScriptRoot | Split-Path | Join-Path -ChildPath "build" -AdditionalChildPath "Release"
+    $build = Split-Path $MyInvocation.PSScriptRoot | Join-Path -ChildPath "build" -AdditionalChildPath "Release"
     $programs = "C:\Programs\Gooey"
     if (!(Test-Path $programs)) { New-Item -ItemType Directory $programs }
     Copy-Item "$build\Gooey.exe" -Destination "$programs\Gooey.exe" -Force
 }
 Set-Alias -Name export -Value Export-Release
+
+function Build-Libs {
+    $WEBVIEW2_VER = "1.0.1587.40"
+    $CPPWINRT_VER = "2.0.230225.1"
+    $WIL_VER = "1.0.230202.1"
+
+    $cppwinrt = Split-Path $MyInvocation.PSScriptRoot | Join-Path -ChildPath "packages" -AdditionalChildPath "Microsoft.Windows.CppWinRT.$CPPWINRT_VER", "bin", "cppwinrt.exe"
+    $webview_winmd = Split-Path $MyInvocation.PSScriptRoot | Join-Path -ChildPath "packages" -AdditionalChildPath "Microsoft.Web.WebView2.$WEBVIEW2_VER", "lib", "Microsoft.Web.WebView2.Core.winmd"
+    $wil_lib = Split-Path $MyInvocation.PSScriptRoot | Join-Path -ChildPath "packages" -AdditionalChildPath "Microsoft.Windows.ImplementationLibrary.$WIL_VER", "include", "wil"
+    
+    $libs = Split-Path $MyInvocation.PSScriptRoot | Join-Path -ChildPath "packages" -AdditionalChildPath "libs"
+    
+    if (Test-Path $libs) { Remove-Item $libs -Recurse }
+
+    & $cppwinrt -input sdk $webview_winmd -output $libs
+    Copy-Item -Path $wil_lib -Destination $libs -Recurse
+}
+Set-Alias -Name libs -Value Build-Libs

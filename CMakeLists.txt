@@ -15,7 +15,12 @@ message(STATUS "${CMAKE_BUILD_TYPE} build")
 
 add_executable(${PROJECT_NAME} WIN32 ${CMAKE_CURRENT_SOURCE_DIR}/src/Gooey.cpp ${CMAKE_CURRENT_SOURCE_DIR}/Gooey.manifest ${CMAKE_CURRENT_SOURCE_DIR}/Gooey.rc)
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/packages/Microsoft.Web.WebView2.${WEBVIEW2_VER}/build/native/include)
+
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/packages/Microsoft.Windows.ImplementationLibrary.${WIL_VER}/include)
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/packages/Microsoft.Web.WebView2.${WEBVIEW2_VER}/build/native/include)
+
+# target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/packages/libs/)
+
 target_precompile_headers(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/pch.h)
+
 target_link_libraries(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/packages/Microsoft.Web.WebView2.1.0.1587.40/build/native/x64/WebView2LoaderStatic.lib)

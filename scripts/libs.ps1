@@ -1,3 +1,3 @@
 Import-Module $PSScriptRoot\dev
-release && notes
+libs
 Remove-Module dev
