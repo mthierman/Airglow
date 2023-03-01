@@ -154,8 +154,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                       int i;
                       szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
                       if (0 == szArglist[1]) {
-                        // webview->Navigate(L"about:blank");
-                        webview->Navigate(L"https://google.com/");
+                        webview->Navigate(L"about:blank");
+                        // webview->Navigate(L"https://google.com/");
                       }
                       for (i = 1; i < nArgs; i++) {
                         webview->Navigate(szArglist[i]);
