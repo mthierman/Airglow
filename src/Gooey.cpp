@@ -1,3 +1,6 @@
+#define OEMRESOURCE
+#include <dwmapi.h>
+
 using namespace winrt;
 using namespace winrt::Windows;
 // using namespace winrt::Microsoft::Web::WebView2::Core;
@@ -79,8 +82,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
   wcex.cbClsExtra = 0;
   wcex.cbWndExtra = 0;
   wcex.hInstance = hInstance;
-  wcex.hCursor =
-      (HCURSOR)LoadImageW(nullptr, IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED);
+  wcex.hCursor = (HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR,
+                                     0, 0, LR_SHARED);
   wcex.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
   wcex.lpszMenuName = L"menu";
   wcex.lpszClassName = L"window";

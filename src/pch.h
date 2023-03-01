@@ -1,14 +1,5 @@
 #pragma once
 
-#define UNICODE
-#define OEMRESOURCE
-
-#include <windows.h>
-
-#include <SDKDDKVer.h>
-
-#include <dwmapi.h>
-
 #include <wil/com.h>
 #include <wrl.h>
 
