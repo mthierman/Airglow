@@ -1,11 +1,4 @@
-#include "resource.h"
-#include <WebView2.h>
-#include <dwmapi.h>
-#include <wil/com.h>
-#include <winuser.h>
-#include <wrl.h>
-#pragma comment(lib, "dwmapi")
-// #include <winrt/Microsoft.Web.WebView2.Core.h>
+#include "gooey.h"
 
 using namespace winrt::Windows;
 // using namespace winrt::Microsoft::Web::WebView2::Core;
