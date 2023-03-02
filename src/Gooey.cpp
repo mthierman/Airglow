@@ -1,7 +1,8 @@
-#include "Resource.h"
+#include "resource.h"
 #include <WebView2.h>
 #include <dwmapi.h>
 #include <wil/com.h>
+#include <winuser.h>
 #include <wrl.h>
 #pragma comment(lib, "dwmapi")
 // #include <winrt/Microsoft.Web.WebView2.Core.h>
@@ -71,6 +72,7 @@ void FullScreen(HWND hWnd) {
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                       _In_opt_ HINSTANCE hPrevInstance, _In_ PWSTR pCmdLine,
                       _In_ int nCmdShow) {
+  SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
   SetEnvironmentVariableW(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR", L"0");
   SetEnvironmentVariableW(L"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
                           L"--enable-features=OverlayScrollbar,"
