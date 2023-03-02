@@ -1,4 +1,3 @@
-#define OEMRESOURCE
 #include "Resource.h"
 #include <WebView2.h>
 #include <dwmapi.h>
@@ -7,7 +6,6 @@
 #pragma comment(lib, "dwmapi")
 // #include <winrt/Microsoft.Web.WebView2.Core.h>
 
-using namespace winrt;
 using namespace winrt::Windows;
 // using namespace winrt::Microsoft::Web::WebView2::Core;
 
