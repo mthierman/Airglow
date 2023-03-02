@@ -1,22 +1,81 @@
 #include "gooey.h"
+#include "winrt/base.h"
+#include "winrt/impl/Microsoft.Web.WebView2.Core.1.h"
+#include "winrt/impl/Microsoft.Web.WebView2.Core.2.h"
+#include <algorithm>
+#include <charconv>
+#include <format>
+#include <iostream>
+#include <memory>
+#include <string>
 
-using namespace winrt::Windows;
-// using namespace winrt::Microsoft::Web::WebView2::Core;
+using namespace winrt::Windows::Foundation;
+using namespace winrt::Windows::UI::ViewManagement;
+using namespace winrt::Microsoft::Web::WebView2::Core;
 
 enum PreferredAppMode { Default, AllowDark, ForceDark, ForceLight, Max };
 using fnSetPreferredAppMode =
     PreferredAppMode(WINAPI *)(PreferredAppMode appMode);
 RECT position;
-static wil::com_ptr<ICoreWebView2Controller> webviewController;
-static wil::com_ptr<ICoreWebView2> webview;
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+
+static winrt::com_ptr<CoreWebView2Controller> controller_ptr;
+static winrt::com_ptr<CoreWebView2> webview_ptr;
+
+IAsyncAction InitWebView2(HWND hWnd) {
+  CoreWebView2Environment env = co_await CoreWebView2Environment::CreateAsync();
+
+  auto handle = CoreWebView2ControllerWindowReference::CreateFromWindowHandle(
+      reinterpret_cast<std::uint64_t>(hWnd));
+  CoreWebView2Controller controller =
+      co_await env.CreateCoreWebView2ControllerAsync(handle);
+
+  if (controller) {
+    OutputDebugStringW(L"CoreWebView2Controller initialized!\n");
+    controller_ptr->&controller;
+    auto webview = controller.CoreWebView2();
+    webview_ptr = &webview;
+    // controller = std::unique_ptr<CoreWebView2Controller>(&wv2_controller);
+    // auto wv2 = wv2_controller.CoreWebView2();
+    // webview = std::make_unique<CoreWebView2>(wv2_controller.CoreWebView2());
+  }
+
+  // wil::com_ptr<CoreWebView2Settings> settings;
+  // webview->Settings(&settings);
+  // settings.IsScriptEnabled(true);
+  // settings.AreDefaultScriptDialogsEnabled(true);
+  // settings.IsWebMessageEnabled(true);
+  if (webview_ptr) {
+    OutputDebugStringW(L"CoreWebView2 initialized!\n");
+  };
+  // if (settings) {
+  //   OutputDebugStringW(L"CoreWebView2 settings initialized!\n");
+  // }
+
+  controller.IsVisible(true);
+  RECT bounds;
+  GetClientRect(hWnd, &bounds);
+  float x = static_cast<float>(bounds.left);
+  float y = static_cast<float>(bounds.right);
+  float width = static_cast<float>(bounds.right - bounds.left);
+  float height = static_cast<float>(bounds.bottom - bounds.top);
+  Rect newbounds = Rect(x, y, width, height);
+  // Rect newbounds = Rect(0, 0, 500, 500);
+  // controller.BoundsMode(CoreWebView2BoundsMode::UseRawPixels);
+  controller.Bounds(newbounds);
+  // std::cout << std::to_string(newbounds.Height) << std::endl;
+
+  // Rect bounds = Rect(0, 0, 500, 500);
+  // controller.Bounds(bounds);
+
+  webview.Navigate(L"https://www.google.com/");
+}
 
 void DarkMode(HWND hWnd) {
   auto dwmtrue = TRUE;
   auto dwmfalse = FALSE;
-  auto settings = UI::ViewManagement::UISettings();
-  auto foreground =
-      settings.GetColorValue(UI::ViewManagement::UIColorType::Foreground);
+  auto settings = UISettings();
+  auto foreground = settings.GetColorValue(UIColorType::Foreground);
   auto modecheck =
       (((5 * foreground.G) + (2 * foreground.R) + foreground.B) > (8 * 128));
   if (modecheck) {
@@ -65,6 +124,7 @@ void FullScreen(HWND hWnd) {
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                       _In_opt_ HINSTANCE hPrevInstance, _In_ PWSTR pCmdLine,
                       _In_ int nCmdShow) {
+  // winrt::init_apartment(winrt::apartment_type::multi_threaded);
   SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
   SetEnvironmentVariableW(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR", L"0");
   SetEnvironmentVariableW(L"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
@@ -126,80 +186,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
   ShowWindow(hWnd, nCmdShow);
 
-  CreateCoreWebView2EnvironmentWithOptions(
-      nullptr, nullptr, nullptr,
-      Microsoft::WRL::Callback<
-          ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
-          [hWnd](HRESULT result, ICoreWebView2Environment *env) -> HRESULT {
-            env->CreateCoreWebView2Controller(
-                hWnd,
-                Microsoft::WRL::Callback<
-                    ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                    [hWnd](HRESULT result,
-                           ICoreWebView2Controller *controller) -> HRESULT {
-                      if (controller != nullptr) {
-                        webviewController = controller;
-                        webviewController->get_CoreWebView2(&webview);
-                      }
-                      wil::com_ptr<ICoreWebView2Settings> settings;
-                      webview->get_Settings(&settings);
-                      settings->put_IsScriptEnabled(TRUE);
-                      settings->put_AreDefaultScriptDialogsEnabled(TRUE);
-                      settings->put_IsWebMessageEnabled(TRUE);
-
-                      RECT bounds;
-                      GetClientRect(hWnd, &bounds);
-                      webviewController->put_Bounds(bounds);
-
-                      auto commandline = GetCommandLineW();
-                      LPWSTR *szArglist;
-                      int nArgs;
-                      int i;
-                      szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
-                      if (0 == szArglist[1]) {
-                        webview->Navigate(L"about:blank");
-                        // webview->Navigate(L"https://google.com/");
-                      }
-                      for (i = 1; i < nArgs; i++) {
-                        webview->Navigate(szArglist[i]);
-                      }
-                      LocalFree(szArglist);
-
-                      EventRegistrationToken token;
-
-                      webview->AddScriptToExecuteOnDocumentCreated(
-                          L"document.onreadystatechange = () => {if "
-                          L"(document.readyState === 'complete') "
-                          L"{onkeydown = (e) => "
-                          L"{window.chrome.webview.postMessage(e.key);}}}"
-                          L";",
-                          nullptr);
-
-                      webview->add_WebMessageReceived(
-                          Microsoft::WRL::Callback<
-                              ICoreWebView2WebMessageReceivedEventHandler>(
-                              [hWnd](ICoreWebView2 *webview,
-                                     ICoreWebView2WebMessageReceivedEventArgs
-                                         *args) -> HRESULT {
-                                wil::unique_cotaskmem_string message;
-                                args->TryGetWebMessageAsString(&message);
-                                if ((std::wstring)message.get() == L"F1") {
-                                  OnTop(hWnd);
-                                }
-                                if ((std::wstring)message.get() == L"F11") {
-                                  FullScreen(hWnd);
-                                }
-                                webview->PostWebMessageAsString(message.get());
-                                return S_OK;
-                              })
-                              .Get(),
-                          &token);
-                      return S_OK;
-                    })
-                    .Get());
-            return S_OK;
-          })
-          .Get());
+  InitWebView2(hWnd);
 
   MSG msg = {};
   while (GetMessage(&msg, nullptr, 0, 0)) {
@@ -215,13 +202,47 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
   case WM_SETTINGCHANGE: {
     DarkMode(hWnd);
   } break;
-  case WM_SIZE:
-    if (webviewController != nullptr) {
-      RECT b;
-      GetClientRect(hWnd, &b);
-      webviewController->put_Bounds(b);
-    }
-    break;
+  // case WM_SIZE:
+  //   if (controller != nullptr) {
+  //     RECT bounds;
+  //     GetClientRect(hWnd, &bounds);
+  //     float x = static_cast<float>(bounds.left);
+  //     float y = static_cast<float>(bounds.right);
+  //     float width = static_cast<float>(bounds.right - bounds.left);
+  //     float height = static_cast<float>(bounds.bottom - bounds.top);
+  //     Rect newbounds = Rect(x, y, width, height);
+  //     controller.Bounds(newbounds);
+  //   }
+  //   break;
+  // case WM_SIZE:
+  //   if (webviewController != nullptr) {
+  //     RECT b;
+  //     GetClientRect(hWnd, &b);
+  //     webviewController->put_Bounds(b);
+  //   }
+  //   break;
+  // case WM_SIZE: {
+  //   RECT bounds;
+  //   GetClientRect(hWnd, &bounds);
+  //   float x = static_cast<float>(bounds.left);
+  //   float y = static_cast<float>(bounds.right);
+  //   float width = static_cast<float>(bounds.right - bounds.left);
+  //   float height = static_cast<float>(bounds.bottom - bounds.top);
+  //   Rect newbounds = Rect(x, y, width, height);
+  //   std::cout << "X: " + std::to_string(bounds.left) << std::endl;
+  //   std::cout << "Y: " + std::to_string(bounds.right) << std::endl;
+  //   std::cout << "Width: " + std::to_string(bounds.right - bounds.left)
+  //             << std::endl;
+  //   std::cout << "Height: " + std::to_string(bounds.bottom - bounds.top)
+  //             << std::endl;
+
+  //   std::cout << "Converted\n";
+
+  //   std::cout << "X: " + std::to_string(newbounds.X) << std::endl;
+  //   std::cout << "Y: " + std::to_string(newbounds.Y) << std::endl;
+  //   std::cout << "Width: " + std::to_string(newbounds.Width) << std::endl;
+  //   std::cout << "Height: " + std::to_string(newbounds.Height) << std::endl;
+  // } break;
   case WM_GETMINMAXINFO: {
     LPMINMAXINFO lp = (LPMINMAXINFO)lParam;
     lp->ptMinTrackSize.x = 600;

@@ -59,3 +59,27 @@ IAsyncAction InitWebView2(HWND hWnd) {
 
 CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
 // init_apartment(apartment_type::multi_threaded);
+
+IAsyncAction CreateWebView2Env(HWND hWnd) {
+  auto env{co_await CoreWebView2Environment::CreateAsync()};
+  if (env) {
+    OutputDebugStringW(L"CoreWebView2 env initialized!\n");
+  }
+  CoreWebView2ControllerWindowReference wv2_handle =
+      CoreWebView2ControllerWindowReference::CreateFromWindowHandle(
+          reinterpret_cast<std::uint64_t>(hWnd));
+  auto controller{co_await env.CreateCoreWebView2ControllerAsync(wv2_handle)};
+  auto wv = controller.CoreWebView2();
+  auto settings = wv.Settings();
+  settings.IsScriptEnabled(true);
+  settings.AreDefaultScriptDialogsEnabled(true);
+  settings.IsWebMessageEnabled(true);
+  if (wv) {
+    OutputDebugStringW(L"CoreWebView2 initialized!\n");
+  }
+  if (settings) {
+    OutputDebugStringW(L"CoreWebView2 settings initialized!\n");
+  }
+}
+
+init_apartment(apartment_type::single_threaded);

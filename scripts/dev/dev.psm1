@@ -61,19 +61,53 @@ function Export-Release {
 Set-Alias -Name export -Value Export-Release
 
 function Build-Libs {
-    $WEBVIEW2_VER = "1.0.1587.40"
     $CPPWINRT_VER = "2.0.230225.1"
+    $WEBVIEW_VER = "1.0.1587.40"
     $WIL_VER = "1.0.230202.1"
 
-    $cppwinrt = Split-Path $MyInvocation.PSScriptRoot | Join-Path -ChildPath "packages" -AdditionalChildPath "Microsoft.Windows.CppWinRT.$CPPWINRT_VER", "bin", "cppwinrt.exe"
-    $webview_winmd = Split-Path $MyInvocation.PSScriptRoot | Join-Path -ChildPath "packages" -AdditionalChildPath "Microsoft.Web.WebView2.$WEBVIEW2_VER", "lib", "Microsoft.Web.WebView2.Core.winmd"
-    $wil_lib = Split-Path $MyInvocation.PSScriptRoot | Join-Path -ChildPath "packages" -AdditionalChildPath "Microsoft.Windows.ImplementationLibrary.$WIL_VER", "include", "wil"
+    $cppwinrt_params = @{
+        "-ChildPath"           = "packages"
+        "-AdditionalChildPath" = "Microsoft.Windows.CppWinRT.$CPPWINRT_VER", "bin", "cppwinrt.exe"
+    }
+
+    $webview_params = @{
+        "-ChildPath"           = "packages"
+        "-AdditionalChildPath" = "Microsoft.Web.WebView2.$WEBVIEW_VER", "lib", "Microsoft.Web.WebView2.Core.winmd"
+    }
+
+    $loader_params = @{
+        "-ChildPath"           = "packages"
+        "-AdditionalChildPath" = "Microsoft.Web.WebView2.$WEBVIEW_VER", "build", "native", "x64", "WebView2LoaderStatic.lib"
+    }
+
+    $dll_params = @{
+        "-ChildPath"           = "packages"
+        "-AdditionalChildPath" = "Microsoft.Web.WebView2.$WEBVIEW_VER", "runtimes", "win-x64", "native_uap", "Microsoft.Web.WebView2.Core.dll"
+    }
+
+    $wil_params = @{
+        "-ChildPath"           = "packages"
+        "-AdditionalChildPath" = "Microsoft.Windows.ImplementationLibrary.$WIL_VER", "include", "wil"
+    }
+
+    $libs_params = @{
+        "-ChildPath"           = "build"
+        "-AdditionalChildPath" = "libs"
+    }
+
+    $cppwinrt = Split-Path $MyInvocation.PSScriptRoot | Join-Path @cppwinrt_params
+    $webview = Split-Path $MyInvocation.PSScriptRoot | Join-Path @webview_params
+    $loader = Split-Path $MyInvocation.PSScriptRoot | Join-Path @loader_params
+    $dll = Split-Path $MyInvocation.PSScriptRoot | Join-Path @dll_params
+    $wil = Split-Path $MyInvocation.PSScriptRoot | Join-Path @wil_params
     
-    $libs = Split-Path $MyInvocation.PSScriptRoot | Join-Path -ChildPath "packages" -AdditionalChildPath "libs"
+    $libs = Split-Path $MyInvocation.PSScriptRoot | Join-Path @libs_params
     
     if (Test-Path $libs) { Remove-Item $libs -Recurse }
 
-    & $cppwinrt -input sdk $webview_winmd -output $libs
-    Copy-Item -Path $wil_lib -Destination $libs -Recurse
+    & $cppwinrt -input sdk $webview -output $libs
+    Copy-Item -Path $loader -Destination $libs
+    Copy-Item -Path $dll -Destination $libs
+    Copy-Item -Path $wil -Destination $libs -Recurse
 }
 Set-Alias -Name libs -Value Build-Libs
