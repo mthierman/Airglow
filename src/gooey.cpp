@@ -1,5 +1,6 @@
 #include "gooey.h"
 
+using namespace Microsoft::WRL;
 using namespace winrt::Windows::UI::ViewManagement;
 
 enum PreferredAppMode { Default, AllowDark, ForceDark, ForceLight, Max };
@@ -9,10 +10,27 @@ using fnSetPreferredAppMode =
 
 static RECT position;
 
-static wil::com_ptr<ICoreWebView2Controller> webviewController;
-static wil::com_ptr<ICoreWebView2> webview;
+static wil::com_ptr<ICoreWebView2Controller> wv_controller;
+static wil::com_ptr<ICoreWebView2> wv;
+static wil::com_ptr<ICoreWebView2Settings> wv_settings;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+
+void Navigate() {
+  auto commandline = GetCommandLineW();
+  LPWSTR *szArglist;
+  int nArgs;
+  int i;
+  szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
+  if (0 == szArglist[1]) {
+    wv->Navigate(L"about:blank");
+    // webview->Navigate(L"https://google.com/");
+  }
+  for (i = 1; i < nArgs; i++) {
+    wv->Navigate(szArglist[i]);
+  }
+  LocalFree(szArglist);
+}
 
 void DarkMode(HWND hWnd) {
   auto dwmtrue = TRUE;
@@ -130,46 +148,32 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
   CreateCoreWebView2EnvironmentWithOptions(
       nullptr, nullptr, nullptr,
-      Microsoft::WRL::Callback<
-          ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
+      Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
           [hWnd](HRESULT result, ICoreWebView2Environment *env) -> HRESULT {
             env->CreateCoreWebView2Controller(
                 hWnd,
-                Microsoft::WRL::Callback<
+                Callback<
                     ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
                     [hWnd](HRESULT result,
                            ICoreWebView2Controller *controller) -> HRESULT {
                       if (controller != nullptr) {
-                        webviewController = controller;
-                        webviewController->get_CoreWebView2(&webview);
+                        wv_controller = controller;
+                        wv_controller->get_CoreWebView2(&wv);
                       }
-                      wil::com_ptr<ICoreWebView2Settings> settings;
-                      webview->get_Settings(&settings);
-                      settings->put_IsScriptEnabled(TRUE);
-                      settings->put_AreDefaultScriptDialogsEnabled(TRUE);
-                      settings->put_IsWebMessageEnabled(TRUE);
+                      wv->get_Settings(&wv_settings);
+                      wv_settings->put_IsScriptEnabled(TRUE);
+                      wv_settings->put_AreDefaultScriptDialogsEnabled(TRUE);
+                      wv_settings->put_IsWebMessageEnabled(TRUE);
 
                       RECT bounds;
                       GetClientRect(hWnd, &bounds);
-                      webviewController->put_Bounds(bounds);
+                      wv_controller->put_Bounds(bounds);
 
-                      auto commandline = GetCommandLineW();
-                      LPWSTR *szArglist;
-                      int nArgs;
-                      int i;
-                      szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
-                      if (0 == szArglist[1]) {
-                        webview->Navigate(L"about:blank");
-                        // webview->Navigate(L"https://google.com/");
-                      }
-                      for (i = 1; i < nArgs; i++) {
-                        webview->Navigate(szArglist[i]);
-                      }
-                      LocalFree(szArglist);
+                      Navigate();
 
                       EventRegistrationToken token;
 
-                      webview->ExecuteScript(
+                      wv->ExecuteScript(
                           L"document.onreadystatechange = () => {if "
                           L"(document.readyState === 'complete') "
                           L"{onkeydown = (e) => "
@@ -177,7 +181,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                           L";",
                           nullptr);
 
-                      webview->AddScriptToExecuteOnDocumentCreated(
+                      wv->AddScriptToExecuteOnDocumentCreated(
                           L"document.onreadystatechange = () => {if "
                           L"(document.readyState === 'complete') "
                           L"{onkeydown = (e) => "
@@ -185,9 +189,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                           L";",
                           nullptr);
 
-                      webview->add_WebMessageReceived(
-                          Microsoft::WRL::Callback<
-                              ICoreWebView2WebMessageReceivedEventHandler>(
+                      wv->add_WebMessageReceived(
+                          Callback<ICoreWebView2WebMessageReceivedEventHandler>(
                               [hWnd](ICoreWebView2 *webview,
                                      ICoreWebView2WebMessageReceivedEventArgs
                                          *args) -> HRESULT {
@@ -226,10 +229,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     DarkMode(hWnd);
   } break;
   case WM_SIZE:
-    if (webviewController != nullptr) {
+    if (wv_controller != nullptr) {
       RECT b;
       GetClientRect(hWnd, &b);
-      webviewController->put_Bounds(b);
+      wv_controller->put_Bounds(b);
     }
     break;
   case WM_GETMINMAXINFO: {
