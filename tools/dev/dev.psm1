@@ -13,28 +13,40 @@ function Initialize-DevShell32 {
 Set-Alias -Name dev32 -Value Initialize-DevShell32
 
 function Install-WebView2 {
-    nuget install Microsoft.Web.WebView2 -OutputDirectory packages
+    nuget install Microsoft.Web.WebView2 -OutputDirectory external
 }
 Set-Alias -Name webview2 -Value Install-WebView2
 
 function Install-CppWinRT {
-    nuget install Microsoft.Windows.CppWinRT -OutputDirectory packages
+    nuget install Microsoft.Windows.CppWinRT -OutputDirectory external
 }
 Set-Alias -Name cppwinrt -Value Install-CppWinRT
 
 function Install-ImplementationLibrary {
-    nuget install Microsoft.Windows.ImplementationLibrary -OutputDirectory packages
+    nuget install Microsoft.Windows.ImplementationLibrary -OutputDirectory external
 }
 Set-Alias -Name wil -Value Install-ImplementationLibrary
 
 function Build-Debug {
-    cmake --no-warn-unused-cli -Bbuild\Debug -GNinja -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_BUILD_TYPE="Debug" -DCMAKE_C_COMPILER="clang" -DCMAKE_CXX_COMPILER="clang++"
+    cmake --no-warn-unused-cli `
+        -Bbuild\Debug `
+        -GNinja `
+        -DCMAKE_EXPORT_COMPILE_COMMANDS=1 `
+        -DCMAKE_BUILD_TYPE="Debug" `
+        -DCMAKE_C_COMPILER="clang" `
+        -DCMAKE_CXX_COMPILER="clang++"
     cmake --build build\Debug
 }
 Set-Alias -Name debug -Value Build-Debug
 
 function Build-Release {
-    cmake --no-warn-unused-cli -Bbuild\Release -GNinja -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_BUILD_TYPE="Release" -DCMAKE_C_COMPILER="clang" -DCMAKE_CXX_COMPILER="clang++"
+    cmake --no-warn-unused-cli `
+        -Bbuild\Release `
+        -GNinja `
+        -DCMAKE_EXPORT_COMPILE_COMMANDS=1 `
+        -DCMAKE_BUILD_TYPE="Release" `
+        -DCMAKE_C_COMPILER="clang" `
+        -DCMAKE_CXX_COMPILER="clang++"
     cmake --build build\Release
 }
 Set-Alias -Name release -Value Build-Release
@@ -66,22 +78,22 @@ function Build-Libs {
     $WEBVIEW_VER = "1.0.1587.40"
 
     $cppwinrt_params = @{
-        "-ChildPath"           = "packages"
+        "-ChildPath"           = "external"
         "-AdditionalChildPath" = "Microsoft.Windows.CppWinRT.$CPPWINRT_VER", "bin", "cppwinrt.exe"
     }
 
     $wil_params = @{
-        "-ChildPath"           = "packages"
+        "-ChildPath"           = "external"
         "-AdditionalChildPath" = "Microsoft.Windows.ImplementationLibrary.$WIL_VER", "include", "wil"
     }
 
     $webview_params = @{
-        "-ChildPath"           = "packages"
+        "-ChildPath"           = "external"
         "-AdditionalChildPath" = "Microsoft.Web.WebView2.$WEBVIEW_VER", "build", "native", "include"
     }
 
     $loader_params = @{
-        "-ChildPath"           = "packages"
+        "-ChildPath"           = "external"
         "-AdditionalChildPath" = "Microsoft.Web.WebView2.$WEBVIEW_VER", "build", "native", "x64", "WebView2LoaderStatic.lib"
     }
 
