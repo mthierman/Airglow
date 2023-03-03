@@ -1,21 +1,24 @@
 #include "gooey.h"
 
-using namespace winrt::Windows;
+using namespace winrt::Windows::UI::ViewManagement;
 
 enum PreferredAppMode { Default, AllowDark, ForceDark, ForceLight, Max };
+
 using fnSetPreferredAppMode =
     PreferredAppMode(WINAPI *)(PreferredAppMode appMode);
-RECT position;
+
+static RECT position;
+
 static wil::com_ptr<ICoreWebView2Controller> webviewController;
 static wil::com_ptr<ICoreWebView2> webview;
+
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 void DarkMode(HWND hWnd) {
   auto dwmtrue = TRUE;
   auto dwmfalse = FALSE;
-  auto settings = UI::ViewManagement::UISettings();
-  auto foreground =
-      settings.GetColorValue(UI::ViewManagement::UIColorType::Foreground);
+  auto settings = UISettings();
+  auto foreground = settings.GetColorValue(UIColorType::Foreground);
   auto modecheck =
       (((5 * foreground.G) + (2 * foreground.R) + foreground.B) > (8 * 128));
   if (modecheck) {
@@ -165,6 +168,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                       LocalFree(szArglist);
 
                       EventRegistrationToken token;
+
+                      webview->ExecuteScript(
+                          L"document.onreadystatechange = () => {if "
+                          L"(document.readyState === 'complete') "
+                          L"{onkeydown = (e) => "
+                          L"{window.chrome.webview.postMessage(e.key);}}}"
+                          L";",
+                          nullptr);
 
                       webview->AddScriptToExecuteOnDocumentCreated(
                           L"document.onreadystatechange = () => {if "
