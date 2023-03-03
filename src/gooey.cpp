@@ -1,107 +1,12 @@
 #include "gooey.h"
 
-using namespace Microsoft::WRL;
-using namespace winrt::Windows::UI::ViewManagement;
-
-enum PreferredAppMode { Default, AllowDark, ForceDark, ForceLight, Max };
-
-using fnSetPreferredAppMode =
-    PreferredAppMode(WINAPI *)(PreferredAppMode appMode);
-
-static RECT position;
+using namespace Gooey;
 
 static wil::com_ptr<ICoreWebView2Controller> wv_controller;
 static wil::com_ptr<ICoreWebView2> wv;
 static wil::com_ptr<ICoreWebView2Settings> wv_settings;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
-
-void Navigate() {
-  auto commandline = GetCommandLineW();
-  LPWSTR *szArglist;
-  int nArgs;
-  int i;
-  szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
-  if (0 == szArglist[1]) {
-    wv->Navigate(L"about:blank");
-    // webview->Navigate(L"https://google.com/");
-  }
-  for (i = 1; i < nArgs; i++) {
-    wv->Navigate(szArglist[i]);
-  }
-  LocalFree(szArglist);
-}
-
-void SetMica(HWND hwnd) {
-  MARGINS m = {-1};
-  DwmExtendFrameIntoClientArea(hwnd, &m);
-  auto mica = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
-  DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &mica, sizeof(&mica));
-}
-
-void SetDarkMode(HWND hWnd) {
-  auto dwmtrue = TRUE;
-  auto dwmfalse = FALSE;
-  auto settings = UISettings();
-  auto foreground = settings.GetColorValue(UIColorType::Foreground);
-  auto modecheck =
-      (((5 * foreground.G) + (2 * foreground.R) + foreground.B) > (8 * 128));
-  if (modecheck) {
-    DwmSetWindowAttribute(hWnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmtrue,
-                          sizeof(dwmtrue));
-  }
-  if (!modecheck) {
-    DwmSetWindowAttribute(hWnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmfalse,
-                          sizeof(dwmfalse));
-  }
-}
-
-void SetDarkModeTitle() {
-  auto uxtheme =
-      LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
-  if (uxtheme) {
-    auto ord135 = GetProcAddress(uxtheme, PCSTR MAKEINTRESOURCEW(135));
-    if (ord135) {
-      auto SetPreferredAppMode =
-          reinterpret_cast<fnSetPreferredAppMode>(ord135);
-      SetPreferredAppMode(PreferredAppMode::AllowDark);
-    }
-    FreeLibrary(uxtheme);
-  }
-}
-
-void OnTop(HWND hWnd) {
-  auto topmost = GetWindowLongPtrW(hWnd, GWL_EXSTYLE);
-  if (topmost & WS_EX_TOPMOST) {
-    SetWindowPos(hWnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-  } else {
-    SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-  }
-}
-
-void FullScreen(HWND hWnd) {
-  auto style = GetWindowLongPtrW(hWnd, GWL_STYLE);
-  if (style & WS_OVERLAPPEDWINDOW) {
-    MONITORINFO mi = {sizeof(mi)};
-    GetWindowRect(hWnd, &position);
-    if (GetMonitorInfoW(MonitorFromWindow(hWnd, MONITOR_DEFAULTTONEAREST),
-                        &mi)) {
-      SetWindowLongPtrW(hWnd, GWL_STYLE, style & ~WS_OVERLAPPEDWINDOW);
-      SetWindowPos(hWnd, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top,
-                   mi.rcMonitor.right - mi.rcMonitor.left,
-                   mi.rcMonitor.bottom - mi.rcMonitor.top,
-                   SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
-    }
-  } else {
-    SetWindowLongPtrW(hWnd, GWL_STYLE, style | WS_OVERLAPPEDWINDOW);
-    SetWindowPos(hWnd, nullptr, 0, 0, 0, 0,
-                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER |
-                     SWP_FRAMECHANGED);
-    SetWindowPos(hWnd, nullptr, position.left, position.top,
-                 (position.right - position.left),
-                 (position.bottom - position.top), 0);
-  }
-}
 
 int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance,
                       PWSTR pcmdline, int ncmdshow) {
@@ -130,23 +35,18 @@ int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance,
   wcex.hIconSm =
       (HICON)LoadImageW(histance, L"PROGRAM_ICON", IMAGE_ICON, 0, 0,
                         LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
-
   RegisterClassExW(&wcex);
-
   HWND hwnd = CreateWindowExW(
       0, L"window", L"Gooey", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
       CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, histance, nullptr);
-
-  SetDarkModeTitle();
 
   if (!hwnd) {
     return 0;
   }
 
+  SetDarkModeTitle();
   SetMica(hwnd);
-
   SetDarkMode(hwnd);
-
   ShowWindow(hwnd, ncmdshow);
 
   CreateCoreWebView2EnvironmentWithOptions(
@@ -172,7 +72,7 @@ int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance,
                       GetClientRect(hwnd, &bounds);
                       wv_controller->put_Bounds(bounds);
 
-                      Navigate();
+                      WebViewNavigate(wv);
 
                       EventRegistrationToken token;
 
@@ -200,10 +100,10 @@ int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance,
                                 wil::unique_cotaskmem_string message;
                                 args->TryGetWebMessageAsString(&message);
                                 if ((std::wstring)message.get() == L"F1") {
-                                  OnTop(hwnd);
+                                  KeyTop(hwnd);
                                 }
                                 if ((std::wstring)message.get() == L"F11") {
-                                  FullScreen(hwnd);
+                                  KeyFullscreen(hwnd);
                                 }
                                 webview->PostWebMessageAsString(message.get());
                                 return S_OK;
@@ -245,10 +145,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam) {
   } break;
   case WM_KEYDOWN:
     if (wparam == VK_F1) {
-      OnTop(hwnd);
+      KeyTop(hwnd);
     }
     if (wparam == VK_F11) {
-      FullScreen(hwnd);
+      KeyFullscreen(hwnd);
     }
     break;
   case WM_CLOSE:
