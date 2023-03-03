@@ -32,7 +32,14 @@ void Navigate() {
   LocalFree(szArglist);
 }
 
-void DarkMode(HWND hWnd) {
+void SetMica(HWND hwnd) {
+  MARGINS m = {-1};
+  DwmExtendFrameIntoClientArea(hwnd, &m);
+  auto mica = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
+  DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &mica, sizeof(&mica));
+}
+
+void SetDarkMode(HWND hWnd) {
   auto dwmtrue = TRUE;
   auto dwmfalse = FALSE;
   auto settings = UISettings();
@@ -46,6 +53,20 @@ void DarkMode(HWND hWnd) {
   if (!modecheck) {
     DwmSetWindowAttribute(hWnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmfalse,
                           sizeof(dwmfalse));
+  }
+}
+
+void SetDarkModeTitle() {
+  auto uxtheme =
+      LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
+  if (uxtheme) {
+    auto ord135 = GetProcAddress(uxtheme, PCSTR MAKEINTRESOURCEW(135));
+    if (ord135) {
+      auto SetPreferredAppMode =
+          reinterpret_cast<fnSetPreferredAppMode>(ord135);
+      SetPreferredAppMode(PreferredAppMode::AllowDark);
+    }
+    FreeLibrary(uxtheme);
   }
 }
 
@@ -82,9 +103,8 @@ void FullScreen(HWND hWnd) {
   }
 }
 
-int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
-                      _In_opt_ HINSTANCE hPrevInstance, _In_ PWSTR pCmdLine,
-                      _In_ int nCmdShow) {
+int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance,
+                      PWSTR pcmdline, int ncmdshow) {
   SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
   SetEnvironmentVariableW(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR", L"0");
   SetEnvironmentVariableW(L"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
@@ -94,67 +114,50 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                           L"--disable-features=msWebOOUI,msPdfOOUI");
 
   WNDCLASSEXW wcex = {};
-
   wcex.cbSize = sizeof(WNDCLASSEX);
   wcex.style = 0;
   wcex.lpfnWndProc = WndProc;
   wcex.cbClsExtra = 0;
   wcex.cbWndExtra = 0;
-  wcex.hInstance = hInstance;
+  wcex.hInstance = histance;
   wcex.hCursor = (HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR,
                                      0, 0, LR_SHARED);
   wcex.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
   wcex.lpszMenuName = L"menu";
   wcex.lpszClassName = L"window";
-  wcex.hIcon = (HICON)LoadImageW(hInstance, L"PROGRAM_ICON", IMAGE_ICON, 0, 0,
+  wcex.hIcon = (HICON)LoadImageW(histance, L"PROGRAM_ICON", IMAGE_ICON, 0, 0,
                                  LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
   wcex.hIconSm =
-      (HICON)LoadImageW(hInstance, L"PROGRAM_ICON", IMAGE_ICON, 0, 0,
+      (HICON)LoadImageW(histance, L"PROGRAM_ICON", IMAGE_ICON, 0, 0,
                         LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
 
   RegisterClassExW(&wcex);
 
-  HWND hWnd = CreateWindowExW(
+  HWND hwnd = CreateWindowExW(
       0, L"window", L"Gooey", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
-      CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, hInstance, nullptr);
+      CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, histance, nullptr);
 
-  auto hUxtheme =
-      LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
-  if (hUxtheme) {
-    auto ord135 =
-        GetProcAddress(_In_ hUxtheme, _In_ PCSTR MAKEINTRESOURCEW(135));
-    if (ord135) {
-      auto SetPreferredAppMode =
-          reinterpret_cast<fnSetPreferredAppMode>(ord135);
-      SetPreferredAppMode(PreferredAppMode::AllowDark);
-    }
-    FreeLibrary(hUxtheme);
-  }
+  SetDarkModeTitle();
 
-  if (!hWnd) {
+  if (!hwnd) {
     return 0;
   }
 
-  MARGINS m = {-1};
-  DwmExtendFrameIntoClientArea(hWnd, &m);
+  SetMica(hwnd);
 
-  auto backdrop = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
-  DwmSetWindowAttribute(hWnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop,
-                        sizeof(&backdrop));
+  SetDarkMode(hwnd);
 
-  DarkMode(hWnd);
-
-  ShowWindow(hWnd, nCmdShow);
+  ShowWindow(hwnd, ncmdshow);
 
   CreateCoreWebView2EnvironmentWithOptions(
       nullptr, nullptr, nullptr,
       Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
-          [hWnd](HRESULT result, ICoreWebView2Environment *env) -> HRESULT {
+          [hwnd](HRESULT result, ICoreWebView2Environment *env) -> HRESULT {
             env->CreateCoreWebView2Controller(
-                hWnd,
+                hwnd,
                 Callback<
                     ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                    [hWnd](HRESULT result,
+                    [hwnd](HRESULT result,
                            ICoreWebView2Controller *controller) -> HRESULT {
                       if (controller != nullptr) {
                         wv_controller = controller;
@@ -166,7 +169,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                       wv_settings->put_IsWebMessageEnabled(TRUE);
 
                       RECT bounds;
-                      GetClientRect(hWnd, &bounds);
+                      GetClientRect(hwnd, &bounds);
                       wv_controller->put_Bounds(bounds);
 
                       Navigate();
@@ -191,16 +194,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
                       wv->add_WebMessageReceived(
                           Callback<ICoreWebView2WebMessageReceivedEventHandler>(
-                              [hWnd](ICoreWebView2 *webview,
+                              [hwnd](ICoreWebView2 *webview,
                                      ICoreWebView2WebMessageReceivedEventArgs
                                          *args) -> HRESULT {
                                 wil::unique_cotaskmem_string message;
                                 args->TryGetWebMessageAsString(&message);
                                 if ((std::wstring)message.get() == L"F1") {
-                                  OnTop(hWnd);
+                                  OnTop(hwnd);
                                 }
                                 if ((std::wstring)message.get() == L"F11") {
-                                  FullScreen(hWnd);
+                                  FullScreen(hwnd);
                                 }
                                 webview->PostWebMessageAsString(message.get());
                                 return S_OK;
@@ -223,39 +226,39 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
   return 0;
 }
 
-LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-  switch (uMsg) {
+LRESULT CALLBACK WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam) {
+  switch (umsg) {
   case WM_SETTINGCHANGE: {
-    DarkMode(hWnd);
+    SetDarkMode(hwnd);
   } break;
   case WM_SIZE:
     if (wv_controller != nullptr) {
       RECT b;
-      GetClientRect(hWnd, &b);
+      GetClientRect(hwnd, &b);
       wv_controller->put_Bounds(b);
     }
     break;
   case WM_GETMINMAXINFO: {
-    LPMINMAXINFO lp = (LPMINMAXINFO)lParam;
+    LPMINMAXINFO lp = (LPMINMAXINFO)lparam;
     lp->ptMinTrackSize.x = 600;
     lp->ptMinTrackSize.y = 600;
   } break;
   case WM_KEYDOWN:
-    if (wParam == VK_F1) {
-      OnTop(hWnd);
+    if (wparam == VK_F1) {
+      OnTop(hwnd);
     }
-    if (wParam == VK_F11) {
-      FullScreen(hWnd);
+    if (wparam == VK_F11) {
+      FullScreen(hwnd);
     }
     break;
   case WM_CLOSE:
-    DestroyWindow(hWnd);
+    DestroyWindow(hwnd);
     break;
   case WM_DESTROY:
     PostQuitMessage(0);
     break;
   default:
-    return DefWindowProcW(hWnd, uMsg, wParam, lParam);
+    return DefWindowProcW(hwnd, umsg, wparam, lparam);
   }
 
   return 0;
