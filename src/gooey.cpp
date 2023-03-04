@@ -1,4 +1,4 @@
-#include "gooey.h"
+#include "gooey.hpp"
 
 using namespace Gooey;
 

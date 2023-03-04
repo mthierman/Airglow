@@ -1,5 +1,5 @@
 #pragma once
-#include "resource.h"
+#include "resource.hpp"
 #include <dwmapi.h>
 #include <guiddef.h>
 #include <webview2/WebView2.h>
