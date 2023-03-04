@@ -18,6 +18,9 @@ int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance,
                           L"full_mode,msOverlayScrollbarWinStyleAnimation "
                           L"--disable-features=msWebOOUI,msPdfOOUI");
 
+  auto icon = (HICON)LoadImageW(histance, L"PROGRAM_ICON", IMAGE_ICON, 0, 0,
+                                LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
+
   WNDCLASSEXW wcex = {};
   wcex.cbSize = sizeof(WNDCLASSEX);
   wcex.style = 0;
@@ -30,11 +33,8 @@ int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance,
   wcex.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
   wcex.lpszMenuName = L"menu";
   wcex.lpszClassName = L"window";
-  wcex.hIcon = (HICON)LoadImageW(histance, L"PROGRAM_ICON", IMAGE_ICON, 0, 0,
-                                 LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
-  wcex.hIconSm =
-      (HICON)LoadImageW(histance, L"PROGRAM_ICON", IMAGE_ICON, 0, 0,
-                        LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
+  wcex.hIcon = icon;
+  wcex.hIconSm = icon;
   RegisterClassExW(&wcex);
   HWND hwnd = CreateWindowExW(
       0, L"window", L"Gooey", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
