@@ -27,7 +27,7 @@ function Install-ImplementationLibrary {
 }
 Set-Alias -Name wil -Value Install-ImplementationLibrary
 
-function Build-Debug {
+function Set-Debug {
     cmake --no-warn-unused-cli `
         -Bbuild\Debug `
         -GNinja `
@@ -35,9 +35,24 @@ function Build-Debug {
         -DCMAKE_BUILD_TYPE="Debug" `
         -DCMAKE_C_COMPILER="clang" `
         -DCMAKE_CXX_COMPILER="clang++"
+}
+Set-Alias -Name gen_debug -Value Set-Debug
+
+function Build-Debug {
     cmake --build build\Debug
 }
-Set-Alias -Name debug -Value Build-Debug
+Set-Alias -Name build_debug -Value Build-Debug
+
+function Set-Release {
+    cmake --no-warn-unused-cli `
+        -Bbuild\Release `
+        -GNinja `
+        -DCMAKE_EXPORT_COMPILE_COMMANDS=1 `
+        -DCMAKE_BUILD_TYPE="Release" `
+        -DCMAKE_C_COMPILER="clang" `
+        -DCMAKE_CXX_COMPILER="clang++"
+}
+Set-Alias -Name gen_release -Value Set-Release
 
 function Build-Release {
     cmake --no-warn-unused-cli `
@@ -49,7 +64,7 @@ function Build-Release {
         -DCMAKE_CXX_COMPILER="clang++"
     cmake --build build\Release
 }
-Set-Alias -Name release -Value Build-Release
+Set-Alias -Name build_release -Value Build-Release
 
 function Build-Preset {
     cmake --preset $args

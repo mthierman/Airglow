@@ -1,3 +1,3 @@
 Import-Module $PSScriptRoot\dev
-debug
+gen_release
 Remove-Module dev

@@ -1,5 +1,5 @@
 {
     "tasks": {
-        "watcher": "deno run --watch -A tools/watcher.ts"
+        "watch": "deno run --watch -A tools/watch.ts"
     }
 }
