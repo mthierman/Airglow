@@ -28,8 +28,9 @@ function Install-ImplementationLibrary {
 Set-Alias -Name wil -Value Install-ImplementationLibrary
 
 function Set-Debug {
+    $build = Split-Path $MyInvocation.PSScriptRoot | Join-Path -ChildPath "build" -AdditionalChildPath "Debug"
     cmake --no-warn-unused-cli `
-        -Bbuild\Debug `
+        -B"$build" `
         -GNinja `
         -DCMAKE_EXPORT_COMPILE_COMMANDS=1 `
         -DCMAKE_BUILD_TYPE="Debug" `
@@ -39,13 +40,15 @@ function Set-Debug {
 Set-Alias -Name gen_debug -Value Set-Debug
 
 function Build-Debug {
-    cmake --build build\Debug
+    $build = Split-Path $MyInvocation.PSScriptRoot | Join-Path -ChildPath "build" -AdditionalChildPath "Debug"
+    cmake --build "$build"
 }
 Set-Alias -Name build_debug -Value Build-Debug
 
 function Set-Release {
+    $build = Split-Path $MyInvocation.PSScriptRoot | Join-Path -ChildPath "build" -AdditionalChildPath "Release"
     cmake --no-warn-unused-cli `
-        -Bbuild\Release `
+        -B"$build" `
         -GNinja `
         -DCMAKE_EXPORT_COMPILE_COMMANDS=1 `
         -DCMAKE_BUILD_TYPE="Release" `
@@ -55,14 +58,8 @@ function Set-Release {
 Set-Alias -Name gen_release -Value Set-Release
 
 function Build-Release {
-    cmake --no-warn-unused-cli `
-        -Bbuild\Release `
-        -GNinja `
-        -DCMAKE_EXPORT_COMPILE_COMMANDS=1 `
-        -DCMAKE_BUILD_TYPE="Release" `
-        -DCMAKE_C_COMPILER="clang" `
-        -DCMAKE_CXX_COMPILER="clang++"
-    cmake --build build\Release
+    $build = Split-Path $MyInvocation.PSScriptRoot | Join-Path -ChildPath "build" -AdditionalChildPath "Release"
+    cmake --build "$build"
 }
 Set-Alias -Name build_release -Value Build-Release
 
@@ -132,3 +129,37 @@ function Build-Libs {
     Copy-Item -Path $loader -Destination $libs
 }
 Set-Alias -Name libs -Value Build-Libs
+
+function Watch-CMake {
+    $folder = Split-Path $MyInvocation.PSScriptRoot
+    $filter = "CMakeLists.txt"
+    $notify = [IO.NotifyFilters]::LastWrite
+    $change = [IO.WatcherChangeTypes]::Changed
+    $timeout = 1000
+    $script = $(Split-Path $MyInvocation.PSScriptRoot | Join-Path -ChildPath "tools" -AdditionalChildPath "gen_debug.ps1")
+    $folder && $filter && $script
+
+    try {
+        Write-Warning "FileSystemWatcher is monitoring $folder\$filter"
+        $watcher = New-Object -TypeName IO.FileSystemWatcher -ArgumentList $folder, $filter -Property @{
+            IncludeSubdirectories = $false
+            NotifyFilter          = $notify
+        }
+        while ($true) {
+            if ($watcher.WaitForChanged($change, $timeout).TimedOut) { continue }
+            & $script
+        }
+    }
+
+    finally {
+        $watcher.Dispose()
+        Remove-Module dev
+        Write-Warning "FileSystemWatcher Removed"
+    }
+}
+Set-Alias -Name watch -Value Watch-CMake
+
+function Remove-DevModule {
+    Remove-Module dev
+}
+Set-Alias -Name remove -Value Remove-DevModule

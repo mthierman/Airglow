@@ -1,3 +1,2 @@
 Import-Module $PSScriptRoot\dev
-export
-Remove-Module dev
+export && remove
