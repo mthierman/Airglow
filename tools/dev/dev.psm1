@@ -137,24 +137,25 @@ function Watch-CMake {
     $change = [IO.WatcherChangeTypes]::Changed
     $timeout = 1000
     $script = $(Split-Path $MyInvocation.PSScriptRoot | Join-Path -ChildPath "tools" -AdditionalChildPath "gen_debug.ps1")
-    $folder && $filter && $script
 
     try {
         Write-Warning "FileSystemWatcher is monitoring $folder\$filter"
+        Write-Warning "Running initial generation..."
+        gen_debug
         $watcher = New-Object -TypeName IO.FileSystemWatcher -ArgumentList $folder, $filter -Property @{
             IncludeSubdirectories = $false
             NotifyFilter          = $notify
         }
         while ($true) {
             if ($watcher.WaitForChanged($change, $timeout).TimedOut) { continue }
-            & $script
+            gen_debug
         }
     }
 
     finally {
         $watcher.Dispose()
-        Remove-Module dev
         Write-Warning "FileSystemWatcher Removed"
+        remove
     }
 }
 Set-Alias -Name watch -Value Watch-CMake
