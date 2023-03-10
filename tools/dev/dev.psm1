@@ -136,7 +136,6 @@ function Watch-CMake {
     $notify = [IO.NotifyFilters]::LastWrite
     $change = [IO.WatcherChangeTypes]::Changed
     $timeout = 1000
-    $script = $(Split-Path $MyInvocation.PSScriptRoot | Join-Path -ChildPath "tools" -AdditionalChildPath "gen_debug.ps1")
 
     try {
         Write-Warning "FileSystemWatcher is monitoring $folder\$filter"
