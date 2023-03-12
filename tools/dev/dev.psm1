@@ -1,3 +1,5 @@
+# VS
+
 function Initialize-DevShell64 {
     $vswhere = "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
     $vspath = & $vswhere -products * -latest -property installationPath
@@ -11,6 +13,8 @@ function Initialize-DevShell32 {
     & "$vspath\Common7\Tools\Launch-VsDevShell.ps1" -HostArch x86 -Arch x86 -SkipAutomaticLocation
 }
 Set-Alias -Name dev32 -Value Initialize-DevShell32
+
+# NUGET
 
 function Install-WebView2 {
     nuget install Microsoft.Web.WebView2 -OutputDirectory external
@@ -26,63 +30,6 @@ function Install-ImplementationLibrary {
     nuget install Microsoft.Windows.ImplementationLibrary -OutputDirectory external
 }
 Set-Alias -Name wil -Value Install-ImplementationLibrary
-
-function Set-Debug {
-    $build = Split-Path $MyInvocation.PSScriptRoot | Join-Path -ChildPath "build" -AdditionalChildPath "Debug"
-    cmake --no-warn-unused-cli `
-        -B"$build" `
-        -GNinja `
-        -DCMAKE_EXPORT_COMPILE_COMMANDS=1 `
-        -DCMAKE_BUILD_TYPE="Debug" `
-        -DCMAKE_C_COMPILER="clang" `
-        -DCMAKE_CXX_COMPILER="clang++"
-}
-Set-Alias -Name gen_debug -Value Set-Debug
-
-function Build-Debug {
-    $build = Split-Path $MyInvocation.PSScriptRoot | Join-Path -ChildPath "build" -AdditionalChildPath "Debug"
-    cmake --build "$build"
-}
-Set-Alias -Name build_debug -Value Build-Debug
-
-function Set-Release {
-    $build = Split-Path $MyInvocation.PSScriptRoot | Join-Path -ChildPath "build" -AdditionalChildPath "Release"
-    cmake --no-warn-unused-cli `
-        -B"$build" `
-        -GNinja `
-        -DCMAKE_EXPORT_COMPILE_COMMANDS=1 `
-        -DCMAKE_BUILD_TYPE="Release" `
-        -DCMAKE_C_COMPILER="clang" `
-        -DCMAKE_CXX_COMPILER="clang++"
-}
-Set-Alias -Name gen_release -Value Set-Release
-
-function Build-Release {
-    $build = Split-Path $MyInvocation.PSScriptRoot | Join-Path -ChildPath "build" -AdditionalChildPath "Release"
-    cmake --build "$build"
-}
-Set-Alias -Name build_release -Value Build-Release
-
-function Build-Preset {
-    cmake --preset $args
-    cmake --build --preset $args
-}
-Set-Alias -Name preset -Value Build-WebView2Preset
-
-function Build-ReleaseNotes {
-    New-Item -Path notes.md
-    Write-Output "Changes:`n" | Add-Content -Path notes.md
-    git --no-pager log -5 --oneline --no-decorate | Add-Content -Path notes.md
-}
-Set-Alias -Name notes -Value Build-ReleaseNotes
-
-function Export-Release {
-    $build = Split-Path $MyInvocation.PSScriptRoot | Join-Path -ChildPath "build" -AdditionalChildPath "Release"
-    $programs = "C:\Programs\Gooey"
-    if (!(Test-Path $programs)) { New-Item -ItemType Directory $programs }
-    Copy-Item "$build\Gooey.exe" -Destination "$programs\Gooey.exe" -Force
-}
-Set-Alias -Name export -Value Export-Release
 
 function Build-Libs {
     $CPPWINRT_VER = "2.0.230225.1"
@@ -130,6 +77,24 @@ function Build-Libs {
 }
 Set-Alias -Name libs -Value Build-Libs
 
+# CMAKE
+
+function Invoke-Generation {
+    cmake --preset $args
+}
+Set-Alias -Name generate -Value Invoke-Generation
+
+function Invoke-Build {
+    cmake --build --preset $args
+}
+Set-Alias -Name build -Value Invoke-Build
+
+function Invoke-Preset {
+    cmake --preset $args
+    cmake --build --preset $args
+}
+Set-Alias -Name preset -Value Invoke-Preset
+
 function Watch-CMake {
     $folder = Split-Path $MyInvocation.PSScriptRoot
     $filter = "CMakeLists.txt"
@@ -158,6 +123,23 @@ function Watch-CMake {
     }
 }
 Set-Alias -Name watch -Value Watch-CMake
+
+# MISC
+
+function Build-ReleaseNotes {
+    New-Item -Path notes.md
+    Write-Output "Changes:`n" | Add-Content -Path notes.md
+    git --no-pager log -5 --oneline --no-decorate | Add-Content -Path notes.md
+}
+Set-Alias -Name notes -Value Build-ReleaseNotes
+
+function Export-Release {
+    $build = Split-Path $MyInvocation.PSScriptRoot | Join-Path -ChildPath "build" -AdditionalChildPath "Release"
+    $programs = "C:\Programs\Gooey"
+    if (!(Test-Path $programs)) { New-Item -ItemType Directory $programs }
+    Copy-Item "$build\Gooey.exe" -Destination "$programs\Gooey.exe" -Force
+}
+Set-Alias -Name export -Value Export-Release
 
 function Remove-DevModule {
     Remove-Module dev

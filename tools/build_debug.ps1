@@ -1,2 +1,2 @@
 Import-Module $PSScriptRoot\dev
-gen_debug && build_debug && remove
+preset debug && remove
