@@ -10,6 +10,7 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance,
                       PWSTR pcmdline, int ncmdshow) {
+
   SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
   SetEnvironmentVariableW(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR", L"0");
   SetEnvironmentVariableW(L"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
@@ -35,7 +36,9 @@ int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance,
   wcex.lpszClassName = L"window";
   wcex.hIcon = icon;
   wcex.hIconSm = icon;
+
   RegisterClassExW(&wcex);
+
   HWND hwnd = CreateWindowExW(
       0, L"window", L"Gooey", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
       CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, histance, nullptr);
