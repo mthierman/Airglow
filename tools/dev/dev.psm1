@@ -82,14 +82,14 @@ Set-Alias -Name libs -Value Build-Libs
 function Invoke-GenerationGraphViz {
     cmake --preset $args --graphviz=build/graphviz/$args.dot
 }
-Set-Alias -Name generate -Value Invoke-Generation
 
-Build-GraphVizSvg {
+function Build-GraphVizSvg {
     dot -Tsvg $args.dot > $args.svg
 }
 
 function Invoke-Generation {
     cmake --preset $args
+    Copy-Item "build/$args/compile_commands.json" -Destination "build"
 }
 Set-Alias -Name generate -Value Invoke-Generation
 
@@ -99,8 +99,9 @@ function Invoke-Build {
 Set-Alias -Name build -Value Invoke-Build
 
 function Invoke-Preset {
-    cmake --preset $args --graphviz=build/graphviz/$args.dot
+    cmake --preset $args
     cmake --build --preset $args
+    Copy-Item "build/$args/compile_commands.json" -Destination "build"
 }
 Set-Alias -Name preset -Value Invoke-Preset
 
@@ -114,14 +115,14 @@ function Watch-CMake {
     try {
         Write-Warning "FileSystemWatcher is monitoring $folder\$filter"
         Write-Warning "Running initial generation..."
-        gen_debug
+        generate Debug
         $watcher = New-Object -TypeName IO.FileSystemWatcher -ArgumentList $folder, $filter -Property @{
             IncludeSubdirectories = $false
             NotifyFilter          = $notify
         }
         while ($true) {
             if ($watcher.WaitForChanged($change, $timeout).TimedOut) { continue }
-            gen_debug
+            generate Debug
         }
     }
 

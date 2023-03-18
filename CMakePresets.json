@@ -7,7 +7,7 @@
     },
     "configurePresets": [
         {
-            "name": "debug",
+            "name": "Debug",
             "displayName": "Debug",
             "description": "Debug",
             "generator": "Ninja",
@@ -20,7 +20,7 @@
             "environment": {}
         },
         {
-            "name": "release",
+            "name": "Release",
             "displayName": "Release",
             "description": "Release",
             "generator": "Ninja",
@@ -35,16 +35,16 @@
     ],
     "buildPresets": [
         {
-            "name": "debug",
-            "configurePreset": "debug",
+            "name": "Debug",
+            "configurePreset": "Debug",
             "displayName": "Debug",
             "description": "Debug",
             "configuration": "Debug",
             "jobs": 4
         },
         {
-            "name": "release",
-            "configurePreset": "release",
+            "name": "Release",
+            "configurePreset": "Release",
             "displayName": "Release",
             "description": "Release",
             "configuration": "Release",
