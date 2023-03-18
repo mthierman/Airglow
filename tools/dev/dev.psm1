@@ -79,6 +79,15 @@ Set-Alias -Name libs -Value Build-Libs
 
 # CMAKE
 
+function Invoke-GenerationGraphViz {
+    cmake --preset $args --graphviz=build/graphviz/$args.dot
+}
+Set-Alias -Name generate -Value Invoke-Generation
+
+Build-GraphVizSvg {
+    dot -Tsvg $args.dot > $args.svg
+}
+
 function Invoke-Generation {
     cmake --preset $args
 }
@@ -90,7 +99,7 @@ function Invoke-Build {
 Set-Alias -Name build -Value Invoke-Build
 
 function Invoke-Preset {
-    cmake --preset $args
+    cmake --preset $args --graphviz=build/graphviz/$args.dot
     cmake --build --preset $args
 }
 Set-Alias -Name preset -Value Invoke-Preset
