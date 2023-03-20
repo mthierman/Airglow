@@ -143,8 +143,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam) {
     break;
   case WM_GETMINMAXINFO: {
     LPMINMAXINFO lp = (LPMINMAXINFO)lparam;
-    lp->ptMinTrackSize.x = 600;
-    lp->ptMinTrackSize.y = 600;
+    lp->ptMinTrackSize.x = 250;
+    lp->ptMinTrackSize.y = 0;
   } break;
   case WM_KEYDOWN:
     if (wparam == VK_F1) {

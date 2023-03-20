@@ -1,4 +1,4 @@
-<img src="./data/group.png" width="150" height="auto">
+<img src="./data/group.png">
 
 # Minimal WebView2 browser for web apps.
 
