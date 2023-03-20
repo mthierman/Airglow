@@ -1,7 +1,3 @@
 <img src="./data/group.png">
 
-# Minimal WebView2 browser for web apps.
-
-## System Requirements:
-
-    - Windows 11
+# Minimal web viewer for Windows 11
