@@ -2,4 +2,4 @@
 
 # Minimal web viewer for Windows 11
 
-<img src="./data/test.webp" width="500">
+<img src="./data/loop.webp" width="500">
