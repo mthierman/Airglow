@@ -38,17 +38,13 @@
             "name": "Debug",
             "configurePreset": "Debug",
             "displayName": "Debug",
-            "description": "Debug",
-            "configuration": "Debug",
-            "jobs": 4
+            "configuration": "Debug"
         },
         {
             "name": "Release",
             "configurePreset": "Release",
             "displayName": "Release",
-            "description": "Release",
-            "configuration": "Release",
-            "jobs": 4
+            "configuration": "Release"
         }
     ]
 }
