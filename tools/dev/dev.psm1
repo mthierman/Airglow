@@ -32,9 +32,9 @@ function Install-ImplementationLibrary {
 Set-Alias -Name wil -Value Install-ImplementationLibrary
 
 function Build-Libs {
-    $CPPWINRT_VER = "1.0.1661.34"
+    $WEBVIEW_VER = "1.0.1661.34"
+    $CPPWINRT_VER = "2.0.230225.1"
     $WIL_VER = "1.0.230202.1"
-    $WEBVIEW_VER = "1.0.1587.40"
 
     $cppwinrt_params = @{
         "-ChildPath"           = "external"
