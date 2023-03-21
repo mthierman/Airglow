@@ -22,7 +22,6 @@ jobs:
         if: steps.nuget-cache.outputs.cache-hit != 'true'
         run: |
           nuget install Microsoft.Web.WebView2 -OutputDirectory external
-          nuget install Microsoft.Windows.CppWinRT -OutputDirectory external
           nuget install Microsoft.Windows.ImplementationLibrary -OutputDirectory external
       - name: Build
         run: |

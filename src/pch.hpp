@@ -2,7 +2,8 @@
 #include "resource.hpp"
 #include <dwmapi.h>
 #include <guiddef.h>
-#include <webview2/WebView2.h>
+
+#include <WebView2.h>
 
 #include <wil/com.h>
 #include <wil/cppwinrt.h>
