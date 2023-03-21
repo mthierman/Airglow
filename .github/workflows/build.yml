@@ -24,8 +24,12 @@ jobs:
         run: |
           if ("${{ github.ref_name }}" -eq "main") {$title = "Stable"; $tag = "stable"}
           if ("${{ github.ref_name }}" -eq "dev") {$title = "Development"; $tag = "development"}
-          .\tools\gh_release.ps1
-          $path = Get-Item ".\build\Release\Gooey.exe"
-          $notes = Get-Item ".\notes.md"
+          cmake --preset Release
+          cmake --build --preset Release
+          New-Item -Path notes.md
+          Write-Output "Changes:`n" | Add-Content -Path notes.md
+          git --no-pager log -5 --oneline --no-decorate | Add-Content -Path notes.md
+          $path = Get-Item "build\Release\Gooey.exe"
+          $notes = Get-Item "notes.md"
           gh release delete $tag -y
           gh release create $tag $path -F $notes -t $title
