@@ -1,2 +1,2 @@
 Import-Module $PSScriptRoot\dev
-preset release && notes && remove
+preset Release && notes && remove
