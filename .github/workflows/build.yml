@@ -14,25 +14,30 @@ jobs:
         uses: actions/checkout@v3
       - name: Restore nuget
         if: steps.nuget-cache.outputs.cache-hit != 'true'
-        run: tools\packages.ps1 && tools\libs.ps1
+        run: |
+          nuget install Microsoft.Web.WebView2 -OutputDirectory external
+          nuget install Microsoft.Windows.CppWinRT -OutputDirectory external
+          nuget install Microsoft.Windows.ImplementationLibrary -OutputDirectory external
       - name: Cache
         id: nuget-cache
         uses: actions/cache@v3
         with:
           path: external
           key: nuget-cache-${{ hashFiles('**/CMakeLists.txt') }}
+      - name: Build
+        run: |
+          cmake --preset Release
+          cmake --build --preset Release
+          New-Item -Path build\Release\notes.md
+          Write-Output "Changes:`n" | Add-Content -Path build\Release\notes.md
+          git --no-pager log -5 --oneline --no-decorate | Add-Content -Path build\Release\notes.md
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if ("${{ github.ref_name }}" -eq "main") {$title = "Stable"; $tag = "stable"}
           if ("${{ github.ref_name }}" -eq "dev") {$title = "Development"; $tag = "development"}
-          cmake --preset Release
-          cmake --build --preset Release
-          New-Item -Path notes.md
-          Write-Output "Changes:`n" | Add-Content -Path notes.md
-          git --no-pager log -5 --oneline --no-decorate | Add-Content -Path notes.md
           $path = Get-Item "build\Release\Gooey.exe"
-          $notes = Get-Item "notes.md"
+          $notes = Get-Item "build\Release\notes.md"
           gh release delete $tag -y
           gh release create $tag $path -F $notes -t $title
