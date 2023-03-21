@@ -3,6 +3,9 @@ name: Build
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   Build:
     runs-on: windows-latest
