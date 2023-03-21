@@ -35,9 +35,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           $exe = Get-Item "build/Release/Gooey.exe"
-          $version = Get-Item "build/Release/version.txt
+          $version = Get-Item "build/Release/version.txt | Out-String
           $notes = Get-Item "build/Release/notes.txt"
-          if ("${{ github.ref_name }}" -eq "main") {$title = "Gooey " + $version; $tag = $version}
+          if ("${{ github.ref_name }}" -eq "main") {$title = "Stable $version"; $tag = "$version"}
           if ("${{ github.ref_name }}" -eq "dev") {$title = "Development"; $tag = "development"}
           gh release delete $tag -y
           gh release create $tag $path -F $notes -t $title
