@@ -1,4 +1,4 @@
-name: Build
+name: Gooey Release
 
 on:
   workflow_dispatch:
@@ -9,19 +9,16 @@ permissions:
   contents: write
 
 jobs:
-  Build:
+  build:
     runs-on: windows-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Cache
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
         id: nuget-cache
-        uses: actions/cache@v3
         with:
           path: external
           key: nuget-cache-${{ hashFiles('**/CMakeLists.txt') }}
-      - name: Release
-        env:
+      - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cmake --preset deploy
