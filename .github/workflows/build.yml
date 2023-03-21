@@ -12,18 +12,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Restore nuget
-        if: steps.nuget-cache.outputs.cache-hit != 'true'
-        run: |
-          nuget install Microsoft.Web.WebView2 -OutputDirectory external
-          nuget install Microsoft.Windows.CppWinRT -OutputDirectory external
-          nuget install Microsoft.Windows.ImplementationLibrary -OutputDirectory external
       - name: Cache
         id: nuget-cache
         uses: actions/cache@v3
         with:
           path: external
           key: nuget-cache-${{ hashFiles('**/CMakeLists.txt') }}
+      - name: Restore nuget
+        if: steps.nuget-cache.outputs.cache-hit != 'true'
+        run: |
+          nuget install Microsoft.Web.WebView2 -OutputDirectory external
+          nuget install Microsoft.Windows.CppWinRT -OutputDirectory external
+          nuget install Microsoft.Windows.ImplementationLibrary -OutputDirectory external
       - name: Build
         run: |
           cmake --preset Release
