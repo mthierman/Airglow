@@ -4,7 +4,6 @@ set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 project(Gooey VERSION 0.0.1 LANGUAGES CXX)
 
 set(WEBVIEW "Microsoft.Web.WebView2.1.0.1661.34")
-set(CPPWINRT "Microsoft.Windows.CppWinRT.2.0.230225.1")
 set(WIL "Microsoft.Windows.ImplementationLibrary.1.0.230202.1")
 set(LIBS ${CMAKE_SOURCE_DIR}/external)
 
@@ -16,8 +15,9 @@ add_executable(${PROJECT_NAME} WIN32 ${CMAKE_CURRENT_SOURCE_DIR}/src/gooey.cpp $
 
 target_precompile_headers(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/pch.hpp)
 
-# target_include_directories(${PROJECT_NAME} PUBLIC ${LIBS})
 target_include_directories(${PROJECT_NAME} PUBLIC ${LIBS}/${WEBVIEW}/build/native/include)
 target_include_directories(${PROJECT_NAME} PUBLIC ${LIBS}/${WIL}/include)
 target_link_libraries(${PROJECT_NAME} ${LIBS}/${WEBVIEW}/build/native/x64/WebView2LoaderStatic.lib)
 target_link_libraries(${PROJECT_NAME} dwmapi.lib)
+
+file(WRITE ${CMAKE_BINARY_DIR}/version.txt "v${PROJECT_VERSION}")
