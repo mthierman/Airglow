@@ -101,7 +101,7 @@ Set-Alias -Name build -Value Invoke-Build
 function Invoke-Preset {
     cmake --preset $args
     cmake --build --preset $args
-    Copy-Item "build/$args/compile_commands.json" -Destination "build"
+    # Copy-Item "build/$args/compile_commands.json" -Destination "build"
 }
 Set-Alias -Name preset -Value Invoke-Preset
 
