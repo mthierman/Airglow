@@ -24,7 +24,7 @@ jobs:
         run: |
           if ("${{ github.ref_name }}" -eq "main") {$title = "Stable"; $tag = "stable"}
           if ("${{ github.ref_name }}" -eq "dev") {$title = "Development"; $tag = "development"}
-          .\scripts\gh_release.ps1
+          .\tools\gh_release.ps1
           $path = Get-Item ".\build\Release\Gooey.exe"
           $notes = Get-Item ".\notes.md"
           gh release delete $tag -y
