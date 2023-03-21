@@ -155,3 +155,39 @@ function Remove-DevModule {
     Remove-Module dev
 }
 Set-Alias -Name remove -Value Remove-DevModule
+
+function New-GitHubRelease {
+    cmake --preset Release
+    cmake --build --preset Release
+    (Get-Date | Out-String).trim() > build/Release/date.txt
+    git --no-pager log -5 --oneline --no-decorate > build/Release/changes.txt
+
+    $version = Get-Content "build/Release/version.txt"
+    $date = Get-Content "build/Release/date.txt"
+    $changes = Get-Item "build/Release/changes.txt"
+    $exe = Get-Item "build/Release/Gooey.exe"
+
+    # if ("${{ github.ref_name }}" -eq "main") {
+    #     $title = "Gooey $version"
+    #     gh release delete $version -y
+    #     gh release create $version $exe --notes-file $changes -t $title
+    # }
+    # if ("${{ github.ref_name }}" -eq "dev") {
+    #     $title = "Gooey Nightly"
+    #     gh release delete nightly -y
+    #     gh release create nightly $exe --notes-file $changes -t $title --prerelease
+    # }
+}
+
+function Remove-BuildFolder {
+    Remove-Item build/ -Recurse -Force
+}
+
+function Export-ReleaseBuild {
+    Copy-Item 'build/Release/Gooey.exe' -Destination 'C:/programs/Gooey/Gooey.exe' -Force
+}
+
+function Install-NugetPackages {
+    nuget install Microsoft.Web.WebView2 -OutputDirectory external
+    nuget install Microsoft.Windows.ImplementationLibrary -OutputDirectory external
+}
