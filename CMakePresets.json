@@ -21,6 +21,16 @@
                 "CMAKE_BUILD_TYPE": "release"
             },
             "environment": {}
+        },
+        {
+            "name": "deploy",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/Release",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "clang++",
+                "CMAKE_BUILD_TYPE": "release"
+            },
+            "environment": {}
         }
     ],
     "buildPresets": [
@@ -31,6 +41,10 @@
         {
             "name": "default_release",
             "configurePreset": "default_release"
+        },
+        {
+            "name": "deploy",
+            "configurePreset": "deploy"
         }
     ]
 }

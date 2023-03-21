@@ -24,10 +24,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cmake --preset release
-          cmake --build --preset release
-          (Get-Date | Out-String).trim() >> build/Release/date.txt
-          git --no-pager log -5 --oneline --no-decorate >> build/Release/changes.txt
+          cmake --preset deploy
+          cmake --build --preset deploy
+          (Get-Date | Out-String).trim() > build/Release/date.txt
+          git --no-pager log -5 --oneline --no-decorate > build/Release/changes.txt
 
           $version = Get-Content "build/Release/version.txt"
           $date = Get-Content "build/Release/date.txt"
