@@ -16,7 +16,7 @@ jobs:
         id: nuget-cache
         uses: actions/cache@v3
         with:
-          path: packages
+          path: external
           key: nuget-cache-${{ hashFiles('**/CMakeLists.txt') }}
       - name: Release
         env:
