@@ -8,10 +8,9 @@ void WebViewNavigate(wil::com_ptr<ICoreWebView2> wv) {
   LPWSTR *szArglist;
   int nArgs;
   int i;
-  szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
+  szArglist = CommandLineToArgvW(commandline, &nArgs);
   if (0 == szArglist[1]) {
     wv->Navigate(L"about:blank");
-    // webview->Navigate(L"https://google.com/");
   }
   for (i = 1; i < nArgs; i++) {
     wv->Navigate(szArglist[i]);
