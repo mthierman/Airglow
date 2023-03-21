@@ -35,7 +35,7 @@ jobs:
           $exe = Get-Item "build/Release/Gooey.exe"
           $version = Get-Item "build/notes.md"
           $notes = Get-Item "build/Release/notes.md"
-          if ("${{ github.ref_name }}" -eq "main") {$title = "Stable"; $tag = $version}
+          if ("${{ github.ref_name }}" -eq "main") {$title = "Gooey " + $version; $tag = $version}
           if ("${{ github.ref_name }}" -eq "dev") {$title = "Development"; $tag = "development"}
           gh release delete $tag -y
           gh release create $tag $path -F $notes -t $title
