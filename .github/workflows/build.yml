@@ -20,17 +20,12 @@ jobs:
         with:
           path: external
           key: nuget-cache-${{ hashFiles('**/CMakeLists.txt') }}
-      - name: Restore nuget
-        if: steps.nuget-cache.outputs.cache-hit != 'true'
-        run: |
-          nuget install Microsoft.Web.WebView2 -OutputDirectory external
-          nuget install Microsoft.Windows.ImplementationLibrary -OutputDirectory external
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cmake --preset Release
-          cmake --build --preset Release
+          cmake --preset release
+          cmake --build --preset release
           (Get-Date | Out-String).trim() > build/Release/date.txt
           git --no-pager log -5 --oneline --no-decorate > build/Release/changes.txt
 
