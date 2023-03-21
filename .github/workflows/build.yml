@@ -25,19 +25,27 @@ jobs:
         run: |
           nuget install Microsoft.Web.WebView2 -OutputDirectory external
           nuget install Microsoft.Windows.ImplementationLibrary -OutputDirectory external
-      - name: Build
-        run: |
-          cmake --preset Release
-          cmake --build --preset Release
-          git --no-pager log -5 --oneline --no-decorate >> build/Release/notes.txt
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          $exe = Get-Item "build/Release/Gooey.exe"
-          $version = Get-Item "build/Release/version.txt | Out-String
+          cmake --preset Release
+          cmake --build --preset Release
+          (Get-Date | Out-String).trim() > build/Release/date.txt
+          git --no-pager log -5 --oneline --no-decorate > build/Release/changes.txt
+
+          $version = Get-Content "build/Release/version.txt"
+          $date = Get-Content "build/Release/Date.txt"
           $notes = Get-Item "build/Release/notes.txt"
-          if ("${{ github.ref_name }}" -eq "main") {$title = "Stable $version"; $tag = "$version"}
-          if ("${{ github.ref_name }}" -eq "dev") {$title = "Development"; $tag = "development"}
-          gh release delete $tag -y
-          gh release create $tag $path -F $notes -t $title
+          $exe = Get-Item "build/Release/Gooey.exe"
+
+          if ("${{ github.ref_name }}" -eq "main") {
+            $title = "Gooey $version"
+            gh release delete $version -y
+            gh release create $version $exe --notes-file $notes -t $title
+          }
+          if ("${{ github.ref_name }}" -eq "dev") {
+            $title = "Gooey Nightly"
+            gh release delete nightly -y
+            gh release create nightly $exe --notes-file $notes -t $title
+          }
