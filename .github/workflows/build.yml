@@ -3,31 +3,21 @@ name: Build
 on:
   workflow_dispatch:
 
-permissions:
-  contents: write
-
-defaults:
-  run:
-    shell: pwsh
-
 jobs:
   Build:
     runs-on: windows-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
       - name: Restore nuget
         if: steps.nuget-cache.outputs.cache-hit != 'true'
         run: .\scripts\packages.ps1
-
       - name: Cache
         id: nuget-cache
         uses: actions/cache@v3
         with:
           path: packages
-          key: ${{ runner.os }}-${{ matrix.node-version }}-nuget-cache-${{ hashFiles('**/CMakeLists.txt') }}
-
+          key: nuget-cache-${{ hashFiles('**/CMakeLists.txt') }}
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
