@@ -1,3 +1,4 @@
+#include <intsafe.h>
 namespace Gooey {
 
 using namespace Microsoft::WRL;
@@ -19,8 +20,14 @@ void WebViewNavigate(wil::com_ptr<ICoreWebView2> wv) {
 }
 
 void SetMica(HWND hwnd) {
-  MARGINS m = {-1};
-  DwmExtendFrameIntoClientArea(hwnd, &m);
+  // MARGINS m = {-1};
+  // HRESULT hr = S_OK;
+  // hr = DwmExtendFrameIntoClientArea(hwnd, &m);
+  // if (SUCCEEDED(hr)) {
+  //   auto mica = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
+  //   DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &mica,
+  //                         sizeof(&mica));
+  // }
   auto mica = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
   DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &mica, sizeof(&mica));
 }

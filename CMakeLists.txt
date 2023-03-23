@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.25)
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
+
 project(Gooey VERSION 0.0.1 LANGUAGES CXX)
 
 set(LIBS ${CMAKE_SOURCE_DIR}/external)
@@ -20,5 +22,5 @@ add_executable(${PROJECT_NAME} WIN32 ${CMAKE_CURRENT_SOURCE_DIR}/src/gooey.cpp $
 target_precompile_headers(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/pch.hpp)
 target_include_directories(${PROJECT_NAME} PUBLIC ${LIBS}/${WEBVIEW}/build/native/include)
 target_include_directories(${PROJECT_NAME} PUBLIC ${LIBS}/${WIL}/include)
-target_link_libraries(${PROJECT_NAME} ${LIBS}/${WEBVIEW}/build/native/x64/WebView2LoaderStatic.lib)
-target_link_libraries(${PROJECT_NAME} dwmapi.lib)
+target_link_libraries(${PROJECT_NAME} PUBLIC ${LIBS}/${WEBVIEW}/build/native/x64/WebView2LoaderStatic.lib)
+target_link_libraries(${PROJECT_NAME} PUBLIC dwmapi.lib)
