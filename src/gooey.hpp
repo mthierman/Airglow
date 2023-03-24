@@ -27,6 +27,7 @@ void SetMica(HWND hwnd) {
 
 void ExtendFrame(HWND hwnd) {
   MARGINS m = {-1};
+  // MARGINS m = {0, 0, -500, -1};
   HRESULT hr = S_OK;
   hr = DwmExtendFrameIntoClientArea(hwnd, &m);
   if (SUCCEEDED(hr)) {
@@ -34,7 +35,15 @@ void ExtendFrame(HWND hwnd) {
   }
 }
 
-void SetDarkMode(HWND hWnd) {
+void SetTitlebar(HWND hwnd, int dark) {
+  // auto color = 0x00FFFFFF;
+  auto color = dark;
+  HRESULT hr = S_OK;
+  hr = DwmSetWindowAttribute(hwnd, DWMWINDOWATTRIBUTE::DWMWA_CAPTION_COLOR,
+                             &color, sizeof(color));
+}
+
+void SetDarkMode(HWND hwnd) {
   auto dwmtrue = TRUE;
   auto dwmfalse = FALSE;
   auto settings = UISettings();
@@ -42,12 +51,15 @@ void SetDarkMode(HWND hWnd) {
   auto modecheck =
       (((5 * foreground.G) + (2 * foreground.R) + foreground.B) > (8 * 128));
   if (modecheck) {
-    DwmSetWindowAttribute(hWnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmtrue,
+    DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmtrue,
                           sizeof(dwmtrue));
+
+    SetTitlebar(hwnd, 0x00000000);
   }
   if (!modecheck) {
-    DwmSetWindowAttribute(hWnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmfalse,
+    DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmfalse,
                           sizeof(dwmfalse));
+    SetTitlebar(hwnd, 0x00FFFFFF);
   }
 }
 
