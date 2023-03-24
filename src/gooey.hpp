@@ -19,16 +19,19 @@ void WebViewNavigate(wil::com_ptr<ICoreWebView2> wv) {
 }
 
 void SetMica(HWND hwnd) {
-  // MARGINS m = {-1};
-  // HRESULT hr = S_OK;
-  // hr = DwmExtendFrameIntoClientArea(hwnd, &m);
-  // if (SUCCEEDED(hr)) {
-  //   auto mica = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
-  //   DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &mica,
-  //                         sizeof(&mica));
-  // }
+  HRESULT hr = S_OK;
   auto mica = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
-  DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &mica, sizeof(&mica));
+  hr = DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &mica,
+                             sizeof(&mica));
+}
+
+void ExtendFrame(HWND hwnd) {
+  MARGINS m = {-1};
+  HRESULT hr = S_OK;
+  hr = DwmExtendFrameIntoClientArea(hwnd, &m);
+  if (SUCCEEDED(hr)) {
+    SetMica(hwnd);
+  }
 }
 
 void SetDarkMode(HWND hWnd) {

@@ -49,7 +49,7 @@ int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance,
   }
 
   SetDarkModeTitle();
-  SetMica(hwnd);
+  ExtendFrame(hwnd);
   SetDarkMode(hwnd);
   ShowWindow(hwnd, ncmdshow);
 
