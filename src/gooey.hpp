@@ -37,19 +37,24 @@ void ExtendFrame(HWND hwnd) {
 void SetTitlebar(HWND hwnd, int style) {
   auto lightText = 0x00000000;
   auto darkText = 0x00ffffff;
+  auto darkBorder = 0x003E3E3E;
+  auto lightBorder = 0x00D7D7D7;
   HRESULT hr = S_OK;
   HRESULT hr2 = S_OK;
   HRESULT hr3 = S_OK;
   hr = DwmSetWindowAttribute(hwnd, DWMWINDOWATTRIBUTE::DWMWA_CAPTION_COLOR,
                              &style, sizeof(style));
-  hr2 = DwmSetWindowAttribute(hwnd, DWMWINDOWATTRIBUTE::DWMWA_BORDER_COLOR,
-                              &style, sizeof(style));
-  if (style == lightText) {
+
+  if (style == 0x002B2B2B) {
     hr3 = DwmSetWindowAttribute(hwnd, DWMWINDOWATTRIBUTE::DWMWA_TEXT_COLOR,
                                 &darkText, sizeof(darkText));
+    hr2 = DwmSetWindowAttribute(hwnd, DWMWINDOWATTRIBUTE::DWMWA_BORDER_COLOR,
+                                &darkBorder, sizeof(darkBorder));
   } else {
     hr3 = DwmSetWindowAttribute(hwnd, DWMWINDOWATTRIBUTE::DWMWA_TEXT_COLOR,
                                 &lightText, sizeof(lightText));
+    hr2 = DwmSetWindowAttribute(hwnd, DWMWINDOWATTRIBUTE::DWMWA_BORDER_COLOR,
+                                &lightBorder, sizeof(lightBorder));
   }
 }
 
@@ -64,12 +69,12 @@ void SetDarkMode(HWND hwnd) {
     DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmtrue,
                           sizeof(dwmtrue));
 
-    SetTitlebar(hwnd, 0x00000000);
+    SetTitlebar(hwnd, 0x002B2B2B);
   }
   if (!modecheck) {
     DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmfalse,
                           sizeof(dwmfalse));
-    SetTitlebar(hwnd, 0x00FFFFFF);
+    SetTitlebar(hwnd, 0x00F9F9F9);
   }
 }
 
