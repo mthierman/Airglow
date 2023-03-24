@@ -19,7 +19,7 @@ void ExtendFrame(HWND hwnd) {
   hr = DwmExtendFrameIntoClientArea(hwnd, &m);
   if (SUCCEEDED(hr)) {
     SetMica(hwnd);
-    SetTitleBar(hwnd);
+    // SetTitleBar(hwnd);
     //   COLORREF DARK_COLOR = 0x00505050;
     //   BOOL SET_CAPTION_COLOR = SUCCEEDED(
     //       DwmSetWindowAttribute(hwnd,

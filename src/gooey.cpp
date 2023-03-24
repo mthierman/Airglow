@@ -1,5 +1,6 @@
 #include "gooey.hpp"
 #include <wingdi.h>
+#include <winuser.h>
 
 using namespace Gooey;
 
@@ -51,6 +52,7 @@ int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance,
   SetDarkMode(hwnd);
   SetDarkModeTitle();
   ExtendFrame(hwnd);
+  SetMica(hwnd);
   ShowWindow(hwnd, ncmdshow);
 
   CreateCoreWebView2EnvironmentWithOptions(
@@ -132,6 +134,18 @@ int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance,
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam) {
   switch (umsg) {
+  // case WM_PAINT: {
+  //   PAINTSTRUCT ps;
+  //   HDC hdc = BeginPaint(hwnd, &ps);
+  //   FillRect(hdc, &ps.rcPaint, (HBRUSH)GetStockObject(HOLLOW_BRUSH));
+  //   EndPaint(hwnd, &ps);
+  // } break;
+  // case WM_ERASEBKGND: {
+  //   PAINTSTRUCT ps;
+  //   HDC hdc = BeginPaint(hwnd, &ps);
+  //   FillRect(hdc, &ps.rcPaint, (HBRUSH)GetStockObject(HOLLOW_BRUSH));
+  //   EndPaint(hwnd, &ps);
+  // } break;
   case WM_SETTINGCHANGE: {
     SetDarkMode(hwnd);
   } break;

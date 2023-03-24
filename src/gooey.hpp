@@ -27,7 +27,6 @@ void SetMica(HWND hwnd) {
 
 void ExtendFrame(HWND hwnd) {
   MARGINS m = {-1};
-  // MARGINS m = {0, 0, -500, -1};
   HRESULT hr = S_OK;
   hr = DwmExtendFrameIntoClientArea(hwnd, &m);
   if (SUCCEEDED(hr)) {
@@ -35,12 +34,23 @@ void ExtendFrame(HWND hwnd) {
   }
 }
 
-void SetTitlebar(HWND hwnd, int dark) {
-  // auto color = 0x00FFFFFF;
-  auto color = dark;
+void SetTitlebar(HWND hwnd, int style) {
+  auto lightText = 0x00000000;
+  auto darkText = 0x00ffffff;
   HRESULT hr = S_OK;
+  HRESULT hr2 = S_OK;
+  HRESULT hr3 = S_OK;
   hr = DwmSetWindowAttribute(hwnd, DWMWINDOWATTRIBUTE::DWMWA_CAPTION_COLOR,
-                             &color, sizeof(color));
+                             &style, sizeof(style));
+  hr2 = DwmSetWindowAttribute(hwnd, DWMWINDOWATTRIBUTE::DWMWA_BORDER_COLOR,
+                              &style, sizeof(style));
+  if (style == lightText) {
+    hr3 = DwmSetWindowAttribute(hwnd, DWMWINDOWATTRIBUTE::DWMWA_TEXT_COLOR,
+                                &darkText, sizeof(darkText));
+  } else {
+    hr3 = DwmSetWindowAttribute(hwnd, DWMWINDOWATTRIBUTE::DWMWA_TEXT_COLOR,
+                                &lightText, sizeof(lightText));
+  }
 }
 
 void SetDarkMode(HWND hwnd) {
