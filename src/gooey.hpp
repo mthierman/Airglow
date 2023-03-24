@@ -1,4 +1,3 @@
-#include <intsafe.h>
 namespace Gooey {
 
 using namespace Microsoft::WRL;
