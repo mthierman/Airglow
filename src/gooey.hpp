@@ -128,4 +128,16 @@ void KeyFullscreen(HWND hwnd) {
                  (position.bottom - position.top), 0);
   }
 }
+
+void KeyMaximize(HWND hwnd) {
+  WINDOWPLACEMENT wp = {};
+  wp.length = sizeof(WINDOWPLACEMENT);
+  auto placement = GetWindowPlacement(hwnd, &wp);
+  if (wp.showCmd == SW_SHOWNORMAL) {
+    ShowWindow(hwnd, SW_MAXIMIZE);
+  }
+  if (wp.showCmd == SW_SHOWMAXIMIZED) {
+    ShowWindow(hwnd, SW_SHOWNORMAL);
+  }
+}
 } // namespace Gooey

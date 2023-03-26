@@ -1,5 +1,4 @@
 #include "gooey.hpp"
-#include <wingdi.h>
 #include <winuser.h>
 
 using namespace Gooey;
@@ -18,8 +17,9 @@ int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance,
   SetEnvironmentVariableW(L"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
                           L"--enable-features=OverlayScrollbar,"
                           L"msOverlayScrollbarWinStyle:scrollbar_mode/"
-                          L"full_mode,msOverlayScrollbarWinStyleAnimation "
-                          L"--disable-features=msWebOOUI,msPdfOOUI");
+                          L"full_mode,msOverlayScrollbarWinStyleAnimation,"
+                          L"msWebView2BrowserHitTransparent"
+                          L" --disable-features=msWebOOUI,msPdfOOUI");
 
   auto icon = (HICON)LoadImageW(histance, L"PROGRAM_ICON", IMAGE_ICON, 0, 0,
                                 LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
@@ -111,6 +111,9 @@ int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance,
                                 if ((std::wstring)message.get() == L"F11") {
                                   KeyFullscreen(hwnd);
                                 }
+                                if ((std::wstring)message.get() == L"F2") {
+                                  KeyMaximize(hwnd);
+                                }
                                 webview->PostWebMessageAsString(message.get());
                                 return S_OK;
                               })
@@ -134,6 +137,12 @@ int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance,
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam) {
   switch (umsg) {
+  case WM_SETFOCUS: {
+    if (wv_controller != nullptr) {
+      wv_controller->MoveFocus(COREWEBVIEW2_MOVE_FOCUS_REASON::
+                                   COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+    }
+  } break;
   case WM_SETTINGCHANGE: {
     SetDarkMode(hwnd);
   } break;
@@ -146,8 +155,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam) {
     break;
   case WM_GETMINMAXINFO: {
     LPMINMAXINFO lp = (LPMINMAXINFO)lparam;
-    lp->ptMinTrackSize.x = 250;
-    lp->ptMinTrackSize.y = 0;
+    lp->ptMinTrackSize.x = 300;
+    lp->ptMinTrackSize.y = 39;
   } break;
   case WM_KEYDOWN:
     if (wparam == VK_F1) {
@@ -155,6 +164,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam) {
     }
     if (wparam == VK_F11) {
       KeyFullscreen(hwnd);
+    }
+    if (wparam == VK_F2) {
+      KeyMaximize(hwnd);
     }
     break;
   case WM_CLOSE:
