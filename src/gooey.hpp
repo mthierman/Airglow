@@ -1,6 +1,3 @@
-#include <dwmapi.h>
-#include <winrt/impl/Windows.UI.ViewManagement.0.h>
-#include <winuser.h>
 namespace Gooey {
 
 using namespace Microsoft::WRL;
@@ -43,46 +40,31 @@ void SetDarkMode(HWND hwnd) {
   }
 }
 
-void PaintReset(HWND hwnd) {
-  InvalidateRect(hwnd, NULL, true);
-  PAINTSTRUCT ps;
-  HDC hdc = BeginPaint(hwnd, &ps);
-  RECT rect;
-  GetClientRect(hwnd, &rect);
-  auto mode = ModeCheck();
-  if (mode) {
-    FillRect(hdc, &rect, CreateSolidBrush(RGB(00, 00, 00)));
-  }
-  if (!mode) {
-    FillRect(hdc, &rect, CreateSolidBrush(RGB(255, 255, 255)));
-  }
-  // EndPaint(hwnd, &ps);
-}
+// void NewMica(HWND hwnd) {
+//   auto dwmtrue = TRUE;
+//   auto dwmfalse = FALSE;
+//   DwmSetWindowAttribute(hwnd, DWMWA_USE_HOSTBACKDROPBRUSH, &dwmtrue,
+//                         sizeof(dwmtrue));
+//   auto mica = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
+//   DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &mica,
+//   sizeof(&mica));
+// }
 
-void NewMica(HWND hwnd) {
-  auto dwmtrue = TRUE;
-  auto dwmfalse = FALSE;
-  DwmSetWindowAttribute(hwnd, DWMWA_USE_HOSTBACKDROPBRUSH, &dwmtrue,
-                        sizeof(dwmtrue));
-  auto mica = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
-  DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &mica, sizeof(&mica));
-}
+// void SetMica(HWND hwnd) {
+//   HRESULT hr = S_OK;
+//   auto mica = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
+//   hr = DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &mica,
+//                              sizeof(&mica));
+// }
 
-void SetMica(HWND hwnd) {
-  HRESULT hr = S_OK;
-  auto mica = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
-  hr = DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &mica,
-                             sizeof(&mica));
-}
-
-void ExtendFrame(HWND hwnd) {
-  MARGINS m = {-1};
-  HRESULT hr = S_OK;
-  hr = DwmExtendFrameIntoClientArea(hwnd, &m);
-  if (SUCCEEDED(hr)) {
-    SetMica(hwnd);
-  }
-}
+// void ExtendFrame(HWND hwnd) {
+//   MARGINS m = {-1};
+//   HRESULT hr = S_OK;
+//   hr = DwmExtendFrameIntoClientArea(hwnd, &m);
+//   if (SUCCEEDED(hr)) {
+//     SetMica(hwnd);
+//   }
+// }
 
 void KeyTop(HWND hwnd) {
   auto topmost = GetWindowLongPtrW(hwnd, GWL_EXSTYLE);

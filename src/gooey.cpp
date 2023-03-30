@@ -1,6 +1,4 @@
 #include "gooey.hpp"
-#include <wingdi.h>
-#include <winuser.h>
 
 using namespace Gooey;
 
@@ -35,10 +33,6 @@ int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance,
   wcex.hCursor = (HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR,
                                      0, 0, LR_SHARED);
   wcex.hbrBackground = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
-  // wcex.hbrBackground = NULL;
-  // auto settings = UISettings();
-  // auto accent = settings.GetColorValue(UIColorType::Accent);
-  // wcex.hbrBackground = CreateSolidBrush(RGB(accent.R, accent.G, accent.B));
   wcex.lpszMenuName = L"menu";
   wcex.lpszClassName = L"window";
   wcex.hIcon = icon;
@@ -56,7 +50,6 @@ int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance,
 
   SetDarkModeTitle();
   SetDarkMode(hwnd);
-  NewMica(hwnd);
   ShowWindow(hwnd, ncmdshow);
 
   CreateCoreWebView2EnvironmentWithOptions(
@@ -142,7 +135,18 @@ int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance,
 LRESULT CALLBACK WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam) {
   switch (umsg) {
   case WM_PAINT: {
-    PaintReset(hwnd);
+    InvalidateRect(hwnd, NULL, true);
+    PAINTSTRUCT ps;
+    HDC hdc = BeginPaint(hwnd, &ps);
+    RECT rect;
+    GetClientRect(hwnd, &rect);
+    auto mode = ModeCheck();
+    if (mode) {
+      FillRect(hdc, &rect, CreateSolidBrush(RGB(00, 00, 00)));
+    }
+    if (!mode) {
+      FillRect(hdc, &rect, CreateSolidBrush(RGB(255, 255, 255)));
+    }
   } break;
   case WM_SETFOCUS: {
     if (wv_controller != nullptr) {
@@ -151,7 +155,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam) {
     }
   } break;
   case WM_SETTINGCHANGE: {
-    PaintReset(hwnd);
+    InvalidateRect(hwnd, NULL, true);
     SetDarkMode(hwnd);
   } break;
   case WM_SIZE:
