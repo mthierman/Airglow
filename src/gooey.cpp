@@ -48,8 +48,8 @@ int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance,
     return 0;
   }
 
-  // SetDarkMode(hwnd);
-  // ExtendFrame(hwnd);
+  SetDarkModeTitle();
+  SetDarkMode(hwnd);
   ShowWindow(hwnd, ncmdshow);
 
   CreateCoreWebView2EnvironmentWithOptions(

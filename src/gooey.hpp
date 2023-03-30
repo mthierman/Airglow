@@ -3,37 +3,6 @@ namespace Gooey {
 using namespace Microsoft::WRL;
 using namespace winrt::Windows::UI::ViewManagement;
 
-// auto black = 0x00000000;
-// auto white = 0x00ffffff;
-
-// void SetLightTitle(HWND hwnd) {
-//   auto settings = UISettings();
-//   auto foreground = settings.GetColorValue(UIColorType::Foreground);
-//   auto background = settings.GetColorValue(UIColorType::Background);
-//   auto fg = RGB(foreground.R, foreground.G, foreground.B);
-//   auto bg = RGB(background.R, background.G, background.B);
-//   DwmSetWindowAttribute(hwnd, DWMWINDOWATTRIBUTE::DWMWA_CAPTION_COLOR, &bg,
-//                         sizeof(bg));
-//   DwmSetWindowAttribute(hwnd, DWMWINDOWATTRIBUTE::DWMWA_BORDER_COLOR, &bg,
-//                         sizeof(bg));
-//   DwmSetWindowAttribute(hwnd, DWMWINDOWATTRIBUTE::DWMWA_TEXT_COLOR, &fg,
-//                         sizeof(fg));
-// }
-
-// void SetDarkTitle(HWND hwnd) {
-//   auto settings = UISettings();
-//   auto foreground = settings.GetColorValue(UIColorType::Foreground);
-//   auto background = settings.GetColorValue(UIColorType::Background);
-//   auto fg = RGB(foreground.R, foreground.G, foreground.B);
-//   auto bg = RGB(background.R, background.G, background.B);
-//   DwmSetWindowAttribute(hwnd, DWMWINDOWATTRIBUTE::DWMWA_CAPTION_COLOR, &bg,
-//                         sizeof(bg));
-//   DwmSetWindowAttribute(hwnd, DWMWINDOWATTRIBUTE::DWMWA_BORDER_COLOR, &bg,
-//                         sizeof(bg));
-//   DwmSetWindowAttribute(hwnd, DWMWINDOWATTRIBUTE::DWMWA_TEXT_COLOR, &fg,
-//                         sizeof(fg));
-// }
-
 void SetDarkModeTitle() {
   enum PreferredAppMode { Default, AllowDark, ForceDark, ForceLight, Max };
   using fnSetPreferredAppMode =
@@ -56,9 +25,6 @@ void SetDarkMode(HWND hwnd) {
   auto dwmfalse = FALSE;
   auto settings = UISettings();
   auto foreground = settings.GetColorValue(UIColorType::Foreground);
-  auto background = settings.GetColorValue(UIColorType::Background);
-  auto fg = RGB(foreground.R, foreground.G, foreground.B);
-  auto bg = RGB(background.R, background.G, background.B);
   auto modecheck =
       (((5 * foreground.G) + (2 * foreground.R) + foreground.B) > (8 * 128));
   if (modecheck) {
@@ -69,13 +35,6 @@ void SetDarkMode(HWND hwnd) {
     DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmfalse,
                           sizeof(dwmfalse));
   }
-  DwmSetWindowAttribute(hwnd, DWMWINDOWATTRIBUTE::DWMWA_CAPTION_COLOR, &bg,
-                        sizeof(bg));
-  DwmSetWindowAttribute(hwnd, DWMWINDOWATTRIBUTE::DWMWA_BORDER_COLOR, &bg,
-                        sizeof(bg));
-  DwmSetWindowAttribute(hwnd, DWMWINDOWATTRIBUTE::DWMWA_TEXT_COLOR, &fg,
-                        sizeof(fg));
-  SetDarkModeTitle();
 }
 
 void SetMica(HWND hwnd) {
