@@ -1,5 +1,4 @@
 #include "gooey.hpp"
-#include <winuser.h>
 
 using namespace Gooey;
 
@@ -49,10 +48,8 @@ int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance,
     return 0;
   }
 
-  SetDarkMode(hwnd);
-  SetDarkModeTitle();
-  ExtendFrame(hwnd);
-  SetMica(hwnd);
+  // SetDarkMode(hwnd);
+  // ExtendFrame(hwnd);
   ShowWindow(hwnd, ncmdshow);
 
   CreateCoreWebView2EnvironmentWithOptions(
