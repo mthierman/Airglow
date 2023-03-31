@@ -1,1 +1,0 @@
-#define PROGRAM_ICON 1
