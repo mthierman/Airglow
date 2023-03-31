@@ -135,12 +135,12 @@ int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance,
 LRESULT CALLBACK WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam) {
   switch (umsg) {
   case WM_PAINT: {
-    InvalidateRect(hwnd, NULL, true);
     PAINTSTRUCT ps;
     HDC hdc = BeginPaint(hwnd, &ps);
     RECT rect;
-    GetClientRect(hwnd, &rect);
     auto mode = ModeCheck();
+    InvalidateRect(hwnd, nullptr, true);
+    GetClientRect(hwnd, &rect);
     if (mode) {
       FillRect(hdc, &rect, CreateSolidBrush(RGB(00, 00, 00)));
     }
@@ -174,11 +174,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam) {
     if (wparam == VK_F1) {
       KeyTop(hwnd);
     }
-    if (wparam == VK_F11) {
-      KeyFullscreen(hwnd);
-    }
     if (wparam == VK_F2) {
       KeyMaximize(hwnd);
+    }
+    if (wparam == VK_F11) {
+      KeyFullscreen(hwnd);
     }
     break;
   case WM_CLOSE:

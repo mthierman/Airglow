@@ -40,31 +40,21 @@ void SetDarkMode(HWND hwnd) {
   }
 }
 
-// void NewMica(HWND hwnd) {
-//   auto dwmtrue = TRUE;
-//   auto dwmfalse = FALSE;
-//   DwmSetWindowAttribute(hwnd, DWMWA_USE_HOSTBACKDROPBRUSH, &dwmtrue,
-//                         sizeof(dwmtrue));
-//   auto mica = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
-//   DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &mica,
-//   sizeof(&mica));
-// }
+void SetMica(HWND hwnd) {
+  HRESULT hr = S_OK;
+  auto mica = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
+  hr = DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &mica,
+                             sizeof(&mica));
+}
 
-// void SetMica(HWND hwnd) {
-//   HRESULT hr = S_OK;
-//   auto mica = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
-//   hr = DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &mica,
-//                              sizeof(&mica));
-// }
-
-// void ExtendFrame(HWND hwnd) {
-//   MARGINS m = {-1};
-//   HRESULT hr = S_OK;
-//   hr = DwmExtendFrameIntoClientArea(hwnd, &m);
-//   if (SUCCEEDED(hr)) {
-//     SetMica(hwnd);
-//   }
-// }
+void ExtendFrame(HWND hwnd) {
+  MARGINS m = {-1, -1, -1, -1};
+  HRESULT hr = S_OK;
+  hr = DwmExtendFrameIntoClientArea(hwnd, &m);
+  if (SUCCEEDED(hr)) {
+    SetMica(hwnd);
+  }
+}
 
 void KeyTop(HWND hwnd) {
   auto topmost = GetWindowLongPtrW(hwnd, GWL_EXSTYLE);
@@ -72,6 +62,18 @@ void KeyTop(HWND hwnd) {
     SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
   } else {
     SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+  }
+}
+
+void KeyMaximize(HWND hwnd) {
+  WINDOWPLACEMENT wp = {};
+  wp.length = sizeof(WINDOWPLACEMENT);
+  auto placement = GetWindowPlacement(hwnd, &wp);
+  if (wp.showCmd == SW_SHOWNORMAL) {
+    ShowWindow(hwnd, SW_MAXIMIZE);
+  }
+  if (wp.showCmd == SW_SHOWMAXIMIZED) {
+    ShowWindow(hwnd, SW_SHOWNORMAL);
   }
 }
 
@@ -97,18 +99,6 @@ void KeyFullscreen(HWND hwnd) {
     SetWindowPos(hwnd, nullptr, position.left, position.top,
                  (position.right - position.left),
                  (position.bottom - position.top), 0);
-  }
-}
-
-void KeyMaximize(HWND hwnd) {
-  WINDOWPLACEMENT wp = {};
-  wp.length = sizeof(WINDOWPLACEMENT);
-  auto placement = GetWindowPlacement(hwnd, &wp);
-  if (wp.showCmd == SW_SHOWNORMAL) {
-    ShowWindow(hwnd, SW_MAXIMIZE);
-  }
-  if (wp.showCmd == SW_SHOWMAXIMIZED) {
-    ShowWindow(hwnd, SW_SHOWNORMAL);
   }
 }
 

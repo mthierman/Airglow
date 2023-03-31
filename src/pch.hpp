@@ -1,4 +1,5 @@
 #pragma once
+
 #include "resource.hpp"
 #include <dwmapi.h>
 #include <guiddef.h>
