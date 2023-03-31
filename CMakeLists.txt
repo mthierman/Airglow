@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.25)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
-project(Gooey VERSION 0.0.1 LANGUAGES CXX)
+project(Gooey VERSION 0.0.2 LANGUAGES CXX)
 
 set(LIBS ${CMAKE_SOURCE_DIR}/external)
 set(WEBVIEW "Microsoft.Web.WebView2.1.0.1661.34")
