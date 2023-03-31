@@ -48,8 +48,8 @@ int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance,
     return 0;
   }
 
-  SetDarkModeTitle();
-  SetDarkMode(hwnd);
+  DarkTitle();
+  DarkMode(hwnd);
   ShowWindow(hwnd, ncmdshow);
 
   CreateCoreWebView2EnvironmentWithOptions(
@@ -156,7 +156,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam) {
   } break;
   case WM_SETTINGCHANGE: {
     InvalidateRect(hwnd, NULL, true);
-    SetDarkMode(hwnd);
+    DarkMode(hwnd);
   } break;
   case WM_SIZE:
     if (wv_controller != nullptr) {

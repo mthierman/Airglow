@@ -3,7 +3,13 @@ namespace Gooey {
 using namespace Microsoft::WRL;
 using namespace winrt::Windows::UI::ViewManagement;
 
-void SetDarkModeTitle() {
+int ModeCheck() {
+  auto settings = UISettings();
+  auto foreground = settings.GetColorValue(UIColorType::Foreground);
+  return (((5 * foreground.G) + (2 * foreground.R) + foreground.B) > (8 * 128));
+}
+
+void DarkTitle() {
   enum PreferredAppMode { Default, AllowDark, ForceDark, ForceLight, Max };
   using fnSetPreferredAppMode =
       PreferredAppMode(WINAPI *)(PreferredAppMode appMode);
@@ -20,13 +26,7 @@ void SetDarkModeTitle() {
   }
 }
 
-int ModeCheck() {
-  auto settings = UISettings();
-  auto foreground = settings.GetColorValue(UIColorType::Foreground);
-  return (((5 * foreground.G) + (2 * foreground.R) + foreground.B) > (8 * 128));
-}
-
-void SetDarkMode(HWND hwnd) {
+void DarkMode(HWND hwnd) {
   auto dwmtrue = TRUE;
   auto dwmfalse = FALSE;
   auto mode = ModeCheck();
