@@ -105,11 +105,11 @@ int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance,
                                 if ((std::wstring)message.get() == L"F1") {
                                   KeyTop(hwnd);
                                 }
-                                if ((std::wstring)message.get() == L"F11") {
-                                  KeyFullscreen(hwnd);
-                                }
                                 if ((std::wstring)message.get() == L"F2") {
                                   KeyMaximize(hwnd);
+                                }
+                                if ((std::wstring)message.get() == L"F11") {
+                                  KeyFullscreen(hwnd);
                                 }
                                 webview->PostWebMessageAsString(message.get());
                                 return S_OK;
