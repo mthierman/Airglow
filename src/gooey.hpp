@@ -1,7 +1,5 @@
 namespace Gooey {
-
 #define PROGRAM_ICON 1
-
 using namespace Microsoft::WRL;
 using namespace winrt::Windows::UI::ViewManagement;
 
