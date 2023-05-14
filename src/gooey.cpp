@@ -5,7 +5,7 @@ using namespace Gooey;
 static wil::com_ptr<ICoreWebView2Controller> wv_controller;
 static wil::com_ptr<ICoreWebView2> wv;
 static wil::com_ptr<ICoreWebView2Settings> wv_settings;
-int initialTheme;
+int lightMode;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
@@ -48,7 +48,7 @@ int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance, PWSTR pcmdlin
         return 0;
     }
 
-    initialTheme = ModeCheck();
+    lightMode = ModeCheck();
     DarkTitle();
     DarkMode(hwnd);
     ShowWindow(hwnd, ncmdshow);
@@ -146,14 +146,12 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hwnd, &ps);
         RECT rect;
-        auto mode = ModeCheck();
-        InvalidateRect(hwnd, nullptr, true);
         GetClientRect(hwnd, &rect);
-        if (initialTheme)
+        if (lightMode)
         {
             FillRect(hdc, &rect, CreateSolidBrush(RGB(00, 00, 00)));
         }
-        if (!initialTheme)
+        if (!lightMode)
         {
             FillRect(hdc, &rect, CreateSolidBrush(RGB(255, 255, 255)));
         }
@@ -170,6 +168,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
     break;
     case WM_SETTINGCHANGE:
     {
+        lightMode = ModeCheck();
         InvalidateRect(hwnd, NULL, true);
         DarkMode(hwnd);
     }
