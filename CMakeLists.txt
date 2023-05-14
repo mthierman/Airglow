@@ -13,8 +13,7 @@ execute_process(COMMAND nuget install Microsoft.Web.WebView2 -OutputDirectory ${
 execute_process(COMMAND nuget install Microsoft.Windows.ImplementationLibrary -OutputDirectory ${CMAKE_SOURCE_DIR}/external)
 
 math(EXPR BITNESS "${CMAKE_SIZEOF_VOID_P} * 8" OUTPUT_FORMAT DECIMAL)
-message(STATUS "C++${CMAKE_CXX_STANDARD}, CMake ${CMAKE_VERSION}, ${CMAKE_GENERATOR}, ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
-message(STATUS "${PROJECT_NAME} (${BITNESS}-bit) [${CMAKE_BUILD_TYPE}] v${PROJECT_VERSION}")
+message(STATUS "${PROJECT_NAME} (${BITNESS}-bit) [${CMAKE_BUILD_TYPE}] v${PROJECT_VERSION}, C++${CMAKE_CXX_STANDARD}, CMake ${CMAKE_VERSION}, ${CMAKE_GENERATOR}, ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
 file(WRITE ${CMAKE_BINARY_DIR}/version.txt "v${PROJECT_VERSION}")
 
 add_executable(${PROJECT_NAME} WIN32 ${CMAKE_CURRENT_SOURCE_DIR}/src/gooey.cpp ${CMAKE_CURRENT_SOURCE_DIR}/gooey$<$<CONFIG:Debug>:_debug>.rc)
