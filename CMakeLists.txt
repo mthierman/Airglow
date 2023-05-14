@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.25)
-
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
@@ -13,6 +12,23 @@ set(WIL_PKG "Microsoft.Windows.ImplementationLibrary")
 set(WIL_VER "1.0.230411.1")
 set(WIL "${WIL_PKG}.${WIL_VER}")
 
+math(
+    EXPR
+    BITNESS
+    "${CMAKE_SIZEOF_VOID_P} * 8" OUTPUT_FORMAT DECIMAL
+)
+
+message(
+    STATUS
+    "${PROJECT_NAME} (${BITNESS}-bit) [${CMAKE_BUILD_TYPE}] v${PROJECT_VERSION}, C++${CMAKE_CXX_STANDARD}, CMake ${CMAKE_VERSION}, ${CMAKE_GENERATOR}, ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}"
+)
+
+file(
+    WRITE
+    ${CMAKE_BINARY_DIR}/version.txt
+    "v${PROJECT_VERSION}"
+)
+
 execute_process(
     COMMAND
     nuget install ${WEBVIEW_PKG} -Version ${WEBVIEW_VER} -OutputDirectory ${LIBS}
@@ -20,21 +36,6 @@ execute_process(
 execute_process(
     COMMAND
     nuget install ${WIL_PKG} -Version ${WIL_VER} -OutputDirectory ${LIBS}
-)
-
-math(
-    EXPR
-    BITNESS
-    "${CMAKE_SIZEOF_VOID_P} * 8" OUTPUT_FORMAT DECIMAL
-)
-message(
-    STATUS
-    "${PROJECT_NAME} (${BITNESS}-bit) [${CMAKE_BUILD_TYPE}] v${PROJECT_VERSION}, C++${CMAKE_CXX_STANDARD}, CMake ${CMAKE_VERSION}, ${CMAKE_GENERATOR}, ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}"
-)
-file(
-    WRITE
-    ${CMAKE_BINARY_DIR}/version.txt
-    "v${PROJECT_VERSION}"
 )
 
 add_executable(
