@@ -176,9 +176,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
     case WM_SIZE:
         if (wv_controller != nullptr)
         {
-            RECT b;
-            GetClientRect(hwnd, &b);
-            wv_controller->put_Bounds(b);
+            RECT bounds;
+            GetClientRect(hwnd, &bounds);
+            wv_controller->put_Bounds(bounds);
         }
         break;
     case WM_GETMINMAXINFO:
