@@ -1,6 +1,6 @@
 #include "gooey.hpp"
 
-using namespace Gooey;
+#define PROGRAM_ICON 1
 
 static wil::com_ptr<ICoreWebView2Controller> wv_controller;
 static wil::com_ptr<ICoreWebView2> wv;
