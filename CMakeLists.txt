@@ -5,13 +5,34 @@ set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
 project(Gooey VERSION 0.0.1 LANGUAGES CXX)
 
-set(LIBS ${CMAKE_SOURCE_DIR}/external)
-set(WEBVIEW_PKG "Microsoft.Web.WebView2")
-set(WEBVIEW_VER "1.0.1774.30")
-set(WEBVIEW "${WEBVIEW_PKG}.${WEBVIEW_VER}")
-set(WIL_PKG "Microsoft.Windows.ImplementationLibrary")
-set(WIL_VER "1.0.230411.1")
-set(WIL "${WIL_PKG}.${WIL_VER}")
+set(
+    LIBS
+    ${CMAKE_SOURCE_DIR}/external
+)
+set(
+    WEBVIEW_PKG
+    "Microsoft.Web.WebView2"
+)
+set(
+    WEBVIEW_VER
+    "1.0.1774.30"
+)
+set(
+    WEBVIEW
+    "${WEBVIEW_PKG}.${WEBVIEW_VER}"
+)
+set(
+    WIL_PKG
+    "Microsoft.Windows.ImplementationLibrary"
+)
+set(
+    WIL_VER
+    "1.0.230411.1"
+)
+set(
+    WIL
+    "${WIL_PKG}.${WIL_VER}"
+)
 
 math(
     EXPR
