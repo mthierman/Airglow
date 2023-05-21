@@ -1,9 +1,11 @@
 #include "gooey.hpp"
+
 #define PROGRAM_ICON 1
 
 int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance, PWSTR pcmdline, int ncmdshow)
 {
     SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+
     SetEnvironmentVariableW(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR", L"0");
     SetEnvironmentVariableW(L"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
                             L"--enable-features=OverlayScrollbar,"
@@ -15,6 +17,10 @@ int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance, PWSTR pcmdlin
     auto icon = (HICON)LoadImageW(histance, L"PROGRAM_ICON", IMAGE_ICON, 0, 0,
                                   LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
 
+    darkBrush = CreateSolidBrush(RGB(0, 0, 0));
+    lightBrush = CreateSolidBrush(RGB(255, 255, 255));
+    hollowBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
+
     WNDCLASSEXW wcex = {};
     wcex.cbSize = sizeof(WNDCLASSEX);
     wcex.style = 0;
@@ -23,7 +29,7 @@ int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance, PWSTR pcmdlin
     wcex.cbWndExtra = 0;
     wcex.hInstance = histance;
     wcex.hCursor = (HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED);
-    wcex.hbrBackground = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
+    wcex.hbrBackground = hollowBrush;
     wcex.lpszMenuName = L"menu";
     wcex.lpszClassName = L"window";
     wcex.hIcon = icon;
@@ -143,11 +149,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
         GetClientRect(hwnd, &rect);
         if (lightMode)
         {
-            FillRect(hdc, &rect, CreateSolidBrush(RGB(00, 00, 00)));
+            FillRect(hdc, &rect, darkBrush);
         }
         if (!lightMode)
         {
-            FillRect(hdc, &rect, CreateSolidBrush(RGB(255, 255, 255)));
+            FillRect(hdc, &rect, lightBrush);
         }
     }
     break;

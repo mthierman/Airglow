@@ -1,6 +1,9 @@
 static wil::com_ptr<ICoreWebView2Controller> wv_controller;
 static wil::com_ptr<ICoreWebView2> wv;
 static wil::com_ptr<ICoreWebView2Settings> wv_settings;
+HBRUSH hollowBrush;
+HBRUSH darkBrush;
+HBRUSH lightBrush;
 LRESULT CALLBACK WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam);
 int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance, PWSTR pcmdline, int ncmdshow);
 int lightMode;
