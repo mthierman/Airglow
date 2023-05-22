@@ -2,25 +2,28 @@ cmake_minimum_required(
     VERSION
     3.25
 )
+
 set(
     CMAKE_CXX_STANDARD
     20
 )
+
 set(
     CMAKE_TRY_COMPILE_TARGET_TYPE
     STATIC_LIBRARY
 )
+
 project(
     Gooey
-    VERSION
-    0.0.1
-    LANGUAGES
-    CXX
+    VERSION 0.0.1
+    LANGUAGES CXX
 )
+
 set(
     LIBS
     ${CMAKE_SOURCE_DIR}/external
 )
+
 set(
     WEBVIEW_PKG
     "Microsoft.Web.WebView2"
@@ -33,6 +36,7 @@ set(
     WEBVIEW
     "${WEBVIEW_PKG}.${WEBVIEW_VER}"
 )
+
 set(
     WIL_PKG
     "Microsoft.Windows.ImplementationLibrary"
@@ -45,44 +49,53 @@ set(
     WIL
     "${WIL_PKG}.${WIL_VER}"
 )
+
 math(
     EXPR
     BITNESS
     "${CMAKE_SIZEOF_VOID_P} * 8" OUTPUT_FORMAT DECIMAL
 )
+
 message(
     STATUS
     "${PROJECT_NAME} v${PROJECT_VERSION} (${BITNESS}-bit) [${CMAKE_BUILD_TYPE}]"
 )
+
 file(
     WRITE
     ${CMAKE_BINARY_DIR}/version.txt
     "v${PROJECT_VERSION}"
 )
+
 execute_process(
     COMMAND
     nuget install ${WEBVIEW_PKG} -Version ${WEBVIEW_VER} -OutputDirectory ${LIBS}
 )
+
 execute_process(
     COMMAND
     nuget install ${WIL_PKG} -Version ${WIL_VER} -OutputDirectory ${LIBS}
 )
+
 add_executable(
     ${PROJECT_NAME}
     WIN32
     ${CMAKE_CURRENT_SOURCE_DIR}/src/gooey.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gooey$<$<CONFIG:Debug>:_debug>$<$<CONFIG:Release>:_release>.rc
 )
+
 target_precompile_headers(
     ${PROJECT_NAME}
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/pch.hpp
 )
+
 target_include_directories(
     ${PROJECT_NAME}
     PUBLIC
     ${LIBS}/${WEBVIEW}/build/native/include
     ${LIBS}/${WIL}/include
 )
+
 target_link_libraries(
     ${PROJECT_NAME}
     PUBLIC
