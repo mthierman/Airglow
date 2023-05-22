@@ -80,13 +80,13 @@ execute_process(
 add_executable(
     ${PROJECT_NAME}
     WIN32
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/gooey.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/gooey$<$<CONFIG:Debug>:_debug>$<$<CONFIG:Release>:_release>.rc
+    ${CMAKE_SOURCE_DIR}/src/gooey.cpp
+    ${CMAKE_SOURCE_DIR}/gooey$<$<CONFIG:Debug>:_debug>$<$<CONFIG:Release>:_release>.rc
 )
 
 target_precompile_headers(
     ${PROJECT_NAME}
-    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/pch.hpp
+    PUBLIC ${CMAKE_SOURCE_DIR}/src/pch.hpp
 )
 
 target_include_directories(
