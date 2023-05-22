@@ -1,0 +1,26 @@
+{
+    "version": 6,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 25,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "deploy",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/Release",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "cl",
+                "CMAKE_BUILD_TYPE": "release"
+            },
+            "environment": {}
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "deploy",
+            "configurePreset": "deploy"
+        }
+    ]
+}
