@@ -21,7 +21,7 @@ jobs:
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cmake -DCMAKE_BUILD_TYPE:STRING=Release -S . -B build -G Ninja
+          cmake -B build -G Ninja
           cmake --build build --config Release --target Gooey
           git --no-pager log -5 --oneline --no-decorate > build/Release/changes.txt
 
