@@ -1,9 +1,5 @@
 cmake_minimum_required(VERSION 3.25)
 set(CMAKE_CXX_STANDARD 20)
-set(
-    CMAKE_TRY_COMPILE_TARGET_TYPE
-    STATIC_LIBRARY
-)
 
 project(
     Gooey
@@ -54,9 +50,15 @@ target_include_directories(
     external/${WIL_LIB}/include
 )
 
+target_link_directories(
+    ${PROJECT_NAME}
+    PUBLIC
+    external/${WEBVIEW_LIB}/build/native/x64
+)
+
 target_link_libraries(
     ${PROJECT_NAME}
     PUBLIC
-    external/${WEBVIEW_LIB}/build/native/x64/WebView2LoaderStatic.lib
+    WebView2LoaderStatic.lib
     dwmapi.lib
 )
