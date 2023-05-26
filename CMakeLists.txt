@@ -22,12 +22,12 @@ file(WRITE ${CMAKE_BINARY_DIR}/version.txt "v${PROJECT_VERSION}")
 
 execute_process(
     COMMAND
-    nuget install ${WEBVIEW} -Version ${WEBVIEW_VER} -OutputDirectory external
+    nuget install ${WEBVIEW} -Version ${WEBVIEW_VER} -OutputDirectory ${CMAKE_SOURCE_DIR}/external
 )
 
 execute_process(
     COMMAND
-    nuget install ${WIL} -Version ${WIL_VER} -OutputDirectory external
+    nuget install ${WIL} -Version ${WIL_VER} -OutputDirectory ${CMAKE_SOURCE_DIR}/external
 )
 
 add_executable(
