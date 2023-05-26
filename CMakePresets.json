@@ -7,20 +7,42 @@
     },
     "configurePresets": [
         {
-            "name": "deploy",
+            "name": "Debug",
             "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build/Release",
+            "binaryDir": "${sourceDir}/build",
+            "architecture": {
+                "strategy": "external",
+                "value": "x64"
+            },
             "cacheVariables": {
-                "CMAKE_CXX_COMPILER": "cl",
-                "CMAKE_BUILD_TYPE": "release"
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "1"
+            },
+            "environment": {}
+        },
+        {
+            "name": "Release",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build",
+            "architecture": {
+                "strategy": "external",
+                "value": "x64"
+            },
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "1"
             },
             "environment": {}
         }
     ],
     "buildPresets": [
         {
-            "name": "deploy",
-            "configurePreset": "deploy"
+            "name": "Debug",
+            "configurePreset": "Debug"
+        },
+        {
+            "name": "Release",
+            "configurePreset": "Release"
         }
     ]
 }
