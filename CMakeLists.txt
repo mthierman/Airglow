@@ -39,26 +39,26 @@ add_executable(
 
 target_precompile_headers(
     ${PROJECT_NAME}
-    PUBLIC
+    PRIVATE
     src/pch.hpp
 )
 
 target_include_directories(
     ${PROJECT_NAME}
-    PUBLIC
+    PRIVATE
     external/${WEBVIEW_LIB}/build/native/include
     external/${WIL_LIB}/include
 )
 
 target_link_directories(
     ${PROJECT_NAME}
-    PUBLIC
+    PRIVATE
     external/${WEBVIEW_LIB}/build/native/x64
 )
 
 target_link_libraries(
     ${PROJECT_NAME}
-    PUBLIC
+    PRIVATE
     WebView2LoaderStatic.lib
     dwmapi.lib
 )
