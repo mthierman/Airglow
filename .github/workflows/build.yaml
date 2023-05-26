@@ -24,13 +24,13 @@ jobs:
           $vswhere = "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
           $vspath = & $vswhere -products * -latest -property installationPath
           & "$vspath\Common7\Tools\Launch-VsDevShell.ps1" -HostArch amd64 -Arch amd64 -SkipAutomaticLocation
-          cmake --preset deploy
-          cmake --build --preset deploy
-          git --no-pager log -5 --oneline --no-decorate > build/Release/changes.txt
+          cmake --preset Release
+          cmake --build --preset Release
+          git --no-pager log -5 --oneline --no-decorate > build/changes.txt
 
-          $version = Get-Content "build/Release/version.txt"
-          $changes = Get-Item "build/Release/changes.txt"
-          $exe = Get-Item "build/Release/Gooey.exe"
+          $version = Get-Content "build/version.txt"
+          $changes = Get-Item "build/changes.txt"
+          $exe = Get-Item "build/Gooey.exe"
 
           if ("${{ github.ref_name }}" -eq "main") {
             $title = "Gooey $version"
