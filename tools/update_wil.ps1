@@ -1,0 +1,1 @@
+nuget install Microsoft.Windows.ImplementationLibrary -OutputDirectory external

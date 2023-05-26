@@ -11,11 +11,6 @@ project(
     LANGUAGES CXX
 )
 
-set(
-    EXTERNAL
-    ${CMAKE_SOURCE_DIR}/external
-)
-
 set(WEBVIEW "Microsoft.Web.WebView2")
 set(WEBVIEW_VER "1.0.1774.30")
 set(WEBVIEW_LIB "${WEBVIEW}.${WEBVIEW_VER}")
@@ -31,39 +26,37 @@ file(WRITE ${CMAKE_BINARY_DIR}/version.txt "v${PROJECT_VERSION}")
 
 execute_process(
     COMMAND
-    nuget install ${WEBVIEW} -Version ${WEBVIEW_VER} -OutputDirectory ${EXTERNAL}
+    nuget install ${WEBVIEW} -Version ${WEBVIEW_VER} -OutputDirectory external
 )
 
 execute_process(
     COMMAND
-    nuget install ${WIL} -Version ${WIL_VER} -OutputDirectory ${EXTERNAL}
+    nuget install ${WIL} -Version ${WIL_VER} -OutputDirectory external
 )
 
 add_executable(
     ${PROJECT_NAME}
     WIN32
-    ${CMAKE_SOURCE_DIR}/src/gooey.cpp
-    ${CMAKE_SOURCE_DIR}/gooey$<$<CONFIG:Debug>:_debug>$<$<CONFIG:Release>:_release>.rc
-
-    # ${CMAKE_SOURCE_DIR}/gooey.rc
+    src/gooey.cpp
+    gooey$<$<CONFIG:Debug>:_debug>$<$<CONFIG:Release>:_release>.rc
 )
 
 target_precompile_headers(
     ${PROJECT_NAME}
     PUBLIC
-    ${CMAKE_SOURCE_DIR}/src/pch.hpp
+    src/pch.hpp
 )
 
 target_include_directories(
     ${PROJECT_NAME}
     PUBLIC
-    ${EXTERNAL}/${WEBVIEW_LIB}/build/native/include
-    ${EXTERNAL}/${WIL_LIB}/include
+    external/${WEBVIEW_LIB}/build/native/include
+    external/${WIL_LIB}/include
 )
 
 target_link_libraries(
     ${PROJECT_NAME}
     PUBLIC
-    ${EXTERNAL}/${WEBVIEW_LIB}/build/native/x64/WebView2LoaderStatic.lib
+    external/${WEBVIEW_LIB}/build/native/x64/WebView2LoaderStatic.lib
     dwmapi.lib
 )
