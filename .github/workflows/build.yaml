@@ -3,7 +3,7 @@ name: Gooey Release
 on:
   workflow_dispatch:
   push:
-    branches: [main, dev]
+    branches: [main]
 
 permissions:
   contents: write
