@@ -54,12 +54,12 @@ int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance, PWSTR pcmdlin
     CreateCoreWebView2EnvironmentWithOptions(
         nullptr, nullptr, nullptr,
         Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
-            [hwnd](HRESULT result, ICoreWebView2Environment *env) -> HRESULT
+            [hwnd](HRESULT result, ICoreWebView2Environment* env) -> HRESULT
             {
                 env->CreateCoreWebView2Controller(
                     hwnd, Microsoft::WRL::Callback<
                               ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                              [hwnd](HRESULT result, ICoreWebView2Controller *controller) -> HRESULT
+                              [hwnd](HRESULT result, ICoreWebView2Controller* controller) -> HRESULT
                               {
                                   if (controller != nullptr)
                                   {
@@ -97,8 +97,8 @@ int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance, PWSTR pcmdlin
                                   wv->add_WebMessageReceived(
                                       Microsoft::WRL::Callback<
                                           ICoreWebView2WebMessageReceivedEventHandler>(
-                                          [hwnd](ICoreWebView2 *webview,
-                                                 ICoreWebView2WebMessageReceivedEventArgs *args)
+                                          [hwnd](ICoreWebView2* webview,
+                                                 ICoreWebView2WebMessageReceivedEventArgs* args)
                                               -> HRESULT
                                           {
                                               wil::unique_cotaskmem_string message;
@@ -233,7 +233,7 @@ void DarkTitle()
         ForceLight,
         Max
     };
-    using fnSetPreferredAppMode = PreferredAppMode(WINAPI *)(PreferredAppMode appMode);
+    using fnSetPreferredAppMode = PreferredAppMode(WINAPI*)(PreferredAppMode appMode);
     auto uxtheme = LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
     if (uxtheme)
     {
@@ -338,7 +338,7 @@ void KeyFullscreen(HWND hwnd)
 void WebViewNavigate(wil::com_ptr<ICoreWebView2> wv)
 {
     auto commandline = GetCommandLineW();
-    LPWSTR *szArglist;
+    LPWSTR* szArglist;
     int nArgs;
     int i;
     szArglist = CommandLineToArgvW(commandline, &nArgs);

@@ -10,12 +10,7 @@
             "name": "Debug",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/build",
-            "architecture": {
-                "strategy": "external",
-                "value": "x64"
-            },
             "cacheVariables": {
-                "CMAKE_CXX_COMPILER": "clang++",
                 "CMAKE_BUILD_TYPE": "Debug",
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "1"
             },
@@ -25,12 +20,7 @@
             "name": "Release",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/build",
-            "architecture": {
-                "strategy": "external",
-                "value": "x64"
-            },
             "cacheVariables": {
-                "CMAKE_CXX_COMPILER": "clang++",
                 "CMAKE_BUILD_TYPE": "Release",
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "1"
             },

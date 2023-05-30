@@ -1,5 +1,8 @@
+BasedOnStyle: LLVM
 IndentWidth: 4
-AlignAfterOpenBracket: Align
-BreakBeforeBraces: Allman
 ColumnLimit: 100
 SortIncludes: Never
+AlignAfterOpenBracket: Align
+BreakBeforeBraces: Allman
+BreakInheritanceList: AfterComma
+PointerAlignment: Left
