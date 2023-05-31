@@ -1,44 +1,16 @@
 #include "gooey.hpp"
 #include "resource.hpp"
 
-int WINAPI wWinMain(HINSTANCE histance, HINSTANCE hprevinstance, PWSTR pcmdline, int ncmdshow)
+int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
 {
     SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+    SetEnvironmentVariableW(wvBackgroundColor.c_str(), wvBackgroundColorValue.c_str());
+    SetEnvironmentVariableW(wvAdditionalBrowserArgs.c_str(), wvAdditionalBrowserArgsValue.c_str());
+    Application(hinstance);
 
-    SetEnvironmentVariable(wvBackgroundColor.c_str(), wvBackgroundColorValue.c_str());
-
-    SetEnvironmentVariable(wvAdditionalBrowserArgs.c_str(), wvAdditionalBrowserArgsValue.c_str());
-
-    icon = (HICON)LoadImage(histance, programIcon.c_str(), IMAGE_ICON, 0, 0,
-                            LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
-
-    cursor = (HCURSOR)LoadImage(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED);
-
-    hollowBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
-
-    darkBrush = CreateSolidBrush(RGB(32, 32, 32));
-
-    lightBrush = CreateSolidBrush(RGB(243, 243, 243));
-
-    wcex = {};
-    wcex.cbSize = sizeof(WNDCLASSEX);
-    wcex.style = 0;
-    wcex.lpfnWndProc = WndProc;
-    wcex.cbClsExtra = 0;
-    wcex.cbWndExtra = 0;
-    wcex.hInstance = histance;
-    wcex.hCursor = cursor;
-    wcex.hbrBackground = hollowBrush;
-    wcex.lpszMenuName = menuName.c_str();
-    wcex.lpszClassName = className.c_str();
-    wcex.hIcon = icon;
-    wcex.hIconSm = icon;
-
-    RegisterClassEx(&wcex);
-
-    auto hwnd = CreateWindowEx(0, className.c_str(), windowName.c_str(), WS_OVERLAPPEDWINDOW,
-                               CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
-                               nullptr, histance, nullptr);
+    auto hwnd = CreateWindowExW(0, className.c_str(), windowName.c_str(), WS_OVERLAPPEDWINDOW,
+                                CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
+                                nullptr, hinstance, nullptr);
 
     if (!hwnd)
     {
@@ -49,7 +21,7 @@ int WINAPI wWinMain(HINSTANCE histance, HINSTANCE hprevinstance, PWSTR pcmdline,
     DarkTitle();
     DarkMode(hwnd);
     // ExtendFrame(hwnd);
-    ShowWindow(hwnd, ncmdshow);
+    ShowWindow(hwnd, ncs);
 
     CreateCoreWebView2EnvironmentWithOptions(
         nullptr, nullptr, nullptr,
@@ -79,22 +51,16 @@ int WINAPI wWinMain(HINSTANCE histance, HINSTANCE hprevinstance, PWSTR pcmdline,
                                   wv_settings->put_IsWebMessageEnabled(true);
                                   wv_settings->put_IsZoomControlEnabled(true);
 
-                                  //   RECT bounds;
+                                  GetClientRect(hwnd, &bounds);
 
-                                  //   GetClientRect(hwnd, &bounds);
+                                  wvRect = {
+                                      bounds.left,
+                                      bounds.top,
+                                      bounds.right / 2,
+                                      bounds.bottom,
+                                  };
 
-                                  //   auto webViewWidth = bounds.right - bounds.left;
-                                  //   RECT webViewBounds = (bounds.left, bounds.top, bounds.right,
-                                  //        bounds.bottom);
-
-                                  //   testRect = {
-                                  //       bounds.left,
-                                  //       bounds.top,
-                                  //       bounds.right / 2,
-                                  //       bounds.bottom,
-                                  //   };
-
-                                  //   wv_controller->put_Bounds(testRect);
+                                  wv_controller->put_Bounds(wvRect);
 
                                   WebViewNavigate(wv);
 
@@ -147,13 +113,13 @@ int WINAPI wWinMain(HINSTANCE histance, HINSTANCE hprevinstance, PWSTR pcmdline,
             })
             .Get());
 
-    auto menu = CreateMenu();
+    // auto menu = CreateMenu();
 
     msg = {};
-    while (GetMessage(&msg, nullptr, 0, 0))
+    while (GetMessageW(&msg, nullptr, 0, 0))
     {
         TranslateMessage(&msg);
-        DispatchMessage(&msg);
+        DispatchMessageW(&msg);
     }
 
     return 0;
@@ -205,13 +171,13 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
         {
             RECT bounds;
             GetClientRect(hwnd, &bounds);
-            testRect = {
+            wvRect = {
                 bounds.left,
                 bounds.top,
                 bounds.right / 2,
                 bounds.bottom,
             };
-            wv_controller->put_Bounds(testRect);
+            wv_controller->put_Bounds(wvRect);
         }
     }
     break;
@@ -260,6 +226,36 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
     return 0;
 }
 
+ATOM Application(HINSTANCE hinstance)
+{
+    icon = (HICON)LoadImageW(hinstance, programIcon.c_str(), IMAGE_ICON, 0, 0,
+                             LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
+
+    cursor = (HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED);
+
+    hollowBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
+
+    darkBrush = CreateSolidBrush(RGB(32, 32, 32));
+
+    lightBrush = CreateSolidBrush(RGB(243, 243, 243));
+
+    wcex = {};
+    wcex.cbSize = sizeof(WNDCLASSEX);
+    wcex.style = 0;
+    wcex.lpfnWndProc = WndProc;
+    wcex.cbClsExtra = 0;
+    wcex.cbWndExtra = 0;
+    wcex.hInstance = hinstance;
+    wcex.hCursor = cursor;
+    wcex.hbrBackground = hollowBrush;
+    wcex.lpszMenuName = menuName.c_str();
+    wcex.lpszClassName = className.c_str();
+    wcex.hIcon = icon;
+    wcex.hIconSm = icon;
+
+    return RegisterClassExW(&wcex);
+}
+
 int ModeCheck()
 {
     settingsCheck = winrt::Windows::UI::ViewManagement::UISettings();
@@ -271,7 +267,7 @@ int ModeCheck()
 void DarkTitle()
 {
     using fnSetPreferredAppMode = PreferredAppMode(WINAPI*)(PreferredAppMode appMode);
-    uxtheme = LoadLibraryEx(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
+    uxtheme = LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
     if (uxtheme)
     {
         ord135 = GetProcAddress(uxtheme, PCSTR MAKEINTRESOURCEW(135));
@@ -346,14 +342,14 @@ void KeyMaximize(HWND hwnd)
 
 void KeyFullscreen(HWND hwnd)
 {
-    style = GetWindowLongPtr(hwnd, GWL_STYLE);
+    style = GetWindowLongPtrW(hwnd, GWL_STYLE);
     if (style & WS_OVERLAPPEDWINDOW)
     {
         mi = {sizeof(mi)};
         GetWindowRect(hwnd, &position);
-        if (GetMonitorInfo(MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST), &mi))
+        if (GetMonitorInfoW(MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST), &mi))
         {
-            SetWindowLongPtr(hwnd, GWL_STYLE, style & ~WS_OVERLAPPEDWINDOW);
+            SetWindowLongPtrW(hwnd, GWL_STYLE, style & ~WS_OVERLAPPEDWINDOW);
             SetWindowPos(hwnd, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top,
                          mi.rcMonitor.right - mi.rcMonitor.left,
                          mi.rcMonitor.bottom - mi.rcMonitor.top,
@@ -362,7 +358,7 @@ void KeyFullscreen(HWND hwnd)
     }
     else
     {
-        SetWindowLongPtr(hwnd, GWL_STYLE, style | WS_OVERLAPPEDWINDOW);
+        SetWindowLongPtrW(hwnd, GWL_STYLE, style | WS_OVERLAPPEDWINDOW);
         SetWindowPos(hwnd, nullptr, 0, 0, 0, 0,
                      SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
         SetWindowPos(hwnd, nullptr, position.left, position.top, (position.right - position.left),
@@ -383,4 +379,11 @@ void WebViewNavigate(wil::com_ptr<ICoreWebView2> wv)
         wv->Navigate(commandLineList[i]);
     }
     LocalFree(commandLineList);
+}
+
+std::wstring StringToWide(HINSTANCE hinstance, UINT uID)
+{
+    PCWSTR pws;
+    int cch = LoadStringW(hinstance, uID, reinterpret_cast<LPWSTR>(&pws), 0);
+    return std::wstring(pws, cch);
 }

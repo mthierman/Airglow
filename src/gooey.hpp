@@ -1,6 +1,9 @@
 // MAIN
-int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance, PWSTR pcmdline, int ncmdshow);
-LRESULT CALLBACK WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam);
+// ATOM RegisterClassExW(WNDCLASSEX window);
+// HINSTANCE hinstance;
+int APIENTRY wWinMain(HINSTANCE, HINSTANCE, PWSTR, int);
+LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+ATOM Application(HINSTANCE);
 
 // ENV
 std::wstring wvBackgroundColor(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR");
@@ -12,6 +15,7 @@ std::wstring wvAdditionalBrowserArgsValue(L"--enable-features=OverlayScrollbar,"
                                           L"msWebView2BrowserHitTransparent"
                                           L" --disable-features=msWebOOUI,msPdfOOUI");
 std::wstring programIcon(L"PROGRAM_ICON");
+// std::string programIcon("PROGRAM_ICON");
 
 // WINDOW
 HICON icon;
@@ -26,6 +30,8 @@ std::wstring windowName(L"Gooey");
 MSG msg;
 
 // WEBVIEW
+RECT bounds;
+RECT wvRect;
 static wil::com_ptr<ICoreWebView2Controller> wv_controller;
 static wil::com_ptr<ICoreWebView2> wv;
 static wil::com_ptr<ICoreWebView2Settings> wv_settings;
@@ -79,4 +85,4 @@ LRESULT style;
 MONITORINFO mi;
 
 // MISC
-RECT testRect;
+std::wstring StringToWide(HINSTANCE, UINT);
