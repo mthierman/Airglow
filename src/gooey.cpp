@@ -17,9 +17,9 @@ int WINAPI wWinMain(HINSTANCE histance, HINSTANCE hprevinstance, PWSTR pcmdline,
 
     hollowBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
 
-    blackBrush = CreateSolidBrush(RGB(0, 0, 0));
+    darkBrush = CreateSolidBrush(RGB(32, 32, 32));
 
-    whiteBrush = CreateSolidBrush(RGB(255, 255, 255));
+    lightBrush = CreateSolidBrush(RGB(243, 243, 243));
 
     wcex = {};
     wcex.cbSize = sizeof(WNDCLASSEX);
@@ -49,7 +49,7 @@ int WINAPI wWinMain(HINSTANCE histance, HINSTANCE hprevinstance, PWSTR pcmdline,
     darkMode = ModeCheck();
     DarkTitle();
     DarkMode(hwnd);
-    ExtendFrame(hwnd);
+    // ExtendFrame(hwnd);
     ShowWindow(hwnd, ncmdshow);
 
     CreateCoreWebView2EnvironmentWithOptions(
@@ -160,11 +160,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
         GetClientRect(hwnd, &rect);
         if (darkMode)
         {
-            FillRect(hdc, &rect, blackBrush);
+            FillRect(hdc, &rect, darkBrush);
         }
         if (!darkMode)
         {
-            FillRect(hdc, &rect, whiteBrush);
+            FillRect(hdc, &rect, lightBrush);
         }
     }
     break;
