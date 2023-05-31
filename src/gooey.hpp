@@ -77,3 +77,6 @@ void KeyFullscreen(HWND hwnd);
 static RECT position;
 LRESULT style;
 MONITORINFO mi;
+
+// MISC
+RECT testRect;

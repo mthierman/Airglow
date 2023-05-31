@@ -80,11 +80,22 @@ int WINAPI wWinMain(HINSTANCE histance, HINSTANCE hprevinstance, PWSTR pcmdline,
                                   wv_settings->put_IsWebMessageEnabled(true);
                                   wv_settings->put_IsZoomControlEnabled(true);
 
-                                  RECT bounds;
+                                  //   RECT bounds;
 
-                                  GetClientRect(hwnd, &bounds);
+                                  //   GetClientRect(hwnd, &bounds);
 
-                                  wv_controller->put_Bounds(bounds);
+                                  //   auto webViewWidth = bounds.right - bounds.left;
+                                  //   RECT webViewBounds = (bounds.left, bounds.top, bounds.right,
+                                  //        bounds.bottom);
+
+                                  //   testRect = {
+                                  //       bounds.left,
+                                  //       bounds.top,
+                                  //       bounds.right / 2,
+                                  //       bounds.bottom,
+                                  //   };
+
+                                  //   wv_controller->put_Bounds(testRect);
 
                                   WebViewNavigate(wv);
 
@@ -193,7 +204,13 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
         {
             RECT bounds;
             GetClientRect(hwnd, &bounds);
-            wv_controller->put_Bounds(bounds);
+            testRect = {
+                bounds.left,
+                bounds.top,
+                bounds.right / 2,
+                bounds.bottom,
+            };
+            wv_controller->put_Bounds(testRect);
         }
     }
     break;
