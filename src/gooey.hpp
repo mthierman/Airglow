@@ -28,13 +28,22 @@ std::wstring className(L"window");
 std::wstring windowName(L"Gooey");
 MSG msg;
 
-// WEBVIEW
+// WEBVIEW1
 RECT bounds;
 RECT wvRect;
 static wil::com_ptr<ICoreWebView2Controller> wv_controller;
 static wil::com_ptr<ICoreWebView2> wv;
 static wil::com_ptr<ICoreWebView2Settings> wv_settings;
-void WebViewNavigate(wil::com_ptr<ICoreWebView2> wv);
+
+// WEBVIEW2
+RECT bounds2;
+RECT wvRect2;
+static wil::com_ptr<ICoreWebView2Controller> wv_controller2;
+static wil::com_ptr<ICoreWebView2> wv2;
+static wil::com_ptr<ICoreWebView2Settings> wv_settings2;
+
+// WEBVIEW
+void WebViewNavigate(wil::com_ptr<ICoreWebView2>);
 LPWSTR commandLine;
 LPWSTR* commandLineList;
 int nArgs;
