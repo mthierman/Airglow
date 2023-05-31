@@ -30,93 +30,88 @@ int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int nc
             [hwnd](HRESULT result, ICoreWebView2Environment* env) -> HRESULT
             {
                 env->CreateCoreWebView2Controller(
-                    hwnd, Microsoft::WRL::Callback<
-                              ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                              [hwnd](HRESULT result, ICoreWebView2Controller* controller) -> HRESULT
-                              {
-                                  if (controller != nullptr)
-                                  {
-                                      wv_controller = controller;
-                                      wv_controller->get_CoreWebView2(&wv);
-                                  }
+                    hwnd,
+                    Microsoft::WRL::Callback<
+                        ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+                        [hwnd](HRESULT result, ICoreWebView2Controller* controller) -> HRESULT
+                        {
+                            if (controller != nullptr)
+                            {
+                                wv_controller = controller;
+                                wv_controller->get_CoreWebView2(&wv);
+                            }
 
-                                  wv->get_Settings(&wv_settings);
+                            wv->get_Settings(&wv_settings);
 
-                                  wv_settings->put_AreDefaultContextMenusEnabled(true);
-                                  wv_settings->put_AreDefaultScriptDialogsEnabled(true);
-                                  wv_settings->put_AreDevToolsEnabled(true);
-                                  wv_settings->put_AreHostObjectsAllowed(true);
-                                  wv_settings->put_IsBuiltInErrorPageEnabled(true);
-                                  wv_settings->put_IsScriptEnabled(true);
-                                  wv_settings->put_IsStatusBarEnabled(true);
-                                  wv_settings->put_IsWebMessageEnabled(true);
-                                  wv_settings->put_IsZoomControlEnabled(true);
+                            wv_settings->put_AreDefaultContextMenusEnabled(true);
+                            wv_settings->put_AreDefaultScriptDialogsEnabled(true);
+                            wv_settings->put_AreDevToolsEnabled(true);
+                            wv_settings->put_AreHostObjectsAllowed(true);
+                            wv_settings->put_IsBuiltInErrorPageEnabled(true);
+                            wv_settings->put_IsScriptEnabled(true);
+                            wv_settings->put_IsStatusBarEnabled(true);
+                            wv_settings->put_IsWebMessageEnabled(true);
+                            wv_settings->put_IsZoomControlEnabled(true);
 
-                                  GetClientRect(hwnd, &bounds);
+                            GetClientRect(hwnd, &bounds);
 
-                                  wvRect = {
-                                      bounds.left,
-                                      bounds.top,
-                                      bounds.right / 2,
-                                      bounds.bottom,
-                                  };
+                            wvRect = {
+                                bounds.left,
+                                bounds.top,
+                                bounds.right / 2,
+                                bounds.bottom,
+                            };
 
-                                  wv_controller->put_Bounds(wvRect);
+                            wv_controller->put_Bounds(wvRect);
 
-                                  WebViewNavigate(wv);
+                            WebViewNavigate(wv);
 
-                                  EventRegistrationToken token;
+                            EventRegistrationToken token;
 
-                                  wv->ExecuteScript(L"document.onreadystatechange = () => {if "
-                                                    L"(document.readyState === 'complete') "
-                                                    L"{onkeydown = (e) => "
-                                                    L"{window.chrome.webview.postMessage(e.key);}}}"
-                                                    L";",
-                                                    nullptr);
+                            wv->ExecuteScript(wvScript.c_str(), nullptr);
 
-                                  wv->AddScriptToExecuteOnDocumentCreated(
-                                      L"document.onreadystatechange = () => {if "
-                                      L"(document.readyState === 'complete') "
-                                      L"{onkeydown = (e) => "
-                                      L"{window.chrome.webview.postMessage(e.key);}}}"
-                                      L";",
-                                      nullptr);
+                            wv->AddScriptToExecuteOnDocumentCreated(wvScript.c_str(), nullptr);
 
-                                  wv->add_WebMessageReceived(
-                                      Microsoft::WRL::Callback<
-                                          ICoreWebView2WebMessageReceivedEventHandler>(
-                                          [hwnd](ICoreWebView2* webview,
-                                                 ICoreWebView2WebMessageReceivedEventArgs* args)
-                                              -> HRESULT
-                                          {
-                                              wil::unique_cotaskmem_string message;
+                            wv->add_WebMessageReceived(
+                                Microsoft::WRL::Callback<
+                                    ICoreWebView2WebMessageReceivedEventHandler>(
+                                    [hwnd](
+                                        ICoreWebView2* webview,
+                                        ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT
+                                    {
+                                        wil::unique_cotaskmem_string message;
 
-                                              args->TryGetWebMessageAsString(&message);
+                                        args->TryGetWebMessageAsString(&message);
 
-                                              if ((std::wstring)message.get() == keyTop.c_str())
-                                              {
-                                                  KeyTop(hwnd);
-                                              }
+                                        if ((std::wstring)message.get() == keyTop.c_str())
+                                        {
+                                            KeyTop(hwnd);
+                                        }
 
-                                              if ((std::wstring)message.get() == keyMax.c_str())
-                                              {
-                                                  KeyMaximize(hwnd);
-                                              }
+                                        if ((std::wstring)message.get() == keyMax.c_str())
+                                        {
+                                            KeyMaximize(hwnd);
+                                        }
 
-                                              if ((std::wstring)message.get() == keyFull.c_str())
-                                              {
-                                                  KeyFullscreen(hwnd);
-                                              }
+                                        if ((std::wstring)message.get() == keyFull.c_str())
+                                        {
+                                            KeyFullscreen(hwnd);
+                                        }
 
-                                              webview->PostWebMessageAsString(message.get());
+                                        if ((std::wstring)message.get() == keyClose.c_str())
+                                        {
+                                            KeyClose(hwnd);
+                                        }
 
-                                              return S_OK;
-                                          })
-                                          .Get(),
-                                      &token);
-                                  return S_OK;
-                              })
-                              .Get());
+                                        webview->PostWebMessageAsString(message.get());
+
+                                        return S_OK;
+                                    })
+                                    .Get(),
+                                &token);
+                            return S_OK;
+                        })
+                        .Get());
                 return S_OK;
             })
             .Get());
@@ -165,20 +160,9 @@ int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int nc
 
                             EventRegistrationToken token;
 
-                            wv2->ExecuteScript(L"document.onreadystatechange = () => {if "
-                                               L"(document.readyState === 'complete') "
-                                               L"{onkeydown = (e) => "
-                                               L"{window.chrome.webview.postMessage(e.key);}}}"
-                                               L";",
-                                               nullptr);
+                            wv2->ExecuteScript(wvScript.c_str(), nullptr);
 
-                            wv2->AddScriptToExecuteOnDocumentCreated(
-                                L"document.onreadystatechange = () => {if "
-                                L"(document.readyState === 'complete') "
-                                L"{onkeydown = (e) => "
-                                L"{window.chrome.webview.postMessage(e.key);}}}"
-                                L";",
-                                nullptr);
+                            wv2->AddScriptToExecuteOnDocumentCreated(wvScript.c_str(), nullptr);
 
                             wv2->add_WebMessageReceived(
                                 Microsoft::WRL::Callback<
@@ -204,6 +188,11 @@ int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int nc
                                         if ((std::wstring)message.get() == keyFull.c_str())
                                         {
                                             KeyFullscreen(hwnd);
+                                        }
+
+                                        if ((std::wstring)message.get() == keyClose.c_str())
+                                        {
+                                            KeyClose(hwnd);
                                         }
 
                                         webview->PostWebMessageAsString(message.get());
@@ -331,6 +320,14 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
         {
             KeyFullscreen(hwnd);
         }
+        if (wp == vkKeyW)
+        {
+            auto state = GetKeyState(vkKeyControl);
+            if (state & 0x8000)
+            {
+                KeyClose(hwnd);
+            }
+        }
     }
     break;
 
@@ -456,14 +453,14 @@ void KeyTop(HWND hwnd)
 
 void KeyMaximize(HWND hwnd)
 {
-    wp = {};
-    wp.length = sizeof(WINDOWPLACEMENT);
-    placement = GetWindowPlacement(hwnd, &wp);
-    if (wp.showCmd == SW_SHOWNORMAL)
+    wPlacement = {};
+    wPlacement.length = sizeof(WINDOWPLACEMENT);
+    placement = GetWindowPlacement(hwnd, &wPlacement);
+    if (wPlacement.showCmd == SW_SHOWNORMAL)
     {
         ShowWindow(hwnd, SW_MAXIMIZE);
     }
-    if (wp.showCmd == SW_SHOWMAXIMIZED)
+    if (wPlacement.showCmd == SW_SHOWMAXIMIZED)
     {
         ShowWindow(hwnd, SW_SHOWNORMAL);
     }
@@ -494,6 +491,8 @@ void KeyFullscreen(HWND hwnd)
                      (position.bottom - position.top), 0);
     }
 }
+
+void KeyClose(HWND hwnd) { SendMessageW(hwnd, WM_CLOSE, 0, 0); }
 
 void WebViewNavigate(wil::com_ptr<ICoreWebView2> wv)
 {

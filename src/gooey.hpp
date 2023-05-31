@@ -12,7 +12,6 @@ std::wstring wvAdditionalBrowserArgsValue(L"--enable-features=OverlayScrollbar,"
                                           L"full_mode,msOverlayScrollbarWinStyleAnimation,"
                                           L"msWebView2BrowserHitTransparent"
                                           L" --disable-features=msWebOOUI,msPdfOOUI");
-std::wstring programIcon(L"PROGRAM_ICON");
 
 // WINDOW
 HICON icon;
@@ -23,6 +22,7 @@ HBRUSH whiteBrush;
 HBRUSH darkBrush;
 HBRUSH lightBrush;
 WNDCLASSEXW wcex;
+std::wstring programIcon(L"PROGRAM_ICON");
 std::wstring menuName(L"menu");
 std::wstring className(L"window");
 std::wstring windowName(L"Gooey");
@@ -49,13 +49,18 @@ LPWSTR* commandLineList;
 int nArgs;
 int i;
 
+std::wstring wvScript(
+    L"document.onreadystatechange = () => {if (document.readyState === 'complete') {onkeydown = "
+    L"(e) => {if (e.ctrlKey && e.key === 'w') {window.chrome.webview.postMessage('close')} else "
+    L"{window.chrome.webview.postMessage(e.key)}}}}");
+
 // THEMING
 int darkMode;
 int ModeCheck();
 void DarkTitle();
-void DarkMode(HWND hwnd);
-void SetMica(HWND hwnd);
-bool ExtendFrame(HWND hwnd);
+void DarkMode(HWND);
+void SetMica(HWND);
+bool ExtendFrame(HWND);
 winrt::Windows::UI::ViewManagement::UISettings settingsCheck;
 winrt::Windows::UI::Color fgCheck;
 enum PreferredAppMode
@@ -80,18 +85,22 @@ bool micaFrame;
 int vkKeyTop = VK_F1;
 int vkKeyMax = VK_F10;
 int vkKeyFull = VK_F11;
+int vkKeyControl = VK_CONTROL;
+int vkKeyW = 0x57;
 std::wstring keyTop(L"F1");
 std::wstring keyMax(L"F10");
 std::wstring keyFull(L"F11");
-void KeyTop(HWND hwnd);
+std::wstring keyClose(L"close");
+void KeyTop(HWND);
 LRESULT topMost;
-void KeyMaximize(HWND hwnd);
-WINDOWPLACEMENT wp;
+void KeyMaximize(HWND);
+WINDOWPLACEMENT wPlacement;
 BOOL placement;
-void KeyFullscreen(HWND hwnd);
+void KeyFullscreen(HWND);
 static RECT position;
 LRESULT style;
 MONITORINFO mi;
+void KeyClose(HWND);
 
 // MISC
 std::wstring StringToWide(HINSTANCE, UINT);
