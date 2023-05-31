@@ -62,6 +62,9 @@ MARGINS m;
 HRESULT hrMica;
 
 // KEYBOARD SHORTCUTS
+int vkKeyTop = VK_F1;
+int vkKeyMax = VK_F10;
+int vkKeyFull = VK_F11;
 std::wstring keyTop(L"F1");
 std::wstring keyMax(L"F10");
 std::wstring keyFull(L"F11");

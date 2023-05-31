@@ -90,13 +90,6 @@ int WINAPI wWinMain(HINSTANCE histance, HINSTANCE hprevinstance, PWSTR pcmdline,
 
                                   EventRegistrationToken token;
 
-                                  //   wv->ExecuteScript(L"document.onreadystatechange = () => {if "
-                                  //                     L"(document.readyState === 'complete') "
-                                  //                     L"{onkeydown = (e) => "
-                                  //                     L"{window.chrome.webview.postMessage(e.key);}}}"
-                                  //                     L";",
-                                  //                     nullptr);
-
                                   wv->AddScriptToExecuteOnDocumentCreated(
                                       L"document.onreadystatechange = () => {if "
                                       L"(document.readyState === 'complete') "
@@ -215,15 +208,15 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 
     case WM_KEYDOWN:
     {
-        if (wp == VK_F1)
+        if (wp == vkKeyTop)
         {
             KeyTop(hwnd);
         }
-        if (wp == VK_F10)
+        if (wp == vkKeyMax)
         {
             KeyMaximize(hwnd);
         }
-        if (wp == VK_F11)
+        if (wp == vkKeyFull)
         {
             KeyFullscreen(hwnd);
         }
