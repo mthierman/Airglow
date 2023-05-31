@@ -20,7 +20,8 @@ int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int nc
     darkMode = ModeCheck();
     DarkTitle();
     DarkMode(hwnd);
-    // ExtendFrame(hwnd);
+    micaFrame = ExtendFrame(hwnd);
+    // SetMica(hwnd);
     ShowWindow(hwnd, ncs);
 
     CreateCoreWebView2EnvironmentWithOptions(
@@ -136,11 +137,15 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
         HDC hdc = BeginPaint(hwnd, &ps);
         RECT rect;
         GetClientRect(hwnd, &rect);
-        if (darkMode)
+        if (micaFrame)
+        {
+            FillRect(hdc, &rect, blackBrush);
+        }
+        if (!micaFrame && darkMode)
         {
             FillRect(hdc, &rect, darkBrush);
         }
-        if (!darkMode)
+        if (!micaFrame && !darkMode)
         {
             FillRect(hdc, &rect, lightBrush);
         }
@@ -234,9 +239,9 @@ ATOM Application(HINSTANCE hinstance)
     cursor = (HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED);
 
     hollowBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
-
+    blackBrush = CreateSolidBrush(RGB(0, 0, 0));
+    whiteBrush = CreateSolidBrush(RGB(255, 255, 255));
     darkBrush = CreateSolidBrush(RGB(32, 32, 32));
-
     lightBrush = CreateSolidBrush(RGB(243, 243, 243));
 
     wcex = {};
@@ -301,15 +306,17 @@ void SetMica(HWND hwnd)
     hrMica = DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &mica, sizeof(&mica));
 }
 
-void ExtendFrame(HWND hwnd)
+bool ExtendFrame(HWND hwnd)
 {
-    m = {-1, -1, -1, -1};
+    m = {-1};
     hrExtend = S_OK;
     hrExtend = DwmExtendFrameIntoClientArea(hwnd, &m);
     if (SUCCEEDED(hrExtend))
     {
         SetMica(hwnd);
+        return true;
     }
+    return false;
 }
 
 void KeyTop(HWND hwnd)

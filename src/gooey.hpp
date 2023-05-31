@@ -1,6 +1,4 @@
 // MAIN
-// ATOM RegisterClassExW(WNDCLASSEX window);
-// HINSTANCE hinstance;
 int APIENTRY wWinMain(HINSTANCE, HINSTANCE, PWSTR, int);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 ATOM Application(HINSTANCE);
@@ -15,12 +13,13 @@ std::wstring wvAdditionalBrowserArgsValue(L"--enable-features=OverlayScrollbar,"
                                           L"msWebView2BrowserHitTransparent"
                                           L" --disable-features=msWebOOUI,msPdfOOUI");
 std::wstring programIcon(L"PROGRAM_ICON");
-// std::string programIcon("PROGRAM_ICON");
 
 // WINDOW
 HICON icon;
 HCURSOR cursor;
 HBRUSH hollowBrush;
+HBRUSH blackBrush;
+HBRUSH whiteBrush;
 HBRUSH darkBrush;
 HBRUSH lightBrush;
 WNDCLASSEXW wcex;
@@ -47,7 +46,7 @@ int ModeCheck();
 void DarkTitle();
 void DarkMode(HWND hwnd);
 void SetMica(HWND hwnd);
-void ExtendFrame(HWND hwnd);
+bool ExtendFrame(HWND hwnd);
 winrt::Windows::UI::ViewManagement::UISettings settingsCheck;
 winrt::Windows::UI::Color fgCheck;
 enum PreferredAppMode
@@ -66,6 +65,7 @@ HRESULT hrExtend;
 DWM_SYSTEMBACKDROP_TYPE mica;
 MARGINS m;
 HRESULT hrMica;
+bool micaFrame;
 
 // KEYBOARD SHORTCUTS
 int vkKeyTop = VK_F1;
