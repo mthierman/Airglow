@@ -1,6 +1,5 @@
 #include "gooey.hpp"
-
-#define PROGRAM_ICON 1
+#include "resource.hpp"
 
 int WINAPI wWinMain(HINSTANCE histance, HINSTANCE hprevinstance, PWSTR pcmdline, int ncmdshow)
 {
@@ -147,6 +146,8 @@ int WINAPI wWinMain(HINSTANCE histance, HINSTANCE hprevinstance, PWSTR pcmdline,
                 return S_OK;
             })
             .Get());
+
+    auto menu = CreateMenu();
 
     msg = {};
     while (GetMessage(&msg, nullptr, 0, 0))
