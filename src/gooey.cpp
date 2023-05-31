@@ -2,53 +2,54 @@
 
 #define PROGRAM_ICON 1
 
-int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance, PWSTR pcmdline, int ncmdshow)
+int WINAPI wWinMain(HINSTANCE histance, HINSTANCE hprevinstance, PWSTR pcmdline, int ncmdshow)
 {
     SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 
-    SetEnvironmentVariableW(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR", L"0");
-    SetEnvironmentVariableW(L"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
-                            L"--enable-features=OverlayScrollbar,"
-                            L"msOverlayScrollbarWinStyle:scrollbar_mode/"
-                            L"full_mode,msOverlayScrollbarWinStyleAnimation,"
-                            L"msWebView2BrowserHitTransparent"
-                            L" --disable-features=msWebOOUI,msPdfOOUI");
+    SetEnvironmentVariable(wvBackgroundColor.c_str(), wvBackgroundColorValue.c_str());
 
-    auto icon = (HICON)LoadImageW(histance, L"PROGRAM_ICON", IMAGE_ICON, 0, 0,
-                                  LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
+    SetEnvironmentVariable(wvAdditionalBrowserArgs.c_str(), wvAdditionalBrowserArgsValue.c_str());
 
-    darkBrush = CreateSolidBrush(RGB(0, 0, 0));
-    lightBrush = CreateSolidBrush(RGB(255, 255, 255));
+    icon = (HICON)LoadImage(histance, programIcon.c_str(), IMAGE_ICON, 0, 0,
+                            LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
+
+    cursor = (HCURSOR)LoadImage(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED);
+
     hollowBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
 
-    WNDCLASSEXW wcex = {};
+    blackBrush = CreateSolidBrush(RGB(0, 0, 0));
+
+    whiteBrush = CreateSolidBrush(RGB(255, 255, 255));
+
+    wcex = {};
     wcex.cbSize = sizeof(WNDCLASSEX);
     wcex.style = 0;
     wcex.lpfnWndProc = WndProc;
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
     wcex.hInstance = histance;
-    wcex.hCursor = (HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED);
+    wcex.hCursor = cursor;
     wcex.hbrBackground = hollowBrush;
-    wcex.lpszMenuName = L"menu";
-    wcex.lpszClassName = L"window";
+    wcex.lpszMenuName = menuName.c_str();
+    wcex.lpszClassName = className.c_str();
     wcex.hIcon = icon;
     wcex.hIconSm = icon;
 
-    RegisterClassExW(&wcex);
+    RegisterClassEx(&wcex);
 
-    HWND hwnd =
-        CreateWindowExW(0, L"window", L"Gooey", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
-                        CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, histance, nullptr);
+    auto hwnd = CreateWindowEx(0, className.c_str(), windowName.c_str(), WS_OVERLAPPEDWINDOW,
+                               CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
+                               nullptr, histance, nullptr);
 
     if (!hwnd)
     {
         return 0;
     }
 
-    lightMode = ModeCheck();
+    darkMode = ModeCheck();
     DarkTitle();
     DarkMode(hwnd);
+    ExtendFrame(hwnd);
     ShowWindow(hwnd, ncmdshow);
 
     CreateCoreWebView2EnvironmentWithOptions(
@@ -66,25 +67,35 @@ int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance, PWSTR pcmdlin
                                       wv_controller = controller;
                                       wv_controller->get_CoreWebView2(&wv);
                                   }
+
                                   wv->get_Settings(&wv_settings);
-                                  wv_settings->put_IsScriptEnabled(TRUE);
-                                  wv_settings->put_AreDefaultScriptDialogsEnabled(TRUE);
-                                  wv_settings->put_IsWebMessageEnabled(TRUE);
+
+                                  wv_settings->put_AreDefaultContextMenusEnabled(true);
+                                  wv_settings->put_AreDefaultScriptDialogsEnabled(true);
+                                  wv_settings->put_AreDevToolsEnabled(true);
+                                  wv_settings->put_AreHostObjectsAllowed(true);
+                                  wv_settings->put_IsBuiltInErrorPageEnabled(true);
+                                  wv_settings->put_IsScriptEnabled(true);
+                                  wv_settings->put_IsStatusBarEnabled(true);
+                                  wv_settings->put_IsWebMessageEnabled(true);
+                                  wv_settings->put_IsZoomControlEnabled(true);
 
                                   RECT bounds;
+
                                   GetClientRect(hwnd, &bounds);
+
                                   wv_controller->put_Bounds(bounds);
 
                                   WebViewNavigate(wv);
 
                                   EventRegistrationToken token;
 
-                                  wv->ExecuteScript(L"document.onreadystatechange = () => {if "
-                                                    L"(document.readyState === 'complete') "
-                                                    L"{onkeydown = (e) => "
-                                                    L"{window.chrome.webview.postMessage(e.key);}}}"
-                                                    L";",
-                                                    nullptr);
+                                  //   wv->ExecuteScript(L"document.onreadystatechange = () => {if "
+                                  //                     L"(document.readyState === 'complete') "
+                                  //                     L"{onkeydown = (e) => "
+                                  //                     L"{window.chrome.webview.postMessage(e.key);}}}"
+                                  //                     L";",
+                                  //                     nullptr);
 
                                   wv->AddScriptToExecuteOnDocumentCreated(
                                       L"document.onreadystatechange = () => {if "
@@ -102,20 +113,26 @@ int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance, PWSTR pcmdlin
                                               -> HRESULT
                                           {
                                               wil::unique_cotaskmem_string message;
+
                                               args->TryGetWebMessageAsString(&message);
-                                              if ((std::wstring)message.get() == L"F1")
+
+                                              if ((std::wstring)message.get() == keyTop.c_str())
                                               {
                                                   KeyTop(hwnd);
                                               }
-                                              if ((std::wstring)message.get() == L"F2")
+
+                                              if ((std::wstring)message.get() == keyMax.c_str())
                                               {
                                                   KeyMaximize(hwnd);
                                               }
-                                              if ((std::wstring)message.get() == L"F11")
+
+                                              if ((std::wstring)message.get() == keyFull.c_str())
                                               {
                                                   KeyFullscreen(hwnd);
                                               }
+
                                               webview->PostWebMessageAsString(message.get());
+
                                               return S_OK;
                                           })
                                           .Get(),
@@ -127,7 +144,7 @@ int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance, PWSTR pcmdlin
             })
             .Get());
 
-    MSG msg = {};
+    msg = {};
     while (GetMessage(&msg, nullptr, 0, 0))
     {
         TranslateMessage(&msg);
@@ -137,26 +154,28 @@ int APIENTRY wWinMain(HINSTANCE histance, HINSTANCE hprevinstance, PWSTR pcmdlin
     return 0;
 }
 
-LRESULT CALLBACK WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
+LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {
-    switch (umsg)
+    switch (msg)
     {
+
     case WM_PAINT:
     {
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hwnd, &ps);
         RECT rect;
         GetClientRect(hwnd, &rect);
-        if (lightMode)
+        if (darkMode)
         {
-            FillRect(hdc, &rect, darkBrush);
+            FillRect(hdc, &rect, blackBrush);
         }
-        if (!lightMode)
+        if (!darkMode)
         {
-            FillRect(hdc, &rect, lightBrush);
+            FillRect(hdc, &rect, whiteBrush);
         }
     }
     break;
+
     case WM_SETFOCUS:
     {
         if (wv_controller != nullptr)
@@ -166,50 +185,65 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
         }
     }
     break;
+
     case WM_SETTINGCHANGE:
     {
-        lightMode = ModeCheck();
+        darkMode = ModeCheck();
         InvalidateRect(hwnd, NULL, true);
         DarkMode(hwnd);
     }
     break;
+
     case WM_SIZE:
+    {
         if (wv_controller != nullptr)
         {
             RECT bounds;
             GetClientRect(hwnd, &bounds);
             wv_controller->put_Bounds(bounds);
         }
-        break;
-    case WM_GETMINMAXINFO:
-    {
-        LPMINMAXINFO lp = (LPMINMAXINFO)lparam;
-        lp->ptMinTrackSize.x = 300;
-        lp->ptMinTrackSize.y = 39;
     }
     break;
+
+    case WM_GETMINMAXINFO:
+    {
+        LPMINMAXINFO minmax = (LPMINMAXINFO)lp;
+        minmax->ptMinTrackSize.x = 300;
+        minmax->ptMinTrackSize.y = 39;
+    }
+    break;
+
     case WM_KEYDOWN:
-        if (wparam == VK_F1)
+    {
+        if (wp == VK_F1)
         {
             KeyTop(hwnd);
         }
-        if (wparam == VK_F2)
+        if (wp == VK_F10)
         {
             KeyMaximize(hwnd);
         }
-        if (wparam == VK_F11)
+        if (wp == VK_F11)
         {
             KeyFullscreen(hwnd);
         }
-        break;
+    }
+    break;
+
     case WM_CLOSE:
+    {
         DestroyWindow(hwnd);
-        break;
+    }
+    break;
+
     case WM_DESTROY:
+    {
         PostQuitMessage(0);
-        break;
+    }
+    break;
+
     default:
-        return DefWindowProcW(hwnd, umsg, wparam, lparam);
+        return DefWindowProcW(hwnd, msg, wp, lp);
     }
 
     return 0;
@@ -217,27 +251,19 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
 
 int ModeCheck()
 {
-    auto settings = winrt::Windows::UI::ViewManagement::UISettings();
-    auto foreground =
-        settings.GetColorValue(winrt::Windows::UI::ViewManagement::UIColorType::Foreground);
-    return (((5 * foreground.G) + (2 * foreground.R) + foreground.B) > (8 * 128));
+    settingsCheck = winrt::Windows::UI::ViewManagement::UISettings();
+    fgCheck =
+        settingsCheck.GetColorValue(winrt::Windows::UI::ViewManagement::UIColorType::Foreground);
+    return (((5 * fgCheck.G) + (2 * fgCheck.R) + fgCheck.B) > (8 * 128));
 }
 
 void DarkTitle()
 {
-    enum PreferredAppMode
-    {
-        Default,
-        AllowDark,
-        ForceDark,
-        ForceLight,
-        Max
-    };
     using fnSetPreferredAppMode = PreferredAppMode(WINAPI*)(PreferredAppMode appMode);
-    auto uxtheme = LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
+    uxtheme = LoadLibraryEx(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
     if (uxtheme)
     {
-        auto ord135 = GetProcAddress(uxtheme, PCSTR MAKEINTRESOURCEW(135));
+        ord135 = GetProcAddress(uxtheme, PCSTR MAKEINTRESOURCEW(135));
         if (ord135)
         {
             auto SetPreferredAppMode = reinterpret_cast<fnSetPreferredAppMode>(ord135);
@@ -249,14 +275,13 @@ void DarkTitle()
 
 void DarkMode(HWND hwnd)
 {
-    auto dwmtrue = TRUE;
-    auto dwmfalse = FALSE;
-    auto mode = ModeCheck();
-    if (mode)
+    dwmtrue = TRUE;
+    dwmfalse = FALSE;
+    if (darkMode)
     {
         DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmtrue, sizeof(dwmtrue));
     }
-    if (!mode)
+    if (!darkMode)
     {
         DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmfalse, sizeof(dwmfalse));
     }
@@ -264,17 +289,17 @@ void DarkMode(HWND hwnd)
 
 void SetMica(HWND hwnd)
 {
-    HRESULT hr = S_OK;
-    auto mica = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
-    hr = DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &mica, sizeof(&mica));
+    hrMica = S_OK;
+    mica = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
+    hrMica = DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &mica, sizeof(&mica));
 }
 
 void ExtendFrame(HWND hwnd)
 {
-    MARGINS m = {-1, -1, -1, -1};
-    HRESULT hr = S_OK;
-    hr = DwmExtendFrameIntoClientArea(hwnd, &m);
-    if (SUCCEEDED(hr))
+    m = {-1, -1, -1, -1};
+    hrExtend = S_OK;
+    hrExtend = DwmExtendFrameIntoClientArea(hwnd, &m);
+    if (SUCCEEDED(hrExtend))
     {
         SetMica(hwnd);
     }
@@ -282,8 +307,8 @@ void ExtendFrame(HWND hwnd)
 
 void KeyTop(HWND hwnd)
 {
-    auto topmost = GetWindowLongPtrW(hwnd, GWL_EXSTYLE);
-    if (topmost & WS_EX_TOPMOST)
+    topMost = GetWindowLongPtrW(hwnd, GWL_EXSTYLE);
+    if (topMost & WS_EX_TOPMOST)
     {
         SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
     }
@@ -295,9 +320,9 @@ void KeyTop(HWND hwnd)
 
 void KeyMaximize(HWND hwnd)
 {
-    WINDOWPLACEMENT wp = {};
+    wp = {};
     wp.length = sizeof(WINDOWPLACEMENT);
-    auto placement = GetWindowPlacement(hwnd, &wp);
+    placement = GetWindowPlacement(hwnd, &wp);
     if (wp.showCmd == SW_SHOWNORMAL)
     {
         ShowWindow(hwnd, SW_MAXIMIZE);
@@ -310,15 +335,14 @@ void KeyMaximize(HWND hwnd)
 
 void KeyFullscreen(HWND hwnd)
 {
-    static RECT position;
-    auto style = GetWindowLongPtrW(hwnd, GWL_STYLE);
+    style = GetWindowLongPtr(hwnd, GWL_STYLE);
     if (style & WS_OVERLAPPEDWINDOW)
     {
-        MONITORINFO mi = {sizeof(mi)};
+        mi = {sizeof(mi)};
         GetWindowRect(hwnd, &position);
-        if (GetMonitorInfoW(MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST), &mi))
+        if (GetMonitorInfo(MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST), &mi))
         {
-            SetWindowLongPtrW(hwnd, GWL_STYLE, style & ~WS_OVERLAPPEDWINDOW);
+            SetWindowLongPtr(hwnd, GWL_STYLE, style & ~WS_OVERLAPPEDWINDOW);
             SetWindowPos(hwnd, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top,
                          mi.rcMonitor.right - mi.rcMonitor.left,
                          mi.rcMonitor.bottom - mi.rcMonitor.top,
@@ -327,7 +351,7 @@ void KeyFullscreen(HWND hwnd)
     }
     else
     {
-        SetWindowLongPtrW(hwnd, GWL_STYLE, style | WS_OVERLAPPEDWINDOW);
+        SetWindowLongPtr(hwnd, GWL_STYLE, style | WS_OVERLAPPEDWINDOW);
         SetWindowPos(hwnd, nullptr, 0, 0, 0, 0,
                      SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
         SetWindowPos(hwnd, nullptr, position.left, position.top, (position.right - position.left),
@@ -337,18 +361,15 @@ void KeyFullscreen(HWND hwnd)
 
 void WebViewNavigate(wil::com_ptr<ICoreWebView2> wv)
 {
-    auto commandline = GetCommandLineW();
-    LPWSTR* szArglist;
-    int nArgs;
-    int i;
-    szArglist = CommandLineToArgvW(commandline, &nArgs);
-    if (0 == szArglist[1])
+    commandLine = GetCommandLineW();
+    commandLineList = CommandLineToArgvW(commandLine, &nArgs);
+    if (0 == commandLineList[1])
     {
         wv->Navigate(L"about:blank");
     }
     for (i = 1; i < nArgs; i++)
     {
-        wv->Navigate(szArglist[i]);
+        wv->Navigate(commandLineList[i]);
     }
-    LocalFree(szArglist);
+    LocalFree(commandLineList);
 }

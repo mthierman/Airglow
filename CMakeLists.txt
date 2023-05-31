@@ -62,3 +62,9 @@ target_link_libraries(
     WebView2LoaderStatic.lib
     dwmapi.lib
 )
+
+target_compile_definitions(
+    ${PROJECT_NAME}
+    PRIVATE
+    UNICODE
+)
