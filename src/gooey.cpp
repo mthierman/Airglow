@@ -8,7 +8,7 @@ int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int nc
     SetEnvironmentVariableW(wvBackgroundColor.c_str(), wvBackgroundColorValue.c_str());
 
     SetEnvironmentVariableW(wvAdditionalBrowserArgs.c_str(), wvAdditionalBrowserArgsValue.c_str());
-    
+
     Application(hinstance);
 
     auto hwnd = CreateWindowExW(0, className.c_str(), windowName.c_str(), WS_OVERLAPPEDWINDOW,
@@ -210,7 +210,14 @@ int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int nc
             })
             .Get());
 
-    // auto menu = CreateMenu();
+    auto menuHandle = GetSystemMenu(hwnd, false);
+    MENUITEMINFOW menu;
+    menu.cbSize = sizeof(MENUITEMINFOW);
+    menu.fMask = MIIM_STRING | MIIM_ID;
+    menu.wID = 1005;
+    menu.dwTypeData = (LPWSTR)L"Toggle Theme";
+
+    InsertMenuItemW(menuHandle, 1, FALSE, &menu);
 
     msg = {};
     while (GetMessageW(&msg, nullptr, 0, 0))
