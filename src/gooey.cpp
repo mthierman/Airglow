@@ -20,7 +20,7 @@ int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int nc
     darkMode = ModeCheck();
     DarkTitle();
     DarkMode(hwnd);
-    // micaFrame = ExtendFrame(hwnd);
+    micaFrame = ExtendFrame(hwnd);
     // SetMica(hwnd);
     ShowWindow(hwnd, ncs);
 
@@ -66,6 +66,13 @@ int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int nc
                                   WebViewNavigate(wv);
 
                                   EventRegistrationToken token;
+
+                                  wv->ExecuteScript(L"document.onreadystatechange = () => {if "
+                                                    L"(document.readyState === 'complete') "
+                                                    L"{onkeydown = (e) => "
+                                                    L"{window.chrome.webview.postMessage(e.key);}}}"
+                                                    L";",
+                                                    nullptr);
 
                                   wv->AddScriptToExecuteOnDocumentCreated(
                                       L"document.onreadystatechange = () => {if "
@@ -120,86 +127,94 @@ int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int nc
             [hwnd](HRESULT result, ICoreWebView2Environment* env) -> HRESULT
             {
                 env->CreateCoreWebView2Controller(
-                    hwnd, Microsoft::WRL::Callback<
-                              ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                              [hwnd](HRESULT result, ICoreWebView2Controller* controller) -> HRESULT
-                              {
-                                  if (controller != nullptr)
-                                  {
-                                      wv_controller2 = controller;
-                                      wv_controller2->get_CoreWebView2(&wv2);
-                                  }
+                    hwnd,
+                    Microsoft::WRL::Callback<
+                        ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+                        [hwnd](HRESULT result, ICoreWebView2Controller* controller) -> HRESULT
+                        {
+                            if (controller != nullptr)
+                            {
+                                wv_controller2 = controller;
+                                wv_controller2->get_CoreWebView2(&wv2);
+                            }
 
-                                  wv2->get_Settings(&wv_settings2);
+                            wv2->get_Settings(&wv_settings2);
 
-                                  wv_settings2->put_AreDefaultContextMenusEnabled(true);
-                                  wv_settings2->put_AreDefaultScriptDialogsEnabled(true);
-                                  wv_settings2->put_AreDevToolsEnabled(true);
-                                  wv_settings2->put_AreHostObjectsAllowed(true);
-                                  wv_settings2->put_IsBuiltInErrorPageEnabled(true);
-                                  wv_settings2->put_IsScriptEnabled(true);
-                                  wv_settings2->put_IsStatusBarEnabled(true);
-                                  wv_settings2->put_IsWebMessageEnabled(true);
-                                  wv_settings2->put_IsZoomControlEnabled(true);
+                            wv_settings2->put_AreDefaultContextMenusEnabled(true);
+                            wv_settings2->put_AreDefaultScriptDialogsEnabled(true);
+                            wv_settings2->put_AreDevToolsEnabled(true);
+                            wv_settings2->put_AreHostObjectsAllowed(true);
+                            wv_settings2->put_IsBuiltInErrorPageEnabled(true);
+                            wv_settings2->put_IsScriptEnabled(true);
+                            wv_settings2->put_IsStatusBarEnabled(true);
+                            wv_settings2->put_IsWebMessageEnabled(true);
+                            wv_settings2->put_IsZoomControlEnabled(true);
 
-                                  GetClientRect(hwnd, &bounds2);
+                            GetClientRect(hwnd, &bounds2);
 
-                                  wvRect2 = {
-                                      bounds2.right / 2,
-                                      bounds2.top,
-                                      bounds2.right,
-                                      bounds2.bottom,
-                                  };
+                            wvRect2 = {
+                                bounds2.right / 2,
+                                bounds2.top,
+                                bounds2.right,
+                                bounds2.bottom,
+                            };
 
-                                  wv_controller2->put_Bounds(wvRect2);
+                            wv_controller2->put_Bounds(wvRect2);
 
-                                  WebViewNavigate(wv2);
+                            WebViewNavigate(wv2);
 
-                                  EventRegistrationToken token;
+                            EventRegistrationToken token;
 
-                                  wv2->AddScriptToExecuteOnDocumentCreated(
-                                      L"document.onreadystatechange = () => {if "
-                                      L"(document.readyState === 'complete') "
-                                      L"{onkeydown = (e) => "
-                                      L"{window.chrome.webview.postMessage(e.key);}}}"
-                                      L";",
-                                      nullptr);
+                            wv2->ExecuteScript(L"document.onreadystatechange = () => {if "
+                                               L"(document.readyState === 'complete') "
+                                               L"{onkeydown = (e) => "
+                                               L"{window.chrome.webview.postMessage(e.key);}}}"
+                                               L";",
+                                               nullptr);
 
-                                  wv2->add_WebMessageReceived(
-                                      Microsoft::WRL::Callback<
-                                          ICoreWebView2WebMessageReceivedEventHandler>(
-                                          [hwnd](ICoreWebView2* webview,
-                                                 ICoreWebView2WebMessageReceivedEventArgs* args)
-                                              -> HRESULT
-                                          {
-                                              wil::unique_cotaskmem_string message;
+                            wv2->AddScriptToExecuteOnDocumentCreated(
+                                L"document.onreadystatechange = () => {if "
+                                L"(document.readyState === 'complete') "
+                                L"{onkeydown = (e) => "
+                                L"{window.chrome.webview.postMessage(e.key);}}}"
+                                L";",
+                                nullptr);
 
-                                              args->TryGetWebMessageAsString(&message);
+                            wv2->add_WebMessageReceived(
+                                Microsoft::WRL::Callback<
+                                    ICoreWebView2WebMessageReceivedEventHandler>(
+                                    [hwnd](
+                                        ICoreWebView2* webview,
+                                        ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT
+                                    {
+                                        wil::unique_cotaskmem_string message;
 
-                                              if ((std::wstring)message.get() == keyTop.c_str())
-                                              {
-                                                  KeyTop(hwnd);
-                                              }
+                                        args->TryGetWebMessageAsString(&message);
 
-                                              if ((std::wstring)message.get() == keyMax.c_str())
-                                              {
-                                                  KeyMaximize(hwnd);
-                                              }
+                                        if ((std::wstring)message.get() == keyTop.c_str())
+                                        {
+                                            KeyTop(hwnd);
+                                        }
 
-                                              if ((std::wstring)message.get() == keyFull.c_str())
-                                              {
-                                                  KeyFullscreen(hwnd);
-                                              }
+                                        if ((std::wstring)message.get() == keyMax.c_str())
+                                        {
+                                            KeyMaximize(hwnd);
+                                        }
 
-                                              webview->PostWebMessageAsString(message.get());
+                                        if ((std::wstring)message.get() == keyFull.c_str())
+                                        {
+                                            KeyFullscreen(hwnd);
+                                        }
 
-                                              return S_OK;
-                                          })
-                                          .Get(),
-                                      &token);
-                                  return S_OK;
-                              })
-                              .Get());
+                                        webview->PostWebMessageAsString(message.get());
+
+                                        return S_OK;
+                                    })
+                                    .Get(),
+                                &token);
+                            return S_OK;
+                        })
+                        .Get());
                 return S_OK;
             })
             .Get());

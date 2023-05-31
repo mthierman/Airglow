@@ -87,7 +87,7 @@ void KeyTop(HWND hwnd);
 LRESULT topMost;
 void KeyMaximize(HWND hwnd);
 WINDOWPLACEMENT wp;
-int placement;
+BOOL placement;
 void KeyFullscreen(HWND hwnd);
 static RECT position;
 LRESULT style;
