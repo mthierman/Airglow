@@ -21,7 +21,6 @@ int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int nc
     DarkTitle();
     DarkMode(hwnd);
     micaFrame = ExtendFrame(hwnd);
-    // SetMica(hwnd);
     ShowWindow(hwnd, ncs);
 
     CreateCoreWebView2EnvironmentWithOptions(

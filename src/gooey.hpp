@@ -43,16 +43,15 @@ static wil::com_ptr<ICoreWebView2> wv2;
 static wil::com_ptr<ICoreWebView2Settings> wv_settings2;
 
 // WEBVIEW
+std::wstring wvScript(
+    L"document.onreadystatechange = () => {if (document.readyState === 'complete') {onkeydown = "
+    L"(e) => {if (e.ctrlKey && e.key === 'w') {window.chrome.webview.postMessage('close')} else "
+    L"{window.chrome.webview.postMessage(e.key)}}}}");
 void WebViewNavigate(wil::com_ptr<ICoreWebView2>);
 LPWSTR commandLine;
 LPWSTR* commandLineList;
 int nArgs;
 int i;
-
-std::wstring wvScript(
-    L"document.onreadystatechange = () => {if (document.readyState === 'complete') {onkeydown = "
-    L"(e) => {if (e.ctrlKey && e.key === 'w') {window.chrome.webview.postMessage('close')} else "
-    L"{window.chrome.webview.postMessage(e.key)}}}}");
 
 // THEMING
 int darkMode;
