@@ -49,10 +49,10 @@ int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int nc
         return 0;
     }
 
-    darkMode = ModeCheck();
+    auto darkMode = ModeCheck();
     DarkTitle();
     DarkMode(hwnd);
-    micaFrame = ExtendFrame(hwnd);
+    auto micaFrame = ExtendFrame(hwnd);
     ShowWindow(hwnd, ncs);
 
     CreateCoreWebView2EnvironmentWithOptions(
@@ -83,6 +83,9 @@ int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int nc
                             wv_settings->put_IsStatusBarEnabled(true);
                             wv_settings->put_IsWebMessageEnabled(true);
                             wv_settings->put_IsZoomControlEnabled(true);
+
+                            RECT bounds;
+                            RECT wvRect;
 
                             GetClientRect(hwnd, &bounds);
 
@@ -176,6 +179,9 @@ int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int nc
                             wv_settings2->put_IsWebMessageEnabled(true);
                             wv_settings2->put_IsZoomControlEnabled(true);
 
+                            RECT bounds2;
+                            RECT wvRect2;
+
                             GetClientRect(hwnd, &bounds2);
 
                             wvRect2 = {
@@ -248,7 +254,7 @@ int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int nc
 
     InsertMenuItemW(menuHandle, 1, FALSE, &menu);
 
-    msg = {};
+    MSG msg = {};
     while (GetMessageW(&msg, nullptr, 0, 0))
     {
         TranslateMessage(&msg);
@@ -265,8 +271,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 
     case WM_PAINT:
     {
-        // auto compositor = winrt::Windows::UI::Composition::Compositor::Compositor();
-        // auto brush = compositor.CreateHostBackdropBrush();
+        auto blackBrush = CreateSolidBrush(RGB(0, 0, 0));
+        auto whiteBrush = CreateSolidBrush(RGB(255, 255, 255));
+        auto darkBrush = CreateSolidBrush(RGB(32, 32, 32));
+        auto lightBrush = CreateSolidBrush(RGB(243, 243, 243));
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hwnd, &ps);
         RECT rect;
@@ -316,7 +324,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
         {
             RECT bounds;
             GetClientRect(hwnd, &bounds);
-            wvRect = {
+            RECT wvRect = {
                 bounds.left,
                 bounds.top,
                 bounds.right / 2,
@@ -328,7 +336,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
         {
             RECT bounds2;
             GetClientRect(hwnd, &bounds2);
-            wvRect2 = {
+            RECT wvRect2 = {
                 bounds2.right / 2,
                 bounds2.top,
                 bounds2.right,
@@ -394,18 +402,14 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 
 ATOM Application(HINSTANCE hinstance)
 {
-    icon = (HICON)LoadImageW(hinstance, programIcon.c_str(), IMAGE_ICON, 0, 0,
-                             LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
+    auto icon = (HICON)LoadImageW(hinstance, programIcon.c_str(), IMAGE_ICON, 0, 0,
+                                  LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
 
-    cursor = (HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED);
+    auto cursor = (HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED);
 
-    hollowBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
-    blackBrush = CreateSolidBrush(RGB(0, 0, 0));
-    whiteBrush = CreateSolidBrush(RGB(255, 255, 255));
-    darkBrush = CreateSolidBrush(RGB(32, 32, 32));
-    lightBrush = CreateSolidBrush(RGB(243, 243, 243));
+    auto hollowBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
 
-    wcex = {};
+    WNDCLASSEXW wcex = {};
     wcex.cbSize = sizeof(WNDCLASSEX);
     wcex.style = 0;
     wcex.lpfnWndProc = WndProc;
@@ -424,8 +428,8 @@ ATOM Application(HINSTANCE hinstance)
 
 int ModeCheck()
 {
-    settingsCheck = winrt::Windows::UI::ViewManagement::UISettings();
-    fgCheck =
+    auto settingsCheck = winrt::Windows::UI::ViewManagement::UISettings();
+    auto fgCheck =
         settingsCheck.GetColorValue(winrt::Windows::UI::ViewManagement::UIColorType::Foreground);
     return (((5 * fgCheck.G) + (2 * fgCheck.R) + fgCheck.B) > (8 * 128));
 }
@@ -433,10 +437,10 @@ int ModeCheck()
 void DarkTitle()
 {
     using fnSetPreferredAppMode = PreferredAppMode(WINAPI*)(PreferredAppMode appMode);
-    uxtheme = LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
+    auto uxtheme = LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
     if (uxtheme)
     {
-        ord135 = GetProcAddress(uxtheme, PCSTR MAKEINTRESOURCEW(135));
+        auto ord135 = GetProcAddress(uxtheme, PCSTR MAKEINTRESOURCEW(135));
         if (ord135)
         {
             auto SetPreferredAppMode = reinterpret_cast<fnSetPreferredAppMode>(ord135);
@@ -448,8 +452,9 @@ void DarkTitle()
 
 void DarkMode(HWND hwnd)
 {
-    dwmtrue = TRUE;
-    dwmfalse = FALSE;
+    auto darkMode = ModeCheck();
+    auto dwmtrue = TRUE;
+    auto dwmfalse = FALSE;
     auto checkAccent = winrt::Windows::UI::ViewManagement::UISettings().GetColorValue(
         winrt::Windows::UI::ViewManagement::UIColorType::Accent);
     auto accent = RGB(checkAccent.R, checkAccent.G, checkAccent.B);
@@ -481,15 +486,15 @@ void DarkMode(HWND hwnd)
 
 void SetMica(HWND hwnd)
 {
-    micaFrame = S_OK;
-    mica = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
+    auto micaFrame = S_OK;
+    auto mica = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
     micaFrame = DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &mica, sizeof(&mica));
 }
 
 bool ExtendFrame(HWND hwnd)
 {
-    m = {-1};
-    hrExtend = S_OK;
+    MARGINS m = {-1};
+    auto hrExtend = S_OK;
     hrExtend = DwmExtendFrameIntoClientArea(hwnd, &m);
     if (SUCCEEDED(hrExtend))
     {
@@ -501,7 +506,7 @@ bool ExtendFrame(HWND hwnd)
 
 void KeyTop(HWND hwnd)
 {
-    topMost = GetWindowLongPtrW(hwnd, GWL_EXSTYLE);
+    auto topMost = GetWindowLongPtrW(hwnd, GWL_EXSTYLE);
     if (topMost & WS_EX_TOPMOST)
     {
         SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
@@ -514,9 +519,9 @@ void KeyTop(HWND hwnd)
 
 void KeyMaximize(HWND hwnd)
 {
-    wPlacement = {};
+    WINDOWPLACEMENT wPlacement = {};
     wPlacement.length = sizeof(WINDOWPLACEMENT);
-    placement = GetWindowPlacement(hwnd, &wPlacement);
+    auto placement = GetWindowPlacement(hwnd, &wPlacement);
     if (wPlacement.showCmd == SW_SHOWNORMAL)
     {
         ShowWindow(hwnd, SW_MAXIMIZE);
@@ -529,10 +534,11 @@ void KeyMaximize(HWND hwnd)
 
 void KeyFullscreen(HWND hwnd)
 {
-    style = GetWindowLongPtrW(hwnd, GWL_STYLE);
+    auto style = GetWindowLongPtrW(hwnd, GWL_STYLE);
+    static RECT position;
     if (style & WS_OVERLAPPEDWINDOW)
     {
-        mi = {sizeof(mi)};
+        MONITORINFO mi = {sizeof(mi)};
         GetWindowRect(hwnd, &position);
         if (GetMonitorInfoW(MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST), &mi))
         {
@@ -557,8 +563,10 @@ void KeyClose(HWND hwnd) { SendMessageW(hwnd, WM_CLOSE, 0, 0); }
 
 void WebViewNavigate(wil::com_ptr<ICoreWebView2> wv)
 {
-    commandLine = GetCommandLineW();
-    commandLineList = CommandLineToArgvW(commandLine, &nArgs);
+    int nArgs;
+    int i;
+    LPWSTR commandLine = GetCommandLineW();
+    LPWSTR* commandLineList = CommandLineToArgvW(commandLine, &nArgs);
     if (0 == commandLineList[1])
     {
         wv->Navigate(L"about:blank");
@@ -568,11 +576,4 @@ void WebViewNavigate(wil::com_ptr<ICoreWebView2> wv)
         wv->Navigate(commandLineList[i]);
     }
     LocalFree(commandLineList);
-}
-
-std::wstring StringToWide(HINSTANCE hinstance, UINT uID)
-{
-    PCWSTR pws;
-    int cch = LoadStringW(hinstance, uID, reinterpret_cast<LPWSTR>(&pws), 0);
-    return std::wstring(pws, cch);
 }

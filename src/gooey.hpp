@@ -16,30 +16,19 @@ std::wstring wvAdditionalBrowserArgsValue(L"--enable-features=OverlayScrollbar,"
                                           L" --disable-features=msWebOOUI,msPdfOOUI");
 
 // WINDOW
-HICON icon;
-HCURSOR cursor;
-HBRUSH hollowBrush;
-HBRUSH blackBrush;
-HBRUSH whiteBrush;
-HBRUSH darkBrush;
-HBRUSH lightBrush;
-WNDCLASSEXW wcex;
 std::wstring programIcon(L"PROGRAM_ICON");
 std::wstring menuName(L"menu");
 std::wstring className(L"window");
 std::wstring windowName(L"Gooey");
-MSG msg;
+bool micaFrame;
+bool darkMode;
 
 // WEBVIEW1
-RECT bounds;
-RECT wvRect;
 static wil::com_ptr<ICoreWebView2Controller> wv_controller;
 static wil::com_ptr<ICoreWebView2> wv;
 static wil::com_ptr<ICoreWebView2Settings> wv_settings;
 
 // WEBVIEW2
-RECT bounds2;
-RECT wvRect2;
 static wil::com_ptr<ICoreWebView2Controller> wv_controller2;
 static wil::com_ptr<ICoreWebView2> wv2;
 static wil::com_ptr<ICoreWebView2Settings> wv_settings2;
@@ -50,20 +39,13 @@ std::wstring wvScript(
     L"(e) => {if (e.ctrlKey && e.key === 'w') {window.chrome.webview.postMessage('close')} else "
     L"{window.chrome.webview.postMessage(e.key)}}}}");
 void WebViewNavigate(wil::com_ptr<ICoreWebView2>);
-LPWSTR commandLine;
-LPWSTR* commandLineList;
-int nArgs;
-int i;
 
 // THEMING
-int darkMode;
 int ModeCheck();
 void DarkTitle();
 void DarkMode(HWND);
 void SetMica(HWND);
 bool ExtendFrame(HWND);
-winrt::Windows::UI::ViewManagement::UISettings settingsCheck;
-winrt::Windows::UI::Color fgCheck;
 enum PreferredAppMode
 {
     Default,
@@ -72,15 +54,6 @@ enum PreferredAppMode
     ForceLight,
     Max
 };
-HMODULE uxtheme;
-FARPROC ord135;
-int dwmtrue;
-int dwmfalse;
-HRESULT hrExtend;
-DWM_SYSTEMBACKDROP_TYPE mica;
-MARGINS m;
-// HRESULT hrMica;
-bool micaFrame;
 
 // KEYBOARD SHORTCUTS
 int vkKeyTop = VK_F1;
@@ -93,15 +66,6 @@ std::wstring keyMax(L"F10");
 std::wstring keyFull(L"F11");
 std::wstring keyClose(L"close");
 void KeyTop(HWND);
-LRESULT topMost;
 void KeyMaximize(HWND);
-WINDOWPLACEMENT wPlacement;
-BOOL placement;
 void KeyFullscreen(HWND);
-static RECT position;
-LRESULT style;
-MONITORINFO mi;
 void KeyClose(HWND);
-
-// MISC
-std::wstring StringToWide(HINSTANCE, UINT);
