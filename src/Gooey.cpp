@@ -1,20 +1,33 @@
 #include "Gooey.hpp"
 
+void Color()
+{
+    auto checkAccent = winrt::Windows::UI::ViewManagement::UISettings().GetColorValue(
+        winrt::Windows::UI::ViewManagement::UIColorType::Accent);
+    auto accent = RGB(checkAccent.R, checkAccent.G, checkAccent.B);
+}
+
 void Debug()
 {
+    auto effects = winrt::Windows::UI::ViewManagement::UISettings().AdvancedEffectsEnabled();
     auto animations = winrt::Windows::UI::ViewManagement::UISettings().AnimationsEnabled();
     auto accent = winrt::Windows::UI::ViewManagement::UISettings().GetColorValue(
         winrt::Windows::UI::ViewManagement::UIColorType::Accent);
-    std::wstring foreground = L"R: " + std::to_wstring(accent.R) + L" G: " +
-                              std::to_wstring(accent.G) + L" B: " + std::to_wstring(accent.B) +
-                              L" A: " + std::to_wstring(accent.A);
-    OutputDebugStringW(foreground.c_str());
+    std::wstring accentFmt = L"R: " + std::to_wstring(accent.R) + L" G: " +
+                             std::to_wstring(accent.G) + L" B: " + std::to_wstring(accent.B) +
+                             L" A: " + std::to_wstring(accent.A);
+    OutputDebugStringW(accentFmt.c_str());
     OutputDebugStringW(L"\n");
+    if (effects)
+    {
+        OutputDebugStringW(L"Advanced Effects: Enabled");
+        OutputDebugStringW(L"\n");
+    };
     if (animations)
     {
         OutputDebugStringW(L"Animations: Enabled");
+        OutputDebugStringW(L"\n");
     };
-    OutputDebugStringW(L"\n");
 }
 
 int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
@@ -437,10 +450,17 @@ void DarkMode(HWND hwnd)
 {
     dwmtrue = TRUE;
     dwmfalse = FALSE;
-    COLORREF darkBorder = 0x00000000;
-    COLORREF darkText = 0x00FFFFFF;
-    COLORREF lightBorder = 0x00FFFFFF;
-    COLORREF lightText = 0x00000000;
+    auto checkAccent = winrt::Windows::UI::ViewManagement::UISettings().GetColorValue(
+        winrt::Windows::UI::ViewManagement::UIColorType::Accent);
+    auto accent = RGB(checkAccent.R, checkAccent.G, checkAccent.B);
+    // COLORREF darkBorder = 0x00000000;
+    // COLORREF darkText = 0x00FFFFFF;
+    // COLORREF lightBorder = 0x00FFFFFF;
+    // COLORREF lightText = 0x00000000;
+    COLORREF darkBorder = accent;
+    COLORREF darkText = accent;
+    COLORREF lightBorder = accent;
+    COLORREF lightText = accent;
     BOOL backdropBrush = TRUE;
     DwmSetWindowAttribute(hwnd, DWMWA_USE_HOSTBACKDROPBRUSH, &backdropBrush, sizeof(backdropBrush));
     if (darkMode)
@@ -448,14 +468,14 @@ void DarkMode(HWND hwnd)
         DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmtrue, sizeof(dwmtrue));
         DwmSetWindowAttribute(hwnd, DWMWA_BORDER_COLOR, &darkBorder, sizeof(darkBorder));
         DwmSetWindowAttribute(hwnd, DWMWA_CAPTION_COLOR, &darkBorder, sizeof(darkBorder));
-        DwmSetWindowAttribute(hwnd, DWMWA_TEXT_COLOR, &darkText, sizeof(darkText));
+        // DwmSetWindowAttribute(hwnd, DWMWA_TEXT_COLOR, &darkText, sizeof(darkText));
     }
     if (!darkMode)
     {
         DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmfalse, sizeof(dwmfalse));
         DwmSetWindowAttribute(hwnd, DWMWA_BORDER_COLOR, &lightBorder, sizeof(lightBorder));
         DwmSetWindowAttribute(hwnd, DWMWA_CAPTION_COLOR, &lightBorder, sizeof(lightBorder));
-        DwmSetWindowAttribute(hwnd, DWMWA_TEXT_COLOR, &lightText, sizeof(lightText));
+        // DwmSetWindowAttribute(hwnd, DWMWA_TEXT_COLOR, &lightText, sizeof(lightText));
     }
 }
 
