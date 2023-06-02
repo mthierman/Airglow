@@ -1,3 +1,5 @@
+#include "res.hpp"
+
 // MAIN
 int APIENTRY wWinMain(HINSTANCE, HINSTANCE, PWSTR, int);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -77,7 +79,7 @@ int dwmfalse;
 HRESULT hrExtend;
 DWM_SYSTEMBACKDROP_TYPE mica;
 MARGINS m;
-HRESULT hrMica;
+// HRESULT hrMica;
 bool micaFrame;
 
 // KEYBOARD SHORTCUTS

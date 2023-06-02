@@ -1,21 +1,20 @@
 #include "Gooey.hpp"
-#include "Resource.hpp"
 
-void TestFunc()
+void Debug()
 {
-    auto test = winrt::Windows::UI::ViewManagement::UISettings().AnimationsEnabled();
-    auto test2 = winrt::Windows::UI::ViewManagement::UISettings().GetColorValue(
+    auto animations = winrt::Windows::UI::ViewManagement::UISettings().AnimationsEnabled();
+    auto accent = winrt::Windows::UI::ViewManagement::UISettings().GetColorValue(
         winrt::Windows::UI::ViewManagement::UIColorType::Accent);
-    std::wstring red = std::to_wstring(test2.R);
-    std::wstring green = std::to_wstring(test2.R);
-    std::wstring blue = std::to_wstring(test2.R);
-    std::wstring alpha = std::to_wstring(test2.R);
-    std::wstring test3 = red + L", " + green + L", " + blue + L", " + alpha;
-    OutputDebugStringW(test3.c_str());
-    // if (test)
-    // {
-    //     OutputDebugStringW(L"TEST PASSED");
-    // };
+    std::wstring foreground = L"R: " + std::to_wstring(accent.R) + L" G: " +
+                              std::to_wstring(accent.G) + L" B: " + std::to_wstring(accent.B) +
+                              L" A: " + std::to_wstring(accent.A);
+    OutputDebugStringW(foreground.c_str());
+    OutputDebugStringW(L"\n");
+    if (animations)
+    {
+        OutputDebugStringW(L"Animations: Enabled");
+    };
+    OutputDebugStringW(L"\n");
 }
 
 int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
@@ -253,6 +252,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 
     case WM_PAINT:
     {
+        // auto compositor = winrt::Windows::UI::Composition::Compositor::Compositor();
+        // auto brush = compositor.CreateHostBackdropBrush();
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hwnd, &ps);
         RECT rect;
@@ -322,7 +323,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
             };
             wv_controller2->put_Bounds(wvRect2);
         }
-        TestFunc();
+        Debug();
     }
     break;
 
@@ -436,21 +437,33 @@ void DarkMode(HWND hwnd)
 {
     dwmtrue = TRUE;
     dwmfalse = FALSE;
+    COLORREF darkBorder = 0x00000000;
+    COLORREF darkText = 0x00FFFFFF;
+    COLORREF lightBorder = 0x00FFFFFF;
+    COLORREF lightText = 0x00000000;
+    BOOL backdropBrush = TRUE;
+    DwmSetWindowAttribute(hwnd, DWMWA_USE_HOSTBACKDROPBRUSH, &backdropBrush, sizeof(backdropBrush));
     if (darkMode)
     {
         DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmtrue, sizeof(dwmtrue));
+        DwmSetWindowAttribute(hwnd, DWMWA_BORDER_COLOR, &darkBorder, sizeof(darkBorder));
+        DwmSetWindowAttribute(hwnd, DWMWA_CAPTION_COLOR, &darkBorder, sizeof(darkBorder));
+        DwmSetWindowAttribute(hwnd, DWMWA_TEXT_COLOR, &darkText, sizeof(darkText));
     }
     if (!darkMode)
     {
         DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmfalse, sizeof(dwmfalse));
+        DwmSetWindowAttribute(hwnd, DWMWA_BORDER_COLOR, &lightBorder, sizeof(lightBorder));
+        DwmSetWindowAttribute(hwnd, DWMWA_CAPTION_COLOR, &lightBorder, sizeof(lightBorder));
+        DwmSetWindowAttribute(hwnd, DWMWA_TEXT_COLOR, &lightText, sizeof(lightText));
     }
 }
 
 void SetMica(HWND hwnd)
 {
-    hrMica = S_OK;
+    auto hrMica = S_OK;
     mica = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
-    hrMica = DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &mica, sizeof(&mica));
+    hrMica = winrt::check_hresult((hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &mica, sizeof(&mica)));
 }
 
 bool ExtendFrame(HWND hwnd)

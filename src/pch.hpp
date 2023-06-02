@@ -1,6 +1,5 @@
 #pragma once
 #include <dwmapi.h>
-#include <guiddef.h>
 #include <WebView2.h>
 #include <wil/com.h>
 #include <wil/cppwinrt.h>
