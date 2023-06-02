@@ -461,9 +461,9 @@ void DarkMode(HWND hwnd)
 
 void SetMica(HWND hwnd)
 {
-    auto hrMica = S_OK;
+    micaFrame = S_OK;
     mica = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
-    hrMica = winrt::check_hresult((hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &mica, sizeof(&mica)));
+    micaFrame = DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &mica, sizeof(&mica));
 }
 
 bool ExtendFrame(HWND hwnd)
