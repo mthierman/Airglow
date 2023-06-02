@@ -1,5 +1,31 @@
 #include "Gooey.hpp"
 
+ATOM Application(HINSTANCE hinstance)
+{
+    auto icon = (HICON)LoadImageW(hinstance, programIcon.c_str(), IMAGE_ICON, 0, 0,
+                                  LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
+
+    auto cursor = (HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED);
+
+    auto hollowBrush = (HBRUSH)GetStockObject(BLACK_BRUSH);
+
+    WNDCLASSEXW wcex = {};
+    wcex.cbSize = sizeof(WNDCLASSEX);
+    wcex.style = 0;
+    wcex.lpfnWndProc = WndProc;
+    wcex.cbClsExtra = 0;
+    wcex.cbWndExtra = 0;
+    wcex.hInstance = hinstance;
+    wcex.hCursor = cursor;
+    wcex.hbrBackground = hollowBrush;
+    wcex.lpszMenuName = menuName.c_str();
+    wcex.lpszClassName = className.c_str();
+    wcex.hIcon = icon;
+    wcex.hIconSm = icon;
+
+    return RegisterClassExW(&wcex);
+}
+
 int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
 {
     SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
@@ -19,10 +45,11 @@ int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int nc
         return 0;
     }
 
-    darkMode = ModeCheck();
-    DarkTitle();
-    DarkMode(hwnd);
-    micaFrame = ExtendFrame(hwnd);
+    systemDarkMode = CheckSystemDarkMode();
+    darkTitle = SetDarkTitle();
+    darkMode = SetDarkMode(hwnd);
+    mica = SetMica(hwnd);
+
     ShowWindow(hwnd, ncs);
 
     CreateCoreWebView2EnvironmentWithOptions(
@@ -57,16 +84,20 @@ int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int nc
                             RECT bounds;
                             RECT wvRect;
 
+                            // GetClientRect(hwnd, &bounds);
+
+                            // wvRect = {
+                            //     bounds.left,
+                            //     bounds.top,
+                            //     bounds.right / 2,
+                            //     bounds.bottom,
+                            // };
+
+                            // wv_controller->put_Bounds(wvRect);
+
                             GetClientRect(hwnd, &bounds);
 
-                            wvRect = {
-                                bounds.left,
-                                bounds.top,
-                                bounds.right / 2,
-                                bounds.bottom,
-                            };
-
-                            wv_controller->put_Bounds(wvRect);
+                            wv_controller->put_Bounds(bounds);
 
                             WebViewNavigate(wv);
 
@@ -120,100 +151,101 @@ int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int nc
             })
             .Get());
 
-    CreateCoreWebView2EnvironmentWithOptions(
-        nullptr, nullptr, nullptr,
-        Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
-            [hwnd](HRESULT result, ICoreWebView2Environment* env) -> HRESULT
-            {
-                env->CreateCoreWebView2Controller(
-                    hwnd,
-                    Microsoft::WRL::Callback<
-                        ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                        [hwnd](HRESULT result, ICoreWebView2Controller* controller) -> HRESULT
-                        {
-                            if (controller != nullptr)
-                            {
-                                wv_controller2 = controller;
-                                wv_controller2->get_CoreWebView2(&wv2);
-                            }
+    // CreateCoreWebView2EnvironmentWithOptions(
+    //     nullptr, nullptr, nullptr,
+    //     Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
+    //         [hwnd](HRESULT result, ICoreWebView2Environment* env) -> HRESULT
+    //         {
+    //             env->CreateCoreWebView2Controller(
+    //                 hwnd,
+    //                 Microsoft::WRL::Callback<
+    //                     ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+    //                     [hwnd](HRESULT result, ICoreWebView2Controller* controller) -> HRESULT
+    //                     {
+    //                         if (controller != nullptr)
+    //                         {
+    //                             wv_controller2 = controller;
+    //                             wv_controller2->get_CoreWebView2(&wv2);
+    //                         }
 
-                            wv2->get_Settings(&wv_settings2);
+    //                         wv2->get_Settings(&wv_settings2);
 
-                            wv_settings2->put_AreDefaultContextMenusEnabled(true);
-                            wv_settings2->put_AreDefaultScriptDialogsEnabled(true);
-                            wv_settings2->put_AreDevToolsEnabled(true);
-                            wv_settings2->put_AreHostObjectsAllowed(true);
-                            wv_settings2->put_IsBuiltInErrorPageEnabled(true);
-                            wv_settings2->put_IsScriptEnabled(true);
-                            wv_settings2->put_IsStatusBarEnabled(true);
-                            wv_settings2->put_IsWebMessageEnabled(true);
-                            wv_settings2->put_IsZoomControlEnabled(true);
+    //                         wv_settings2->put_AreDefaultContextMenusEnabled(true);
+    //                         wv_settings2->put_AreDefaultScriptDialogsEnabled(true);
+    //                         wv_settings2->put_AreDevToolsEnabled(true);
+    //                         wv_settings2->put_AreHostObjectsAllowed(true);
+    //                         wv_settings2->put_IsBuiltInErrorPageEnabled(true);
+    //                         wv_settings2->put_IsScriptEnabled(true);
+    //                         wv_settings2->put_IsStatusBarEnabled(true);
+    //                         wv_settings2->put_IsWebMessageEnabled(true);
+    //                         wv_settings2->put_IsZoomControlEnabled(true);
 
-                            RECT bounds2;
-                            RECT wvRect2;
+    //                         RECT bounds2;
+    //                         RECT wvRect2;
 
-                            GetClientRect(hwnd, &bounds2);
+    //                         GetClientRect(hwnd, &bounds2);
 
-                            wvRect2 = {
-                                bounds2.right / 2,
-                                bounds2.top,
-                                bounds2.right,
-                                bounds2.bottom,
-                            };
+    //                         wvRect2 = {
+    //                             bounds2.right / 2,
+    //                             bounds2.top,
+    //                             bounds2.right,
+    //                             bounds2.bottom,
+    //                         };
 
-                            wv_controller2->put_Bounds(wvRect2);
+    //                         wv_controller2->put_Bounds(wvRect2);
 
-                            WebViewNavigate(wv2);
+    //                         WebViewNavigate(wv2);
 
-                            EventRegistrationToken token;
+    //                         EventRegistrationToken token;
 
-                            wv2->ExecuteScript(wvScript.c_str(), nullptr);
+    //                         wv2->ExecuteScript(wvScript.c_str(), nullptr);
 
-                            wv2->AddScriptToExecuteOnDocumentCreated(wvScript.c_str(), nullptr);
+    //                         wv2->AddScriptToExecuteOnDocumentCreated(wvScript.c_str(), nullptr);
 
-                            wv2->add_WebMessageReceived(
-                                Microsoft::WRL::Callback<
-                                    ICoreWebView2WebMessageReceivedEventHandler>(
-                                    [hwnd](
-                                        ICoreWebView2* webview,
-                                        ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT
-                                    {
-                                        wil::unique_cotaskmem_string message;
+    //                         wv2->add_WebMessageReceived(
+    //                             Microsoft::WRL::Callback<
+    //                                 ICoreWebView2WebMessageReceivedEventHandler>(
+    //                                 [hwnd](
+    //                                     ICoreWebView2* webview,
+    //                                     ICoreWebView2WebMessageReceivedEventArgs* args) ->
+    //                                     HRESULT
+    //                                 {
+    //                                     wil::unique_cotaskmem_string message;
 
-                                        args->TryGetWebMessageAsString(&message);
+    //                                     args->TryGetWebMessageAsString(&message);
 
-                                        if ((std::wstring)message.get() == keyTop.c_str())
-                                        {
-                                            KeyTop(hwnd);
-                                        }
+    //                                     if ((std::wstring)message.get() == keyTop.c_str())
+    //                                     {
+    //                                         KeyTop(hwnd);
+    //                                     }
 
-                                        if ((std::wstring)message.get() == keyMax.c_str())
-                                        {
-                                            KeyMaximize(hwnd);
-                                        }
+    //                                     if ((std::wstring)message.get() == keyMax.c_str())
+    //                                     {
+    //                                         KeyMaximize(hwnd);
+    //                                     }
 
-                                        if ((std::wstring)message.get() == keyFull.c_str())
-                                        {
-                                            KeyFullscreen(hwnd);
-                                        }
+    //                                     if ((std::wstring)message.get() == keyFull.c_str())
+    //                                     {
+    //                                         KeyFullscreen(hwnd);
+    //                                     }
 
-                                        if ((std::wstring)message.get() == keyClose.c_str())
-                                        {
-                                            KeyClose(hwnd);
-                                        }
+    //                                     if ((std::wstring)message.get() == keyClose.c_str())
+    //                                     {
+    //                                         KeyClose(hwnd);
+    //                                     }
 
-                                        webview->PostWebMessageAsString(message.get());
+    //                                     webview->PostWebMessageAsString(message.get());
 
-                                        return S_OK;
-                                    })
-                                    .Get(),
-                                &token);
-                            return S_OK;
-                        })
-                        .Get());
-                return S_OK;
-            })
-            .Get());
+    //                                     return S_OK;
+    //                                 })
+    //                                 .Get(),
+    //                             &token);
+    //                         return S_OK;
+    //                     })
+    //                     .Get());
+    //             return S_OK;
+    //         })
+    //         .Get());
 
     // auto menuHandle = GetSystemMenu(hwnd, false);
     // MENUITEMINFOW menu;
@@ -239,31 +271,13 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
     switch (msg)
     {
 
-    case WM_PAINT:
-    {
-        auto blackBrush = CreateSolidBrush(RGB(0, 0, 0));
-        auto whiteBrush = CreateSolidBrush(RGB(255, 255, 255));
-        auto darkBrush = CreateSolidBrush(RGB(32, 32, 32));
-        auto lightBrush = CreateSolidBrush(RGB(243, 243, 243));
-        PAINTSTRUCT ps;
-        HDC hdc = BeginPaint(hwnd, &ps);
-        RECT rect;
-        GetClientRect(hwnd, &rect);
-        if (micaFrame)
-        {
-            FillRect(hdc, &rect, blackBrush);
-        }
-        if (!micaFrame && darkMode)
-        {
-            FillRect(hdc, &rect, darkBrush);
-        }
-        if (!micaFrame && !darkMode)
-        {
-            FillRect(hdc, &rect, lightBrush);
-        }
-        EndPaint(hwnd, &ps);
-    }
-    break;
+        // case WM_PAINT:
+        // {
+        //     PAINTSTRUCT ps;
+        //     HDC hdc = BeginPaint(hwnd, &ps);
+        //     EndPaint(hwnd, &ps);
+        // }
+        // break;
 
     case WM_SETFOCUS:
     {
@@ -282,39 +296,71 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 
     case WM_SETTINGCHANGE:
     {
-        darkMode = ModeCheck();
+        using namespace winrt::Windows::UI;
+        using namespace winrt::Windows::UI::ViewManagement;
+
+        // auto accentCheck = UISettings().GetColorValue(UIColorType::Accent);
+        // COLORREF darkTitleBar = RGB(32, 32, 32);
+        // COLORREF lightTitleBar = RGB(243, 243, 243);
+
+        systemDarkMode = CheckSystemDarkMode();
         InvalidateRect(hwnd, NULL, true);
-        DarkMode(hwnd);
+        darkMode = SetDarkMode(hwnd);
+
+        // if (mica & darkMode)
+        // {
+        //     DwmSetWindowAttribute(hwnd, DWMWA_BORDER_COLOR, &darkTitleBar, sizeof(darkTitleBar));
+        //     DwmSetWindowAttribute(hwnd, DWMWA_CAPTION_COLOR, &darkTitleBar,
+        //     sizeof(darkTitleBar));
+        // }
+
+        // if (mica & !darkMode)
+        // {
+        //     DwmSetWindowAttribute(hwnd, DWMWA_BORDER_COLOR, &lightTitleBar,
+        //     sizeof(lightTitleBar)); DwmSetWindowAttribute(hwnd, DWMWA_CAPTION_COLOR,
+        //     &lightTitleBar, sizeof(lightTitleBar));
+        // }
     }
     break;
 
     case WM_SIZE:
     {
+        // if (wv_controller != nullptr & wv_controller2 != nullptr)
+        // {
+        //     if (wv_controller != nullptr)
+        //     {
+        //         RECT bounds;
+        //         GetClientRect(hwnd, &bounds);
+        //         RECT wvRect = {
+        //             bounds.left,
+        //             bounds.top,
+        //             bounds.right / 2,
+        //             bounds.bottom,
+        //         };
+        //         wv_controller->put_Bounds(wvRect);
+        //     }
+        //     if (wv_controller2 != nullptr)
+        //     {
+        //         RECT bounds2;
+        //         GetClientRect(hwnd, &bounds2);
+        //         RECT wvRect2 = {
+        //             bounds2.right / 2,
+        //             bounds2.top,
+        //             bounds2.right,
+        //             bounds2.bottom,
+        //         };
+        //         wv_controller2->put_Bounds(wvRect2);
+        //     }
+        // }
+
         if (wv_controller != nullptr)
         {
             RECT bounds;
             GetClientRect(hwnd, &bounds);
-            RECT wvRect = {
-                bounds.left,
-                bounds.top,
-                bounds.right / 2,
-                bounds.bottom,
-            };
-            wv_controller->put_Bounds(wvRect);
+            wv_controller->put_Bounds(bounds);
         }
-        if (wv_controller2 != nullptr)
-        {
-            RECT bounds2;
-            GetClientRect(hwnd, &bounds2);
-            RECT wvRect2 = {
-                bounds2.right / 2,
-                bounds2.top,
-                bounds2.right,
-                bounds2.bottom,
-            };
-            wv_controller2->put_Bounds(wvRect2);
-        }
-        Debug();
+
+        Debug(hwnd);
     }
     break;
 
@@ -370,33 +416,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
     return 0;
 }
 
-ATOM Application(HINSTANCE hinstance)
-{
-    auto icon = (HICON)LoadImageW(hinstance, programIcon.c_str(), IMAGE_ICON, 0, 0,
-                                  LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
-
-    auto cursor = (HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED);
-
-    auto hollowBrush = (HBRUSH)GetStockObject(HOLLOW_BRUSH);
-
-    WNDCLASSEXW wcex = {};
-    wcex.cbSize = sizeof(WNDCLASSEX);
-    wcex.style = 0;
-    wcex.lpfnWndProc = WndProc;
-    wcex.cbClsExtra = 0;
-    wcex.cbWndExtra = 0;
-    wcex.hInstance = hinstance;
-    wcex.hCursor = cursor;
-    wcex.hbrBackground = hollowBrush;
-    wcex.lpszMenuName = menuName.c_str();
-    wcex.lpszClassName = className.c_str();
-    wcex.hIcon = icon;
-    wcex.hIconSm = icon;
-
-    return RegisterClassExW(&wcex);
-}
-
-bool ModeCheck()
+bool CheckSystemDarkMode()
 {
     auto settingsCheck = winrt::Windows::UI::ViewManagement::UISettings();
     auto fgCheck =
@@ -404,7 +424,7 @@ bool ModeCheck()
     return (((5 * fgCheck.G) + (2 * fgCheck.R) + fgCheck.B) > (8 * 128));
 }
 
-void DarkTitle()
+bool SetDarkTitle()
 {
     using fnSetPreferredAppMode = PreferredAppMode(WINAPI*)(PreferredAppMode appMode);
     auto uxtheme = LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
@@ -417,59 +437,44 @@ void DarkTitle()
             SetPreferredAppMode(PreferredAppMode::AllowDark);
         }
         FreeLibrary(uxtheme);
+        return true;
     }
+    return false;
 }
 
-void DarkMode(HWND hwnd)
+bool SetDarkMode(HWND hwnd)
 {
-    auto darkMode = ModeCheck();
     auto dwmtrue = TRUE;
     auto dwmfalse = FALSE;
-    auto checkAccent = winrt::Windows::UI::ViewManagement::UISettings().GetColorValue(
-        winrt::Windows::UI::ViewManagement::UIColorType::Accent);
-    auto accent = RGB(checkAccent.R, checkAccent.G, checkAccent.B);
-    // COLORREF darkBorder = 0x00000000;
-    // COLORREF darkText = 0x00FFFFFF;
-    // COLORREF lightBorder = 0x00FFFFFF;
-    // COLORREF lightText = 0x00000000;
-    COLORREF darkBorder = accent;
-    COLORREF darkText = accent;
-    COLORREF lightBorder = accent;
-    COLORREF lightText = accent;
-    BOOL backdropBrush = TRUE;
-    DwmSetWindowAttribute(hwnd, DWMWA_USE_HOSTBACKDROPBRUSH, &backdropBrush, sizeof(backdropBrush));
-    if (darkMode)
+
+    if (systemDarkMode)
     {
         DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmtrue, sizeof(dwmtrue));
-        DwmSetWindowAttribute(hwnd, DWMWA_BORDER_COLOR, &darkBorder, sizeof(darkBorder));
-        DwmSetWindowAttribute(hwnd, DWMWA_CAPTION_COLOR, &darkBorder, sizeof(darkBorder));
-        // DwmSetWindowAttribute(hwnd, DWMWA_TEXT_COLOR, &darkText, sizeof(darkText));
+        return true;
     }
-    if (!darkMode)
+    if (!systemDarkMode)
     {
         DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmfalse, sizeof(dwmfalse));
-        DwmSetWindowAttribute(hwnd, DWMWA_BORDER_COLOR, &lightBorder, sizeof(lightBorder));
-        DwmSetWindowAttribute(hwnd, DWMWA_CAPTION_COLOR, &lightBorder, sizeof(lightBorder));
-        // DwmSetWindowAttribute(hwnd, DWMWA_TEXT_COLOR, &lightText, sizeof(lightText));
     }
+    return false;
 }
 
-void SetMica(HWND hwnd)
-{
-    auto micaFrame = S_OK;
-    auto mica = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
-    micaFrame = DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &mica, sizeof(&mica));
-}
-
-bool ExtendFrame(HWND hwnd)
+bool SetMica(HWND hwnd)
 {
     MARGINS m = {-1};
-    auto hrExtend = S_OK;
-    hrExtend = DwmExtendFrameIntoClientArea(hwnd, &m);
-    if (SUCCEEDED(hrExtend))
+    auto extend = S_OK;
+    extend = DwmExtendFrameIntoClientArea(hwnd, &m);
+    if (SUCCEEDED(extend))
     {
-        SetMica(hwnd);
-        return true;
+        auto backdrop = S_OK;
+        backdrop = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
+        backdrop =
+            DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop, sizeof(&backdrop));
+        if (SUCCEEDED(backdrop))
+        {
+            return true;
+        }
+        return false;
     }
     return false;
 }
@@ -548,25 +553,36 @@ void WebViewNavigate(wil::com_ptr<ICoreWebView2> wv)
     LocalFree(commandLineList);
 }
 
-void Debug()
+void Debug(HWND hwnd)
 {
-    auto effects = winrt::Windows::UI::ViewManagement::UISettings().AdvancedEffectsEnabled();
-    auto animations = winrt::Windows::UI::ViewManagement::UISettings().AnimationsEnabled();
-    auto accent = winrt::Windows::UI::ViewManagement::UISettings().GetColorValue(
-        winrt::Windows::UI::ViewManagement::UIColorType::Accent);
-    std::wstring accentFmt = L"R: " + std::to_wstring(accent.R) + L" G: " +
-                             std::to_wstring(accent.G) + L" B: " + std::to_wstring(accent.B) +
-                             L" A: " + std::to_wstring(accent.A);
-    OutputDebugStringW(accentFmt.c_str());
-    OutputDebugStringW(L"\n");
-    if (effects)
-    {
-        OutputDebugStringW(L"Advanced Effects: Enabled");
-        OutputDebugStringW(L"\n");
-    };
-    if (animations)
-    {
-        OutputDebugStringW(L"Animations: Enabled");
-        OutputDebugStringW(L"\n");
-    };
+    using namespace winrt::Windows::UI;
+    using namespace winrt::Windows::UI::ViewManagement;
+
+    // COLORREF border;
+
+    // auto borderColor = winrt::check_hresult((hwnd, DWMWA_BORDER_COLOR, &border, sizeof(border)));
+    // auto border2 = DWMWA_BORDER_COLOR;
+    // auto test = std::to_wstring(borderColor.value);
+    // OutputDebugStringW(test.c_str());
+
+    // auto accent = UISettings().GetColorValue(UIColorType::Accent);
+    // COLORREF accent2 = RGB(accent.R, accent.G, accent.B);
+
+    // auto accent = UISettings().GetColorValue(UIColorType::Accent);
+    // std::wstring accentFmt = L"R: " + std::to_wstring(accent.R) + L" G: " +
+    //                          std::to_wstring(accent.G) + L" B: " + std::to_wstring(accent.B) +
+    //                          L" A: " + std::to_wstring(accent.A);
+    // OutputDebugStringW(accentFmt.c_str());
+    // OutputDebugStringW(L"\n");
+
+    // if (UISettings().AdvancedEffectsEnabled())
+    // {
+    //     OutputDebugStringW(L"Advanced Effects: Enabled");
+    //     OutputDebugStringW(L"\n");
+    // };
+    // if (UISettings().AnimationsEnabled())
+    // {
+    //     OutputDebugStringW(L"Animations: Enabled");
+    //     OutputDebugStringW(L"\n");
+    // };
 }

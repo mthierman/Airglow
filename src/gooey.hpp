@@ -20,8 +20,11 @@ std::wstring programIcon(L"PROGRAM_ICON");
 std::wstring menuName(L"menu");
 std::wstring className(L"window");
 std::wstring windowName(L"Gooey");
-bool micaFrame;
+
+bool systemDarkMode;
+bool darkTitle;
 bool darkMode;
+bool mica;
 
 // WEBVIEW1
 static wil::com_ptr<ICoreWebView2Controller> wv_controller;
@@ -41,11 +44,6 @@ std::wstring wvScript(
 void WebViewNavigate(wil::com_ptr<ICoreWebView2>);
 
 // THEMING
-bool ModeCheck();
-void DarkTitle();
-void DarkMode(HWND);
-void SetMica(HWND);
-bool ExtendFrame(HWND);
 enum PreferredAppMode
 {
     Default,
@@ -54,6 +52,11 @@ enum PreferredAppMode
     ForceLight,
     Max
 };
+
+bool CheckSystemDarkMode();
+bool SetDarkTitle();
+bool SetDarkMode(HWND);
+bool SetMica(HWND);
 
 // KEYBOARD SHORTCUTS
 int vkKeyTop = VK_F1;
@@ -71,4 +74,4 @@ void KeyFullscreen(HWND);
 void KeyClose(HWND);
 
 // MISC
-void Debug();
+void Debug(HWND);
