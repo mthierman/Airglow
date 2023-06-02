@@ -33,8 +33,8 @@ execute_process(
 add_executable(
     ${PROJECT_NAME}
     WIN32
-    src/gooey.cpp
-    gooey$<$<CONFIG:Debug>:_debug>$<$<CONFIG:Release>:_release>.rc
+    src/Gooey.cpp
+    src/gooey$<$<CONFIG:Debug>:_debug>$<$<CONFIG:Release>:_release>.rc
 )
 
 target_precompile_headers(

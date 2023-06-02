@@ -1,5 +1,22 @@
-#include "gooey.hpp"
-#include "resource.hpp"
+#include "Gooey.hpp"
+#include "Resource.hpp"
+
+void TestFunc()
+{
+    auto test = winrt::Windows::UI::ViewManagement::UISettings().AnimationsEnabled();
+    auto test2 = winrt::Windows::UI::ViewManagement::UISettings().GetColorValue(
+        winrt::Windows::UI::ViewManagement::UIColorType::Accent);
+    std::wstring red = std::to_wstring(test2.R);
+    std::wstring green = std::to_wstring(test2.R);
+    std::wstring blue = std::to_wstring(test2.R);
+    std::wstring alpha = std::to_wstring(test2.R);
+    std::wstring test3 = red + L", " + green + L", " + blue + L", " + alpha;
+    OutputDebugStringW(test3.c_str());
+    // if (test)
+    // {
+    //     OutputDebugStringW(L"TEST PASSED");
+    // };
+}
 
 int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
 {
@@ -305,6 +322,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
             };
             wv_controller2->put_Bounds(wvRect2);
         }
+        TestFunc();
     }
     break;
 
