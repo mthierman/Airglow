@@ -41,7 +41,7 @@ std::wstring wvScript(
 void WebViewNavigate(wil::com_ptr<ICoreWebView2>);
 
 // THEMING
-int ModeCheck();
+bool ModeCheck();
 void DarkTitle();
 void DarkMode(HWND);
 void SetMica(HWND);
@@ -69,3 +69,6 @@ void KeyTop(HWND);
 void KeyMaximize(HWND);
 void KeyFullscreen(HWND);
 void KeyClose(HWND);
+
+// MISC
+void Debug();

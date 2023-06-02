@@ -1,35 +1,5 @@
 #include "Gooey.hpp"
 
-void Color()
-{
-    auto checkAccent = winrt::Windows::UI::ViewManagement::UISettings().GetColorValue(
-        winrt::Windows::UI::ViewManagement::UIColorType::Accent);
-    auto accent = RGB(checkAccent.R, checkAccent.G, checkAccent.B);
-}
-
-void Debug()
-{
-    auto effects = winrt::Windows::UI::ViewManagement::UISettings().AdvancedEffectsEnabled();
-    auto animations = winrt::Windows::UI::ViewManagement::UISettings().AnimationsEnabled();
-    auto accent = winrt::Windows::UI::ViewManagement::UISettings().GetColorValue(
-        winrt::Windows::UI::ViewManagement::UIColorType::Accent);
-    std::wstring accentFmt = L"R: " + std::to_wstring(accent.R) + L" G: " +
-                             std::to_wstring(accent.G) + L" B: " + std::to_wstring(accent.B) +
-                             L" A: " + std::to_wstring(accent.A);
-    OutputDebugStringW(accentFmt.c_str());
-    OutputDebugStringW(L"\n");
-    if (effects)
-    {
-        OutputDebugStringW(L"Advanced Effects: Enabled");
-        OutputDebugStringW(L"\n");
-    };
-    if (animations)
-    {
-        OutputDebugStringW(L"Animations: Enabled");
-        OutputDebugStringW(L"\n");
-    };
-}
-
 int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
 {
     SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
@@ -49,10 +19,10 @@ int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int nc
         return 0;
     }
 
-    auto darkMode = ModeCheck();
+    darkMode = ModeCheck();
     DarkTitle();
     DarkMode(hwnd);
-    auto micaFrame = ExtendFrame(hwnd);
+    micaFrame = ExtendFrame(hwnd);
     ShowWindow(hwnd, ncs);
 
     CreateCoreWebView2EnvironmentWithOptions(
@@ -245,14 +215,14 @@ int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int nc
             })
             .Get());
 
-    auto menuHandle = GetSystemMenu(hwnd, false);
-    MENUITEMINFOW menu;
-    menu.cbSize = sizeof(MENUITEMINFOW);
-    menu.fMask = MIIM_STRING | MIIM_ID;
-    menu.wID = 1005;
-    menu.dwTypeData = (LPWSTR)L"Toggle Theme";
+    // auto menuHandle = GetSystemMenu(hwnd, false);
+    // MENUITEMINFOW menu;
+    // menu.cbSize = sizeof(MENUITEMINFOW);
+    // menu.fMask = MIIM_STRING | MIIM_ID;
+    // menu.wID = 1005;
+    // menu.dwTypeData = (LPWSTR)L"Toggle Theme";
 
-    InsertMenuItemW(menuHandle, 1, FALSE, &menu);
+    // InsertMenuItemW(menuHandle, 1, FALSE, &menu);
 
     MSG msg = {};
     while (GetMessageW(&msg, nullptr, 0, 0))
@@ -426,7 +396,7 @@ ATOM Application(HINSTANCE hinstance)
     return RegisterClassExW(&wcex);
 }
 
-int ModeCheck()
+bool ModeCheck()
 {
     auto settingsCheck = winrt::Windows::UI::ViewManagement::UISettings();
     auto fgCheck =
@@ -576,4 +546,27 @@ void WebViewNavigate(wil::com_ptr<ICoreWebView2> wv)
         wv->Navigate(commandLineList[i]);
     }
     LocalFree(commandLineList);
+}
+
+void Debug()
+{
+    auto effects = winrt::Windows::UI::ViewManagement::UISettings().AdvancedEffectsEnabled();
+    auto animations = winrt::Windows::UI::ViewManagement::UISettings().AnimationsEnabled();
+    auto accent = winrt::Windows::UI::ViewManagement::UISettings().GetColorValue(
+        winrt::Windows::UI::ViewManagement::UIColorType::Accent);
+    std::wstring accentFmt = L"R: " + std::to_wstring(accent.R) + L" G: " +
+                             std::to_wstring(accent.G) + L" B: " + std::to_wstring(accent.B) +
+                             L" A: " + std::to_wstring(accent.A);
+    OutputDebugStringW(accentFmt.c_str());
+    OutputDebugStringW(L"\n");
+    if (effects)
+    {
+        OutputDebugStringW(L"Advanced Effects: Enabled");
+        OutputDebugStringW(L"\n");
+    };
+    if (animations)
+    {
+        OutputDebugStringW(L"Animations: Enabled");
+        OutputDebugStringW(L"\n");
+    };
 }
