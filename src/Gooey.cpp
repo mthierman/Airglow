@@ -48,7 +48,7 @@ int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int nc
     systemDarkMode = CheckSystemDarkMode();
     darkTitle = SetDarkTitle();
     darkMode = SetDarkMode(hwnd);
-    mica = SetMica(hwnd);
+    // mica = SetMica(hwnd);
 
     ShowWindow(hwnd, ncs);
 
