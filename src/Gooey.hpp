@@ -54,7 +54,7 @@ enum PreferredAppMode
 };
 
 bool CheckSystemDarkMode();
-bool SetDarkTitle();
+bool SetDarkTitle(HWND);
 bool SetDarkMode(HWND);
 bool SetMica(HWND);
 

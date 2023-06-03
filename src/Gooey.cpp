@@ -26,6 +26,32 @@ ATOM Application(HINSTANCE hinstance)
     return RegisterClassExW(&wcex);
 }
 
+// void SetDarkMenu(HWND hwnd)
+// {
+//     auto menu = CreateMenu();
+//     auto fileMenu = CreateMenu();
+//     AppendMenu(menu, MF_POPUP, (UINT_PTR)fileMenu, L"FILE");
+//     SetMenu(hwnd, menu);
+
+//     using fnAllowDarkModeForWindow = bool(WINAPI*)(HWND hwnd, bool allow);
+//     auto uxtheme = LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
+//     if (uxtheme)
+//     {
+//         auto ord133 = GetProcAddress(uxtheme, PCSTR MAKEINTRESOURCEW(133));
+//         if (ord133)
+//         {
+//             auto AllowDarkModeForWindow = reinterpret_cast<fnAllowDarkModeForWindow>(ord133);
+
+//             AllowDarkModeForWindow((HWND)GetMenu(hwnd), true);
+//             SetWindowTheme((HWND)GetMenu(hwnd), L"Menu", NULL);
+//             SendMessageW((HWND)GetMenu(hwnd), WM_THEMECHANGED, 0, 0);
+
+//             OutputDebugStringW(L"ORDINAL 133 SUCCESS!!!");
+//         }
+//         FreeLibrary(uxtheme);
+//     }
+// }
+
 int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
 {
     SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
@@ -46,9 +72,10 @@ int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int nc
     }
 
     systemDarkMode = CheckSystemDarkMode();
-    darkTitle = SetDarkTitle();
+    darkTitle = SetDarkTitle(hwnd);
     darkMode = SetDarkMode(hwnd);
     // mica = SetMica(hwnd);
+    // SetDarkMenu(hwnd);
 
     ShowWindow(hwnd, ncs);
 
@@ -271,6 +298,32 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
     switch (msg)
     {
 
+        // case WM_CREATE:
+        // {
+        //     auto menu = CreateMenu();
+        //     auto fileMenu = CreateMenu();
+        //     AppendMenu(menu, MF_POPUP, (UINT_PTR)fileMenu, L"FILE");
+        //     SetMenu(hwnd, menu);
+
+        //     using fnAllowDarkModeForWindow = bool(WINAPI*)(HWND hwnd, bool allow);
+        //     auto uxtheme = LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
+        //     if (uxtheme)
+        //     {
+        //         auto ord133 = GetProcAddress(uxtheme, PCSTR MAKEINTRESOURCEW(133));
+        //         if (ord133)
+        //         {
+
+        //             auto AllowDarkModeForWindow =
+        //             reinterpret_cast<fnAllowDarkModeForWindow>(ord133);
+        //             SetWindowTheme((HWND)menu, L"", L"");
+        //             AllowDarkModeForWindow((HWND)menu, true);
+        //             SendMessageW((HWND)menu, WM_THEMECHANGED, 0, 0);
+        //         }
+        //         FreeLibrary(uxtheme);
+        //     }
+        // }
+        // break;
+
         // case WM_PAINT:
         // {
         //     PAINTSTRUCT ps;
@@ -424,17 +477,26 @@ bool CheckSystemDarkMode()
     return (((5 * fgCheck.G) + (2 * fgCheck.R) + fgCheck.B) > (8 * 128));
 }
 
-bool SetDarkTitle()
+bool SetDarkTitle(HWND hwnd)
 {
     using fnSetPreferredAppMode = PreferredAppMode(WINAPI*)(PreferredAppMode appMode);
+    using fnAllowDarkModeForWindow = bool(WINAPI*)(HWND hwnd, bool allow);
     auto uxtheme = LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
     if (uxtheme)
     {
         auto ord135 = GetProcAddress(uxtheme, PCSTR MAKEINTRESOURCEW(135));
+        auto ord133 = GetProcAddress(uxtheme, PCSTR MAKEINTRESOURCEW(133));
         if (ord135)
         {
             auto SetPreferredAppMode = reinterpret_cast<fnSetPreferredAppMode>(ord135);
             SetPreferredAppMode(PreferredAppMode::AllowDark);
+        }
+        if (ord133)
+        {
+            SetWindowTheme(hwnd, NULL, NULL);
+            auto AllowDarkModeForWindow = reinterpret_cast<fnAllowDarkModeForWindow>(ord133);
+            AllowDarkModeForWindow(hwnd, true);
+            SendMessageW(hwnd, WM_THEMECHANGED, 0, 0);
         }
         FreeLibrary(uxtheme);
         return true;
