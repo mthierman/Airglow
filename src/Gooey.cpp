@@ -26,31 +26,28 @@ ATOM Application(HINSTANCE hinstance)
     return RegisterClassExW(&wcex);
 }
 
-// void SetDarkMenu(HWND hwnd)
-// {
-//     auto menu = CreateMenu();
-//     auto fileMenu = CreateMenu();
-//     AppendMenu(menu, MF_POPUP, (UINT_PTR)fileMenu, L"FILE");
-//     SetMenu(hwnd, menu);
+void SetDarkMenu(HWND hwnd)
+{
+    auto menu = CreateMenu();
+    auto fileMenu = CreateMenu();
+    AppendMenu(menu, MF_POPUP, (UINT_PTR)fileMenu, L"FILE");
+    SetMenu(hwnd, menu);
 
-//     using fnAllowDarkModeForWindow = bool(WINAPI*)(HWND hwnd, bool allow);
-//     auto uxtheme = LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
-//     if (uxtheme)
-//     {
-//         auto ord133 = GetProcAddress(uxtheme, PCSTR MAKEINTRESOURCEW(133));
-//         if (ord133)
-//         {
-//             auto AllowDarkModeForWindow = reinterpret_cast<fnAllowDarkModeForWindow>(ord133);
-
-//             AllowDarkModeForWindow((HWND)GetMenu(hwnd), true);
-//             SetWindowTheme((HWND)GetMenu(hwnd), L"Menu", NULL);
-//             SendMessageW((HWND)GetMenu(hwnd), WM_THEMECHANGED, 0, 0);
-
-//             OutputDebugStringW(L"ORDINAL 133 SUCCESS!!!");
-//         }
-//         FreeLibrary(uxtheme);
-//     }
-// }
+    using fnAllowDarkModeForWindow = bool(WINAPI*)(HWND hwnd, bool allow);
+    auto uxtheme = LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
+    if (uxtheme)
+    {
+        auto ord133 = GetProcAddress(uxtheme, PCSTR MAKEINTRESOURCEW(133));
+        if (ord133)
+        {
+            auto AllowDarkModeForWindow = reinterpret_cast<fnAllowDarkModeForWindow>(ord133);
+            AllowDarkModeForWindow((HWND)menu, true);
+            SetWindowTheme((HWND)menu, L"DarkMode::Menu", NULL);
+            SendMessageW((HWND)menu, WM_THEMECHANGED, 0, 0);
+        }
+        FreeLibrary(uxtheme);
+    }
+}
 
 int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
 {
@@ -75,7 +72,7 @@ int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int nc
     darkTitle = SetDarkTitle(hwnd);
     darkMode = SetDarkMode(hwnd);
     // mica = SetMica(hwnd);
-    // SetDarkMenu(hwnd);
+    SetDarkMenu(hwnd);
 
     ShowWindow(hwnd, ncs);
 
