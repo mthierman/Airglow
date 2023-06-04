@@ -1,39 +1,6 @@
 #include "Gooey.hpp"
 
-ATOM WindowClass(HINSTANCE hinstance)
-{
-    auto icon = (HICON)LoadImageW(hinstance, programIcon.c_str(), IMAGE_ICON, 0, 0,
-                                  LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
-
-    auto cursor = (HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED);
-
-    auto hollowBrush = (HBRUSH)GetStockObject(BLACK_BRUSH);
-
-    WNDCLASSEXW wcex = {};
-    wcex.cbSize = sizeof(WNDCLASSEX);
-    wcex.style = 0;
-    wcex.lpfnWndProc = WndProc;
-    wcex.cbClsExtra = 0;
-    wcex.cbWndExtra = 0;
-    wcex.hInstance = hinstance;
-    wcex.hCursor = cursor;
-    wcex.hbrBackground = hollowBrush;
-    wcex.lpszMenuName = menuName.c_str();
-    wcex.lpszClassName = className.c_str();
-    wcex.hIcon = icon;
-    wcex.hIconSm = icon;
-
-    return RegisterClassExW(&wcex);
-}
-
-HWND Window(HINSTANCE hinstance)
-{
-    return CreateWindowExW(0, className.c_str(), windowName.c_str(), WS_OVERLAPPEDWINDOW,
-                           CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
-                           nullptr, hinstance, nullptr);
-}
-
-int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
+int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
 {
     SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 
@@ -42,6 +9,11 @@ int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int nc
     SetEnvironmentVariableW(wvAdditionalBrowserArgs.c_str(), wvAdditionalBrowserArgsValue.c_str());
 
     auto atom = WindowClass(hinstance);
+
+    if (!atom)
+    {
+        return 0;
+    }
 
     auto hwnd = Window(hinstance);
 
@@ -53,8 +25,7 @@ int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int nc
     systemDarkMode = CheckSystemDarkMode();
     darkTitle = SetDarkTitle(hwnd);
     darkMode = SetDarkMode(hwnd);
-    // mica = SetMica(hwnd);
-    // SetDarkMenu(hwnd);
+    mica = SetMica(hwnd);
 
     ShowWindow(hwnd, ncs);
 
@@ -272,10 +243,49 @@ int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int nc
     return 0;
 }
 
-LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
+unsigned short WindowClass(HINSTANCE hinstance)
+{
+    WNDCLASSEXW wcex = {};
+    wcex.cbSize = sizeof(WNDCLASSEX);
+    wcex.style = CS_HREDRAW | CS_VREDRAW;
+    wcex.lpfnWndProc = WndProc;
+    wcex.cbClsExtra = 0;
+    wcex.cbWndExtra = 0;
+    wcex.hInstance = hinstance;
+    wcex.hCursor = (HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED);
+    wcex.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
+    wcex.lpszMenuName = menuName.c_str();
+    wcex.lpszClassName = className.c_str();
+    wcex.hIcon = (HICON)LoadImageW(hinstance, programIcon.c_str(), IMAGE_ICON, 0, 0,
+                                   LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
+    wcex.hIconSm = (HICON)LoadImageW(hinstance, programIcon.c_str(), IMAGE_ICON, 0, 0,
+                                     LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
+
+    return RegisterClassExW(&wcex);
+}
+
+HWND Window(HINSTANCE hinstance)
+{
+    return CreateWindowExW(0, className.c_str(), windowName.c_str(), WS_OVERLAPPEDWINDOW,
+                           CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
+                           nullptr, hinstance, nullptr);
+}
+
+long long __stdcall WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {
     switch (msg)
     {
+
+    case WM_PAINT:
+    {
+        PAINTSTRUCT ps;
+        HDC hdc = BeginPaint(hwnd, &ps);
+        RECT bounds;
+        GetClientRect(hwnd, &bounds);
+        FillRect(hdc, &bounds, (HBRUSH)GetStockObject(BLACK_BRUSH));
+        EndPaint(hwnd, &ps);
+    }
+    break;
 
     case WM_SETTINGCHANGE:
     {
@@ -287,6 +297,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 
     case WM_SIZE:
     {
+
+        OutputDebugStringW(std::to_wstring(GetSystemMetrics(SM_CYSCREEN)).c_str());
+
         // if (wv_controller != nullptr & wv_controller2 != nullptr)
         // {
         //     if (wv_controller != nullptr)
@@ -329,6 +342,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
         LPMINMAXINFO minmax = (LPMINMAXINFO)lp;
         minmax->ptMinTrackSize.x = 300;
         minmax->ptMinTrackSize.y = 39;
+        // minmax->ptMaxTrackSize.x = GetSystemMetrics(SM_CXFULLSCREEN);
+        // minmax->ptMaxTrackSize.y = GetSystemMetrics(SM_CYFULLSCREEN);
     }
     break;
 
@@ -393,9 +408,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 
 bool CheckSystemDarkMode()
 {
-    auto settingsCheck = winrt::Windows::UI::ViewManagement::UISettings();
-    auto fgCheck =
-        settingsCheck.GetColorValue(winrt::Windows::UI::ViewManagement::UIColorType::Foreground);
+    using namespace winrt::Windows::UI;
+    using namespace winrt::Windows::UI::ViewManagement;
+    UISettings settingsCheck = UISettings();
+    Color fgCheck = settingsCheck.GetColorValue(UIColorType::Foreground);
     return (((5 * fgCheck.G) + (2 * fgCheck.R) + fgCheck.B) > (8 * 128));
 }
 
@@ -436,7 +452,8 @@ bool SetDarkMode(HWND hwnd)
 
 bool SetMica(HWND hwnd)
 {
-    MARGINS m = {-1};
+    // MARGINS m = {0, 0, 0, GetSystemMetrics(SM_CYFULLSCREEN) * 2};
+    MARGINS m = {0, 0, 0, GetSystemMetrics(SM_CYSCREEN)};
     auto extend = S_OK;
     extend = DwmExtendFrameIntoClientArea(hwnd, &m);
     if (SUCCEEDED(extend))
