@@ -1,9 +1,10 @@
 #include "res.hpp"
 
 // MAIN
+ATOM Application(HINSTANCE);
+HWND Window(HINSTANCE);
 int APIENTRY wWinMain(HINSTANCE, HINSTANCE, PWSTR, int);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
-ATOM Application(HINSTANCE);
 
 // ENV
 std::wstring wvBackgroundColor(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR");
@@ -72,6 +73,3 @@ void KeyTop(HWND);
 void KeyMaximize(HWND);
 void KeyFullscreen(HWND);
 void KeyClose(HWND);
-
-// MISC
-void Debug(HWND);

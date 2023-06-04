@@ -26,27 +26,11 @@ ATOM Application(HINSTANCE hinstance)
     return RegisterClassExW(&wcex);
 }
 
-void SetDarkMenu(HWND hwnd)
+HWND Window(HINSTANCE hinstance)
 {
-    auto menu = CreateMenu();
-    auto fileMenu = CreateMenu();
-    AppendMenu(menu, MF_POPUP, (UINT_PTR)fileMenu, L"FILE");
-    SetMenu(hwnd, menu);
-
-    using fnAllowDarkModeForWindow = bool(WINAPI*)(HWND hwnd, bool allow);
-    auto uxtheme = LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
-    if (uxtheme)
-    {
-        auto ord133 = GetProcAddress(uxtheme, PCSTR MAKEINTRESOURCEW(133));
-        if (ord133)
-        {
-            auto AllowDarkModeForWindow = reinterpret_cast<fnAllowDarkModeForWindow>(ord133);
-            AllowDarkModeForWindow((HWND)menu, true);
-            SetWindowTheme((HWND)menu, L"DarkMode::Menu", NULL);
-            SendMessageW((HWND)menu, WM_THEMECHANGED, 0, 0);
-        }
-        FreeLibrary(uxtheme);
-    }
+    return CreateWindowExW(0, className.c_str(), windowName.c_str(), WS_OVERLAPPEDWINDOW,
+                           CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
+                           nullptr, hinstance, nullptr);
 }
 
 int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
@@ -57,11 +41,9 @@ int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int nc
 
     SetEnvironmentVariableW(wvAdditionalBrowserArgs.c_str(), wvAdditionalBrowserArgsValue.c_str());
 
-    Application(hinstance);
+    auto atom = Application(hinstance);
 
-    auto hwnd = CreateWindowExW(0, className.c_str(), windowName.c_str(), WS_OVERLAPPEDWINDOW,
-                                CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
-                                nullptr, hinstance, nullptr);
+    auto hwnd = Window(hinstance);
 
     if (!hwnd)
     {
@@ -72,7 +54,7 @@ int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int nc
     darkTitle = SetDarkTitle(hwnd);
     darkMode = SetDarkMode(hwnd);
     // mica = SetMica(hwnd);
-    SetDarkMenu(hwnd);
+    // SetDarkMenu(hwnd);
 
     ShowWindow(hwnd, ncs);
 
@@ -295,81 +277,11 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
     switch (msg)
     {
 
-        // case WM_CREATE:
-        // {
-        //     auto menu = CreateMenu();
-        //     auto fileMenu = CreateMenu();
-        //     AppendMenu(menu, MF_POPUP, (UINT_PTR)fileMenu, L"FILE");
-        //     SetMenu(hwnd, menu);
-
-        //     using fnAllowDarkModeForWindow = bool(WINAPI*)(HWND hwnd, bool allow);
-        //     auto uxtheme = LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
-        //     if (uxtheme)
-        //     {
-        //         auto ord133 = GetProcAddress(uxtheme, PCSTR MAKEINTRESOURCEW(133));
-        //         if (ord133)
-        //         {
-
-        //             auto AllowDarkModeForWindow =
-        //             reinterpret_cast<fnAllowDarkModeForWindow>(ord133);
-        //             SetWindowTheme((HWND)menu, L"", L"");
-        //             AllowDarkModeForWindow((HWND)menu, true);
-        //             SendMessageW((HWND)menu, WM_THEMECHANGED, 0, 0);
-        //         }
-        //         FreeLibrary(uxtheme);
-        //     }
-        // }
-        // break;
-
-        // case WM_PAINT:
-        // {
-        //     PAINTSTRUCT ps;
-        //     HDC hdc = BeginPaint(hwnd, &ps);
-        //     EndPaint(hwnd, &ps);
-        // }
-        // break;
-
-    case WM_SETFOCUS:
-    {
-        if (wv_controller != nullptr)
-        {
-            wv_controller->MoveFocus(
-                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-        }
-        if (wv_controller2 != nullptr)
-        {
-            wv_controller2->MoveFocus(
-                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-        }
-    }
-    break;
-
     case WM_SETTINGCHANGE:
     {
-        using namespace winrt::Windows::UI;
-        using namespace winrt::Windows::UI::ViewManagement;
-
-        // auto accentCheck = UISettings().GetColorValue(UIColorType::Accent);
-        // COLORREF darkTitleBar = RGB(32, 32, 32);
-        // COLORREF lightTitleBar = RGB(243, 243, 243);
-
         systemDarkMode = CheckSystemDarkMode();
         InvalidateRect(hwnd, NULL, true);
         darkMode = SetDarkMode(hwnd);
-
-        // if (mica & darkMode)
-        // {
-        //     DwmSetWindowAttribute(hwnd, DWMWA_BORDER_COLOR, &darkTitleBar, sizeof(darkTitleBar));
-        //     DwmSetWindowAttribute(hwnd, DWMWA_CAPTION_COLOR, &darkTitleBar,
-        //     sizeof(darkTitleBar));
-        // }
-
-        // if (mica & !darkMode)
-        // {
-        //     DwmSetWindowAttribute(hwnd, DWMWA_BORDER_COLOR, &lightTitleBar,
-        //     sizeof(lightTitleBar)); DwmSetWindowAttribute(hwnd, DWMWA_CAPTION_COLOR,
-        //     &lightTitleBar, sizeof(lightTitleBar));
-        // }
     }
     break;
 
@@ -409,8 +321,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
             GetClientRect(hwnd, &bounds);
             wv_controller->put_Bounds(bounds);
         }
-
-        Debug(hwnd);
     }
     break;
 
@@ -419,6 +329,21 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
         LPMINMAXINFO minmax = (LPMINMAXINFO)lp;
         minmax->ptMinTrackSize.x = 300;
         minmax->ptMinTrackSize.y = 39;
+    }
+    break;
+
+    case WM_SETFOCUS:
+    {
+        if (wv_controller != nullptr)
+        {
+            wv_controller->MoveFocus(
+                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+        }
+        // if (wv_controller2 != nullptr)
+        // {
+        //     wv_controller2->MoveFocus(
+        //         COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+        // }
     }
     break;
 
@@ -477,23 +402,14 @@ bool CheckSystemDarkMode()
 bool SetDarkTitle(HWND hwnd)
 {
     using fnSetPreferredAppMode = PreferredAppMode(WINAPI*)(PreferredAppMode appMode);
-    using fnAllowDarkModeForWindow = bool(WINAPI*)(HWND hwnd, bool allow);
     auto uxtheme = LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
     if (uxtheme)
     {
         auto ord135 = GetProcAddress(uxtheme, PCSTR MAKEINTRESOURCEW(135));
-        auto ord133 = GetProcAddress(uxtheme, PCSTR MAKEINTRESOURCEW(133));
         if (ord135)
         {
             auto SetPreferredAppMode = reinterpret_cast<fnSetPreferredAppMode>(ord135);
             SetPreferredAppMode(PreferredAppMode::AllowDark);
-        }
-        if (ord133)
-        {
-            SetWindowTheme(hwnd, NULL, NULL);
-            auto AllowDarkModeForWindow = reinterpret_cast<fnAllowDarkModeForWindow>(ord133);
-            AllowDarkModeForWindow(hwnd, true);
-            SendMessageW(hwnd, WM_THEMECHANGED, 0, 0);
         }
         FreeLibrary(uxtheme);
         return true;
@@ -553,14 +469,14 @@ void KeyTop(HWND hwnd)
 
 void KeyMaximize(HWND hwnd)
 {
-    WINDOWPLACEMENT wPlacement = {};
-    wPlacement.length = sizeof(WINDOWPLACEMENT);
-    auto placement = GetWindowPlacement(hwnd, &wPlacement);
-    if (wPlacement.showCmd == SW_SHOWNORMAL)
+    WINDOWPLACEMENT wp = {};
+    wp.length = sizeof(WINDOWPLACEMENT);
+    auto placement = GetWindowPlacement(hwnd, &wp);
+    if (wp.showCmd == SW_SHOWNORMAL)
     {
         ShowWindow(hwnd, SW_MAXIMIZE);
     }
-    if (wPlacement.showCmd == SW_SHOWMAXIMIZED)
+    if (wp.showCmd == SW_SHOWMAXIMIZED)
     {
         ShowWindow(hwnd, SW_SHOWNORMAL);
     }
@@ -610,38 +526,4 @@ void WebViewNavigate(wil::com_ptr<ICoreWebView2> wv)
         wv->Navigate(commandLineList[i]);
     }
     LocalFree(commandLineList);
-}
-
-void Debug(HWND hwnd)
-{
-    using namespace winrt::Windows::UI;
-    using namespace winrt::Windows::UI::ViewManagement;
-
-    // COLORREF border;
-
-    // auto borderColor = winrt::check_hresult((hwnd, DWMWA_BORDER_COLOR, &border, sizeof(border)));
-    // auto border2 = DWMWA_BORDER_COLOR;
-    // auto test = std::to_wstring(borderColor.value);
-    // OutputDebugStringW(test.c_str());
-
-    // auto accent = UISettings().GetColorValue(UIColorType::Accent);
-    // COLORREF accent2 = RGB(accent.R, accent.G, accent.B);
-
-    // auto accent = UISettings().GetColorValue(UIColorType::Accent);
-    // std::wstring accentFmt = L"R: " + std::to_wstring(accent.R) + L" G: " +
-    //                          std::to_wstring(accent.G) + L" B: " + std::to_wstring(accent.B) +
-    //                          L" A: " + std::to_wstring(accent.A);
-    // OutputDebugStringW(accentFmt.c_str());
-    // OutputDebugStringW(L"\n");
-
-    // if (UISettings().AdvancedEffectsEnabled())
-    // {
-    //     OutputDebugStringW(L"Advanced Effects: Enabled");
-    //     OutputDebugStringW(L"\n");
-    // };
-    // if (UISettings().AnimationsEnabled())
-    // {
-    //     OutputDebugStringW(L"Animations: Enabled");
-    //     OutputDebugStringW(L"\n");
-    // };
 }
