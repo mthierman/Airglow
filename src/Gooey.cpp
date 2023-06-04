@@ -298,7 +298,7 @@ long long __stdcall WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
     case WM_SIZE:
     {
 
-        OutputDebugStringW(std::to_wstring(GetSystemMetrics(SM_CYSCREEN)).c_str());
+        OutputDebugStringW(std::to_wstring(GetSystemMetrics(SM_CYVIRTUALSCREEN)).c_str());
 
         // if (wv_controller != nullptr & wv_controller2 != nullptr)
         // {
@@ -340,8 +340,14 @@ long long __stdcall WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
     case WM_GETMINMAXINFO:
     {
         LPMINMAXINFO minmax = (LPMINMAXINFO)lp;
-        minmax->ptMinTrackSize.x = 300;
-        minmax->ptMinTrackSize.y = 39;
+        minmax->ptMinTrackSize.x = GetSystemMetrics(SM_CXVIRTUALSCREEN) / 4;
+        minmax->ptMinTrackSize.y = GetSystemMetrics(SM_CYCAPTION) * 2;
+
+        // minmax->ptMinTrackSize.x = 300;
+        // minmax->ptMinTrackSize.y = 39;
+        // minmax->ptMinTrackSize.y = 25;
+
+        // minmax->ptMinTrackSize.y = GetSystemMetrics(SM_CYSMCAPTION);
         // minmax->ptMaxTrackSize.x = GetSystemMetrics(SM_CXFULLSCREEN);
         // minmax->ptMaxTrackSize.y = GetSystemMetrics(SM_CYFULLSCREEN);
     }
@@ -349,11 +355,11 @@ long long __stdcall WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 
     case WM_SETFOCUS:
     {
-        if (wv_controller != nullptr)
-        {
-            wv_controller->MoveFocus(
-                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-        }
+        // if (wv_controller != nullptr)
+        // {
+        //     wv_controller->MoveFocus(
+        //         COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+        // }
         // if (wv_controller2 != nullptr)
         // {
         //     wv_controller2->MoveFocus(
@@ -453,7 +459,7 @@ bool SetDarkMode(HWND hwnd)
 bool SetMica(HWND hwnd)
 {
     // MARGINS m = {0, 0, 0, GetSystemMetrics(SM_CYFULLSCREEN) * 2};
-    MARGINS m = {0, 0, 0, GetSystemMetrics(SM_CYSCREEN)};
+    MARGINS m = {0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
     auto extend = S_OK;
     extend = DwmExtendFrameIntoClientArea(hwnd, &m);
     if (SUCCEEDED(extend))
@@ -487,8 +493,9 @@ void KeyTop(HWND hwnd)
 void KeyMaximize(HWND hwnd)
 {
     WINDOWPLACEMENT wp = {};
-    wp.length = sizeof(WINDOWPLACEMENT);
+    // wp.length = sizeof(WINDOWPLACEMENT);
     auto placement = GetWindowPlacement(hwnd, &wp);
+    ShowWindow(hwnd, SW_MAXIMIZE);
     if (wp.showCmd == SW_SHOWNORMAL)
     {
         ShowWindow(hwnd, SW_MAXIMIZE);
@@ -497,6 +504,7 @@ void KeyMaximize(HWND hwnd)
     {
         ShowWindow(hwnd, SW_SHOWNORMAL);
     }
+    OutputDebugStringW(L"HI!");
 }
 
 void KeyFullscreen(HWND hwnd)
