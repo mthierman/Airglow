@@ -26,6 +26,7 @@ bool systemDarkMode;
 bool darkTitle;
 bool darkMode;
 bool mica;
+bool window;
 
 // WEBVIEW1
 static wil::com_ptr<ICoreWebView2Controller> wv_controller;
@@ -58,6 +59,7 @@ bool CheckSystemDarkMode();
 bool SetDarkTitle(HWND);
 bool SetDarkMode(HWND);
 bool SetMica(HWND);
+bool SetWindow(HWND, int);
 
 // KEYBOARD SHORTCUTS
 int vkKeyTop = VK_F1;

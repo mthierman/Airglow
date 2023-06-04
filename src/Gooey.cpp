@@ -26,8 +26,7 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
     darkTitle = SetDarkTitle(hwnd);
     darkMode = SetDarkMode(hwnd);
     mica = SetMica(hwnd);
-
-    ShowWindow(hwnd, ncs);
+    window = SetWindow(hwnd, ncs);
 
     CreateCoreWebView2EnvironmentWithOptions(
         nullptr, nullptr, nullptr,
@@ -248,6 +247,7 @@ unsigned short WindowClass(HINSTANCE hinstance)
     WNDCLASSEXW wcex = {};
     wcex.cbSize = sizeof(WNDCLASSEX);
     wcex.style = CS_HREDRAW | CS_VREDRAW;
+    wcex.style = 0;
     wcex.lpfnWndProc = WndProc;
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
@@ -290,16 +290,13 @@ long long __stdcall WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
     case WM_SETTINGCHANGE:
     {
         systemDarkMode = CheckSystemDarkMode();
-        InvalidateRect(hwnd, NULL, true);
+        InvalidateRect(hwnd, nullptr, true);
         darkMode = SetDarkMode(hwnd);
     }
     break;
 
     case WM_SIZE:
     {
-
-        OutputDebugStringW(std::to_wstring(GetSystemMetrics(SM_CYVIRTUALSCREEN)).c_str());
-
         // if (wv_controller != nullptr & wv_controller2 != nullptr)
         // {
         //     if (wv_controller != nullptr)
@@ -340,8 +337,9 @@ long long __stdcall WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
     case WM_GETMINMAXINFO:
     {
         LPMINMAXINFO minmax = (LPMINMAXINFO)lp;
-        minmax->ptMinTrackSize.x = GetSystemMetrics(SM_CXVIRTUALSCREEN) / 4;
-        minmax->ptMinTrackSize.y = GetSystemMetrics(SM_CYCAPTION) * 2;
+        // minmax->ptMinTrackSize.x = GetSystemMetrics(SM_CXVIRTUALSCREEN) / 4;
+        minmax->ptMinTrackSize.x = 300;
+        minmax->ptMinTrackSize.y = GetSystemMetrics(SM_CYCAPTION);
 
         // minmax->ptMinTrackSize.x = 300;
         // minmax->ptMinTrackSize.y = 39;
@@ -355,11 +353,11 @@ long long __stdcall WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 
     case WM_SETFOCUS:
     {
-        // if (wv_controller != nullptr)
-        // {
-        //     wv_controller->MoveFocus(
-        //         COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-        // }
+        if (wv_controller != nullptr)
+        {
+            wv_controller->MoveFocus(
+                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+        }
         // if (wv_controller2 != nullptr)
         // {
         //     wv_controller2->MoveFocus(
@@ -458,7 +456,6 @@ bool SetDarkMode(HWND hwnd)
 
 bool SetMica(HWND hwnd)
 {
-    // MARGINS m = {0, 0, 0, GetSystemMetrics(SM_CYFULLSCREEN) * 2};
     MARGINS m = {0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
     auto extend = S_OK;
     extend = DwmExtendFrameIntoClientArea(hwnd, &m);
@@ -469,6 +466,27 @@ bool SetMica(HWND hwnd)
         backdrop =
             DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop, sizeof(&backdrop));
         if (SUCCEEDED(backdrop))
+        {
+            return true;
+        }
+        return false;
+    }
+    return false;
+}
+
+bool SetWindow(HWND hwnd, int ncs)
+{
+    auto cloak = TRUE;
+    auto cloakOff = FALSE;
+    auto set = S_OK;
+    set = DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloak, sizeof(cloak));
+    if (SUCCEEDED(set))
+    {
+        auto show = S_OK;
+        SetWindowPos(hwnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOREDRAW);
+        ShowWindow(hwnd, ncs);
+        show = DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOff, sizeof(cloakOff));
+        if (SUCCEEDED(show))
         {
             return true;
         }
@@ -493,7 +511,7 @@ void KeyTop(HWND hwnd)
 void KeyMaximize(HWND hwnd)
 {
     WINDOWPLACEMENT wp = {};
-    // wp.length = sizeof(WINDOWPLACEMENT);
+    wp.length = sizeof(WINDOWPLACEMENT);
     auto placement = GetWindowPlacement(hwnd, &wp);
     ShowWindow(hwnd, SW_MAXIMIZE);
     if (wp.showCmd == SW_SHOWNORMAL)
@@ -504,7 +522,6 @@ void KeyMaximize(HWND hwnd)
     {
         ShowWindow(hwnd, SW_SHOWNORMAL);
     }
-    OutputDebugStringW(L"HI!");
 }
 
 void KeyFullscreen(HWND hwnd)
