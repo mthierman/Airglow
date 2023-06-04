@@ -1,6 +1,6 @@
 #include "Gooey.hpp"
 
-ATOM Application(HINSTANCE hinstance)
+ATOM WindowClass(HINSTANCE hinstance)
 {
     auto icon = (HICON)LoadImageW(hinstance, programIcon.c_str(), IMAGE_ICON, 0, 0,
                                   LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
@@ -41,7 +41,7 @@ int WINAPI wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int nc
 
     SetEnvironmentVariableW(wvAdditionalBrowserArgs.c_str(), wvAdditionalBrowserArgsValue.c_str());
 
-    auto atom = Application(hinstance);
+    auto atom = WindowClass(hinstance);
 
     auto hwnd = Window(hinstance);
 

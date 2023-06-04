@@ -1,7 +1,7 @@
 #include "res.hpp"
 
 // MAIN
-ATOM Application(HINSTANCE);
+ATOM WindowClass(HINSTANCE);
 HWND Window(HINSTANCE);
 int APIENTRY wWinMain(HINSTANCE, HINSTANCE, PWSTR, int);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
