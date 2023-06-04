@@ -353,11 +353,11 @@ long long __stdcall WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 
     case WM_SETFOCUS:
     {
-        if (wv_controller != nullptr)
-        {
-            wv_controller->MoveFocus(
-                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-        }
+        // if (wv_controller != nullptr)
+        // {
+        //     wv_controller->MoveFocus(
+        //         COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+        // }
         // if (wv_controller2 != nullptr)
         // {
         //     wv_controller2->MoveFocus(
@@ -366,15 +366,21 @@ long long __stdcall WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
     }
     break;
 
+    case WM_SYSKEYDOWN:
+    {
+        if (wp == vkKeyMax)
+        {
+            OutputDebugStringW(L"PRESSED F10 BEFORE HOTKEY!!!!");
+            KeyMaximize(hwnd);
+        }
+    }
+    break;
+
     case WM_KEYDOWN:
     {
         if (wp == vkKeyTop)
         {
             KeyTop(hwnd);
-        }
-        if (wp == vkKeyMax)
-        {
-            KeyMaximize(hwnd);
         }
         if (wp == vkKeyFull)
         {
