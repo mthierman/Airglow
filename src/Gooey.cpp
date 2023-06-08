@@ -353,11 +353,11 @@ long long __stdcall WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 
     case WM_SETFOCUS:
     {
-        // if (wv_controller != nullptr)
-        // {
-        //     wv_controller->MoveFocus(
-        //         COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-        // }
+        if (wv_controller != nullptr)
+        {
+            wv_controller->MoveFocus(
+                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+        }
         // if (wv_controller2 != nullptr)
         // {
         //     wv_controller2->MoveFocus(
