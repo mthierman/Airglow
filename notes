@@ -1,0 +1,14 @@
+// auto menuHandle = GetSystemMenu(hwnd, false);
+// MENUITEMINFOW menu;
+// menu.cbSize = sizeof(MENUITEMINFOW);
+// menu.fMask = MIIM_STRING | MIIM_ID;
+// menu.wID = 1005;
+// menu.dwTypeData = (LPWSTR)L"Toggle Theme";
+// InsertMenuItemW(menuHandle, 1, FALSE, &menu);
+
+// if (wv_controller != nullptr)
+// {
+//     RECT bounds;
+//     GetClientRect(hwnd, &bounds);
+//     wv_controller->put_Bounds(bounds);
+// }

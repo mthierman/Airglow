@@ -60,20 +60,16 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
                             RECT bounds;
                             RECT wvRect;
 
-                            // GetClientRect(hwnd, &bounds);
-
-                            // wvRect = {
-                            //     bounds.left,
-                            //     bounds.top,
-                            //     bounds.right / 2,
-                            //     bounds.bottom,
-                            // };
-
-                            // wv_controller->put_Bounds(wvRect);
-
                             GetClientRect(hwnd, &bounds);
 
-                            wv_controller->put_Bounds(bounds);
+                            wvRect = {
+                                bounds.left,
+                                bounds.top,
+                                bounds.right / 2,
+                                bounds.bottom,
+                            };
+
+                            wv_controller->put_Bounds(wvRect);
 
                             WebViewNavigate(wv);
 
@@ -127,110 +123,100 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
             })
             .Get());
 
-    // CreateCoreWebView2EnvironmentWithOptions(
-    //     nullptr, nullptr, nullptr,
-    //     Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
-    //         [hwnd](HRESULT result, ICoreWebView2Environment* env) -> HRESULT
-    //         {
-    //             env->CreateCoreWebView2Controller(
-    //                 hwnd,
-    //                 Microsoft::WRL::Callback<
-    //                     ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-    //                     [hwnd](HRESULT result, ICoreWebView2Controller* controller) -> HRESULT
-    //                     {
-    //                         if (controller != nullptr)
-    //                         {
-    //                             wv_controller2 = controller;
-    //                             wv_controller2->get_CoreWebView2(&wv2);
-    //                         }
+    CreateCoreWebView2EnvironmentWithOptions(
+        nullptr, nullptr, nullptr,
+        Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
+            [hwnd](HRESULT result, ICoreWebView2Environment* env) -> HRESULT
+            {
+                env->CreateCoreWebView2Controller(
+                    hwnd,
+                    Microsoft::WRL::Callback<
+                        ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+                        [hwnd](HRESULT result, ICoreWebView2Controller* controller) -> HRESULT
+                        {
+                            if (controller != nullptr)
+                            {
+                                wv_controller2 = controller;
+                                wv_controller2->get_CoreWebView2(&wv2);
+                            }
 
-    //                         wv2->get_Settings(&wv_settings2);
+                            wv2->get_Settings(&wv_settings2);
 
-    //                         wv_settings2->put_AreDefaultContextMenusEnabled(true);
-    //                         wv_settings2->put_AreDefaultScriptDialogsEnabled(true);
-    //                         wv_settings2->put_AreDevToolsEnabled(true);
-    //                         wv_settings2->put_AreHostObjectsAllowed(true);
-    //                         wv_settings2->put_IsBuiltInErrorPageEnabled(true);
-    //                         wv_settings2->put_IsScriptEnabled(true);
-    //                         wv_settings2->put_IsStatusBarEnabled(true);
-    //                         wv_settings2->put_IsWebMessageEnabled(true);
-    //                         wv_settings2->put_IsZoomControlEnabled(true);
+                            wv_settings2->put_AreDefaultContextMenusEnabled(true);
+                            wv_settings2->put_AreDefaultScriptDialogsEnabled(true);
+                            wv_settings2->put_AreDevToolsEnabled(true);
+                            wv_settings2->put_AreHostObjectsAllowed(true);
+                            wv_settings2->put_IsBuiltInErrorPageEnabled(true);
+                            wv_settings2->put_IsScriptEnabled(true);
+                            wv_settings2->put_IsStatusBarEnabled(true);
+                            wv_settings2->put_IsWebMessageEnabled(true);
+                            wv_settings2->put_IsZoomControlEnabled(true);
 
-    //                         RECT bounds2;
-    //                         RECT wvRect2;
+                            RECT bounds2;
+                            RECT wvRect2;
 
-    //                         GetClientRect(hwnd, &bounds2);
+                            GetClientRect(hwnd, &bounds2);
 
-    //                         wvRect2 = {
-    //                             bounds2.right / 2,
-    //                             bounds2.top,
-    //                             bounds2.right,
-    //                             bounds2.bottom,
-    //                         };
+                            wvRect2 = {
+                                bounds2.right / 2,
+                                bounds2.top,
+                                bounds2.right,
+                                bounds2.bottom,
+                            };
 
-    //                         wv_controller2->put_Bounds(wvRect2);
+                            wv_controller2->put_Bounds(wvRect2);
 
-    //                         WebViewNavigate(wv2);
+                            WebViewNavigate(wv2);
 
-    //                         EventRegistrationToken token;
+                            EventRegistrationToken token;
 
-    //                         wv2->ExecuteScript(wvScript.c_str(), nullptr);
+                            wv2->ExecuteScript(wvScript.c_str(), nullptr);
 
-    //                         wv2->AddScriptToExecuteOnDocumentCreated(wvScript.c_str(), nullptr);
+                            wv2->AddScriptToExecuteOnDocumentCreated(wvScript.c_str(), nullptr);
 
-    //                         wv2->add_WebMessageReceived(
-    //                             Microsoft::WRL::Callback<
-    //                                 ICoreWebView2WebMessageReceivedEventHandler>(
-    //                                 [hwnd](
-    //                                     ICoreWebView2* webview,
-    //                                     ICoreWebView2WebMessageReceivedEventArgs* args) ->
-    //                                     HRESULT
-    //                                 {
-    //                                     wil::unique_cotaskmem_string message;
+                            wv2->add_WebMessageReceived(
+                                Microsoft::WRL::Callback<
+                                    ICoreWebView2WebMessageReceivedEventHandler>(
+                                    [hwnd](
+                                        ICoreWebView2* webview,
+                                        ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT
+                                    {
+                                        wil::unique_cotaskmem_string message;
 
-    //                                     args->TryGetWebMessageAsString(&message);
+                                        args->TryGetWebMessageAsString(&message);
 
-    //                                     if ((std::wstring)message.get() == keyTop.c_str())
-    //                                     {
-    //                                         KeyTop(hwnd);
-    //                                     }
+                                        if ((std::wstring)message.get() == keyTop.c_str())
+                                        {
+                                            KeyTop(hwnd);
+                                        }
 
-    //                                     if ((std::wstring)message.get() == keyMax.c_str())
-    //                                     {
-    //                                         KeyMaximize(hwnd);
-    //                                     }
+                                        if ((std::wstring)message.get() == keyMax.c_str())
+                                        {
+                                            KeyMaximize(hwnd);
+                                        }
 
-    //                                     if ((std::wstring)message.get() == keyFull.c_str())
-    //                                     {
-    //                                         KeyFullscreen(hwnd);
-    //                                     }
+                                        if ((std::wstring)message.get() == keyFull.c_str())
+                                        {
+                                            KeyFullscreen(hwnd);
+                                        }
 
-    //                                     if ((std::wstring)message.get() == keyClose.c_str())
-    //                                     {
-    //                                         KeyClose(hwnd);
-    //                                     }
+                                        if ((std::wstring)message.get() == keyClose.c_str())
+                                        {
+                                            KeyClose(hwnd);
+                                        }
 
-    //                                     webview->PostWebMessageAsString(message.get());
+                                        webview->PostWebMessageAsString(message.get());
 
-    //                                     return S_OK;
-    //                                 })
-    //                                 .Get(),
-    //                             &token);
-    //                         return S_OK;
-    //                     })
-    //                     .Get());
-    //             return S_OK;
-    //         })
-    //         .Get());
-
-    // auto menuHandle = GetSystemMenu(hwnd, false);
-    // MENUITEMINFOW menu;
-    // menu.cbSize = sizeof(MENUITEMINFOW);
-    // menu.fMask = MIIM_STRING | MIIM_ID;
-    // menu.wID = 1005;
-    // menu.dwTypeData = (LPWSTR)L"Toggle Theme";
-
-    // InsertMenuItemW(menuHandle, 1, FALSE, &menu);
+                                        return S_OK;
+                                    })
+                                    .Get(),
+                                &token);
+                            return S_OK;
+                        })
+                        .Get());
+                return S_OK;
+            })
+            .Get());
 
     MSG msg = {};
     while (GetMessageW(&msg, nullptr, 0, 0))
@@ -297,39 +283,32 @@ long long __stdcall WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 
     case WM_SIZE:
     {
-        // if (wv_controller != nullptr & wv_controller2 != nullptr)
-        // {
-        //     if (wv_controller != nullptr)
-        //     {
-        //         RECT bounds;
-        //         GetClientRect(hwnd, &bounds);
-        //         RECT wvRect = {
-        //             bounds.left,
-        //             bounds.top,
-        //             bounds.right / 2,
-        //             bounds.bottom,
-        //         };
-        //         wv_controller->put_Bounds(wvRect);
-        //     }
-        //     if (wv_controller2 != nullptr)
-        //     {
-        //         RECT bounds2;
-        //         GetClientRect(hwnd, &bounds2);
-        //         RECT wvRect2 = {
-        //             bounds2.right / 2,
-        //             bounds2.top,
-        //             bounds2.right,
-        //             bounds2.bottom,
-        //         };
-        //         wv_controller2->put_Bounds(wvRect2);
-        //     }
-        // }
-
-        if (wv_controller != nullptr)
+        if (wv_controller != nullptr & wv_controller2 != nullptr)
         {
-            RECT bounds;
-            GetClientRect(hwnd, &bounds);
-            wv_controller->put_Bounds(bounds);
+            if (wv_controller != nullptr)
+            {
+                RECT bounds;
+                GetClientRect(hwnd, &bounds);
+                RECT wvRect = {
+                    bounds.left,
+                    bounds.top,
+                    bounds.right / 2,
+                    bounds.bottom,
+                };
+                wv_controller->put_Bounds(wvRect);
+            }
+            if (wv_controller2 != nullptr)
+            {
+                RECT bounds2;
+                GetClientRect(hwnd, &bounds2);
+                RECT wvRect2 = {
+                    bounds2.right / 2,
+                    bounds2.top,
+                    bounds2.right,
+                    bounds2.bottom,
+                };
+                wv_controller2->put_Bounds(wvRect2);
+            }
         }
     }
     break;
@@ -337,17 +316,8 @@ long long __stdcall WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
     case WM_GETMINMAXINFO:
     {
         LPMINMAXINFO minmax = (LPMINMAXINFO)lp;
-        // minmax->ptMinTrackSize.x = GetSystemMetrics(SM_CXVIRTUALSCREEN) / 4;
         minmax->ptMinTrackSize.x = 300;
         minmax->ptMinTrackSize.y = GetSystemMetrics(SM_CYCAPTION);
-
-        // minmax->ptMinTrackSize.x = 300;
-        // minmax->ptMinTrackSize.y = 39;
-        // minmax->ptMinTrackSize.y = 25;
-
-        // minmax->ptMinTrackSize.y = GetSystemMetrics(SM_CYSMCAPTION);
-        // minmax->ptMaxTrackSize.x = GetSystemMetrics(SM_CXFULLSCREEN);
-        // minmax->ptMaxTrackSize.y = GetSystemMetrics(SM_CYFULLSCREEN);
     }
     break;
 
@@ -358,11 +328,11 @@ long long __stdcall WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
             wv_controller->MoveFocus(
                 COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
         }
-        // if (wv_controller2 != nullptr)
-        // {
-        //     wv_controller2->MoveFocus(
-        //         COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-        // }
+        if (wv_controller2 != nullptr)
+        {
+            wv_controller2->MoveFocus(
+                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+        }
     }
     break;
 
@@ -370,7 +340,6 @@ long long __stdcall WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
     {
         if (wp == vkKeyMax)
         {
-            OutputDebugStringW(L"PRESSED F10 BEFORE HOTKEY!!!!");
             KeyMaximize(hwnd);
         }
     }
@@ -565,6 +534,7 @@ void WebViewNavigate(wil::com_ptr<ICoreWebView2> wv)
     int i;
     LPWSTR commandLine = GetCommandLineW();
     LPWSTR* commandLineList = CommandLineToArgvW(commandLine, &nArgs);
+
     if (0 == commandLineList[1])
     {
         wv->Navigate(L"about:blank");
@@ -573,5 +543,9 @@ void WebViewNavigate(wil::com_ptr<ICoreWebView2> wv)
     {
         wv->Navigate(commandLineList[i]);
     }
+    // for (i = 2; i < nArgs; i++)
+    // {
+    //     wv2->Navigate(commandLineList[i]);
+    // }
     LocalFree(commandLineList);
 }
