@@ -28,10 +28,6 @@ bool darkMode;
 bool mica;
 bool window;
 
-bool isTopmost;
-bool isFullscreen;
-bool isMaximized;
-
 // WEBVIEW1
 static wil::com_ptr<ICoreWebView2Controller> wv_controller;
 static wil::com_ptr<ICoreWebView2> wv;
@@ -84,3 +80,9 @@ void KeyTop(HWND);
 void KeyMaximize(HWND);
 void KeyFullscreen(HWND);
 void KeyClose(HWND);
+
+bool isTopmost;
+bool isFullscreen;
+bool isMaximized;
+
+RECT windowSize;

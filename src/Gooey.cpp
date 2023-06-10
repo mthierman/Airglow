@@ -285,6 +285,14 @@ long long __stdcall WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 
     case WM_SIZE:
     {
+        RECT windowSize;
+        GetClientRect(hwnd, &windowSize);
+        auto height = std::to_wstring(windowSize.bottom - windowSize.top);
+        auto width = std::to_wstring(windowSize.right - windowSize.left);
+        auto dimensions = L"WINDOW SIZE: " + width + L" x " + height + L"\n";
+
+        OutputDebugStringW(dimensions.c_str());
+
         if (wv_controller != nullptr & wv_controller2 != nullptr)
         {
             if (wv_controller != nullptr)
