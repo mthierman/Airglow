@@ -453,18 +453,18 @@ bool SetMica(HWND hwnd)
 
 bool SetWindow(HWND hwnd, int ncs)
 {
-    auto cloak = TRUE;
+    auto cloakOn = TRUE;
     auto cloakOff = FALSE;
-    auto set = S_OK;
-    set = DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloak, sizeof(cloak));
-    if (SUCCEEDED(set))
+    auto cloak = S_OK;
+    cloak = DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOn, sizeof(cloakOn));
+    if (SUCCEEDED(cloak))
     {
-        auto show = S_OK;
+        auto uncloak = S_OK;
         SetWindowPos(hwnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOREDRAW);
-        ShowWindow(hwnd, ncs);
-        show = DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOff, sizeof(cloakOff));
-        if (SUCCEEDED(show))
+        uncloak = DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOff, sizeof(cloakOff));
+        if (SUCCEEDED(uncloak))
         {
+            ShowWindow(hwnd, ncs);
             return true;
         }
         return false;
