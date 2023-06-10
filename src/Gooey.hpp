@@ -43,7 +43,10 @@ std::wstring wvScript(
     L"document.onreadystatechange = () => {if (document.readyState === 'complete') {onkeydown = "
     L"(e) => {if (e.ctrlKey && e.key === 'w') {window.chrome.webview.postMessage('close')} else "
     L"{window.chrome.webview.postMessage(e.key)}}}}");
-void WebViewNavigate(wil::com_ptr<ICoreWebView2>);
+void WebViewNavigate(wil::com_ptr<ICoreWebView2>, wil::com_ptr<ICoreWebView2>);
+void CommandLineUrl();
+std::wstring url1 = L"about:blank";
+std::wstring url2 = L"about:blank";
 
 // THEMING
 enum PreferredAppMode

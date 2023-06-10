@@ -8,6 +8,8 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
 
     SetEnvironmentVariableW(wvAdditionalBrowserArgs.c_str(), wvAdditionalBrowserArgsValue.c_str());
 
+    CommandLineUrl();
+
     auto atom = WindowClass(hinstance);
 
     if (!atom)
@@ -71,7 +73,7 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
 
                             wv_controller->put_Bounds(wvRect);
 
-                            WebViewNavigate(wv);
+                            wv->Navigate(url1.c_str());
 
                             EventRegistrationToken token;
 
@@ -166,7 +168,7 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
 
                             wv_controller2->put_Bounds(wvRect2);
 
-                            WebViewNavigate(wv2);
+                            wv2->Navigate(url2.c_str());
 
                             EventRegistrationToken token;
 
@@ -528,24 +530,28 @@ void KeyFullscreen(HWND hwnd)
 
 void KeyClose(HWND hwnd) { SendMessageW(hwnd, WM_CLOSE, 0, 0); }
 
-void WebViewNavigate(wil::com_ptr<ICoreWebView2> wv)
+void CommandLineUrl()
 {
     int nArgs;
     int i;
     LPWSTR commandLine = GetCommandLineW();
     LPWSTR* commandLineList = CommandLineToArgvW(commandLine, &nArgs);
 
-    if (0 == commandLineList[1])
+    if (nArgs == 1)
     {
-        wv->Navigate(L"about:blank");
+        url1 = L"about:blank";
+        url2 = L"about:blank";
     }
-    for (i = 1; i < nArgs; i++)
+    if (nArgs == 2)
     {
-        wv->Navigate(commandLineList[i]);
+        url1 = commandLineList[1];
+        url2 = commandLineList[1];
     }
-    // for (i = 2; i < nArgs; i++)
-    // {
-    //     wv2->Navigate(commandLineList[i]);
-    // }
+    if (nArgs == 3)
+    {
+        url1 = commandLineList[1];
+        url2 = commandLineList[2];
+    }
+
     LocalFree(commandLineList);
 }
