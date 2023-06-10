@@ -483,6 +483,7 @@ void KeyTop(HWND hwnd)
     {
         SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
     }
+    isTopmost = true;
 }
 
 void KeyMaximize(HWND hwnd)
@@ -490,14 +491,18 @@ void KeyMaximize(HWND hwnd)
     WINDOWPLACEMENT wp = {};
     wp.length = sizeof(WINDOWPLACEMENT);
     auto placement = GetWindowPlacement(hwnd, &wp);
-    ShowWindow(hwnd, SW_MAXIMIZE);
-    if (wp.showCmd == SW_SHOWNORMAL)
+    if (!isFullscreen)
     {
-        ShowWindow(hwnd, SW_MAXIMIZE);
-    }
-    if (wp.showCmd == SW_SHOWMAXIMIZED)
-    {
-        ShowWindow(hwnd, SW_SHOWNORMAL);
+        if (wp.showCmd == SW_SHOWNORMAL)
+        {
+            ShowWindow(hwnd, SW_MAXIMIZE);
+            isMaximized = true;
+        }
+        if (wp.showCmd == SW_SHOWMAXIMIZED)
+        {
+            ShowWindow(hwnd, SW_SHOWNORMAL);
+            isMaximized = false;
+        }
     }
 }
 
@@ -516,6 +521,7 @@ void KeyFullscreen(HWND hwnd)
                          mi.rcMonitor.right - mi.rcMonitor.left,
                          mi.rcMonitor.bottom - mi.rcMonitor.top,
                          SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
+            isFullscreen = true;
         }
     }
     else
@@ -525,6 +531,7 @@ void KeyFullscreen(HWND hwnd)
                      SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
         SetWindowPos(hwnd, nullptr, position.left, position.top, (position.right - position.left),
                      (position.bottom - position.top), 0);
+        isFullscreen = false;
     }
 }
 
@@ -537,11 +544,6 @@ void CommandLineUrl()
     LPWSTR commandLine = GetCommandLineW();
     LPWSTR* commandLineList = CommandLineToArgvW(commandLine, &nArgs);
 
-    if (nArgs == 1)
-    {
-        url1 = L"about:blank";
-        url2 = L"about:blank";
-    }
     if (nArgs == 2)
     {
         url1 = commandLineList[1];

@@ -28,6 +28,10 @@ bool darkMode;
 bool mica;
 bool window;
 
+bool isTopmost;
+bool isFullscreen;
+bool isMaximized;
+
 // WEBVIEW1
 static wil::com_ptr<ICoreWebView2Controller> wv_controller;
 static wil::com_ptr<ICoreWebView2> wv;
@@ -69,6 +73,8 @@ int vkKeyTop = VK_F1;
 int vkKeyMax = VK_F10;
 int vkKeyFull = VK_F11;
 int vkKeyControl = VK_CONTROL;
+// int vkKeyAlt = VK_MENU;
+// int vkKeyF4 = VK_F4;
 int vkKeyW = 0x57;
 std::wstring keyTop(L"F1");
 std::wstring keyMax(L"F10");
