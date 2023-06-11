@@ -10,7 +10,7 @@ project(
 set(WEBVIEW "Microsoft.Web.WebView2")
 set(WEBVIEW_VER "1.0.1823.32")
 
-if(DEFINED ENV{WEBVIEW_PKG2})
+if(DEFINED ENV{WEBVIEW_PKG})
     set(WEBVIEW_PKG $ENV{WEBVIEW_PKG})
 else()
     execute_process(
@@ -23,7 +23,7 @@ endif()
 set(WIL "Microsoft.Windows.ImplementationLibrary")
 set(WIL_VER "1.0.230411.1")
 
-if(DEFINED ENV{WIL_PKG2})
+if(DEFINED ENV{WIL_PKG})
     set(WIL_PKG $ENV{WIL_PKG})
 else()
     execute_process(
