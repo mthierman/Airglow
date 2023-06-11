@@ -7,28 +7,13 @@ project(
     LANGUAGES CXX
 )
 
-set(WEBVIEW "Microsoft.Web.WebView2")
-set(WEBVIEW_VER "1.0.1774.30")
-set(WEBVIEW_LIB "${WEBVIEW}.${WEBVIEW_VER}")
-set(WEBVIEW_DLL WebView2Loader.dll)
+set(WEBVIEW_VER "1.0.1823.32")
 
-set(WIL "Microsoft.Windows.ImplementationLibrary")
 set(WIL_VER "1.0.230411.1")
-set(WIL_LIB "${WIL}.${WIL_VER}")
 
 math(EXPR BITNESS "${CMAKE_SIZEOF_VOID_P} * 8" OUTPUT_FORMAT DECIMAL)
 message(STATUS "${PROJECT_NAME} v${PROJECT_VERSION} (${BITNESS}-bit) [${CMAKE_BUILD_TYPE}]")
 file(WRITE ${CMAKE_BINARY_DIR}/version.txt "v${PROJECT_VERSION}")
-
-execute_process(
-    COMMAND
-    nuget install ${WEBVIEW} -Version ${WEBVIEW_VER} -OutputDirectory ${CMAKE_SOURCE_DIR}/external
-)
-
-execute_process(
-    COMMAND
-    nuget install ${WIL} -Version ${WIL_VER} -OutputDirectory ${CMAKE_SOURCE_DIR}/external
-)
 
 add_executable(
     ${PROJECT_NAME}
@@ -46,14 +31,14 @@ target_precompile_headers(
 target_include_directories(
     ${PROJECT_NAME}
     PRIVATE
-    external/${WEBVIEW_LIB}/build/native/include
-    external/${WIL_LIB}/include
+    $ENV{WEBVIEW2}/${WEBVIEW_VER}/build/native/include
+    $ENV{WIL}/${WIL_VER}/include
 )
 
 target_link_directories(
     ${PROJECT_NAME}
     PRIVATE
-    external/${WEBVIEW_LIB}/build/native/x64
+    $ENV{WEBVIEW2}/${WEBVIEW_VER}/build/native/x64
 )
 
 target_link_libraries(
