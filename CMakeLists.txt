@@ -10,27 +10,27 @@ project(
 set(WEBVIEW "Microsoft.Web.WebView2")
 set(WEBVIEW_VER "1.0.1823.32")
 
-if(DEFINED ENV{WEBVIEW_PKG})
+if(DEFINED ENV{WEBVIEW_PKG2})
     set(WEBVIEW_PKG $ENV{WEBVIEW_PKG})
 else()
     execute_process(
         COMMAND
-        nuget install ${WEBVIEW} -Version ${WEBVIEW_VER} -OutputDirectory ${CMAKE_BINARY_DIR}
+        nuget install ${WEBVIEW} -Version ${WEBVIEW_VER} -OutputDirectory ${CMAKE_BINARY_DIR}/libs
     )
-    set(WEBVIEW_PKG ${CMAKE_BINARY_DIR}/${WEBVIEW}.${WEBVIEW_VER})
+    set(WEBVIEW_PKG ${CMAKE_BINARY_DIR}/libs/${WEBVIEW}.${WEBVIEW_VER})
 endif()
 
 set(WIL "Microsoft.Windows.ImplementationLibrary")
 set(WIL_VER "1.0.230411.1")
 
-if(DEFINED ENV{WIL_PKG})
+if(DEFINED ENV{WIL_PKG2})
     set(WIL_PKG $ENV{WIL_PKG})
 else()
     execute_process(
         COMMAND
-        nuget install ${WIL} -Version ${WIL_VER} -OutputDirectory ${CMAKE_BINARY_DIR}
+        nuget install ${WIL} -Version ${WIL_VER} -OutputDirectory ${CMAKE_BINARY_DIR}/libs
     )
-    set(WIL_PKG ${CMAKE_BINARY_DIR}/${WIL}.${WIL_VER})
+    set(WIL_PKG ${CMAKE_BINARY_DIR}/libs/${WIL}.${WIL_VER})
 endif()
 
 message(STATUS ${WEBVIEW_PKG})

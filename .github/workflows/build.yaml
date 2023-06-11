@@ -2,8 +2,8 @@ name: Gooey Release
 
 on:
   workflow_dispatch:
-  # push:
-  #   branches: [main]
+  push:
+    branches: [main]
 
 permissions:
   contents: write
@@ -16,7 +16,7 @@ jobs:
       - uses: actions/cache@v3
         id: nuget-cache
         with:
-          path: external
+          path: build/libs
           key: nuget-cache-${{ hashFiles('**/CMakeLists.txt') }}
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
