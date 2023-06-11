@@ -7,6 +7,36 @@ project(
     LANGUAGES CXX
 )
 
+set(WEBVIEW2 "Microsoft.Web.WebView2")
+set(WEBVIEW2_VER "1.0.1823.32")
+
+set(WIL "Microsoft.Windows.ImplementationLibrary")
+set(WIL_VER "1.0.230411.1")
+
+if(DEFINED ENV{WEBVIEW2})
+    message(STATUS "WEBVIEW2 FOUND")
+    set(WEBVIEW2_PKG $ENV{WEBVIEW2}/${WEBVIEW2_VER})
+    message(STATUS ${WEBVIEW2_PKG})
+else()
+    execute_process(
+        COMMAND
+        nuget install ${WEBVIEW2} -Version ${WEBVIEW2_VER} -OutputDirectory ${CMAKE_SOURCE_DIR}/external
+    )
+    set(WEBVIEW_PKG external/${WEBVIEW2}.${WEBVIEW2_VER})
+endif()
+
+if(DEFINED ENV{WIL})
+    message(STATUS "WIL FOUND")
+    set(WIL_PKG $ENV{WIL}/${WIL_VER})
+    message(STATUS ${WIL_PKG})
+else()
+    execute_process(
+        COMMAND
+        nuget install ${WIL} -Version ${WIL_VER} -OutputDirectory ${CMAKE_SOURCE_DIR}/external
+    )
+    set(WIL_PKG external/${WIL}.${WIL_VER})
+endif()
+
 set(WEBVIEW_VER "1.0.1823.32")
 
 set(WIL_VER "1.0.230411.1")
@@ -31,14 +61,14 @@ target_precompile_headers(
 target_include_directories(
     ${PROJECT_NAME}
     PRIVATE
-    $ENV{WEBVIEW2}/${WEBVIEW_VER}/build/native/include
-    $ENV{WIL}/${WIL_VER}/include
+    ${WEBVIEW2_PKG}/build/native/include
+    ${WIL_PKG}/include
 )
 
 target_link_directories(
     ${PROJECT_NAME}
     PRIVATE
-    $ENV{WEBVIEW2}/${WEBVIEW_VER}/build/native/x64
+    ${WEBVIEW2_PKG}/build/native/x64
 )
 
 target_link_libraries(
