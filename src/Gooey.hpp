@@ -41,7 +41,8 @@ static wil::com_ptr<ICoreWebView2Settings> wv_settings2;
 // WEBVIEW
 std::wstring wvScript(
     L"document.onreadystatechange = () => {if (document.readyState === 'complete') {onkeydown = "
-    L"(e) => {if (e.ctrlKey && e.key === 'w') {window.chrome.webview.postMessage('close')} else "
+    L"(e) => {if (e.ctrlKey && e.key === 'w') {window.chrome.webview.postMessage('close')} if "
+    L"(e.ctrlKey && e.key === 's') {window.chrome.webview.postMessage('split')} else "
     L"{window.chrome.webview.postMessage(e.key)}}}}");
 void WebViewNavigate(wil::com_ptr<ICoreWebView2>, wil::com_ptr<ICoreWebView2>);
 void CommandLineUrl();
@@ -69,14 +70,21 @@ int vkKeyTop = VK_F1;
 int vkKeyMax = VK_F10;
 int vkKeyFull = VK_F11;
 int vkKeyControl = VK_CONTROL;
+int vkKeyS = 0x53;
+int vkKeyE = 0x45;
+int vkKeyW = 0x57;
+
 // int vkKeyAlt = VK_MENU;
 // int vkKeyF4 = VK_F4;
-int vkKeyW = 0x57;
+
 std::wstring keyTop(L"F1");
+std::wstring keySplit(L"split");
 std::wstring keyMax(L"F10");
 std::wstring keyFull(L"F11");
 std::wstring keyClose(L"close");
+
 void KeyTop(HWND);
+void KeySplit(HWND);
 void KeyMaximize(HWND);
 void KeyFullscreen(HWND);
 void KeyClose(HWND);
@@ -84,5 +92,6 @@ void KeyClose(HWND);
 bool isTopmost;
 bool isFullscreen;
 bool isMaximized;
+bool isSplit = false;
 
 RECT windowSize;

@@ -7,6 +7,10 @@ project(
     LANGUAGES CXX
 )
 
+math(EXPR BITNESS "${CMAKE_SIZEOF_VOID_P} * 8" OUTPUT_FORMAT DECIMAL)
+message(STATUS "${PROJECT_NAME} v${PROJECT_VERSION} (${BITNESS}-bit) [${CMAKE_BUILD_TYPE}]")
+file(WRITE ${CMAKE_BINARY_DIR}/version.txt "v${PROJECT_VERSION}")
+
 set(WEBVIEW "Microsoft.Web.WebView2")
 set(WEBVIEW_VER "1.0.1823.32")
 
@@ -35,10 +39,6 @@ endif()
 
 message(STATUS ${WEBVIEW_PKG})
 message(STATUS ${WIL_PKG})
-
-math(EXPR BITNESS "${CMAKE_SIZEOF_VOID_P} * 8" OUTPUT_FORMAT DECIMAL)
-message(STATUS "${PROJECT_NAME} v${PROJECT_VERSION} (${BITNESS}-bit) [${CMAKE_BUILD_TYPE}]")
-file(WRITE ${CMAKE_BINARY_DIR}/version.txt "v${PROJECT_VERSION}")
 
 add_executable(
     ${PROJECT_NAME}

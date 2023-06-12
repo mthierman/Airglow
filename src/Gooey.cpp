@@ -71,7 +71,10 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
                                 bounds.bottom,
                             };
 
-                            wv_controller->put_Bounds(wvRect);
+                            if (!isSplit)
+                                wv_controller->put_Bounds(bounds);
+                            if (isSplit)
+                                wv_controller->put_Bounds(wvRect);
 
                             wv->Navigate(url1.c_str());
 
@@ -95,6 +98,11 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
                                         if ((std::wstring)message.get() == keyTop.c_str())
                                         {
                                             KeyTop(hwnd);
+                                        }
+
+                                        if ((std::wstring)message.get() == keySplit.c_str())
+                                        {
+                                            KeySplit(hwnd);
                                         }
 
                                         if ((std::wstring)message.get() == keyMax.c_str())
@@ -156,6 +164,7 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
 
                             RECT bounds2;
                             RECT wvRect2;
+                            RECT boundsDisabled;
 
                             GetClientRect(hwnd, &bounds2);
 
@@ -166,7 +175,8 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
                                 bounds2.bottom,
                             };
 
-                            wv_controller2->put_Bounds(wvRect2);
+                            if (isSplit)
+                                wv_controller2->put_Bounds(wvRect2);
 
                             wv2->Navigate(url2.c_str());
 
@@ -190,6 +200,11 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
                                         if ((std::wstring)message.get() == keyTop.c_str())
                                         {
                                             KeyTop(hwnd);
+                                        }
+
+                                        if ((std::wstring)message.get() == keySplit.c_str())
+                                        {
+                                            KeySplit(hwnd);
                                         }
 
                                         if ((std::wstring)message.get() == keyMax.c_str())
@@ -219,6 +234,20 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
                 return S_OK;
             })
             .Get());
+
+    // auto menuHandle = GetSystemMenu(hwnd, false);
+    // MENUITEMINFOW seperator;
+    // seperator.cbSize = sizeof(MENUITEMINFOW);
+    // seperator.fMask = MIIM_FTYPE;
+    // seperator.fType = MFT_SEPARATOR;
+    // MENUITEMINFOW split;
+    // split.cbSize = sizeof(MENUITEMINFOW);
+    // split.fMask = MIIM_STRING | MIIM_ID;
+    // split.wID = 1005;
+    // split.dwTypeData = (LPWSTR)L"Toggle Split";
+
+    // InsertMenuItemW(menuHandle, 1, FALSE, &seperator);
+    // InsertMenuItemW(menuHandle, 1, FALSE, &split);
 
     MSG msg = {};
     while (GetMessageW(&msg, nullptr, 0, 0))
@@ -284,6 +313,7 @@ long long __stdcall WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
     break;
 
     case WM_SIZE:
+    case WM_WINDOWPOSCHANGING:
     {
         RECT windowSize;
         GetClientRect(hwnd, &windowSize);
@@ -293,32 +323,33 @@ long long __stdcall WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 
         OutputDebugStringW(dimensions.c_str());
 
-        if (wv_controller != nullptr & wv_controller2 != nullptr)
+        if (wv_controller != nullptr)
         {
-            if (wv_controller != nullptr)
-            {
-                RECT bounds;
-                GetClientRect(hwnd, &bounds);
-                RECT wvRect = {
-                    bounds.left,
-                    bounds.top,
-                    bounds.right / 2,
-                    bounds.bottom,
-                };
+            RECT bounds;
+            GetClientRect(hwnd, &bounds);
+            RECT wvRect = {
+                bounds.left,
+                bounds.top,
+                bounds.right / 2,
+                bounds.bottom,
+            };
+            if (!isSplit)
+                wv_controller->put_Bounds(bounds);
+            if (isSplit)
                 wv_controller->put_Bounds(wvRect);
-            }
-            if (wv_controller2 != nullptr)
-            {
-                RECT bounds2;
-                GetClientRect(hwnd, &bounds2);
-                RECT wvRect2 = {
-                    bounds2.right / 2,
-                    bounds2.top,
-                    bounds2.right,
-                    bounds2.bottom,
-                };
+        }
+        if (wv_controller2 != nullptr)
+        {
+            RECT bounds2;
+            GetClientRect(hwnd, &bounds2);
+            RECT wvRect2 = {
+                bounds2.right / 2,
+                bounds2.top,
+                bounds2.right,
+                bounds2.bottom,
+            };
+            if (isSplit)
                 wv_controller2->put_Bounds(wvRect2);
-            }
         }
     }
     break;
@@ -371,6 +402,14 @@ long long __stdcall WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
             if (state & 0x8000)
             {
                 KeyClose(hwnd);
+            }
+        }
+        if (wp == vkKeyS)
+        {
+            auto state = GetKeyState(vkKeyControl);
+            if (state & 0x8000)
+            {
+                KeySplit(hwnd);
             }
         }
     }
@@ -494,6 +533,21 @@ void KeyTop(HWND hwnd)
     isTopmost = true;
 }
 
+void KeySplit(HWND hwnd)
+{
+    // OutputDebugStringW(L"KEYSPLIT PUSHED");
+    // OutputDebugStringW(std::to_wstring(isSplit).c_str());
+    if (!isSplit)
+    {
+        isSplit = true;
+    }
+    else if (isSplit)
+    {
+        isSplit = false;
+    }
+    SetWindowPos(hwnd, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+}
+
 void KeyMaximize(HWND hwnd)
 {
     WINDOWPLACEMENT wp = {};
@@ -556,11 +610,13 @@ void CommandLineUrl()
     {
         url1 = commandLineList[1];
         url2 = commandLineList[1];
+        isSplit = false;
     }
     if (nArgs == 3)
     {
         url1 = commandLineList[1];
         url2 = commandLineList[2];
+        isSplit = true;
     }
 
     LocalFree(commandLineList);
