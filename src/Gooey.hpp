@@ -18,9 +18,9 @@ std::wstring wvAdditionalBrowserArgsValue(L"--enable-features=OverlayScrollbar,"
 
 // WINDOW
 std::wstring programIcon(L"PROGRAM_ICON");
-std::wstring menuName(L"menu");
 std::wstring className(L"window");
 std::wstring windowName(L"Gooey");
+std::wstring menuName(L"menu");
 
 bool systemDarkMode;
 bool darkTitle;

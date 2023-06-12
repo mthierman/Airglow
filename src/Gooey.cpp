@@ -259,23 +259,22 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
     return 0;
 }
 
-unsigned short WindowClass(HINSTANCE hinstance)
+unsigned short WindowClass(HINSTANCE instance)
 {
     WNDCLASSEXW wcex = {};
     wcex.cbSize = sizeof(WNDCLASSEX);
     wcex.style = CS_HREDRAW | CS_VREDRAW;
-    wcex.style = 0;
     wcex.lpfnWndProc = WndProc;
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
-    wcex.hInstance = hinstance;
+    wcex.hInstance = instance;
     wcex.hCursor = (HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED);
     wcex.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
     wcex.lpszMenuName = menuName.c_str();
     wcex.lpszClassName = className.c_str();
-    wcex.hIcon = (HICON)LoadImageW(hinstance, programIcon.c_str(), IMAGE_ICON, 0, 0,
+    wcex.hIcon = (HICON)LoadImageW(instance, programIcon.c_str(), IMAGE_ICON, 0, 0,
                                    LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
-    wcex.hIconSm = (HICON)LoadImageW(hinstance, programIcon.c_str(), IMAGE_ICON, 0, 0,
+    wcex.hIconSm = (HICON)LoadImageW(instance, programIcon.c_str(), IMAGE_ICON, 0, 0,
                                      LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
 
     return RegisterClassExW(&wcex);
@@ -357,7 +356,7 @@ long long __stdcall WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
     case WM_GETMINMAXINFO:
     {
         LPMINMAXINFO minmax = (LPMINMAXINFO)lp;
-        minmax->ptMinTrackSize.x = 300;
+        minmax->ptMinTrackSize.x = 400;
         minmax->ptMinTrackSize.y = GetSystemMetrics(SM_CYCAPTION);
     }
     break;
