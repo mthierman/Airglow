@@ -43,8 +43,8 @@ message(STATUS ${WIL_PKG})
 add_executable(
     ${PROJECT_NAME}
     WIN32
-    src/Gooey.cpp
-    src/Gooey$<$<CONFIG:Debug>:_debug>$<$<CONFIG:Release>:_release>.rc
+    src/Main.cpp
+    res$<$<CONFIG:Debug>:_debug>$<$<CONFIG:Release>:_release>.rc
 )
 
 target_precompile_headers(
