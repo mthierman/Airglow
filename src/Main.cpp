@@ -1,8 +1,9 @@
 #include "Main.hpp"
-#include "Key.hpp"
+#include "WndProc.hpp"
+#include "Window.hpp"
 #include "Utility.hpp"
 #include "Theme.hpp"
-#include "WndProc.hpp"
+#include "Key.hpp"
 
 int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
 {
@@ -239,20 +240,6 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
             })
             .Get());
 
-    // auto menuHandle = GetSystemMenu(hwnd, false);
-    // MENUITEMINFOW seperator;
-    // seperator.cbSize = sizeof(MENUITEMINFOW);
-    // seperator.fMask = MIIM_FTYPE;
-    // seperator.fType = MFT_SEPARATOR;
-    // MENUITEMINFOW split;
-    // split.cbSize = sizeof(MENUITEMINFOW);
-    // split.fMask = MIIM_STRING | MIIM_ID;
-    // split.wID = 1005;
-    // split.dwTypeData = (LPWSTR)L"Toggle Split";
-
-    // InsertMenuItemW(menuHandle, 1, FALSE, &seperator);
-    // InsertMenuItemW(menuHandle, 1, FALSE, &split);
-
     MSG msg = {};
     while (GetMessageW(&msg, nullptr, 0, 0))
     {
@@ -261,32 +248,4 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
     }
 
     return 0;
-}
-
-unsigned short WindowClass(HINSTANCE instance)
-{
-    WNDCLASSEXW wcex = {};
-    wcex.cbSize = sizeof(WNDCLASSEX);
-    wcex.style = CS_HREDRAW | CS_VREDRAW;
-    wcex.lpfnWndProc = WndProc;
-    wcex.cbClsExtra = 0;
-    wcex.cbWndExtra = 0;
-    wcex.hInstance = instance;
-    wcex.hCursor = (HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED);
-    wcex.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
-    wcex.lpszMenuName = menuName.c_str();
-    wcex.lpszClassName = className.c_str();
-    wcex.hIcon = (HICON)LoadImageW(instance, programIcon.c_str(), IMAGE_ICON, 0, 0,
-                                   LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
-    wcex.hIconSm = (HICON)LoadImageW(instance, programIcon.c_str(), IMAGE_ICON, 0, 0,
-                                     LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
-
-    return RegisterClassExW(&wcex);
-}
-
-HWND Window(HINSTANCE hinstance)
-{
-    return CreateWindowExW(0, className.c_str(), windowName.c_str(), WS_OVERLAPPEDWINDOW,
-                           CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
-                           nullptr, hinstance, nullptr);
 }

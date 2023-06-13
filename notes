@@ -12,3 +12,17 @@
 //     GetClientRect(hwnd, &bounds);
 //     wv_controller->put_Bounds(bounds);
 // }
+
+// auto menuHandle = GetSystemMenu(hwnd, false);
+// MENUITEMINFOW seperator;
+// seperator.cbSize = sizeof(MENUITEMINFOW);
+// seperator.fMask = MIIM_FTYPE;
+// seperator.fType = MFT_SEPARATOR;
+// MENUITEMINFOW split;
+// split.cbSize = sizeof(MENUITEMINFOW);
+// split.fMask = MIIM_STRING | MIIM_ID;
+// split.wID = 1005;
+// split.dwTypeData = (LPWSTR)L"Toggle Split";
+
+// InsertMenuItemW(menuHandle, 1, FALSE, &seperator);
+// InsertMenuItemW(menuHandle, 1, FALSE, &split);
