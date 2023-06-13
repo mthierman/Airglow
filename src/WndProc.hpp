@@ -1,6 +1,3 @@
-#pragma once
-#include "Main.hpp"
-
 long long __stdcall WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {
     switch (msg)

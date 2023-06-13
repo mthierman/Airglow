@@ -1,6 +1,3 @@
-#pragma once
-#include "Main.hpp"
-
 void CommandLineUrl()
 {
     int nArgs;

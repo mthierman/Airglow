@@ -1,6 +1,3 @@
-#pragma once
-#include "Main.hpp"
-
 bool CheckSystemDarkMode()
 {
     using namespace winrt::Windows::UI;
