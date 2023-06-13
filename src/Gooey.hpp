@@ -10,11 +10,21 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 std::wstring wvBackgroundColor(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR");
 std::wstring wvBackgroundColorValue(L"0");
 std::wstring wvAdditionalBrowserArgs(L"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS");
-std::wstring wvAdditionalBrowserArgsValue(L"--enable-features=OverlayScrollbar,"
-                                          L"msOverlayScrollbarWinStyle:scrollbar_mode/"
-                                          L"full_mode,msOverlayScrollbarWinStyleAnimation,"
-                                          L"msWebView2BrowserHitTransparent"
-                                          L" --disable-features=msWebOOUI,msPdfOOUI");
+
+std::wstring wvAdditionalBrowserArgsValue(L"--enable-features="
+                                          L"OverlayScrollbar,"
+                                          L"msOverlayScrollbarWinStyle,"
+                                          L"msOverlayScrollbarWinStyleAnimation,"
+                                          L"msWebView2BrowserHitTransparent");
+
+// std::wstring wvAdditionalBrowserArgsValue(L"--enable-features="
+//                                           L"OverlayScrollbar,"
+//                                           L"msOverlayScrollbarWinStyle,"
+//                                           L"msOverlayScrollbarWinStyleAnimation,"
+//                                           L"msWebView2BrowserHitTransparent,"
+//                                           L" --show-paint-rects"
+//                                           L" --show-screenspace-rects"
+//                                           L" --ui-show-fps-counter");
 
 // WINDOW
 std::wstring programIcon(L"PROGRAM_ICON");
