@@ -48,12 +48,14 @@ std::wstring url2 = L"about:blank";
 
 // WEBVIEW1
 static wil::com_ptr<ICoreWebView2Controller> wv_controller;
-static wil::com_ptr<ICoreWebView2> wv;
+static wil::com_ptr<ICoreWebView2> wv_core;
+static wil::com_ptr<ICoreWebView2_19> wv;
 static wil::com_ptr<ICoreWebView2Settings> wv_settings;
 
 // WEBVIEW2
 static wil::com_ptr<ICoreWebView2Controller> wv_controller2;
-static wil::com_ptr<ICoreWebView2> wv2;
+static wil::com_ptr<ICoreWebView2> wv_core2;
+static wil::com_ptr<ICoreWebView2_19> wv2;
 static wil::com_ptr<ICoreWebView2Settings> wv_settings2;
 
 // THEMING

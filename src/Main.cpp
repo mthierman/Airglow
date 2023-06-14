@@ -12,6 +12,9 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
     SetEnvironmentVariableW(wvAdditionalBrowserArgs.c_str(), wvAdditionalBrowserArgsValue.c_str());
     auto args = CommandLineUrl();
     auto title = url1 + L" | " + url2;
+    ULONG_PTR gdiplusToken;
+    Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+    Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
     auto atom = MakeWindowClass(instance);
     if (!atom)
     {
@@ -42,8 +45,9 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
                             if (controller != nullptr)
                             {
                                 wv_controller = controller;
-                                wv_controller->get_CoreWebView2(&wv);
+                                wv_controller->get_CoreWebView2(&wv_core);
                             }
+                            wv = wv_core.try_query<ICoreWebView2_19>();
                             wv->get_Settings(&wv_settings);
                             wv_settings->put_AreDefaultContextMenusEnabled(true);
                             wv_settings->put_AreDefaultScriptDialogsEnabled(true);
@@ -65,9 +69,50 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
                             if (isSplit)
                                 wv_controller->put_Bounds(wv_bounds);
                             wv->Navigate(url1.c_str());
-                            EventRegistrationToken token;
                             wv->ExecuteScript(wvScript.c_str(), nullptr);
                             wv->AddScriptToExecuteOnDocumentCreated(wvScript.c_str(), nullptr);
+                            EventRegistrationToken token;
+                            EventRegistrationToken faviconChangedToken;
+                            wv->add_FaviconChanged(
+                                Microsoft::WRL::Callback<ICoreWebView2FaviconChangedEventHandler>(
+                                    [window](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                    {
+                                        wv->GetFavicon(
+                                            COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
+                                            Microsoft::WRL::Callback<
+                                                ICoreWebView2GetFaviconCompletedHandler>(
+                                                [window](HRESULT result,
+                                                         IStream* iconStream) -> HRESULT
+                                                {
+                                                    if (iconStream != nullptr)
+                                                    {
+                                                        Gdiplus::Bitmap iconBitmap(iconStream);
+                                                        wil::unique_hicon icon;
+                                                        if (iconBitmap.GetHICON(&icon) ==
+                                                            Gdiplus::Status::Ok)
+                                                        {
+                                                            auto favicon = std::move(icon);
+                                                            SendMessageW(window, WM_SETICON,
+                                                                         ICON_BIG,
+                                                                         (LPARAM)favicon.get());
+                                                            // SendMessageW(window, WM_SETICON,
+                                                            //              ICON_SMALL,
+                                                            //              (LPARAM)IDC_NO);
+                                                        }
+                                                        else
+                                                        {
+                                                            SendMessageW(window, WM_SETICON,
+                                                                         ICON_SMALL,
+                                                                         (LPARAM)IDC_NO);
+                                                        }
+                                                    }
+                                                    return S_OK;
+                                                })
+                                                .Get());
+                                        return S_OK;
+                                    })
+                                    .Get(),
+                                &faviconChangedToken);
                             wv->add_WebMessageReceived(
                                 Microsoft::WRL::Callback<
                                     ICoreWebView2WebMessageReceivedEventHandler>(
@@ -113,6 +158,7 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
                 return S_OK;
             })
             .Get());
+
     CreateCoreWebView2EnvironmentWithOptions(
         nullptr, nullptr, nullptr,
         Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
@@ -127,8 +173,9 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
                             if (controller != nullptr)
                             {
                                 wv_controller2 = controller;
-                                wv_controller2->get_CoreWebView2(&wv2);
+                                wv_controller2->get_CoreWebView2(&wv_core2);
                             }
+                            wv2 = wv_core2.try_query<ICoreWebView2_19>();
                             wv2->get_Settings(&wv_settings2);
                             wv_settings2->put_AreDefaultContextMenusEnabled(true);
                             wv_settings2->put_AreDefaultScriptDialogsEnabled(true);
@@ -202,5 +249,6 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
         TranslateMessage(&msg);
         DispatchMessageW(&msg);
     }
+    Gdiplus::GdiplusShutdown(gdiplusToken);
     return 0;
 }

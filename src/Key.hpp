@@ -1,12 +1,12 @@
 bool KeyTop(HWND window)
 {
-    auto topMost = GetWindowLongPtrW(window, GWL_EXSTYLE);
     FLASHWINFO fwi;
     fwi.cbSize = sizeof(FLASHWINFO);
     fwi.hwnd = window;
     fwi.dwFlags = FLASHW_CAPTION;
     fwi.uCount = 1;
     fwi.dwTimeout = 0;
+    auto topMost = GetWindowLongPtrW(window, GWL_EXSTYLE);
     if (topMost & WS_EX_TOPMOST)
     {
         SetWindowPos(window, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);

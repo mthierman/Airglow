@@ -71,6 +71,7 @@ target_link_libraries(
     PRIVATE
     WebView2LoaderStatic.lib
     dwmapi.lib
+    gdiplus.lib
     Uxtheme.lib
 )
 

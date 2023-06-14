@@ -6,3 +6,4 @@
 #include <wrl.h>
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.UI.ViewManagement.h>
+#include <gdiplus.h>

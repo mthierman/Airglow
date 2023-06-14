@@ -12,6 +12,12 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
         EndPaint(window, &ps);
     }
     break;
+    // case WM_SETICON:
+    // {
+    //     auto iconTest = 1;
+    //     OutputDebugStringW(L"FAVICON CHANGED");
+    // }
+    // break;
     case WM_SETTINGCHANGE:
     {
         InvalidateRect(window, nullptr, true);
