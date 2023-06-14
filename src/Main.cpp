@@ -11,7 +11,7 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
     SetEnvironmentVariableW(wvBackgroundColor.c_str(), wvBackgroundColorValue.c_str());
     SetEnvironmentVariableW(wvAdditionalBrowserArgs.c_str(), wvAdditionalBrowserArgsValue.c_str());
     auto args = CommandLineUrl();
-    auto title = url1 + L" | " + url2;
+    // auto title = url1 + L" | " + url2;
     ULONG_PTR gdiplusToken;
     Gdiplus::GdiplusStartupInput gdiplusStartupInput;
     Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
@@ -25,7 +25,7 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
     {
         return 0;
     }
-    SetWindowTextW(window, title.c_str());
+    // SetWindowTextW(window, title.c_str());
     SetDarkTitle();
     SetDarkMode(window);
     SetMica(window);
@@ -73,6 +73,20 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
                             wv->AddScriptToExecuteOnDocumentCreated(wvScript.c_str(), nullptr);
                             EventRegistrationToken token;
                             EventRegistrationToken faviconChangedToken;
+                            EventRegistrationToken documentTitleChangedToken;
+                            wv->add_DocumentTitleChanged(
+                                Microsoft::WRL::Callback<
+                                    ICoreWebView2DocumentTitleChangedEventHandler>(
+                                    [window](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                    {
+                                        wil::unique_cotaskmem_string title;
+                                        sender->get_DocumentTitle(&title);
+                                        auto documentTitle = title.get();
+                                        SetWindowTextW(window, documentTitle);
+                                        return S_OK;
+                                    })
+                                    .Get(),
+                                &documentTitleChangedToken);
                             wv->add_FaviconChanged(
                                 Microsoft::WRL::Callback<ICoreWebView2FaviconChangedEventHandler>(
                                     [window](ICoreWebView2* sender, IUnknown* args) -> HRESULT
@@ -95,9 +109,6 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
                                                             SendMessageW(window, WM_SETICON,
                                                                          ICON_BIG,
                                                                          (LPARAM)favicon.get());
-                                                            // SendMessageW(window, WM_SETICON,
-                                                            //              ICON_SMALL,
-                                                            //              (LPARAM)IDC_NO);
                                                         }
                                                         else
                                                         {

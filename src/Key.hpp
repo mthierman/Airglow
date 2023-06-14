@@ -11,16 +11,16 @@ bool KeyTop(HWND window)
     {
         SetWindowPos(window, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         FlashWindowEx(&fwi);
-        auto title = url1 + L" | " + url2;
-        SetWindowTextW(window, title.c_str());
+        // auto title = url1 + L" | " + url2;
+        // SetWindowTextW(window, title.c_str());
         return false;
     }
     else
     {
         SetWindowPos(window, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         FlashWindowEx(&fwi);
-        auto title = url1 + L" | " + url2 + L" [On Top]";
-        SetWindowTextW(window, title.c_str());
+        // auto title = url1 + L" | " + url2 + L" [On Top]";
+        // SetWindowTextW(window, title.c_str());
         return true;
     }
     return false;
