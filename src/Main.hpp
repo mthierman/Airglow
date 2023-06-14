@@ -52,24 +52,16 @@ std::wstring url1 = L"about:blank";
 std::wstring url2 = L"about:blank";
 wil::unique_cotaskmem_string title;
 
-// WEBVIEW1
+// WEBVIEW
 static wil::com_ptr<ICoreWebView2Controller> wv_controller;
 static wil::com_ptr<ICoreWebView2> wv_core;
 static wil::com_ptr<ICoreWebView2_19> wv;
 static wil::com_ptr<ICoreWebView2Settings> wv_settings;
 
-// WEBVIEW2
 static wil::com_ptr<ICoreWebView2Controller> wv_controller2;
 static wil::com_ptr<ICoreWebView2> wv_core2;
 static wil::com_ptr<ICoreWebView2_19> wv2;
 static wil::com_ptr<ICoreWebView2Settings> wv_settings2;
-
-// WEBVIEWTEST
-extern wil::com_ptr<ICoreWebView2Environment> wv_env3;
-extern wil::com_ptr<ICoreWebView2Controller> wv_controller3;
-extern wil::com_ptr<ICoreWebView2> wv_core3;
-extern wil::com_ptr<ICoreWebView2_19> wv3;
-extern wil::com_ptr<ICoreWebView2Settings> wv_settings3;
 
 // THEMING
 bool CheckSystemDarkMode();
