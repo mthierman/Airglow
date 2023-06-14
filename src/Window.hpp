@@ -25,3 +25,28 @@ HWND MakeWindow(HINSTANCE instance)
                            CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
                            nullptr, instance, nullptr);
 }
+
+HWND InitializeWindow(HINSTANCE instance, int ncs)
+{
+    SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+    SetEnvironmentVariableW(wvBackgroundColor.c_str(), wvBackgroundColorValue.c_str());
+    SetEnvironmentVariableW(wvAdditionalBrowserArgs.c_str(), wvAdditionalBrowserArgsValue.c_str());
+    auto args = CommandLineUrl();
+    Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+    auto atom = MakeWindowClass(instance);
+    if (!atom)
+    {
+        return 0;
+    }
+    auto window = MakeWindow(instance);
+    if (!window)
+    {
+        return 0;
+    }
+    SetDarkTitle();
+    SetDarkMode(window);
+    SetMica(window);
+    SetWindow(window, ncs);
+    GetClientRect(window, &bounds);
+    return window;
+}

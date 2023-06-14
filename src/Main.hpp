@@ -3,6 +3,7 @@
 // WINDOW
 unsigned short MakeWindowClass(HINSTANCE);
 HWND MakeWindow(HINSTANCE);
+HWND InitializeWindow(HINSTANCE, int);
 std::wstring programIcon(L"PROGRAM_ICON");
 std::wstring className(L"window");
 std::wstring windowName(L"Gooey");
@@ -62,6 +63,13 @@ static wil::com_ptr<ICoreWebView2Controller> wv_controller2;
 static wil::com_ptr<ICoreWebView2> wv_core2;
 static wil::com_ptr<ICoreWebView2_19> wv2;
 static wil::com_ptr<ICoreWebView2Settings> wv_settings2;
+
+// WEBVIEWTEST
+extern wil::com_ptr<ICoreWebView2Environment> wv_env3;
+extern wil::com_ptr<ICoreWebView2Controller> wv_controller3;
+extern wil::com_ptr<ICoreWebView2> wv_core3;
+extern wil::com_ptr<ICoreWebView2_19> wv3;
+extern wil::com_ptr<ICoreWebView2Settings> wv_settings3;
 
 // THEMING
 bool CheckSystemDarkMode();
