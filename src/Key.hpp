@@ -40,6 +40,7 @@ bool KeySplit(HWND window)
         SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         return false;
     }
+    return false;
 }
 
 bool KeyMaximize(HWND window)
@@ -90,6 +91,7 @@ bool KeyFullscreen(HWND window)
                      (position.bottom - position.top), 0);
         return false;
     }
+    return false;
 }
 
 bool KeyClose(HWND window)
