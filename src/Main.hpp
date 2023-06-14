@@ -36,6 +36,10 @@ std::wstring wvAdditionalBrowserArgsValue(L"--enable-features="
 //                                           L" --show-screenspace-rects"
 //                                           L" --ui-show-fps-counter");
 
+// GDI+
+unsigned long long gdiplusToken;
+Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+
 // WEBVIEW
 void WebViewNavigate(wil::com_ptr<ICoreWebView2>, wil::com_ptr<ICoreWebView2>);
 std::wstring wvScript(
