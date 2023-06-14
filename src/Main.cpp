@@ -11,7 +11,6 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
     SetEnvironmentVariableW(wvBackgroundColor.c_str(), wvBackgroundColorValue.c_str());
     SetEnvironmentVariableW(wvAdditionalBrowserArgs.c_str(), wvAdditionalBrowserArgsValue.c_str());
     auto args = CommandLineUrl();
-    // auto title = url1 + L" | " + url2;
     ULONG_PTR gdiplusToken;
     Gdiplus::GdiplusStartupInput gdiplusStartupInput;
     Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
@@ -25,7 +24,6 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
     {
         return 0;
     }
-    // SetWindowTextW(window, title.c_str());
     SetDarkTitle();
     SetDarkMode(window);
     SetMica(window);
@@ -79,7 +77,6 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
                                     ICoreWebView2DocumentTitleChangedEventHandler>(
                                     [window](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                     {
-                                        wil::unique_cotaskmem_string title;
                                         sender->get_DocumentTitle(&title);
                                         auto documentTitle = title.get();
                                         SetWindowTextW(window, documentTitle);

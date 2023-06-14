@@ -11,6 +11,9 @@ bool KeyTop(HWND window)
     {
         SetWindowPos(window, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         FlashWindowEx(&fwi);
+        auto documentTitle = title.get();
+        std::wstring changeTitle = std::wstring(documentTitle);
+        SetWindowTextW(window, changeTitle.c_str());
         // auto title = url1 + L" | " + url2;
         // SetWindowTextW(window, title.c_str());
         return false;
@@ -19,6 +22,9 @@ bool KeyTop(HWND window)
     {
         SetWindowPos(window, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         FlashWindowEx(&fwi);
+        auto documentTitle = title.get();
+        std::wstring changeTitle = std::wstring(documentTitle) + L" [On Top]";
+        SetWindowTextW(window, changeTitle.c_str());
         // auto title = url1 + L" | " + url2 + L" [On Top]";
         // SetWindowTextW(window, title.c_str());
         return true;

@@ -45,6 +45,7 @@ std::wstring wvScript(
     L"{window.chrome.webview.postMessage(e.key)}}}}");
 std::wstring url1 = L"about:blank";
 std::wstring url2 = L"about:blank";
+wil::unique_cotaskmem_string title;
 
 // WEBVIEW1
 static wil::com_ptr<ICoreWebView2Controller> wv_controller;
