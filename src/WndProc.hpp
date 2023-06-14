@@ -1,4 +1,4 @@
-long long __stdcall WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
+__int3264 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
 {
     switch (msg)
     {
@@ -6,37 +6,34 @@ long long __stdcall WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
     case WM_PAINT:
     {
         PAINTSTRUCT ps;
-        HDC hdc = BeginPaint(hwnd, &ps);
+        HDC hdc = BeginPaint(window, &ps);
         RECT bounds;
-        GetClientRect(hwnd, &bounds);
+        GetClientRect(window, &bounds);
         FillRect(hdc, &bounds, (HBRUSH)GetStockObject(BLACK_BRUSH));
-        EndPaint(hwnd, &ps);
+        EndPaint(window, &ps);
     }
     break;
 
     case WM_SETTINGCHANGE:
     {
         systemDarkMode = CheckSystemDarkMode();
-        InvalidateRect(hwnd, nullptr, true);
-        darkMode = SetDarkMode(hwnd);
+        InvalidateRect(window, nullptr, true);
+        darkMode = SetDarkMode(window);
     }
     break;
 
     case WM_SIZE:
     case WM_WINDOWPOSCHANGING:
     {
-        RECT windowSize;
-        GetClientRect(hwnd, &windowSize);
-        auto height = std::to_wstring(windowSize.bottom - windowSize.top);
-        auto width = std::to_wstring(windowSize.right - windowSize.left);
+        GetClientRect(window, &bounds);
+        auto height = std::to_wstring(bounds.bottom - bounds.top);
+        auto width = std::to_wstring(bounds.right - bounds.left);
         auto dimensions = L"WINDOW SIZE: " + width + L" x " + height + L"\n";
 
         OutputDebugStringW(dimensions.c_str());
 
         if (wv_controller != nullptr)
         {
-            RECT bounds;
-            GetClientRect(hwnd, &bounds);
             RECT wvRect = {
                 bounds.left,
                 bounds.top,
@@ -50,13 +47,11 @@ long long __stdcall WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
         }
         if (wv_controller2 != nullptr)
         {
-            RECT bounds2;
-            GetClientRect(hwnd, &bounds2);
             RECT wvRect2 = {
-                bounds2.right / 2,
-                bounds2.top,
-                bounds2.right,
-                bounds2.bottom,
+                bounds.right / 2,
+                bounds.top,
+                bounds.right,
+                bounds.bottom,
             };
             if (isSplit)
                 wv_controller2->put_Bounds(wvRect2);
@@ -66,7 +61,7 @@ long long __stdcall WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 
     case WM_GETMINMAXINFO:
     {
-        LPMINMAXINFO minmax = (LPMINMAXINFO)lp;
+        LPMINMAXINFO minmax = (LPMINMAXINFO)lparam;
         minmax->ptMinTrackSize.x = 400;
         minmax->ptMinTrackSize.y = GetSystemMetrics(SM_CYCAPTION);
     }
@@ -89,37 +84,37 @@ long long __stdcall WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 
     case WM_SYSKEYDOWN:
     {
-        if (wp == vkKeyMax)
+        if (wparam == vkKeyMax)
         {
-            KeyMaximize(hwnd);
+            KeyMaximize(window);
         }
     }
     break;
 
     case WM_KEYDOWN:
     {
-        if (wp == vkKeyTop)
+        if (wparam == vkKeyTop)
         {
-            KeyTop(hwnd);
+            KeyTop(window);
         }
-        if (wp == vkKeyFull)
+        if (wparam == vkKeyFull)
         {
-            KeyFullscreen(hwnd);
+            KeyFullscreen(window);
         }
-        if (wp == vkKeyW)
+        if (wparam == vkKeyW)
         {
             auto state = GetKeyState(vkKeyControl);
             if (state & 0x8000)
             {
-                KeyClose(hwnd);
+                KeyClose(window);
             }
         }
-        if (wp == vkKeyS)
+        if (wparam == vkKeyS)
         {
             auto state = GetKeyState(vkKeyControl);
             if (state & 0x8000)
             {
-                KeySplit(hwnd);
+                KeySplit(window);
             }
         }
     }
@@ -127,7 +122,7 @@ long long __stdcall WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 
     case WM_CLOSE:
     {
-        DestroyWindow(hwnd);
+        DestroyWindow(window);
     }
     break;
 
@@ -138,7 +133,7 @@ long long __stdcall WndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
     break;
 
     default:
-        return DefWindowProcW(hwnd, msg, wp, lp);
+        return DefWindowProcW(window, msg, wparam, lparam);
     }
 
     return 0;

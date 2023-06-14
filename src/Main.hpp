@@ -1,10 +1,10 @@
 #include "res.hpp"
 
 // MAIN
-ATOM WindowClass(HINSTANCE);
+unsigned short WindowClass(HINSTANCE);
 HWND Window(HINSTANCE);
-int APIENTRY wWinMain(HINSTANCE, HINSTANCE, PWSTR, int);
-LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+int __stdcall wWinMain(HINSTANCE, HINSTANCE, PWSTR, int);
+__int3264 __stdcall WndProc(HWND, UINT, WPARAM, LPARAM);
 
 // ENV
 std::wstring wvBackgroundColor(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR");
@@ -26,6 +26,8 @@ std::wstring wvAdditionalBrowserArgsValue(L"--enable-features="
 //                                           L" --show-screenspace-rects"
 //                                           L" --ui-show-fps-counter");
 
+void CommandLineUrl();
+
 // WINDOW
 std::wstring programIcon(L"PROGRAM_ICON");
 std::wstring className(L"window");
@@ -36,7 +38,7 @@ bool systemDarkMode;
 bool darkTitle;
 bool darkMode;
 bool mica;
-bool window;
+bool showWindow;
 
 // WEBVIEW1
 static wil::com_ptr<ICoreWebView2Controller> wv_controller;
@@ -55,7 +57,6 @@ std::wstring wvScript(
     L"(e.ctrlKey && e.key === 's') {window.chrome.webview.postMessage('split')} else "
     L"{window.chrome.webview.postMessage(e.key)}}}}");
 void WebViewNavigate(wil::com_ptr<ICoreWebView2>, wil::com_ptr<ICoreWebView2>);
-void CommandLineUrl();
 std::wstring url1 = L"about:blank";
 std::wstring url2 = L"about:blank";
 
@@ -70,7 +71,7 @@ enum PreferredAppMode
 };
 
 bool CheckSystemDarkMode();
-bool SetDarkTitle(HWND);
+bool SetDarkTitle();
 bool SetDarkMode(HWND);
 bool SetMica(HWND);
 bool SetWindow(HWND, int);
@@ -104,4 +105,4 @@ bool isFullscreen;
 bool isMaximized;
 bool isSplit = false;
 
-RECT windowSize;
+RECT bounds;

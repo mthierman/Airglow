@@ -19,9 +19,9 @@ unsigned short WindowClass(HINSTANCE instance)
     return RegisterClassExW(&wcex);
 }
 
-HWND Window(HINSTANCE hinstance)
+HWND Window(HINSTANCE instance)
 {
     return CreateWindowExW(0, className.c_str(), windowName.c_str(), WS_OVERLAPPEDWINDOW,
                            CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
-                           nullptr, hinstance, nullptr);
+                           nullptr, instance, nullptr);
 }

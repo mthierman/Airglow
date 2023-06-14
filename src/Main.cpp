@@ -5,7 +5,7 @@
 #include "Theme.hpp"
 #include "Key.hpp"
 
-int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
+int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
 {
     SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 
@@ -15,36 +15,38 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
 
     CommandLineUrl();
 
-    auto atom = WindowClass(hinstance);
+    auto atom = WindowClass(instance);
 
     if (!atom)
     {
         return 0;
     }
 
-    auto hwnd = Window(hinstance);
+    auto window = Window(instance);
 
-    if (!hwnd)
+    if (!window)
     {
         return 0;
     }
 
     systemDarkMode = CheckSystemDarkMode();
-    darkTitle = SetDarkTitle(hwnd);
-    darkMode = SetDarkMode(hwnd);
-    mica = SetMica(hwnd);
-    window = SetWindow(hwnd, ncs);
+    darkTitle = SetDarkTitle();
+    darkMode = SetDarkMode(window);
+    mica = SetMica(window);
+    showWindow = SetWindow(window, ncs);
+
+    GetClientRect(window, &bounds);
 
     CreateCoreWebView2EnvironmentWithOptions(
         nullptr, nullptr, nullptr,
         Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
-            [hwnd](HRESULT result, ICoreWebView2Environment* env) -> HRESULT
+            [window](HRESULT result, ICoreWebView2Environment* env) -> HRESULT
             {
                 env->CreateCoreWebView2Controller(
-                    hwnd,
+                    window,
                     Microsoft::WRL::Callback<
                         ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                        [hwnd](HRESULT result, ICoreWebView2Controller* controller) -> HRESULT
+                        [window](HRESULT result, ICoreWebView2Controller* controller) -> HRESULT
                         {
                             if (controller != nullptr)
                             {
@@ -64,10 +66,7 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
                             wv_settings->put_IsWebMessageEnabled(true);
                             wv_settings->put_IsZoomControlEnabled(true);
 
-                            RECT bounds;
                             RECT wvRect;
-
-                            GetClientRect(hwnd, &bounds);
 
                             wvRect = {
                                 bounds.left,
@@ -92,7 +91,7 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
                             wv->add_WebMessageReceived(
                                 Microsoft::WRL::Callback<
                                     ICoreWebView2WebMessageReceivedEventHandler>(
-                                    [hwnd](
+                                    [window](
                                         ICoreWebView2* webview,
                                         ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT
                                     {
@@ -102,27 +101,27 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
 
                                         if ((std::wstring)message.get() == keyTop.c_str())
                                         {
-                                            KeyTop(hwnd);
+                                            KeyTop(window);
                                         }
 
                                         if ((std::wstring)message.get() == keySplit.c_str())
                                         {
-                                            KeySplit(hwnd);
+                                            KeySplit(window);
                                         }
 
                                         if ((std::wstring)message.get() == keyMax.c_str())
                                         {
-                                            KeyMaximize(hwnd);
+                                            KeyMaximize(window);
                                         }
 
                                         if ((std::wstring)message.get() == keyFull.c_str())
                                         {
-                                            KeyFullscreen(hwnd);
+                                            KeyFullscreen(window);
                                         }
 
                                         if ((std::wstring)message.get() == keyClose.c_str())
                                         {
-                                            KeyClose(hwnd);
+                                            KeyClose(window);
                                         }
 
                                         webview->PostWebMessageAsString(message.get());
@@ -141,13 +140,13 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
     CreateCoreWebView2EnvironmentWithOptions(
         nullptr, nullptr, nullptr,
         Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
-            [hwnd](HRESULT result, ICoreWebView2Environment* env) -> HRESULT
+            [window](HRESULT result, ICoreWebView2Environment* env) -> HRESULT
             {
                 env->CreateCoreWebView2Controller(
-                    hwnd,
+                    window,
                     Microsoft::WRL::Callback<
                         ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                        [hwnd](HRESULT result, ICoreWebView2Controller* controller) -> HRESULT
+                        [window](HRESULT result, ICoreWebView2Controller* controller) -> HRESULT
                         {
                             if (controller != nullptr)
                             {
@@ -167,17 +166,13 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
                             wv_settings2->put_IsWebMessageEnabled(true);
                             wv_settings2->put_IsZoomControlEnabled(true);
 
-                            RECT bounds2;
                             RECT wvRect2;
-                            RECT boundsDisabled;
-
-                            GetClientRect(hwnd, &bounds2);
 
                             wvRect2 = {
-                                bounds2.right / 2,
-                                bounds2.top,
-                                bounds2.right,
-                                bounds2.bottom,
+                                bounds.right / 2,
+                                bounds.top,
+                                bounds.right,
+                                bounds.bottom,
                             };
 
                             if (isSplit)
@@ -194,7 +189,7 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
                             wv2->add_WebMessageReceived(
                                 Microsoft::WRL::Callback<
                                     ICoreWebView2WebMessageReceivedEventHandler>(
-                                    [hwnd](
+                                    [window](
                                         ICoreWebView2* webview,
                                         ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT
                                     {
@@ -204,27 +199,27 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
 
                                         if ((std::wstring)message.get() == keyTop.c_str())
                                         {
-                                            KeyTop(hwnd);
+                                            KeyTop(window);
                                         }
 
                                         if ((std::wstring)message.get() == keySplit.c_str())
                                         {
-                                            KeySplit(hwnd);
+                                            KeySplit(window);
                                         }
 
                                         if ((std::wstring)message.get() == keyMax.c_str())
                                         {
-                                            KeyMaximize(hwnd);
+                                            KeyMaximize(window);
                                         }
 
                                         if ((std::wstring)message.get() == keyFull.c_str())
                                         {
-                                            KeyFullscreen(hwnd);
+                                            KeyFullscreen(window);
                                         }
 
                                         if ((std::wstring)message.get() == keyClose.c_str())
                                         {
-                                            KeyClose(hwnd);
+                                            KeyClose(window);
                                         }
 
                                         webview->PostWebMessageAsString(message.get());
