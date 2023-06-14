@@ -1,4 +1,4 @@
-unsigned short WindowClass(HINSTANCE instance)
+unsigned short MakeWindowClass(HINSTANCE instance)
 {
     WNDCLASSEXW wcex = {};
     wcex.cbSize = sizeof(WNDCLASSEX);
@@ -19,7 +19,7 @@ unsigned short WindowClass(HINSTANCE instance)
     return RegisterClassExW(&wcex);
 }
 
-HWND Window(HINSTANCE instance)
+HWND MakeWindow(HINSTANCE instance)
 {
     return CreateWindowExW(0, className.c_str(), windowName.c_str(), WS_OVERLAPPEDWINDOW,
                            CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,

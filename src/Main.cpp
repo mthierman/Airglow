@@ -8,35 +8,26 @@
 int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
 {
     SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
-
     SetEnvironmentVariableW(wvBackgroundColor.c_str(), wvBackgroundColorValue.c_str());
-
     SetEnvironmentVariableW(wvAdditionalBrowserArgs.c_str(), wvAdditionalBrowserArgsValue.c_str());
-
-    CommandLineUrl();
-
-    auto atom = WindowClass(instance);
-
+    auto args = CommandLineUrl();
+    auto title = url1 + L" | " + url2;
+    auto atom = MakeWindowClass(instance);
     if (!atom)
     {
         return 0;
     }
-
-    auto window = Window(instance);
-
+    auto window = MakeWindow(instance);
     if (!window)
     {
         return 0;
     }
-
-    systemDarkMode = CheckSystemDarkMode();
-    darkTitle = SetDarkTitle();
-    darkMode = SetDarkMode(window);
-    mica = SetMica(window);
-    showWindow = SetWindow(window, ncs);
-
+    SetWindowTextW(window, title.c_str());
+    SetDarkTitle();
+    SetDarkMode(window);
+    SetMica(window);
+    SetWindow(window, ncs);
     GetClientRect(window, &bounds);
-
     CreateCoreWebView2EnvironmentWithOptions(
         nullptr, nullptr, nullptr,
         Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
@@ -53,9 +44,7 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
                                 wv_controller = controller;
                                 wv_controller->get_CoreWebView2(&wv);
                             }
-
                             wv->get_Settings(&wv_settings);
-
                             wv_settings->put_AreDefaultContextMenusEnabled(true);
                             wv_settings->put_AreDefaultScriptDialogsEnabled(true);
                             wv_settings->put_AreDevToolsEnabled(true);
@@ -65,29 +54,20 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
                             wv_settings->put_IsStatusBarEnabled(true);
                             wv_settings->put_IsWebMessageEnabled(true);
                             wv_settings->put_IsZoomControlEnabled(true);
-
-                            RECT wvRect;
-
-                            wvRect = {
+                            RECT wv_bounds = {
                                 bounds.left,
                                 bounds.top,
                                 bounds.right / 2,
                                 bounds.bottom,
                             };
-
                             if (!isSplit)
                                 wv_controller->put_Bounds(bounds);
                             if (isSplit)
-                                wv_controller->put_Bounds(wvRect);
-
+                                wv_controller->put_Bounds(wv_bounds);
                             wv->Navigate(url1.c_str());
-
                             EventRegistrationToken token;
-
                             wv->ExecuteScript(wvScript.c_str(), nullptr);
-
                             wv->AddScriptToExecuteOnDocumentCreated(wvScript.c_str(), nullptr);
-
                             wv->add_WebMessageReceived(
                                 Microsoft::WRL::Callback<
                                     ICoreWebView2WebMessageReceivedEventHandler>(
@@ -96,36 +76,33 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
                                         ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT
                                     {
                                         wil::unique_cotaskmem_string message;
-
                                         args->TryGetWebMessageAsString(&message);
-
-                                        if ((std::wstring)message.get() == keyTop.c_str())
+                                        if ((std::wstring)message.get() ==
+                                            std::wstring(L"F1").c_str())
                                         {
-                                            KeyTop(window);
+                                            isMaximized = KeyMaximize(window);
                                         }
-
-                                        if ((std::wstring)message.get() == keySplit.c_str())
+                                        if ((std::wstring)message.get() ==
+                                            std::wstring(L"F2").c_str())
                                         {
-                                            KeySplit(window);
+                                            isTopmost = KeyTop(window);
                                         }
-
-                                        if ((std::wstring)message.get() == keyMax.c_str())
+                                        if ((std::wstring)message.get() ==
+                                            std::wstring(L"F11").c_str())
                                         {
-                                            KeyMaximize(window);
+                                            isFullscreen = KeyFullscreen(window);
                                         }
-
-                                        if ((std::wstring)message.get() == keyFull.c_str())
+                                        if ((std::wstring)message.get() ==
+                                            std::wstring(L"split").c_str())
                                         {
-                                            KeyFullscreen(window);
+                                            isSplit = KeySplit(window);
                                         }
-
-                                        if ((std::wstring)message.get() == keyClose.c_str())
+                                        if ((std::wstring)message.get() ==
+                                            std::wstring(L"close").c_str())
                                         {
                                             KeyClose(window);
                                         }
-
                                         webview->PostWebMessageAsString(message.get());
-
                                         return S_OK;
                                     })
                                     .Get(),
@@ -136,7 +113,6 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
                 return S_OK;
             })
             .Get());
-
     CreateCoreWebView2EnvironmentWithOptions(
         nullptr, nullptr, nullptr,
         Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
@@ -153,9 +129,7 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
                                 wv_controller2 = controller;
                                 wv_controller2->get_CoreWebView2(&wv2);
                             }
-
                             wv2->get_Settings(&wv_settings2);
-
                             wv_settings2->put_AreDefaultContextMenusEnabled(true);
                             wv_settings2->put_AreDefaultScriptDialogsEnabled(true);
                             wv_settings2->put_AreDevToolsEnabled(true);
@@ -165,27 +139,18 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
                             wv_settings2->put_IsStatusBarEnabled(true);
                             wv_settings2->put_IsWebMessageEnabled(true);
                             wv_settings2->put_IsZoomControlEnabled(true);
-
-                            RECT wvRect2;
-
-                            wvRect2 = {
+                            RECT wv_bounds2 = {
                                 bounds.right / 2,
                                 bounds.top,
                                 bounds.right,
                                 bounds.bottom,
                             };
-
                             if (isSplit)
-                                wv_controller2->put_Bounds(wvRect2);
-
+                                wv_controller2->put_Bounds(wv_bounds2);
                             wv2->Navigate(url2.c_str());
-
                             EventRegistrationToken token;
-
                             wv2->ExecuteScript(wvScript.c_str(), nullptr);
-
                             wv2->AddScriptToExecuteOnDocumentCreated(wvScript.c_str(), nullptr);
-
                             wv2->add_WebMessageReceived(
                                 Microsoft::WRL::Callback<
                                     ICoreWebView2WebMessageReceivedEventHandler>(
@@ -194,36 +159,33 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
                                         ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT
                                     {
                                         wil::unique_cotaskmem_string message;
-
                                         args->TryGetWebMessageAsString(&message);
-
-                                        if ((std::wstring)message.get() == keyTop.c_str())
+                                        if ((std::wstring)message.get() ==
+                                            std::wstring(L"F1").c_str())
                                         {
-                                            KeyTop(window);
+                                            isMaximized = KeyMaximize(window);
                                         }
-
-                                        if ((std::wstring)message.get() == keySplit.c_str())
+                                        if ((std::wstring)message.get() ==
+                                            std::wstring(L"F2").c_str())
                                         {
-                                            KeySplit(window);
+                                            isTopmost = KeyTop(window);
                                         }
-
-                                        if ((std::wstring)message.get() == keyMax.c_str())
+                                        if ((std::wstring)message.get() ==
+                                            std::wstring(L"F11").c_str())
                                         {
-                                            KeyMaximize(window);
+                                            isFullscreen = KeyFullscreen(window);
                                         }
-
-                                        if ((std::wstring)message.get() == keyFull.c_str())
+                                        if ((std::wstring)message.get() ==
+                                            std::wstring(L"split").c_str())
                                         {
-                                            KeyFullscreen(window);
+                                            isSplit = KeySplit(window);
                                         }
-
-                                        if ((std::wstring)message.get() == keyClose.c_str())
+                                        if ((std::wstring)message.get() ==
+                                            std::wstring(L"close").c_str())
                                         {
                                             KeyClose(window);
                                         }
-
                                         webview->PostWebMessageAsString(message.get());
-
                                         return S_OK;
                                     })
                                     .Get(),
@@ -234,13 +196,11 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
                 return S_OK;
             })
             .Get());
-
     MSG msg = {};
     while (GetMessageW(&msg, nullptr, 0, 0))
     {
         TranslateMessage(&msg);
         DispatchMessageW(&msg);
     }
-
     return 0;
 }

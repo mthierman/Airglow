@@ -1,22 +1,25 @@
-void CommandLineUrl()
+bool CommandLineUrl()
 {
-    int nArgs;
-    int i;
-    LPWSTR commandLine = GetCommandLineW();
-    LPWSTR* commandLineList = CommandLineToArgvW(commandLine, &nArgs);
-
-    if (nArgs == 2)
+    int number;
+    auto cmd = GetCommandLineW();
+    auto args = CommandLineToArgvW(cmd, &number);
+    if (number == 2)
     {
-        url1 = commandLineList[1];
-        url2 = commandLineList[1];
+        url1 = args[1];
+        url2 = args[1];
         isSplit = false;
-    }
-    if (nArgs == 3)
-    {
-        url1 = commandLineList[1];
-        url2 = commandLineList[2];
-        isSplit = true;
-    }
 
-    LocalFree(commandLineList);
+        return true;
+    }
+    if (number == 3)
+    {
+        url1 = args[1];
+        url2 = args[2];
+        isSplit = true;
+
+        return true;
+    }
+    LocalFree(args);
+
+    return false;
 }

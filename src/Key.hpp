@@ -1,31 +1,48 @@
-void KeyTop(HWND window)
+bool KeyTop(HWND window)
 {
     auto topMost = GetWindowLongPtrW(window, GWL_EXSTYLE);
+    FLASHWINFO fwi;
+    fwi.cbSize = sizeof(FLASHWINFO);
+    fwi.hwnd = window;
+    fwi.dwFlags = FLASHW_CAPTION;
+    fwi.uCount = 1;
+    fwi.dwTimeout = 0;
     if (topMost & WS_EX_TOPMOST)
     {
         SetWindowPos(window, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        FlashWindowEx(&fwi);
+        auto title = url1 + L" | " + url2;
+        SetWindowTextW(window, title.c_str());
+        return false;
     }
     else
     {
         SetWindowPos(window, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        FlashWindowEx(&fwi);
+        auto title = url1 + L" | " + url2 + L" [On Top]";
+        SetWindowTextW(window, title.c_str());
+        return true;
     }
-    isTopmost = true;
+    return false;
 }
 
-void KeySplit(HWND window)
+bool KeySplit(HWND window)
 {
     if (!isSplit)
     {
         isSplit = true;
+        SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        return true;
     }
-    else if (isSplit)
+    else
     {
         isSplit = false;
+        SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        return false;
     }
-    SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 }
 
-void KeyMaximize(HWND window)
+bool KeyMaximize(HWND window)
 {
     WINDOWPLACEMENT wp = {};
     wp.length = sizeof(WINDOWPLACEMENT);
@@ -35,17 +52,18 @@ void KeyMaximize(HWND window)
         if (wp.showCmd == SW_SHOWNORMAL)
         {
             ShowWindow(window, SW_MAXIMIZE);
-            isMaximized = true;
+            return true;
         }
         if (wp.showCmd == SW_SHOWMAXIMIZED)
         {
             ShowWindow(window, SW_SHOWNORMAL);
-            isMaximized = false;
+            return false;
         }
     }
+    return false;
 }
 
-void KeyFullscreen(HWND window)
+bool KeyFullscreen(HWND window)
 {
     auto style = GetWindowLongPtrW(window, GWL_STYLE);
     static RECT position;
@@ -60,7 +78,7 @@ void KeyFullscreen(HWND window)
                          mi.rcMonitor.right - mi.rcMonitor.left,
                          mi.rcMonitor.bottom - mi.rcMonitor.top,
                          SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
-            isFullscreen = true;
+            return true;
         }
     }
     else
@@ -70,8 +88,12 @@ void KeyFullscreen(HWND window)
                      SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
         SetWindowPos(window, nullptr, position.left, position.top, (position.right - position.left),
                      (position.bottom - position.top), 0);
-        isFullscreen = false;
+        return false;
     }
 }
 
-void KeyClose(HWND window) { SendMessageW(window, WM_CLOSE, 0, 0); }
+bool KeyClose(HWND window)
+{
+    SendMessageW(window, WM_CLOSE, 0, 0);
+    return true;
+}

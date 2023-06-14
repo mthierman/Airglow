@@ -1,8 +1,7 @@
-__int3264 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
+__int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
 {
     switch (msg)
     {
-
     case WM_PAINT:
     {
         PAINTSTRUCT ps;
@@ -13,15 +12,12 @@ __int3264 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
         EndPaint(window, &ps);
     }
     break;
-
     case WM_SETTINGCHANGE:
     {
-        systemDarkMode = CheckSystemDarkMode();
         InvalidateRect(window, nullptr, true);
-        darkMode = SetDarkMode(window);
+        SetDarkMode(window);
     }
     break;
-
     case WM_SIZE:
     case WM_WINDOWPOSCHANGING:
     {
@@ -29,36 +25,33 @@ __int3264 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
         auto height = std::to_wstring(bounds.bottom - bounds.top);
         auto width = std::to_wstring(bounds.right - bounds.left);
         auto dimensions = L"WINDOW SIZE: " + width + L" x " + height + L"\n";
-
         OutputDebugStringW(dimensions.c_str());
-
         if (wv_controller != nullptr)
         {
-            RECT wvRect = {
+            RECT wv_bounds = {
                 bounds.left,
                 bounds.top,
                 bounds.right / 2,
                 bounds.bottom,
             };
+            if (isSplit)
+                wv_controller->put_Bounds(wv_bounds);
             if (!isSplit)
                 wv_controller->put_Bounds(bounds);
-            if (isSplit)
-                wv_controller->put_Bounds(wvRect);
         }
         if (wv_controller2 != nullptr)
         {
-            RECT wvRect2 = {
+            RECT wv_bounds2 = {
                 bounds.right / 2,
                 bounds.top,
                 bounds.right,
                 bounds.bottom,
             };
             if (isSplit)
-                wv_controller2->put_Bounds(wvRect2);
+                wv_controller2->put_Bounds(wv_bounds2);
         }
     }
     break;
-
     case WM_GETMINMAXINFO:
     {
         LPMINMAXINFO minmax = (LPMINMAXINFO)lparam;
@@ -66,7 +59,6 @@ __int3264 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
         minmax->ptMinTrackSize.y = GetSystemMetrics(SM_CYCAPTION);
     }
     break;
-
     case WM_SETFOCUS:
     {
         if (wv_controller != nullptr)
@@ -81,57 +73,52 @@ __int3264 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
         }
     }
     break;
-
     case WM_SYSKEYDOWN:
     {
-        if (wparam == vkKeyMax)
+        if (wparam == VK_F1)
         {
-            KeyMaximize(window);
+            isMaximized = KeyMaximize(window);
         }
     }
     break;
-
     case WM_KEYDOWN:
     {
-        if (wparam == vkKeyTop)
+        if (wparam == VK_F2)
         {
-            KeyTop(window);
+            isTopmost = KeyTop(window);
         }
-        if (wparam == vkKeyFull)
+        if (wparam == VK_F11)
         {
-            KeyFullscreen(window);
+            isFullscreen = KeyFullscreen(window);
         }
-        if (wparam == vkKeyW)
+        if (wparam == 0x53)
         {
-            auto state = GetKeyState(vkKeyControl);
+            auto state = GetKeyState(VK_MENU);
+            if (state & 0x8000)
+            {
+                isSplit = KeySplit(window);
+            }
+        }
+        if (wparam == 0x57)
+        {
+            auto state = GetKeyState(VK_CONTROL);
             if (state & 0x8000)
             {
                 KeyClose(window);
             }
         }
-        if (wparam == vkKeyS)
-        {
-            auto state = GetKeyState(vkKeyControl);
-            if (state & 0x8000)
-            {
-                KeySplit(window);
-            }
-        }
     }
     break;
-
     case WM_CLOSE:
     {
         DestroyWindow(window);
     }
     break;
-
     case WM_DESTROY:
     {
         PostQuitMessage(0);
     }
     break;
-
     default:
         return DefWindowProcW(window, msg, wparam, lparam);
     }
