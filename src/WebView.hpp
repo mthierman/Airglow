@@ -39,16 +39,17 @@ bool GetAppDataPath()
 
 RECT GetWindowBounds(HWND window)
 {
-    RECT bounds;
+    RECT bounds = {0, 0, 0, 0};
     if (GetClientRect(window, &bounds))
     {
         return bounds;
     }
+    return bounds;
 }
 
 RECT GetFullPanelBounds(HWND window)
 {
-    RECT bounds;
+    RECT bounds = {0, 0, 0, 0};
     if (GetClientRect(window, &bounds))
     {
         RECT fullPanel = {
@@ -59,17 +60,18 @@ RECT GetFullPanelBounds(HWND window)
         };
         return fullPanel;
     }
+    return bounds;
 }
 
 RECT GetHiddenPanelBounds(HWND window)
 {
-    RECT hidden = {0, 0, 0, 0};
-    return hidden;
+    RECT bounds = {0, 0, 0, 0};
+    return bounds;
 }
 
 RECT GetLeftPanelBounds(HWND window)
 {
-    RECT bounds;
+    RECT bounds = {0, 0, 0, 0};
     if (GetClientRect(window, &bounds))
     {
         RECT leftPanel = {
@@ -80,11 +82,12 @@ RECT GetLeftPanelBounds(HWND window)
         };
         return leftPanel;
     }
+    return bounds;
 }
 
 RECT GetRightPanelBounds(HWND window)
 {
-    RECT bounds;
+    RECT bounds = {0, 0, 0, 0};
     if (GetClientRect(window, &bounds))
     {
         RECT rightPanel = {
@@ -95,11 +98,12 @@ RECT GetRightPanelBounds(HWND window)
         };
         return rightPanel;
     }
+    return bounds;
 }
 
 RECT GetBottomPanelBounds(HWND window)
 {
-    RECT bounds;
+    RECT bounds = {0, 0, 0, 0};
     if (GetClientRect(window, &bounds))
     {
         RECT rightPanel = {
@@ -110,6 +114,7 @@ RECT GetBottomPanelBounds(HWND window)
         };
         return rightPanel;
     }
+    return bounds;
 }
 
 // void WebViewMessages(HWND window, wil::unique_cotaskmem_string message)
