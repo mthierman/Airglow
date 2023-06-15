@@ -1,5 +1,8 @@
-<img src="./data/title/group.png" width="500">
+<img src="./data/airglow.svg" width="200">
 
-# Minimal web viewer for Windows 11
+<br>
+<br>
 
-<img src="./data/website/loop.webp" width="500">
+# Split screen browser for Windows 11
+
+<img src="./data/screenshot.png" width="800">

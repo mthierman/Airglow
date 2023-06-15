@@ -55,8 +55,8 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
     case WM_GETMINMAXINFO:
     {
         LPMINMAXINFO minmax = (LPMINMAXINFO)lparam;
-        minmax->ptMinTrackSize.x = 400;
-        minmax->ptMinTrackSize.y = GetSystemMetrics(SM_CYCAPTION);
+        minmax->ptMinTrackSize.x = 800;
+        minmax->ptMinTrackSize.y = 600;
     }
     break;
     case WM_SETFOCUS:
@@ -73,17 +73,13 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
         }
     }
     break;
-    case WM_SYSKEYDOWN:
-    {
-        if (wparam == VK_F1)
-        {
-            isMaximized = KeyMaximize(window);
-        }
-    }
-    break;
     case WM_KEYDOWN:
     {
         if (wparam == VK_F2)
+        {
+            isMaximized = KeyMaximize(window);
+        }
+        if (wparam == VK_F4)
         {
             isTopmost = KeyTop(window);
         }
@@ -91,13 +87,9 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
         {
             isFullscreen = KeyFullscreen(window);
         }
-        if (wparam == 0x53)
+        if (wparam == VK_F1)
         {
-            auto state = GetKeyState(VK_MENU);
-            if (state & 0x8000)
-            {
-                isSplit = KeySplit(window);
-            }
+            isSplit = KeySplit(window);
         }
         if (wparam == 0x57)
         {

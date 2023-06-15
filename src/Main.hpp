@@ -1,4 +1,4 @@
-#include "res.hpp"
+#define PROGRAM_ICON 1
 
 // WINDOW
 unsigned short MakeWindowClass(HINSTANCE);
@@ -45,11 +45,11 @@ Gdiplus::GdiplusStartupInput gdiplusStartupInput;
 void WebViewNavigate(wil::com_ptr<ICoreWebView2>, wil::com_ptr<ICoreWebView2>);
 std::wstring wvScript(
     L"document.onreadystatechange = () => {if (document.readyState === 'complete') {onkeydown = "
-    L"(e) => {if (e.ctrlKey && e.key === 'w') {window.chrome.webview.postMessage('close')} if "
-    L"(e.altKey && e.key === 's') {window.chrome.webview.postMessage('split')} else "
+    L"(e) => {if (e.ctrlKey && e.key === 'w') {window.chrome.webview.postMessage('close')} "
+    L"else "
     L"{window.chrome.webview.postMessage(e.key)}}}}");
-std::wstring url1 = L"about:blank";
-std::wstring url2 = L"about:blank";
+std::wstring url1 = L"https://www.typescriptlang.org/docs/handbook/intro.html";
+std::wstring url2 = L"https://www.typescriptlang.org/play";
 wil::unique_cotaskmem_string title;
 
 // WEBVIEW

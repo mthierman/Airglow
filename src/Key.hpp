@@ -14,8 +14,6 @@ bool KeyTop(HWND window)
         auto documentTitle = title.get();
         std::wstring changeTitle = std::wstring(documentTitle);
         SetWindowTextW(window, changeTitle.c_str());
-        // auto title = url1 + L" | " + url2;
-        // SetWindowTextW(window, title.c_str());
         return false;
     }
     else
@@ -25,8 +23,6 @@ bool KeyTop(HWND window)
         auto documentTitle = title.get();
         std::wstring changeTitle = std::wstring(documentTitle) + L" [On Top]";
         SetWindowTextW(window, changeTitle.c_str());
-        // auto title = url1 + L" | " + url2 + L" [On Top]";
-        // SetWindowTextW(window, title.c_str());
         return true;
     }
     return false;

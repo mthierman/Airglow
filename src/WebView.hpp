@@ -59,6 +59,9 @@ void InitializeWebView1(HWND window)
                                 Callback<ICoreWebView2FaviconChangedEventHandler>(
                                     [window](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                     {
+                                        LPWSTR faviconUri;
+                                        wv->get_FaviconUri(&faviconUri);
+                                        OutputDebugStringW(faviconUri);
                                         wv->GetFavicon(
                                             COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
                                             Callback<ICoreWebView2GetFaviconCompletedHandler>(
@@ -77,12 +80,6 @@ void InitializeWebView1(HWND window)
                                                                          ICON_BIG,
                                                                          (LPARAM)favicon.get());
                                                         }
-                                                        else
-                                                        {
-                                                            SendMessageW(window, WM_SETICON,
-                                                                         ICON_SMALL,
-                                                                         (LPARAM)IDC_NO);
-                                                        }
                                                     }
                                                     return S_OK;
                                                 })
@@ -100,12 +97,12 @@ void InitializeWebView1(HWND window)
                                         wil::unique_cotaskmem_string message;
                                         args->TryGetWebMessageAsString(&message);
                                         if ((std::wstring)message.get() ==
-                                            std::wstring(L"F1").c_str())
+                                            std::wstring(L"F2").c_str())
                                         {
                                             isMaximized = KeyMaximize(window);
                                         }
                                         if ((std::wstring)message.get() ==
-                                            std::wstring(L"F2").c_str())
+                                            std::wstring(L"F4").c_str())
                                         {
                                             isTopmost = KeyTop(window);
                                         }
@@ -115,7 +112,7 @@ void InitializeWebView1(HWND window)
                                             isFullscreen = KeyFullscreen(window);
                                         }
                                         if ((std::wstring)message.get() ==
-                                            std::wstring(L"split").c_str())
+                                            std::wstring(L"F1").c_str())
                                         {
                                             isSplit = KeySplit(window);
                                         }
@@ -188,12 +185,12 @@ void InitializeWebView2(HWND window)
                                         wil::unique_cotaskmem_string message;
                                         args->TryGetWebMessageAsString(&message);
                                         if ((std::wstring)message.get() ==
-                                            std::wstring(L"F1").c_str())
+                                            std::wstring(L"F2").c_str())
                                         {
                                             isMaximized = KeyMaximize(window);
                                         }
                                         if ((std::wstring)message.get() ==
-                                            std::wstring(L"F2").c_str())
+                                            std::wstring(L"F4").c_str())
                                         {
                                             isTopmost = KeyTop(window);
                                         }
@@ -203,7 +200,7 @@ void InitializeWebView2(HWND window)
                                             isFullscreen = KeyFullscreen(window);
                                         }
                                         if ((std::wstring)message.get() ==
-                                            std::wstring(L"split").c_str())
+                                            std::wstring(L"F1").c_str())
                                         {
                                             isSplit = KeySplit(window);
                                         }
