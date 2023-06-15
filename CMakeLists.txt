@@ -38,8 +38,19 @@ else()
     set(WIL_PKG ${CMAKE_BINARY_DIR}/libs/${WIL}.${WIL_VER})
 endif()
 
+if(DEFINED ENV{CHOC})
+    set(CHOC_PKG $ENV{CHOC})
+else()
+    FetchContent_Declare(
+        choc
+        URL https://github.com/Tracktion/choc/archive/refs/heads/main.zip
+    )
+    FetchContent_MakeAvailable(choc)
+endif()
+
 message(STATUS ${WEBVIEW_PKG})
 message(STATUS ${WIL_PKG})
+message(STATUS ${CHOC_PKG})
 
 add_executable(
     ${PROJECT_NAME}
@@ -59,6 +70,15 @@ target_include_directories(
     PRIVATE
     ${WEBVIEW_PKG}/build/native/include
     ${WIL_PKG}/include
+    ${CHOC_PKG}/audio
+    ${CHOC_PKG}/containers
+    ${CHOC_PKG}/gui
+    ${CHOC_PKG}/javascript
+    ${CHOC_PKG}/math
+    ${CHOC_PKG}/memory
+    ${CHOC_PKG}/platform
+    ${CHOC_PKG}/text
+    ${CHOC_PKG}/threading
 )
 
 target_link_directories(
