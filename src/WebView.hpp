@@ -8,7 +8,6 @@ bool CommandLineUrl()
         url1 = args[1];
         url2 = args[1];
         isSplit = false;
-
         return true;
     }
     if (number == 3)
@@ -16,11 +15,9 @@ bool CommandLineUrl()
         url1 = args[1];
         url2 = args[2];
         isSplit = true;
-
         return true;
     }
     LocalFree(args);
-
     return false;
 }
 
@@ -29,16 +26,13 @@ bool GetAppDataPath()
     std::wstring path;
     PWSTR buffer;
     auto getKnownFolderPath = SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &buffer);
-
     if (getKnownFolderPath != S_OK)
     {
         CoTaskMemFree(buffer);
         return false;
     }
-
     path = buffer;
     userData = path + std::filesystem::path::preferred_separator + L"Airglow";
-    OutputDebugStringW(userData.c_str());
     CoTaskMemFree(buffer);
     return true;
 }
@@ -46,21 +40,25 @@ bool GetAppDataPath()
 RECT GetWindowBounds(HWND window)
 {
     RECT bounds;
-    GetClientRect(window, &bounds);
-    return bounds;
+    if (GetClientRect(window, &bounds))
+    {
+        return bounds;
+    }
 }
 
 RECT GetFullPanelBounds(HWND window)
 {
     RECT bounds;
-    GetClientRect(window, &bounds);
-    RECT fullPanel = {
-        bounds.left,
-        bounds.top,
-        bounds.right,
-        bounds.bottom - 50,
-    };
-    return fullPanel;
+    if (GetClientRect(window, &bounds))
+    {
+        RECT fullPanel = {
+            bounds.left,
+            bounds.top,
+            bounds.right,
+            bounds.bottom - 50,
+        };
+        return fullPanel;
+    }
 }
 
 RECT GetHiddenPanelBounds(HWND window)
@@ -72,41 +70,71 @@ RECT GetHiddenPanelBounds(HWND window)
 RECT GetLeftPanelBounds(HWND window)
 {
     RECT bounds;
-    GetClientRect(window, &bounds);
-    RECT leftPanel = {
-        bounds.left,
-        bounds.top,
-        bounds.right / 2,
-        bounds.bottom - 50,
-    };
-    return leftPanel;
+    if (GetClientRect(window, &bounds))
+    {
+        RECT leftPanel = {
+            bounds.left,
+            bounds.top,
+            bounds.right / 2,
+            bounds.bottom - 50,
+        };
+        return leftPanel;
+    }
 }
 
 RECT GetRightPanelBounds(HWND window)
 {
     RECT bounds;
-    GetClientRect(window, &bounds);
-    RECT rightPanel = {
-        bounds.right / 2,
-        bounds.top,
-        bounds.right,
-        bounds.bottom - 50,
-    };
-    return rightPanel;
+    if (GetClientRect(window, &bounds))
+    {
+        RECT rightPanel = {
+            bounds.right / 2,
+            bounds.top,
+            bounds.right,
+            bounds.bottom - 50,
+        };
+        return rightPanel;
+    }
 }
 
 RECT GetBottomPanelBounds(HWND window)
 {
     RECT bounds;
-    GetClientRect(window, &bounds);
-    RECT rightPanel = {
-        bounds.left,
-        bounds.bottom - 75,
-        bounds.right,
-        bounds.bottom,
-    };
-    return rightPanel;
+    if (GetClientRect(window, &bounds))
+    {
+        RECT rightPanel = {
+            bounds.left,
+            bounds.bottom - 75,
+            bounds.right,
+            bounds.bottom,
+        };
+        return rightPanel;
+    }
 }
+
+// void WebViewMessages(HWND window, wil::unique_cotaskmem_string message)
+// {
+//     if ((std::wstring)message.get() == std::wstring(L"F2").c_str())
+//     {
+//         isMaximized = WindowMaximize(window);
+//     }
+//     if ((std::wstring)message.get() == std::wstring(L"F4").c_str())
+//     {
+//         isTopmost = WindowTop(window);
+//     }
+//     if ((std::wstring)message.get() == std::wstring(L"F11").c_str())
+//     {
+//         isFullscreen = WindowFullscreen(window);
+//     }
+//     if ((std::wstring)message.get() == std::wstring(L"F1").c_str())
+//     {
+//         isSplit = PanelSplit(window);
+//     }
+//     if ((std::wstring)message.get() == std::wstring(L"close").c_str())
+//     {
+//         SendMessageW(window, WM_CLOSE, 0, 0);
+//     }
+// }
 
 void InitializeWebView1(HWND window, std::filesystem::path userData)
 {
@@ -223,7 +251,7 @@ void InitializeWebView1(HWND window, std::filesystem::path userData)
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"close").c_str())
                                         {
-                                            WindowClose(window);
+                                            SendMessageW(window, WM_CLOSE, 0, 0);
                                         }
                                         webview->PostWebMessageAsString(message.get());
                                         return S_OK;
@@ -306,7 +334,7 @@ void InitializeWebView2(HWND window, std::filesystem::path userData)
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"close").c_str())
                                         {
-                                            WindowClose(window);
+                                            SendMessageW(window, WM_CLOSE, 0, 0);
                                         }
                                         webview->PostWebMessageAsString(message.get());
                                         return S_OK;
@@ -389,7 +417,7 @@ void InitializeWebView3(HWND window, std::filesystem::path userData)
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"close").c_str())
                                         {
-                                            WindowClose(window);
+                                            SendMessageW(window, WM_CLOSE, 0, 0);
                                         }
                                         webview->PostWebMessageAsString(message.get());
                                         return S_OK;

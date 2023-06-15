@@ -4,7 +4,6 @@ bool CheckSystemDarkMode()
     using namespace winrt::Windows::UI::ViewManagement;
     UISettings settingsCheck = UISettings();
     Color fgCheck = settingsCheck.GetColorValue(UIColorType::Foreground);
-
     return (((5 * fgCheck.G) + (2 * fgCheck.R) + fgCheck.B) > (8 * 128));
 }
 
@@ -21,10 +20,8 @@ bool SetDarkTitle()
             SetPreferredAppMode(PreferredAppMode::AllowDark);
         }
         FreeLibrary(uxtheme);
-
         return true;
     }
-
     return false;
 }
 
@@ -36,16 +33,13 @@ bool SetDarkMode(HWND window)
     if (dark)
     {
         DwmSetWindowAttribute(window, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmtrue, sizeof(dwmtrue));
-
         return true;
     }
     if (!dark)
     {
         DwmSetWindowAttribute(window, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmfalse, sizeof(dwmfalse));
-
         return false;
     }
-
     return false;
 }
 
@@ -64,10 +58,8 @@ bool SetMica(HWND window)
         {
             return true;
         }
-
         return false;
     }
-
     return false;
 }
 
@@ -85,12 +77,9 @@ bool SetWindow(HWND window, int ncs)
         if (SUCCEEDED(uncloak))
         {
             ShowWindow(window, ncs);
-
             return true;
         }
-
         return false;
     }
-
     return false;
 }

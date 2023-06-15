@@ -1,3 +1,19 @@
+void TestingResize(HWND window)
+{
+    auto dpi = GetDpiForWindow(window);
+    auto test = std::to_wstring(dpi);
+    OutputDebugStringW(L"DPI: ");
+    OutputDebugStringW(test.c_str());
+    OutputDebugStringW(L"\n");
+
+    RECT bounds;
+    GetClientRect(window, &bounds);
+    auto height = std::to_wstring(bounds.bottom - bounds.top);
+    auto width = std::to_wstring(bounds.right - bounds.left);
+    auto dimensions = L"WINDOW SIZE: " + width + L" x " + height + L"\n";
+    OutputDebugStringW(dimensions.c_str());
+}
+
 __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
 {
     switch (msg)
@@ -21,13 +37,7 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
     case WM_SIZE:
     case WM_WINDOWPOSCHANGING:
     {
-        RECT bounds;
-        GetClientRect(window, &bounds);
-        auto height = std::to_wstring(bounds.bottom - bounds.top);
-        auto width = std::to_wstring(bounds.right - bounds.left);
-        auto dimensions = L"WINDOW SIZE: " + width + L" x " + height + L"\n";
-        OutputDebugStringW(dimensions.c_str());
-
+        TestingResize(window);
         if (wv_controller != nullptr)
         {
             if (!isSplit)
@@ -35,7 +45,6 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
             if (isSplit)
                 wv_controller->put_Bounds(GetLeftPanelBounds(window));
         }
-
         if (wv_controller2 != nullptr)
         {
             RECT hidden = {0, 0, 0, 0};
@@ -44,7 +53,6 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
             if (isSplit)
                 wv_controller2->put_Bounds(GetRightPanelBounds(window));
         }
-
         if (wv_controller3 != nullptr)
         {
             wv_controller3->put_Bounds(GetBottomPanelBounds(window));
@@ -100,7 +108,7 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
             auto state = GetKeyState(VK_CONTROL);
             if (state & 0x8000)
             {
-                WindowClose(window);
+                SendMessageW(window, WM_CLOSE, 0, 0);
             }
         }
     }
@@ -119,6 +127,5 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
     default:
         return DefWindowProcW(window, msg, wparam, lparam);
     }
-
     return 0;
 }

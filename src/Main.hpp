@@ -11,7 +11,6 @@ HWND InitializeWindow(HINSTANCE, int);
 bool WindowTop(HWND);
 bool WindowMaximize(HWND);
 bool WindowFullscreen(HWND);
-bool WindowClose(HWND);
 bool PanelSplit(HWND);
 std::wstring programIcon(L"PROGRAM_ICON");
 std::wstring className(L"window");

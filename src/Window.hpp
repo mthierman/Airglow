@@ -131,12 +131,6 @@ bool WindowFullscreen(HWND window)
     return false;
 }
 
-bool WindowClose(HWND window)
-{
-    SendMessageW(window, WM_CLOSE, 0, 0);
-    return true;
-}
-
 bool PanelSplit(HWND window)
 {
     if (!isSplit)
