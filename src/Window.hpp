@@ -161,34 +161,36 @@ RECT GetBottomPanelBounds(HWND window)
     return panel;
 }
 
-bool WindowTop(HWND window)
+bool PanelHideMenu(HWND window)
 {
-    FLASHWINFO fwi;
-    fwi.cbSize = sizeof(FLASHWINFO);
-    fwi.hwnd = window;
-    fwi.dwFlags = FLASHW_CAPTION;
-    fwi.uCount = 1;
-    fwi.dwTimeout = 0;
-    auto topMost = GetWindowLongPtrW(window, GWL_EXSTYLE);
-    if (topMost & WS_EX_TOPMOST)
+    if (!panelMenu)
     {
-        SetWindowPos(window, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-        FlashWindowEx(&fwi);
-        auto documentTitle = title.get();
-        std::wstring changeTitle = std::wstring(documentTitle);
-        SetWindowTextW(window, changeTitle.c_str());
-        return false;
+        panelMenu = true;
+        SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        return true;
     }
     else
     {
-        SetWindowPos(window, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-        FlashWindowEx(&fwi);
-        auto documentTitle = title.get();
-        std::wstring changeTitle = std::wstring(documentTitle) + L" [On Top]";
-        SetWindowTextW(window, changeTitle.c_str());
+        panelMenu = false;
+        SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        return false;
+    }
+}
+
+bool PanelSplit(HWND window)
+{
+    if (!isSplit)
+    {
+        isSplit = true;
+        SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         return true;
     }
-    return false;
+    else
+    {
+        isSplit = false;
+        SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        return false;
+    }
 }
 
 bool WindowMaximize(HWND window)
@@ -242,34 +244,32 @@ bool WindowFullscreen(HWND window)
     return false;
 }
 
-bool PanelSplit(HWND window)
+bool WindowTop(HWND window)
 {
-    if (!isSplit)
+    FLASHWINFO fwi;
+    fwi.cbSize = sizeof(FLASHWINFO);
+    fwi.hwnd = window;
+    fwi.dwFlags = FLASHW_CAPTION;
+    fwi.uCount = 1;
+    fwi.dwTimeout = 100;
+    auto topMost = GetWindowLongPtrW(window, GWL_EXSTYLE);
+    if (topMost & WS_EX_TOPMOST)
     {
-        isSplit = true;
-        SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-        return true;
+        SetWindowPos(window, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        FlashWindowEx(&fwi);
+        // auto documentTitle = title.get();
+        // std::wstring changeTitle = std::wstring(documentTitle);
+        // SetWindowTextW(window, changeTitle.c_str());
+        return false;
     }
     else
     {
-        isSplit = false;
-        SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-        return false;
-    }
-}
-
-bool PanelHideMenu(HWND window)
-{
-    if (!panelMenu)
-    {
-        panelMenu = true;
-        SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        SetWindowPos(window, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        FlashWindowEx(&fwi);
+        // auto documentTitle = title.get();
+        // std::wstring changeTitle = std::wstring(documentTitle) + L" [On Top]";
+        // SetWindowTextW(window, changeTitle.c_str());
         return true;
     }
-    else
-    {
-        panelMenu = false;
-        SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-        return false;
-    }
+    return false;
 }

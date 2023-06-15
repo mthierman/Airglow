@@ -98,23 +98,23 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
     {
         if (wparam == VK_F1)
         {
-            isSplit = PanelSplit(window);
+            panelMenu = PanelHideMenu(window);
         }
         if (wparam == VK_F2)
         {
-            isMaximized = WindowMaximize(window);
+            isSplit = PanelSplit(window);
         }
         if (wparam == VK_F4)
         {
-            isTopmost = WindowTop(window);
-        }
-        if (wparam == VK_F9)
-        {
-            panelMenu = PanelHideMenu(window);
+            isMaximized = WindowMaximize(window);
         }
         if (wparam == VK_F11)
         {
             isFullscreen = WindowFullscreen(window);
+        }
+        if (wparam == VK_F9)
+        {
+            isTopmost = WindowTop(window);
         }
         if (wparam == 0x57)
         {

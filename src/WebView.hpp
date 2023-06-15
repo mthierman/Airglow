@@ -154,14 +154,19 @@ void InitializeWebView1(HWND window, std::filesystem::path userData)
                                         wil::unique_cotaskmem_string message;
                                         args->TryGetWebMessageAsString(&message);
                                         if ((std::wstring)message.get() ==
+                                            std::wstring(L"F1").c_str())
+                                        {
+                                            panelMenu = PanelHideMenu(window);
+                                        }
+                                        if ((std::wstring)message.get() ==
                                             std::wstring(L"F2").c_str())
                                         {
-                                            isMaximized = WindowMaximize(window);
+                                            isSplit = PanelSplit(window);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"F4").c_str())
                                         {
-                                            isTopmost = WindowTop(window);
+                                            isMaximized = WindowMaximize(window);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"F11").c_str())
@@ -169,14 +174,9 @@ void InitializeWebView1(HWND window, std::filesystem::path userData)
                                             isFullscreen = WindowFullscreen(window);
                                         }
                                         if ((std::wstring)message.get() ==
-                                            std::wstring(L"F1").c_str())
-                                        {
-                                            isSplit = PanelSplit(window);
-                                        }
-                                        if ((std::wstring)message.get() ==
                                             std::wstring(L"F9").c_str())
                                         {
-                                            panelMenu = PanelHideMenu(window);
+                                            isTopmost = WindowTop(window);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"close").c_str())
@@ -244,14 +244,19 @@ void InitializeWebView2(HWND window, std::filesystem::path userData)
                                         wil::unique_cotaskmem_string message;
                                         args->TryGetWebMessageAsString(&message);
                                         if ((std::wstring)message.get() ==
+                                            std::wstring(L"F1").c_str())
+                                        {
+                                            panelMenu = PanelHideMenu(window);
+                                        }
+                                        if ((std::wstring)message.get() ==
                                             std::wstring(L"F2").c_str())
                                         {
-                                            isMaximized = WindowMaximize(window);
+                                            isSplit = PanelSplit(window);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"F4").c_str())
                                         {
-                                            isTopmost = WindowTop(window);
+                                            isMaximized = WindowMaximize(window);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"F11").c_str())
@@ -259,9 +264,9 @@ void InitializeWebView2(HWND window, std::filesystem::path userData)
                                             isFullscreen = WindowFullscreen(window);
                                         }
                                         if ((std::wstring)message.get() ==
-                                            std::wstring(L"F1").c_str())
+                                            std::wstring(L"F9").c_str())
                                         {
-                                            isSplit = PanelSplit(window);
+                                            isTopmost = WindowTop(window);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"close").c_str())
@@ -330,14 +335,19 @@ void InitializeWebView3(HWND window, std::filesystem::path userData)
                                         wil::unique_cotaskmem_string message;
                                         args->TryGetWebMessageAsString(&message);
                                         if ((std::wstring)message.get() ==
+                                            std::wstring(L"F1").c_str())
+                                        {
+                                            panelMenu = PanelHideMenu(window);
+                                        }
+                                        if ((std::wstring)message.get() ==
                                             std::wstring(L"F2").c_str())
                                         {
-                                            isMaximized = WindowMaximize(window);
+                                            isSplit = PanelSplit(window);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"F4").c_str())
                                         {
-                                            isTopmost = WindowTop(window);
+                                            isMaximized = WindowMaximize(window);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"F11").c_str())
@@ -345,9 +355,9 @@ void InitializeWebView3(HWND window, std::filesystem::path userData)
                                             isFullscreen = WindowFullscreen(window);
                                         }
                                         if ((std::wstring)message.get() ==
-                                            std::wstring(L"F1").c_str())
+                                            std::wstring(L"F9").c_str())
                                         {
-                                            isSplit = PanelSplit(window);
+                                            isTopmost = WindowTop(window);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"close").c_str())
