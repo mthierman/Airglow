@@ -149,7 +149,7 @@ RECT GetBottomPanelBounds(HWND window)
     {
         panel = {
             bounds.left,
-            bounds.bottom - 75,
+            bounds.bottom - 50,
             bounds.right,
             bounds.bottom,
         };
@@ -171,6 +171,11 @@ bool PanelHideMenu(HWND window)
     }
     else
     {
+        if (wv_controller != nullptr)
+        {
+            wv_controller->MoveFocus(
+                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+        }
         panelMenu = false;
         SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         return false;
@@ -187,6 +192,11 @@ bool PanelSplit(HWND window)
     }
     else
     {
+        if (wv_controller != nullptr)
+        {
+            wv_controller->MoveFocus(
+                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+        }
         isSplit = false;
         SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         return false;

@@ -37,6 +37,35 @@ bool GetAppDataPath()
     return true;
 }
 
+void WebViewMessages(HWND window, PWSTR message)
+{
+    if ((std::wstring)message == std::wstring(L"F1").c_str())
+    {
+        panelMenu = PanelHideMenu(window);
+    }
+    if ((std::wstring)message == std::wstring(L"F2").c_str())
+    {
+        isSplit = PanelSplit(window);
+    }
+    if ((std::wstring)message == std::wstring(L"F4").c_str())
+    {
+        isMaximized = WindowMaximize(window);
+    }
+    if ((std::wstring)message == std::wstring(L"F11").c_str())
+    {
+        isFullscreen = WindowFullscreen(window);
+    }
+    if ((std::wstring)message == std::wstring(L"F9").c_str())
+    {
+        isTopmost = WindowTop(window);
+        SetWindowTitle(window);
+    }
+    if ((std::wstring)message == std::wstring(L"close").c_str())
+    {
+        SendMessageW(window, WM_CLOSE, 0, 0);
+    }
+}
+
 void InitializeWebView1(HWND window, std::filesystem::path userData)
 {
     using namespace Microsoft::WRL;
@@ -128,37 +157,8 @@ void InitializeWebView1(HWND window, std::filesystem::path userData)
                                     {
                                         wil::unique_cotaskmem_string message;
                                         args->TryGetWebMessageAsString(&message);
-                                        if ((std::wstring)message.get() ==
-                                            std::wstring(L"F1").c_str())
-                                        {
-                                            panelMenu = PanelHideMenu(window);
-                                        }
-                                        if ((std::wstring)message.get() ==
-                                            std::wstring(L"F2").c_str())
-                                        {
-                                            isSplit = PanelSplit(window);
-                                        }
-                                        if ((std::wstring)message.get() ==
-                                            std::wstring(L"F4").c_str())
-                                        {
-                                            isMaximized = WindowMaximize(window);
-                                        }
-                                        if ((std::wstring)message.get() ==
-                                            std::wstring(L"F11").c_str())
-                                        {
-                                            isFullscreen = WindowFullscreen(window);
-                                        }
-                                        if ((std::wstring)message.get() ==
-                                            std::wstring(L"F9").c_str())
-                                        {
-                                            isTopmost = WindowTop(window);
-                                            SetWindowTitle(window);
-                                        }
-                                        if ((std::wstring)message.get() ==
-                                            std::wstring(L"close").c_str())
-                                        {
-                                            SendMessageW(window, WM_CLOSE, 0, 0);
-                                        }
+                                        auto msg = message.get();
+                                        WebViewMessages(window, msg);
                                         webview->PostWebMessageAsString(message.get());
                                         return S_OK;
                                     })
@@ -219,37 +219,8 @@ void InitializeWebView2(HWND window, std::filesystem::path userData)
                                     {
                                         wil::unique_cotaskmem_string message;
                                         args->TryGetWebMessageAsString(&message);
-                                        if ((std::wstring)message.get() ==
-                                            std::wstring(L"F1").c_str())
-                                        {
-                                            panelMenu = PanelHideMenu(window);
-                                        }
-                                        if ((std::wstring)message.get() ==
-                                            std::wstring(L"F2").c_str())
-                                        {
-                                            isSplit = PanelSplit(window);
-                                        }
-                                        if ((std::wstring)message.get() ==
-                                            std::wstring(L"F4").c_str())
-                                        {
-                                            isMaximized = WindowMaximize(window);
-                                        }
-                                        if ((std::wstring)message.get() ==
-                                            std::wstring(L"F11").c_str())
-                                        {
-                                            isFullscreen = WindowFullscreen(window);
-                                        }
-                                        if ((std::wstring)message.get() ==
-                                            std::wstring(L"F9").c_str())
-                                        {
-                                            isTopmost = WindowTop(window);
-                                            SetWindowTitle(window);
-                                        }
-                                        if ((std::wstring)message.get() ==
-                                            std::wstring(L"close").c_str())
-                                        {
-                                            SendMessageW(window, WM_CLOSE, 0, 0);
-                                        }
+                                        auto msg = message.get();
+                                        WebViewMessages(window, msg);
                                         webview->PostWebMessageAsString(message.get());
                                         return S_OK;
                                     })
@@ -311,37 +282,8 @@ void InitializeWebView3(HWND window, std::filesystem::path userData)
                                     {
                                         wil::unique_cotaskmem_string message;
                                         args->TryGetWebMessageAsString(&message);
-                                        if ((std::wstring)message.get() ==
-                                            std::wstring(L"F1").c_str())
-                                        {
-                                            panelMenu = PanelHideMenu(window);
-                                        }
-                                        if ((std::wstring)message.get() ==
-                                            std::wstring(L"F2").c_str())
-                                        {
-                                            isSplit = PanelSplit(window);
-                                        }
-                                        if ((std::wstring)message.get() ==
-                                            std::wstring(L"F4").c_str())
-                                        {
-                                            isMaximized = WindowMaximize(window);
-                                        }
-                                        if ((std::wstring)message.get() ==
-                                            std::wstring(L"F11").c_str())
-                                        {
-                                            isFullscreen = WindowFullscreen(window);
-                                        }
-                                        if ((std::wstring)message.get() ==
-                                            std::wstring(L"F9").c_str())
-                                        {
-                                            isTopmost = WindowTop(window);
-                                            SetWindowTitle(window);
-                                        }
-                                        if ((std::wstring)message.get() ==
-                                            std::wstring(L"close").c_str())
-                                        {
-                                            SendMessageW(window, WM_CLOSE, 0, 0);
-                                        }
+                                        auto msg = message.get();
+                                        WebViewMessages(window, msg);
                                         webview->PostWebMessageAsString(message.get());
                                         return S_OK;
                                     })

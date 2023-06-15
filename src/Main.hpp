@@ -75,6 +75,7 @@ static wil::com_ptr<ICoreWebView2Settings> wv_settings3;
 bool CommandLineUrl();
 bool GetAppDataPath();
 std::filesystem::path userData;
+void WebViewMessages(HWND window, PWSTR message);
 void InitializeWebView1(HWND window, std::filesystem::path userData);
 void InitializeWebView2(HWND window, std::filesystem::path userData);
 void InitializeWebView3(HWND window, std::filesystem::path userData);

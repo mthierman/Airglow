@@ -73,13 +73,13 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
     {
         if (wparam == VK_F1)
         {
-            panelMenu = PanelHideMenu(window);
-        }
-        if (wparam == VK_F2)
-        {
             isSplit = PanelSplit(window);
         }
         if (wparam == VK_F4)
+        {
+            panelMenu = PanelHideMenu(window);
+        }
+        if (wparam == VK_F6)
         {
             isMaximized = WindowMaximize(window);
         }
