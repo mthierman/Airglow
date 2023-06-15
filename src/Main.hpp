@@ -6,7 +6,7 @@ HWND MakeWindow(HINSTANCE);
 HWND InitializeWindow(HINSTANCE, int);
 std::wstring programIcon(L"PROGRAM_ICON");
 std::wstring className(L"window");
-std::wstring windowName(L"Gooey");
+std::wstring windowName(L"Airglow");
 std::wstring menuName(L"menu");
 RECT bounds;
 bool isTopmost;

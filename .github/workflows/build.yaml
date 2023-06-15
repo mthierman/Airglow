@@ -1,4 +1,4 @@
-name: Gooey Release
+name: Release
 
 on:
   workflow_dispatch:
@@ -32,7 +32,7 @@ jobs:
 
           $version = Get-Content "build/version.txt"
           $changes = Get-Item "build/changes.txt"
-          $exe = Get-Item "build/Gooey.exe"
+          $exe = Get-Item "build/Airglow.exe"
 
           if ("${{ github.ref_name }}" -eq "main") {
             $title = "Gooey $version"
