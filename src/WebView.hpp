@@ -37,30 +37,6 @@ bool GetAppDataPath()
     return true;
 }
 
-// void WebViewMessages(HWND window, wil::unique_cotaskmem_string message)
-// {
-//     if ((std::wstring)message.get() == std::wstring(L"F2").c_str())
-//     {
-//         isMaximized = WindowMaximize(window);
-//     }
-//     if ((std::wstring)message.get() == std::wstring(L"F4").c_str())
-//     {
-//         isTopmost = WindowTop(window);
-//     }
-//     if ((std::wstring)message.get() == std::wstring(L"F11").c_str())
-//     {
-//         isFullscreen = WindowFullscreen(window);
-//     }
-//     if ((std::wstring)message.get() == std::wstring(L"F1").c_str())
-//     {
-//         isSplit = PanelSplit(window);
-//     }
-//     if ((std::wstring)message.get() == std::wstring(L"close").c_str())
-//     {
-//         SendMessageW(window, WM_CLOSE, 0, 0);
-//     }
-// }
-
 void InitializeWebView1(HWND window, std::filesystem::path userData)
 {
     using namespace Microsoft::WRL;
@@ -106,9 +82,6 @@ void InitializeWebView1(HWND window, std::filesystem::path userData)
                                     [window](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                     {
                                         sender->get_DocumentTitle(&title);
-                                        // auto documentTitle = title.get();
-                                        // if (isTopmost)
-                                        //     SetWindowTextW(window, documentTitle);
                                         SetWindowTitle(window);
                                         return S_OK;
                                     })
@@ -159,13 +132,11 @@ void InitializeWebView1(HWND window, std::filesystem::path userData)
                                             std::wstring(L"F1").c_str())
                                         {
                                             panelMenu = PanelHideMenu(window);
-                                            // SendMessageW(window, WM_SETFOCUS, 0, 0);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"F2").c_str())
                                         {
                                             isSplit = PanelSplit(window);
-                                            // SendMessageW(window, WM_SETFOCUS, 0, 0);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"F4").c_str())
@@ -252,13 +223,11 @@ void InitializeWebView2(HWND window, std::filesystem::path userData)
                                             std::wstring(L"F1").c_str())
                                         {
                                             panelMenu = PanelHideMenu(window);
-                                            // SendMessageW(window, WM_SETFOCUS, 0, 0);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"F2").c_str())
                                         {
                                             isSplit = PanelSplit(window);
-                                            // SendMessageW(window, WM_SETFOCUS, 0, 0);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"F4").c_str())
@@ -346,13 +315,11 @@ void InitializeWebView3(HWND window, std::filesystem::path userData)
                                             std::wstring(L"F1").c_str())
                                         {
                                             panelMenu = PanelHideMenu(window);
-                                            // SendMessageW(window, WM_SETFOCUS, 0, 0);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"F2").c_str())
                                         {
                                             isSplit = PanelSplit(window);
-                                            // SendMessageW(window, WM_SETFOCUS, 0, 0);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"F4").c_str())
