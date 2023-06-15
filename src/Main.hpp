@@ -8,7 +8,6 @@ std::wstring programIcon(L"PROGRAM_ICON");
 std::wstring className(L"window");
 std::wstring windowName(L"Airglow");
 std::wstring menuName(L"menu");
-RECT bounds;
 bool isTopmost;
 bool isFullscreen;
 bool isMaximized;
@@ -43,10 +42,15 @@ Gdiplus::GdiplusStartupInput gdiplusStartupInput;
 
 // WEBVIEW
 bool GetAppDataPath();
+RECT GetWindowBounds(HWND window);
+RECT GetFullPanelBounds(HWND window);
+RECT GetHiddenPanelBounds(HWND window);
+RECT GetLeftPanelBounds(HWND window);
+RECT GetRightPanelBounds(HWND window);
 std::filesystem::path userData;
 void InitializeWebView1(HWND window, std::filesystem::path userData);
 void InitializeWebView2(HWND window, std::filesystem::path userData);
-void WebViewNavigate(wil::com_ptr<ICoreWebView2>, wil::com_ptr<ICoreWebView2>);
+void InitializeWebView3(HWND window, std::filesystem::path userData);
 std::wstring wvScript(
     L"document.onreadystatechange = () => {if (document.readyState === 'complete') {onkeydown = "
     L"(e) => {if (e.ctrlKey && e.key === 'w') {window.chrome.webview.postMessage('close')} "
@@ -54,6 +58,7 @@ std::wstring wvScript(
     L"{window.chrome.webview.postMessage(e.key)}}}}");
 std::wstring url1 = L"https://www.typescriptlang.org/docs/handbook/intro.html";
 std::wstring url2 = L"https://www.typescriptlang.org/play";
+std::wstring url3 = L"https://localhost:8000";
 wil::unique_cotaskmem_string title;
 
 // WEBVIEW
@@ -66,6 +71,11 @@ static wil::com_ptr<ICoreWebView2Controller> wv_controller2;
 static wil::com_ptr<ICoreWebView2> wv_core2;
 static wil::com_ptr<ICoreWebView2_19> wv2;
 static wil::com_ptr<ICoreWebView2Settings> wv_settings2;
+
+static wil::com_ptr<ICoreWebView2Controller> wv_controller3;
+static wil::com_ptr<ICoreWebView2> wv_core3;
+static wil::com_ptr<ICoreWebView2_19> wv3;
+static wil::com_ptr<ICoreWebView2Settings> wv_settings3;
 
 // THEMING
 bool CheckSystemDarkMode();

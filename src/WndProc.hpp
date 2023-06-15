@@ -21,34 +21,33 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
     case WM_SIZE:
     case WM_WINDOWPOSCHANGING:
     {
+        RECT bounds;
         GetClientRect(window, &bounds);
         auto height = std::to_wstring(bounds.bottom - bounds.top);
         auto width = std::to_wstring(bounds.right - bounds.left);
         auto dimensions = L"WINDOW SIZE: " + width + L" x " + height + L"\n";
         OutputDebugStringW(dimensions.c_str());
+
         if (wv_controller != nullptr)
         {
-            RECT wv_bounds = {
-                bounds.left,
-                bounds.top,
-                bounds.right / 2,
-                bounds.bottom,
-            };
-            if (isSplit)
-                wv_controller->put_Bounds(wv_bounds);
             if (!isSplit)
-                wv_controller->put_Bounds(bounds);
+                wv_controller->put_Bounds(GetFullPanelBounds(window));
+            if (isSplit)
+                wv_controller->put_Bounds(GetLeftPanelBounds(window));
         }
+
         if (wv_controller2 != nullptr)
         {
-            RECT wv_bounds2 = {
-                bounds.right / 2,
-                bounds.top,
-                bounds.right,
-                bounds.bottom,
-            };
+            RECT hidden = {0, 0, 0, 0};
+            if (!isSplit)
+                wv_controller2->put_Bounds(GetHiddenPanelBounds(window));
             if (isSplit)
-                wv_controller2->put_Bounds(wv_bounds2);
+                wv_controller2->put_Bounds(GetRightPanelBounds(window));
+        }
+
+        if (wv_controller3 != nullptr)
+        {
+            wv_controller3->put_Bounds(GetWindowBounds(window));
         }
     }
     break;
@@ -69,6 +68,11 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
         if (wv_controller2 != nullptr)
         {
             wv_controller2->MoveFocus(
+                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+        }
+        if (wv_controller3 != nullptr)
+        {
+            wv_controller3->MoveFocus(
                 COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
         }
     }

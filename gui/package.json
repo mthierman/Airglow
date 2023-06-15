@@ -1,0 +1,28 @@
+{
+    "name": "template-react",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "watch": "vite build --watch",
+        "preview": "vite preview"
+    },
+    "devDependencies": {
+        "@tailwindcss/typography": "latest",
+        "@types/node": "latest",
+        "@types/prettier": "latest",
+        "@types/react-dom": "latest",
+        "@types/react": "latest",
+        "@vitejs/plugin-react-swc": "latest",
+        "autoprefixer": "latest",
+        "postcss-load-config": "latest",
+        "postcss": "latest",
+        "prettier-plugin-tailwindcss": "latest",
+        "prettier": "latest",
+        "react-dom": "latest",
+        "react": "latest",
+        "rollup": "latest",
+        "tailwindcss": "latest",
+        "typescript": "latest",
+        "vite": "latest"
+    }
+}

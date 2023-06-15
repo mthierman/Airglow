@@ -17,6 +17,58 @@ bool GetAppDataPath()
     return true;
 }
 
+RECT GetWindowBounds(HWND window)
+{
+    RECT bounds;
+    GetClientRect(window, &bounds);
+    return bounds;
+}
+
+RECT GetFullPanelBounds(HWND window)
+{
+    RECT bounds;
+    GetClientRect(window, &bounds);
+    RECT fullPanel = {
+        bounds.left,
+        bounds.top,
+        bounds.right,
+        bounds.bottom - 50,
+    };
+    return fullPanel;
+}
+
+RECT GetHiddenPanelBounds(HWND window)
+{
+    RECT hidden = {0, 0, 0, 0};
+    return hidden;
+}
+
+RECT GetLeftPanelBounds(HWND window)
+{
+    RECT bounds;
+    GetClientRect(window, &bounds);
+    RECT leftPanel = {
+        bounds.left,
+        bounds.top,
+        bounds.right / 2,
+        bounds.bottom - 50,
+    };
+    return leftPanel;
+}
+
+RECT GetRightPanelBounds(HWND window)
+{
+    RECT bounds;
+    GetClientRect(window, &bounds);
+    RECT rightPanel = {
+        bounds.right / 2,
+        bounds.top,
+        bounds.right,
+        bounds.bottom - 50,
+    };
+    return rightPanel;
+}
+
 void InitializeWebView1(HWND window, std::filesystem::path userData)
 {
     using namespace Microsoft::WRL;
@@ -47,16 +99,10 @@ void InitializeWebView1(HWND window, std::filesystem::path userData)
                             wv_settings->put_IsStatusBarEnabled(true);
                             wv_settings->put_IsWebMessageEnabled(true);
                             wv_settings->put_IsZoomControlEnabled(true);
-                            RECT wv_bounds = {
-                                bounds.left,
-                                bounds.top,
-                                bounds.right / 2,
-                                bounds.bottom,
-                            };
                             if (!isSplit)
-                                wv_controller->put_Bounds(bounds);
+                                wv_controller->put_Bounds(GetFullPanelBounds(window));
                             if (isSplit)
-                                wv_controller->put_Bounds(wv_bounds);
+                                wv_controller->put_Bounds(GetLeftPanelBounds(window));
                             wv->Navigate(url1.c_str());
                             wv->ExecuteScript(wvScript.c_str(), nullptr);
                             wv->AddScriptToExecuteOnDocumentCreated(wvScript.c_str(), nullptr);
@@ -155,15 +201,16 @@ void InitializeWebView1(HWND window, std::filesystem::path userData)
 
 void InitializeWebView2(HWND window, std::filesystem::path userData)
 {
+    using namespace Microsoft::WRL;
+
     CreateCoreWebView2EnvironmentWithOptions(
         nullptr, userData.c_str(), nullptr,
-        Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
+        Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
             [window](HRESULT result, ICoreWebView2Environment* env) -> HRESULT
             {
                 env->CreateCoreWebView2Controller(
                     window,
-                    Microsoft::WRL::Callback<
-                        ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+                    Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
                         [window](HRESULT result, ICoreWebView2Controller* controller) -> HRESULT
                         {
                             if (controller != nullptr)
@@ -182,19 +229,95 @@ void InitializeWebView2(HWND window, std::filesystem::path userData)
                             wv_settings2->put_IsStatusBarEnabled(true);
                             wv_settings2->put_IsWebMessageEnabled(true);
                             wv_settings2->put_IsZoomControlEnabled(true);
-                            RECT wv_bounds2 = {
-                                bounds.right / 2,
-                                bounds.top,
-                                bounds.right,
-                                bounds.bottom,
-                            };
                             if (isSplit)
-                                wv_controller2->put_Bounds(wv_bounds2);
+                                wv_controller2->put_Bounds(GetRightPanelBounds(window));
                             wv2->Navigate(url2.c_str());
                             EventRegistrationToken token;
                             wv2->ExecuteScript(wvScript.c_str(), nullptr);
                             wv2->AddScriptToExecuteOnDocumentCreated(wvScript.c_str(), nullptr);
                             wv2->add_WebMessageReceived(
+                                Microsoft::WRL::Callback<
+                                    ICoreWebView2WebMessageReceivedEventHandler>(
+                                    [window](
+                                        ICoreWebView2* webview,
+                                        ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT
+                                    {
+                                        wil::unique_cotaskmem_string message;
+                                        args->TryGetWebMessageAsString(&message);
+                                        if ((std::wstring)message.get() ==
+                                            std::wstring(L"F2").c_str())
+                                        {
+                                            isMaximized = KeyMaximize(window);
+                                        }
+                                        if ((std::wstring)message.get() ==
+                                            std::wstring(L"F4").c_str())
+                                        {
+                                            isTopmost = KeyTop(window);
+                                        }
+                                        if ((std::wstring)message.get() ==
+                                            std::wstring(L"F11").c_str())
+                                        {
+                                            isFullscreen = KeyFullscreen(window);
+                                        }
+                                        if ((std::wstring)message.get() ==
+                                            std::wstring(L"F1").c_str())
+                                        {
+                                            isSplit = KeySplit(window);
+                                        }
+                                        if ((std::wstring)message.get() ==
+                                            std::wstring(L"close").c_str())
+                                        {
+                                            KeyClose(window);
+                                        }
+                                        webview->PostWebMessageAsString(message.get());
+                                        return S_OK;
+                                    })
+                                    .Get(),
+                                &token);
+                            return S_OK;
+                        })
+                        .Get());
+                return S_OK;
+            })
+            .Get());
+}
+
+void InitializeWebView3(HWND window, std::filesystem::path userData)
+{
+    using namespace Microsoft::WRL;
+
+    CreateCoreWebView2EnvironmentWithOptions(
+        nullptr, userData.c_str(), nullptr,
+        Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
+            [window](HRESULT result, ICoreWebView2Environment* env) -> HRESULT
+            {
+                env->CreateCoreWebView2Controller(
+                    window,
+                    Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+                        [window](HRESULT result, ICoreWebView2Controller* controller) -> HRESULT
+                        {
+                            if (controller != nullptr)
+                            {
+                                wv_controller3 = controller;
+                                wv_controller3->get_CoreWebView2(&wv_core3);
+                            }
+                            wv3 = wv_core3.try_query<ICoreWebView2_19>();
+                            wv3->get_Settings(&wv_settings3);
+                            wv_settings3->put_AreDefaultContextMenusEnabled(true);
+                            wv_settings3->put_AreDefaultScriptDialogsEnabled(true);
+                            wv_settings3->put_AreDevToolsEnabled(true);
+                            wv_settings3->put_AreHostObjectsAllowed(true);
+                            wv_settings3->put_IsBuiltInErrorPageEnabled(true);
+                            wv_settings3->put_IsScriptEnabled(true);
+                            wv_settings3->put_IsStatusBarEnabled(true);
+                            wv_settings3->put_IsWebMessageEnabled(true);
+                            wv_settings3->put_IsZoomControlEnabled(true);
+                            wv_controller3->put_Bounds(GetWindowBounds(window));
+                            wv3->Navigate(url3.c_str());
+                            EventRegistrationToken token;
+                            wv3->ExecuteScript(wvScript.c_str(), nullptr);
+                            wv3->AddScriptToExecuteOnDocumentCreated(wvScript.c_str(), nullptr);
+                            wv3->add_WebMessageReceived(
                                 Microsoft::WRL::Callback<
                                     ICoreWebView2WebMessageReceivedEventHandler>(
                                     [window](

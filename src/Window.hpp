@@ -73,6 +73,5 @@ HWND InitializeWindow(HINSTANCE instance, int ncs)
     SetDarkMode(window);
     SetMica(window);
     SetWindow(window, ncs);
-    GetClientRect(window, &bounds);
     return window;
 }

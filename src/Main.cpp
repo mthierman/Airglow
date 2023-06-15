@@ -15,6 +15,7 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
     {
         InitializeWebView1(window, userData);
         InitializeWebView2(window, userData);
+        InitializeWebView3(window, userData);
     }
 
     MSG msg = {};
