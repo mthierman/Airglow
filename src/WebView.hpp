@@ -103,7 +103,7 @@ void InitializeWebView1(HWND window, std::filesystem::path userData)
                             wv->Navigate(url1.c_str());
                             wv->ExecuteScript(wvScript.c_str(), nullptr);
                             wv->AddScriptToExecuteOnDocumentCreated(wvScript.c_str(), nullptr);
-                            EventRegistrationToken token;
+                            EventRegistrationToken msgToken;
                             EventRegistrationToken faviconChangedToken;
                             EventRegistrationToken documentTitleChangedToken;
                             wv->add_DocumentTitleChanged(
@@ -163,7 +163,7 @@ void InitializeWebView1(HWND window, std::filesystem::path userData)
                                         return S_OK;
                                     })
                                     .Get(),
-                                &token);
+                                &msgToken);
                             return S_OK;
                         })
                         .Get());
@@ -207,7 +207,7 @@ void InitializeWebView2(HWND window, std::filesystem::path userData)
                             if (isSplit)
                                 wv_controller2->put_Bounds(GetRightPanelBounds(window));
                             wv2->Navigate(url2.c_str());
-                            EventRegistrationToken token;
+                            EventRegistrationToken msgToken;
                             wv2->ExecuteScript(wvScript.c_str(), nullptr);
                             wv2->AddScriptToExecuteOnDocumentCreated(wvScript.c_str(), nullptr);
                             wv2->add_WebMessageReceived(
@@ -225,7 +225,7 @@ void InitializeWebView2(HWND window, std::filesystem::path userData)
                                         return S_OK;
                                     })
                                     .Get(),
-                                &token);
+                                &msgToken);
                             return S_OK;
                         })
                         .Get());
@@ -269,7 +269,7 @@ void InitializeWebView3(HWND window, std::filesystem::path userData)
                             if (panelMenu)
                                 wv_controller3->put_Bounds(GetBottomPanelBounds(window));
                             wv3->Navigate(url3.c_str());
-                            EventRegistrationToken token;
+                            EventRegistrationToken msgToken;
                             wv3->ExecuteScript(wvScriptBottom.c_str(), nullptr);
                             wv3->AddScriptToExecuteOnDocumentCreated(wvScriptBottom.c_str(),
                                                                      nullptr);
@@ -288,7 +288,7 @@ void InitializeWebView3(HWND window, std::filesystem::path userData)
                                         return S_OK;
                                     })
                                     .Get(),
-                                &token);
+                                &msgToken);
                             return S_OK;
                         })
                         .Get());
