@@ -42,6 +42,10 @@ unsigned long long gdiplusToken;
 Gdiplus::GdiplusStartupInput gdiplusStartupInput;
 
 // WEBVIEW
+bool GetAppDataPath();
+std::filesystem::path userData;
+void InitializeWebView1(HWND window, std::filesystem::path userData);
+void InitializeWebView2(HWND window, std::filesystem::path userData);
 void WebViewNavigate(wil::com_ptr<ICoreWebView2>, wil::com_ptr<ICoreWebView2>);
 std::wstring wvScript(
     L"document.onreadystatechange = () => {if (document.readyState === 'complete') {onkeydown = "

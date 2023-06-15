@@ -1,9 +1,28 @@
-void InitializeWebView1(HWND window)
+bool GetAppDataPath()
+{
+    std::wstring path;
+    PWSTR buffer;
+    auto getKnownFolderPath = SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &buffer);
+
+    if (getKnownFolderPath != S_OK)
+    {
+        CoTaskMemFree(buffer);
+        return false;
+    }
+
+    path = buffer;
+    userData = path + std::filesystem::path::preferred_separator + L"Airglow";
+    OutputDebugStringW(userData.c_str());
+    CoTaskMemFree(buffer);
+    return true;
+}
+
+void InitializeWebView1(HWND window, std::filesystem::path userData)
 {
     using namespace Microsoft::WRL;
 
     CreateCoreWebView2EnvironmentWithOptions(
-        nullptr, nullptr, nullptr,
+        nullptr, userData.c_str(), nullptr,
         Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
             [window](HRESULT result, ICoreWebView2Environment* env) -> HRESULT
             {
@@ -134,10 +153,10 @@ void InitializeWebView1(HWND window)
             .Get());
 }
 
-void InitializeWebView2(HWND window)
+void InitializeWebView2(HWND window, std::filesystem::path userData)
 {
     CreateCoreWebView2EnvironmentWithOptions(
-        nullptr, nullptr, nullptr,
+        nullptr, userData.c_str(), nullptr,
         Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
             [window](HRESULT result, ICoreWebView2Environment* env) -> HRESULT
             {

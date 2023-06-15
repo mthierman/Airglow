@@ -9,9 +9,13 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
 {
     auto window = InitializeWindow(instance, ncs);
 
-    InitializeWebView1(window);
+    auto appData = GetAppDataPath();
 
-    InitializeWebView2(window);
+    if (appData)
+    {
+        InitializeWebView1(window, userData);
+        InitializeWebView2(window, userData);
+    }
 
     MSG msg = {};
 

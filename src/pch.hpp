@@ -7,3 +7,5 @@
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.UI.ViewManagement.h>
 #include <gdiplus.h>
+#include <ShlObj.h>
+#include <filesystem>
