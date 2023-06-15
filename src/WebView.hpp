@@ -41,13 +41,13 @@ void WebViewMessages(HWND window, PWSTR message)
 {
     if ((std::wstring)message == std::wstring(L"F1").c_str())
     {
-        panelMenu = PanelHideMenu(window);
-    }
-    if ((std::wstring)message == std::wstring(L"F2").c_str())
-    {
         isSplit = PanelSplit(window);
     }
     if ((std::wstring)message == std::wstring(L"F4").c_str())
+    {
+        panelMenu = PanelHideMenu(window);
+    }
+    if ((std::wstring)message == std::wstring(L"F6").c_str())
     {
         isMaximized = WindowMaximize(window);
     }
