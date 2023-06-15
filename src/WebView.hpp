@@ -159,11 +159,13 @@ void InitializeWebView1(HWND window, std::filesystem::path userData)
                                             std::wstring(L"F1").c_str())
                                         {
                                             panelMenu = PanelHideMenu(window);
+                                            // SendMessageW(window, WM_SETFOCUS, 0, 0);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"F2").c_str())
                                         {
                                             isSplit = PanelSplit(window);
+                                            // SendMessageW(window, WM_SETFOCUS, 0, 0);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"F4").c_str())
@@ -250,11 +252,13 @@ void InitializeWebView2(HWND window, std::filesystem::path userData)
                                             std::wstring(L"F1").c_str())
                                         {
                                             panelMenu = PanelHideMenu(window);
+                                            // SendMessageW(window, WM_SETFOCUS, 0, 0);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"F2").c_str())
                                         {
                                             isSplit = PanelSplit(window);
+                                            // SendMessageW(window, WM_SETFOCUS, 0, 0);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"F4").c_str())
@@ -342,11 +346,13 @@ void InitializeWebView3(HWND window, std::filesystem::path userData)
                                             std::wstring(L"F1").c_str())
                                         {
                                             panelMenu = PanelHideMenu(window);
+                                            // SendMessageW(window, WM_SETFOCUS, 0, 0);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"F2").c_str())
                                         {
                                             isSplit = PanelSplit(window);
+                                            // SendMessageW(window, WM_SETFOCUS, 0, 0);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"F4").c_str())

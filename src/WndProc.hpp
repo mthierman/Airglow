@@ -34,12 +34,6 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
         SetDarkMode(window);
     }
     break;
-    case WM_ACTIVATE:
-    {
-        if (wparam == WA_ACTIVE)
-            SendMessageW(window, WM_SETFOCUS, 0, 0);
-    }
-    break;
     case WM_SIZE:
     case WM_WINDOWPOSCHANGING:
     {
@@ -75,23 +69,38 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
         minmax->ptMinTrackSize.y = 600;
     }
     break;
+    case WM_ACTIVATE:
+    {
+        SendMessageW(window, WM_SETFOCUS, 0, 0);
+        // if (wparam == WA_ACTIVE)
+        //     SendMessageW(window, WM_SETFOCUS, 0, 0);
+        // if (wparam == WA_CLICKACTIVE)
+        //     SendMessageW(window, WM_SETFOCUS, 0, 0);
+    }
+    break;
     case WM_SETFOCUS:
     {
-        if (wv_controller != nullptr)
-        {
-            wv_controller->MoveFocus(
-                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-        }
-        if (wv_controller2 != nullptr)
-        {
-            wv_controller2->MoveFocus(
-                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-        }
-        if (wv_controller3 != nullptr)
-        {
-            wv_controller3->MoveFocus(
-                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-        }
+        // if (wv_controller != nullptr)
+        // {
+        //     wv_controller->MoveFocus(
+        //         COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+        // }
+        // if (wv_controller2 != nullptr)
+        // {
+        //     wv_controller2->MoveFocus(
+        //         COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+        // }
+        // if (wv_controller3 != nullptr)
+        // {
+        //     wv_controller3->MoveFocus(
+        //         COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+        // }
+        // if (wv_controller3 != nullptr)
+        // {
+        //     if (panelMenu)
+        //         wv_controller3->MoveFocus(
+        //             COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+        // }
     }
     break;
     case WM_KEYDOWN:
@@ -99,10 +108,12 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
         if (wparam == VK_F1)
         {
             panelMenu = PanelHideMenu(window);
+            // SendMessageW(window, WM_SETFOCUS, 0, 0);
         }
         if (wparam == VK_F2)
         {
             isSplit = PanelSplit(window);
+            // SendMessageW(window, WM_SETFOCUS, 0, 0);
         }
         if (wparam == VK_F4)
         {
