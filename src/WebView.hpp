@@ -7,14 +7,14 @@ bool CommandLineUrl()
     {
         url1 = args[1];
         url2 = args[1];
-        isSplit = false;
+        split = false;
         return true;
     }
     if (number == 3)
     {
         url1 = args[1];
         url2 = args[2];
-        isSplit = true;
+        split = true;
         return true;
     }
     LocalFree(args);
@@ -41,23 +41,27 @@ void WebViewMessages(HWND window, PWSTR message)
 {
     if ((std::wstring)message == std::wstring(L"F1").c_str())
     {
-        isSplit = PanelSplit(window);
+        split = PanelSplit(window);
+    }
+    if ((std::wstring)message == std::wstring(L"F2").c_str())
+    {
+        swapped = PanelSwap(window);
     }
     if ((std::wstring)message == std::wstring(L"F4").c_str())
     {
-        panelMenu = PanelHideMenu(window);
+        menu = PanelHideMenu(window);
     }
     if ((std::wstring)message == std::wstring(L"F6").c_str())
     {
-        isMaximized = WindowMaximize(window);
+        maximized = WindowMaximize(window);
     }
     if ((std::wstring)message == std::wstring(L"F11").c_str())
     {
-        isFullscreen = WindowFullscreen(window);
+        fullscreen = WindowFullscreen(window);
     }
     if ((std::wstring)message == std::wstring(L"F9").c_str())
     {
-        isTopmost = WindowTop(window);
+        ontop = WindowTop(window);
         SetWindowTitle(window);
     }
     if ((std::wstring)message == std::wstring(L"close").c_str())
@@ -96,10 +100,7 @@ void InitializeWebView1(HWND window, std::filesystem::path userData)
                             wv_settings->put_IsStatusBarEnabled(true);
                             wv_settings->put_IsWebMessageEnabled(true);
                             wv_settings->put_IsZoomControlEnabled(true);
-                            if (!isSplit)
-                                wv_controller->put_Bounds(GetFullPanelBounds(window));
-                            if (isSplit)
-                                wv_controller->put_Bounds(GetLeftPanelBounds(window));
+                            SendMessageW(window, WM_SIZE, 0, 0);
                             wv->Navigate(url1.c_str());
                             wv->ExecuteScript(wvScript.c_str(), nullptr);
                             wv->AddScriptToExecuteOnDocumentCreated(wvScript.c_str(), nullptr);
@@ -202,10 +203,7 @@ void InitializeWebView2(HWND window, std::filesystem::path userData)
                             wv_settings2->put_IsStatusBarEnabled(true);
                             wv_settings2->put_IsWebMessageEnabled(true);
                             wv_settings2->put_IsZoomControlEnabled(true);
-                            if (!isSplit)
-                                wv_controller2->put_Bounds(GetHiddenPanelBounds(window));
-                            if (isSplit)
-                                wv_controller2->put_Bounds(GetRightPanelBounds(window));
+                            SendMessageW(window, WM_SIZE, 0, 0);
                             wv2->Navigate(url2.c_str());
                             EventRegistrationToken msgToken;
                             wv2->ExecuteScript(wvScript.c_str(), nullptr);
@@ -264,10 +262,7 @@ void InitializeWebView3(HWND window, std::filesystem::path userData)
                             wv_settings3->put_IsStatusBarEnabled(false);
                             wv_settings3->put_IsWebMessageEnabled(true);
                             wv_settings3->put_IsZoomControlEnabled(false);
-                            if (!panelMenu)
-                                wv_controller3->put_Bounds(GetBottomPanelBounds(window));
-                            if (panelMenu)
-                                wv_controller3->put_Bounds(GetBottomPanelBounds(window));
+                            SendMessageW(window, WM_SIZE, 0, 0);
                             wv3->Navigate(url3.c_str());
                             EventRegistrationToken msgToken;
                             wv3->ExecuteScript(wvScriptBottom.c_str(), nullptr);

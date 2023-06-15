@@ -49,103 +49,159 @@ HWND InitializeWindow(HINSTANCE instance, int ncs)
     return window;
 }
 
-RECT GetWindowBounds(HWND window)
-{
-    RECT bounds = {0, 0, 0, 0};
-    GetClientRect(window, &bounds);
-    return bounds;
-}
-
-RECT GetHiddenPanelBounds(HWND window)
-{
-    RECT bounds = {0, 0, 0, 0};
-    return bounds;
-}
-
-RECT GetFullPanelBounds(HWND window)
+RECT GetWebView1Bounds(HWND window)
 {
     RECT bounds = {0, 0, 0, 0};
     RECT panel;
     GetClientRect(window, &bounds);
-    if (panelMenu)
+    if (menu)
     {
-        panel = {
-            bounds.left,
-            bounds.top,
-            bounds.right,
-            bounds.bottom - 50,
-        };
+        if (!split & !swapped)
+        {
+            panel = {
+                bounds.left,
+                bounds.top,
+                bounds.right,
+                bounds.bottom - 50,
+            };
+        }
+        if (!split & swapped)
+        {
+            panel = {0, 0, 0, 0};
+        }
+        if (split & !swapped)
+        {
+            panel = {
+                bounds.left,
+                bounds.top,
+                bounds.right / 2,
+                bounds.bottom - 50,
+            };
+        }
+        if (split & swapped)
+        {
+            panel = {
+                bounds.right / 2,
+                bounds.top,
+                bounds.right,
+                bounds.bottom - 50,
+            };
+        }
     }
-    if (!panelMenu)
+    if (!menu)
     {
-        panel = {
-            bounds.left,
-            bounds.top,
-            bounds.right,
-            bounds.bottom,
-        };
+        if (!split & !swapped)
+        {
+            panel = bounds;
+        }
+        if (!split & swapped)
+        {
+            panel = {0, 0, 0, 0};
+        }
+        if (split & !swapped)
+        {
+            panel = {
+                bounds.left,
+                bounds.top,
+                bounds.right / 2,
+                bounds.bottom,
+            };
+        }
+        if (split & swapped)
+        {
+            panel = {
+                bounds.right / 2,
+                bounds.top,
+                bounds.right,
+                bounds.bottom,
+            };
+        }
     }
     return panel;
 }
 
-RECT GetLeftPanelBounds(HWND window)
+RECT GetWebView2Bounds(HWND window)
 {
     RECT bounds = {0, 0, 0, 0};
     RECT panel;
     GetClientRect(window, &bounds);
-    if (panelMenu)
+    if (menu)
     {
-        panel = {
-            bounds.left,
-            bounds.top,
-            bounds.right / 2,
-            bounds.bottom - 50,
-        };
+        if (!split & !swapped)
+        {
+            panel = {0, 0, 0, 0};
+        }
+        if (!split & swapped)
+        {
+            panel = {
+                bounds.left,
+                bounds.top,
+                bounds.right,
+                bounds.bottom - 50,
+            };
+        }
+        if (split & !swapped)
+        {
+            panel = {
+                bounds.right / 2,
+                bounds.top,
+                bounds.right,
+                bounds.bottom - 50,
+            };
+        }
+        if (split & swapped)
+        {
+            panel = {
+                bounds.left,
+                bounds.top,
+                bounds.right / 2,
+                bounds.bottom - 50,
+            };
+        }
     }
-    if (!panelMenu)
+    if (!menu)
     {
-        panel = {
-            bounds.left,
-            bounds.top,
-            bounds.right / 2,
-            bounds.bottom,
-        };
+        if (!split & !swapped)
+        {
+            panel = {0, 0, 0, 0};
+        }
+        if (!split & swapped)
+        {
+            panel = {
+                bounds.left,
+                bounds.top,
+                bounds.right,
+                bounds.bottom,
+            };
+        }
+        if (split & !swapped)
+        {
+            panel = {
+                bounds.right / 2,
+                bounds.top,
+                bounds.right,
+                bounds.bottom,
+            };
+        }
+        if (split & swapped)
+        {
+            panel = {
+                bounds.left,
+                bounds.top,
+                bounds.right / 2,
+                bounds.bottom,
+            };
+        }
     }
     return panel;
 }
 
-RECT GetRightPanelBounds(HWND window)
+RECT GetMenuBounds(HWND window)
 {
     RECT bounds = {0, 0, 0, 0};
     RECT panel;
     GetClientRect(window, &bounds);
-    if (panelMenu)
-    {
-        panel = {
-            bounds.right / 2,
-            bounds.top,
-            bounds.right,
-            bounds.bottom - 50,
-        };
-    }
-    if (!panelMenu)
-    {
-        panel = {
-            bounds.right / 2,
-            bounds.top,
-            bounds.right,
-            bounds.bottom,
-        };
-    }
-    return panel;
-}
-
-RECT GetBottomPanelBounds(HWND window)
-{
-    RECT bounds = {0, 0, 0, 0};
-    RECT panel;
-    GetClientRect(window, &bounds);
-    if (panelMenu)
+    if (menu)
     {
         panel = {
             bounds.left,
@@ -153,30 +209,21 @@ RECT GetBottomPanelBounds(HWND window)
             bounds.right,
             bounds.bottom,
         };
-    }
-    if (!panelMenu)
-    {
-        panel = {0, 0, 0, 0};
     }
     return panel;
 }
 
 bool PanelHideMenu(HWND window)
 {
-    if (!panelMenu)
+    if (!menu)
     {
-        panelMenu = true;
+        menu = true;
         SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         return true;
     }
     else
     {
-        if (wv_controller != nullptr)
-        {
-            wv_controller->MoveFocus(
-                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-        }
-        panelMenu = false;
+        menu = false;
         SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         return false;
     }
@@ -184,20 +231,31 @@ bool PanelHideMenu(HWND window)
 
 bool PanelSplit(HWND window)
 {
-    if (!isSplit)
+    if (!split)
     {
-        isSplit = true;
+        split = true;
         SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         return true;
     }
     else
     {
-        if (wv_controller != nullptr)
-        {
-            wv_controller->MoveFocus(
-                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-        }
-        isSplit = false;
+        split = false;
+        SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        return false;
+    }
+}
+
+bool PanelSwap(HWND window)
+{
+    if (!swapped)
+    {
+        swapped = true;
+        SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        return true;
+    }
+    else
+    {
+        swapped = false;
         SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         return false;
     }
@@ -208,7 +266,7 @@ bool WindowMaximize(HWND window)
     WINDOWPLACEMENT wp = {};
     wp.length = sizeof(WINDOWPLACEMENT);
     auto placement = GetWindowPlacement(window, &wp);
-    if (!isFullscreen)
+    if (!fullscreen)
     {
         if (wp.showCmd == SW_SHOWNORMAL)
         {
@@ -283,12 +341,12 @@ void SetWindowTitle(HWND window)
     if (title != nullptr)
     {
         auto documentTitle = title.get();
-        if (isTopmost)
+        if (ontop)
         {
             std::wstring changeTitle = std::wstring(documentTitle) + L" [On Top]";
             SetWindowTextW(window, changeTitle.c_str());
         }
-        if (!isTopmost)
+        if (!ontop)
         {
             std::wstring changeTitle = std::wstring(documentTitle);
             SetWindowTextW(window, changeTitle.c_str());

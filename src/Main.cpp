@@ -4,11 +4,6 @@
 #include "Theme.hpp"
 #include "WebView.hpp"
 
-// void TestingMain(HWND window)
-// {
-//
-// }
-
 int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
 {
     auto window = InitializeWindow(instance, ncs);
@@ -19,7 +14,6 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
         InitializeWebView1(window, userData);
         InitializeWebView2(window, userData);
     }
-    // TestingMain(window);
     MSG msg = {};
     while (GetMessageW(&msg, nullptr, 0, 0))
     {

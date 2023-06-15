@@ -40,25 +40,24 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
         TestingResize(window);
         if (wv_controller != nullptr)
         {
-            if (!isSplit)
-                wv_controller->put_Bounds(GetFullPanelBounds(window));
-            if (isSplit)
-                wv_controller->put_Bounds(GetLeftPanelBounds(window));
+            wv_controller->put_Bounds(GetWebView1Bounds(window));
         }
         if (wv_controller2 != nullptr)
         {
-            RECT hidden = {0, 0, 0, 0};
-            if (!isSplit)
-                wv_controller2->put_Bounds(GetHiddenPanelBounds(window));
-            if (isSplit)
-                wv_controller2->put_Bounds(GetRightPanelBounds(window));
+            wv_controller2->put_Bounds(GetWebView2Bounds(window));
         }
         if (wv_controller3 != nullptr)
         {
-            if (!panelMenu)
-                wv_controller3->put_Bounds(GetHiddenPanelBounds(window));
-            if (panelMenu)
-                wv_controller3->put_Bounds(GetBottomPanelBounds(window));
+            wv_controller3->put_Bounds(GetMenuBounds(window));
+        }
+        if (wv_controller != nullptr & wv_controller2 != nullptr)
+        {
+            if (!swapped)
+                wv_controller->MoveFocus(
+                    COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+            if (swapped)
+                wv_controller2->MoveFocus(
+                    COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
         }
     }
     break;
@@ -73,23 +72,27 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
     {
         if (wparam == VK_F1)
         {
-            isSplit = PanelSplit(window);
+            split = PanelSplit(window);
+        }
+        if (wparam == VK_F2)
+        {
+            swapped = PanelSwap(window);
         }
         if (wparam == VK_F4)
         {
-            panelMenu = PanelHideMenu(window);
+            menu = PanelHideMenu(window);
         }
         if (wparam == VK_F6)
         {
-            isMaximized = WindowMaximize(window);
+            maximized = WindowMaximize(window);
         }
         if (wparam == VK_F11)
         {
-            isFullscreen = WindowFullscreen(window);
+            fullscreen = WindowFullscreen(window);
         }
         if (wparam == VK_F9)
         {
-            isTopmost = WindowTop(window);
+            ontop = WindowTop(window);
             SetWindowTitle(window);
         }
         if (wparam == 0x57)
