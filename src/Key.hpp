@@ -1,4 +1,4 @@
-bool KeyTop(HWND window)
+bool WindowTop(HWND window)
 {
     FLASHWINFO fwi;
     fwi.cbSize = sizeof(FLASHWINFO);
@@ -28,24 +28,7 @@ bool KeyTop(HWND window)
     return false;
 }
 
-bool KeySplit(HWND window)
-{
-    if (!isSplit)
-    {
-        isSplit = true;
-        SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-        return true;
-    }
-    else
-    {
-        isSplit = false;
-        SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-        return false;
-    }
-    return false;
-}
-
-bool KeyMaximize(HWND window)
+bool WindowMaximize(HWND window)
 {
     WINDOWPLACEMENT wp = {};
     wp.length = sizeof(WINDOWPLACEMENT);
@@ -66,7 +49,7 @@ bool KeyMaximize(HWND window)
     return false;
 }
 
-bool KeyFullscreen(HWND window)
+bool WindowFullscreen(HWND window)
 {
     auto style = GetWindowLongPtrW(window, GWL_STYLE);
     static RECT position;
@@ -96,8 +79,25 @@ bool KeyFullscreen(HWND window)
     return false;
 }
 
-bool KeyClose(HWND window)
+bool WindowClose(HWND window)
 {
     SendMessageW(window, WM_CLOSE, 0, 0);
     return true;
+}
+
+bool PanelSplit(HWND window)
+{
+    if (!isSplit)
+    {
+        isSplit = true;
+        SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        return true;
+    }
+    else
+    {
+        isSplit = false;
+        SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        return false;
+    }
+    return false;
 }

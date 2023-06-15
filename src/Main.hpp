@@ -101,8 +101,8 @@ enum PreferredAppMode
 };
 
 // KEYBOARD SHORTCUTS
-bool KeyMaximize(HWND);
-bool KeyTop(HWND);
-bool KeyFullscreen(HWND);
-bool KeySplit(HWND);
-bool KeyClose(HWND);
+bool WindowTop(HWND);
+bool WindowMaximize(HWND);
+bool WindowFullscreen(HWND);
+bool WindowClose(HWND);
+bool PanelSplit(HWND);

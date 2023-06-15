@@ -81,26 +81,26 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
     {
         if (wparam == VK_F2)
         {
-            isMaximized = KeyMaximize(window);
+            isMaximized = WindowMaximize(window);
         }
         if (wparam == VK_F4)
         {
-            isTopmost = KeyTop(window);
+            isTopmost = WindowTop(window);
         }
         if (wparam == VK_F11)
         {
-            isFullscreen = KeyFullscreen(window);
+            isFullscreen = WindowFullscreen(window);
         }
         if (wparam == VK_F1)
         {
-            isSplit = KeySplit(window);
+            isSplit = PanelSplit(window);
         }
         if (wparam == 0x57)
         {
             auto state = GetKeyState(VK_CONTROL);
             if (state & 0x8000)
             {
-                KeyClose(window);
+                WindowClose(window);
             }
         }
     }

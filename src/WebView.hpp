@@ -177,27 +177,27 @@ void InitializeWebView1(HWND window, std::filesystem::path userData)
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"F2").c_str())
                                         {
-                                            isMaximized = KeyMaximize(window);
+                                            isMaximized = WindowMaximize(window);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"F4").c_str())
                                         {
-                                            isTopmost = KeyTop(window);
+                                            isTopmost = WindowTop(window);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"F11").c_str())
                                         {
-                                            isFullscreen = KeyFullscreen(window);
+                                            isFullscreen = WindowFullscreen(window);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"F1").c_str())
                                         {
-                                            isSplit = KeySplit(window);
+                                            isSplit = PanelSplit(window);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"close").c_str())
                                         {
-                                            KeyClose(window);
+                                            WindowClose(window);
                                         }
                                         webview->PostWebMessageAsString(message.get());
                                         return S_OK;
@@ -260,27 +260,27 @@ void InitializeWebView2(HWND window, std::filesystem::path userData)
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"F2").c_str())
                                         {
-                                            isMaximized = KeyMaximize(window);
+                                            isMaximized = WindowMaximize(window);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"F4").c_str())
                                         {
-                                            isTopmost = KeyTop(window);
+                                            isTopmost = WindowTop(window);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"F11").c_str())
                                         {
-                                            isFullscreen = KeyFullscreen(window);
+                                            isFullscreen = WindowFullscreen(window);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"F1").c_str())
                                         {
-                                            isSplit = KeySplit(window);
+                                            isSplit = PanelSplit(window);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"close").c_str())
                                         {
-                                            KeyClose(window);
+                                            WindowClose(window);
                                         }
                                         webview->PostWebMessageAsString(message.get());
                                         return S_OK;
@@ -329,7 +329,8 @@ void InitializeWebView3(HWND window, std::filesystem::path userData)
                             wv3->Navigate(url3.c_str());
                             EventRegistrationToken token;
                             wv3->ExecuteScript(wvScriptBottom.c_str(), nullptr);
-                            wv3->AddScriptToExecuteOnDocumentCreated(wvScriptBottom.c_str(), nullptr);
+                            wv3->AddScriptToExecuteOnDocumentCreated(wvScriptBottom.c_str(),
+                                                                     nullptr);
                             wv3->add_WebMessageReceived(
                                 Microsoft::WRL::Callback<
                                     ICoreWebView2WebMessageReceivedEventHandler>(
@@ -342,27 +343,27 @@ void InitializeWebView3(HWND window, std::filesystem::path userData)
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"F2").c_str())
                                         {
-                                            isMaximized = KeyMaximize(window);
+                                            isMaximized = WindowMaximize(window);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"F4").c_str())
                                         {
-                                            isTopmost = KeyTop(window);
+                                            isTopmost = WindowTop(window);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"F11").c_str())
                                         {
-                                            isFullscreen = KeyFullscreen(window);
+                                            isFullscreen = WindowFullscreen(window);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"F1").c_str())
                                         {
-                                            isSplit = KeySplit(window);
+                                            isSplit = PanelSplit(window);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"close").c_str())
                                         {
-                                            KeyClose(window);
+                                            WindowClose(window);
                                         }
                                         webview->PostWebMessageAsString(message.get());
                                         return S_OK;
