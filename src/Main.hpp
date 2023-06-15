@@ -57,6 +57,12 @@ std::wstring wvScript(
     L"(e) => {if (e.ctrlKey && e.key === 'w') {window.chrome.webview.postMessage('close')} "
     L"else "
     L"{window.chrome.webview.postMessage(e.key)}}}}");
+std::wstring wvScriptBottom(
+    L"document.onreadystatechange = () => {if (document.readyState === 'complete') {onkeydown = "
+    L"(e) => {if (e.ctrlKey && e.key === 'w') {window.chrome.webview.postMessage('close')} "
+    L"if (e.key === 'F3') {e.preventDefault();} "
+    L"else "
+    L"{console.log(e); window.chrome.webview.postMessage(e.key)}}}}");
 std::wstring url1 = L"https://www.typescriptlang.org/docs/handbook/intro.html";
 std::wstring url2 = L"https://www.typescriptlang.org/play";
 std::wstring url3 = L"https://localhost:8000";

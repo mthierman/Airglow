@@ -11,6 +11,13 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
 
     auto appData = GetAppDataPath();
 
+    auto dpi = GetDpiForWindow(window);
+
+    auto test = std::to_wstring(dpi);
+
+    OutputDebugStringW(L"\nDPI: ");
+    OutputDebugStringW(test.c_str());
+
     if (appData)
     {
         InitializeWebView3(window, userData);

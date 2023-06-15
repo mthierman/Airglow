@@ -316,20 +316,20 @@ void InitializeWebView3(HWND window, std::filesystem::path userData)
                             }
                             wv3 = wv_core3.try_query<ICoreWebView2_19>();
                             wv3->get_Settings(&wv_settings3);
-                            wv_settings3->put_AreDefaultContextMenusEnabled(true);
+                            wv_settings3->put_AreDefaultContextMenusEnabled(false);
                             wv_settings3->put_AreDefaultScriptDialogsEnabled(true);
                             wv_settings3->put_AreDevToolsEnabled(true);
                             wv_settings3->put_AreHostObjectsAllowed(true);
                             wv_settings3->put_IsBuiltInErrorPageEnabled(true);
                             wv_settings3->put_IsScriptEnabled(true);
-                            wv_settings3->put_IsStatusBarEnabled(true);
+                            wv_settings3->put_IsStatusBarEnabled(false);
                             wv_settings3->put_IsWebMessageEnabled(true);
-                            wv_settings3->put_IsZoomControlEnabled(true);
+                            wv_settings3->put_IsZoomControlEnabled(false);
                             wv_controller3->put_Bounds(GetBottomPanelBounds(window));
                             wv3->Navigate(url3.c_str());
                             EventRegistrationToken token;
-                            wv3->ExecuteScript(wvScript.c_str(), nullptr);
-                            wv3->AddScriptToExecuteOnDocumentCreated(wvScript.c_str(), nullptr);
+                            wv3->ExecuteScript(wvScriptBottom.c_str(), nullptr);
+                            wv3->AddScriptToExecuteOnDocumentCreated(wvScriptBottom.c_str(), nullptr);
                             wv3->add_WebMessageReceived(
                                 Microsoft::WRL::Callback<
                                     ICoreWebView2WebMessageReceivedEventHandler>(
