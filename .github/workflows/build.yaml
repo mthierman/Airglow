@@ -35,13 +35,13 @@ jobs:
           $exe = Get-Item "build/Airglow.exe"
 
           if ("${{ github.ref_name }}" -eq "main") {
-            $title = "Gooey $version"
+            $title = "Airglow $version"
             gh release delete $version -y
             gh release create $version $exe --notes-file $changes -t $title
           }
 
           if ("${{ github.ref_name }}" -eq "dev") {
-            $title = "Gooey Nightly"
+            $title = "Airglow Nightly"
             gh release delete nightly -y
             gh release create nightly $exe --notes-file $changes -t $title --prerelease
           }
