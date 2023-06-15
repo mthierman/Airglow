@@ -1,9 +1,18 @@
 #define PROGRAM_ICON 1
 
+// MAIN
+int __stdcall wWinMain(HINSTANCE, HINSTANCE, PWSTR, int);
+__int64 __stdcall WndProc(HWND, UINT, WPARAM, LPARAM);
+
 // WINDOW
 unsigned short MakeWindowClass(HINSTANCE);
 HWND MakeWindow(HINSTANCE);
 HWND InitializeWindow(HINSTANCE, int);
+bool WindowTop(HWND);
+bool WindowMaximize(HWND);
+bool WindowFullscreen(HWND);
+bool WindowClose(HWND);
+bool PanelSplit(HWND);
 std::wstring programIcon(L"PROGRAM_ICON");
 std::wstring className(L"window");
 std::wstring windowName(L"Airglow");
@@ -13,12 +22,11 @@ bool isFullscreen;
 bool isMaximized;
 bool isSplit;
 
-// MAIN & WNDPROC
-int __stdcall wWinMain(HINSTANCE, HINSTANCE, PWSTR, int);
-__int64 __stdcall WndProc(HWND, UINT, WPARAM, LPARAM);
+// GDI+
+unsigned long long gdiplusToken;
+Gdiplus::GdiplusStartupInput gdiplusStartupInput;
 
 // ENV
-bool CommandLineUrl();
 std::wstring wvBackgroundColor(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR");
 std::wstring wvBackgroundColorValue(L"0");
 std::wstring wvAdditionalBrowserArgs(L"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS");
@@ -27,6 +35,8 @@ std::wstring wvAdditionalBrowserArgsValue(L"--enable-features="
                                           L"msOverlayScrollbarWinStyle,"
                                           L"msOverlayScrollbarWinStyleAnimation,"
                                           L"msWebView2BrowserHitTransparent");
+
+// DEBUG
 // std::wstring wvAdditionalBrowserArgsValue(L"--enable-features="
 //                                           L"OverlayScrollbar,"
 //                                           L"msOverlayScrollbarWinStyle,"
@@ -36,11 +46,23 @@ std::wstring wvAdditionalBrowserArgsValue(L"--enable-features="
 //                                           L" --show-screenspace-rects"
 //                                           L" --ui-show-fps-counter");
 
-// GDI+
-unsigned long long gdiplusToken;
-Gdiplus::GdiplusStartupInput gdiplusStartupInput;
-
 // WEBVIEW
+static wil::com_ptr<ICoreWebView2Controller> wv_controller;
+static wil::com_ptr<ICoreWebView2> wv_core;
+static wil::com_ptr<ICoreWebView2_19> wv;
+static wil::com_ptr<ICoreWebView2Settings> wv_settings;
+
+static wil::com_ptr<ICoreWebView2Controller> wv_controller2;
+static wil::com_ptr<ICoreWebView2> wv_core2;
+static wil::com_ptr<ICoreWebView2_19> wv2;
+static wil::com_ptr<ICoreWebView2Settings> wv_settings2;
+
+static wil::com_ptr<ICoreWebView2Controller> wv_controller3;
+static wil::com_ptr<ICoreWebView2> wv_core3;
+static wil::com_ptr<ICoreWebView2_19> wv3;
+static wil::com_ptr<ICoreWebView2Settings> wv_settings3;
+
+bool CommandLineUrl();
 bool GetAppDataPath();
 RECT GetWindowBounds(HWND window);
 RECT GetFullPanelBounds(HWND window);
@@ -69,23 +91,7 @@ std::wstring url3 = L"https://localhost:8000";
 // std::wstring url3 = L"about:blank";
 wil::unique_cotaskmem_string title;
 
-// WEBVIEW
-static wil::com_ptr<ICoreWebView2Controller> wv_controller;
-static wil::com_ptr<ICoreWebView2> wv_core;
-static wil::com_ptr<ICoreWebView2_19> wv;
-static wil::com_ptr<ICoreWebView2Settings> wv_settings;
-
-static wil::com_ptr<ICoreWebView2Controller> wv_controller2;
-static wil::com_ptr<ICoreWebView2> wv_core2;
-static wil::com_ptr<ICoreWebView2_19> wv2;
-static wil::com_ptr<ICoreWebView2Settings> wv_settings2;
-
-static wil::com_ptr<ICoreWebView2Controller> wv_controller3;
-static wil::com_ptr<ICoreWebView2> wv_core3;
-static wil::com_ptr<ICoreWebView2_19> wv3;
-static wil::com_ptr<ICoreWebView2Settings> wv_settings3;
-
-// THEMING
+// THEME
 bool CheckSystemDarkMode();
 bool SetDarkTitle();
 bool SetDarkMode(HWND);
@@ -99,10 +105,3 @@ enum PreferredAppMode
     ForceLight,
     Max
 };
-
-// KEYBOARD SHORTCUTS
-bool WindowTop(HWND);
-bool WindowMaximize(HWND);
-bool WindowFullscreen(HWND);
-bool WindowClose(HWND);
-bool PanelSplit(HWND);
