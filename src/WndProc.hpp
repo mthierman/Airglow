@@ -34,6 +34,12 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
         SetDarkMode(window);
     }
     break;
+    case WM_ACTIVATE:
+    {
+        if (wparam == WA_ACTIVE)
+            SendMessageW(window, WM_SETFOCUS, 0, 0);
+    }
+    break;
     case WM_SIZE:
     case WM_WINDOWPOSCHANGING:
     {
@@ -55,7 +61,10 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
         }
         if (wv_controller3 != nullptr)
         {
-            wv_controller3->put_Bounds(GetBottomPanelBounds(window));
+            if (!panelMenu)
+                wv_controller3->put_Bounds(GetHiddenPanelBounds(window));
+            if (panelMenu)
+                wv_controller3->put_Bounds(GetBottomPanelBounds(window));
         }
     }
     break;
@@ -87,6 +96,10 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
     break;
     case WM_KEYDOWN:
     {
+        if (wparam == VK_F1)
+        {
+            isSplit = PanelSplit(window);
+        }
         if (wparam == VK_F2)
         {
             isMaximized = WindowMaximize(window);
@@ -95,13 +108,13 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
         {
             isTopmost = WindowTop(window);
         }
+        if (wparam == VK_F9)
+        {
+            panelMenu = PanelHideMenu(window);
+        }
         if (wparam == VK_F11)
         {
             isFullscreen = WindowFullscreen(window);
-        }
-        if (wparam == VK_F1)
-        {
-            isSplit = PanelSplit(window);
         }
         if (wparam == 0x57)
         {

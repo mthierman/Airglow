@@ -15,7 +15,6 @@ unsigned short MakeWindowClass(HINSTANCE instance)
                                    LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
     wcex.hIconSm = (HICON)LoadImageW(instance, programIcon.c_str(), IMAGE_ICON, 0, 0,
                                      LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
-
     return RegisterClassExW(&wcex);
 }
 
@@ -48,6 +47,118 @@ HWND InitializeWindow(HINSTANCE instance, int ncs)
     SetMica(window);
     SetWindow(window, ncs);
     return window;
+}
+
+RECT GetWindowBounds(HWND window)
+{
+    RECT bounds = {0, 0, 0, 0};
+    GetClientRect(window, &bounds);
+    return bounds;
+}
+
+RECT GetHiddenPanelBounds(HWND window)
+{
+    RECT bounds = {0, 0, 0, 0};
+    return bounds;
+}
+
+RECT GetFullPanelBounds(HWND window)
+{
+    RECT bounds = {0, 0, 0, 0};
+    RECT panel;
+    GetClientRect(window, &bounds);
+    if (panelMenu)
+    {
+        panel = {
+            bounds.left,
+            bounds.top,
+            bounds.right,
+            bounds.bottom - 50,
+        };
+    }
+    if (!panelMenu)
+    {
+        panel = {
+            bounds.left,
+            bounds.top,
+            bounds.right,
+            bounds.bottom,
+        };
+    }
+    return panel;
+}
+
+RECT GetLeftPanelBounds(HWND window)
+{
+    RECT bounds = {0, 0, 0, 0};
+    RECT panel;
+    GetClientRect(window, &bounds);
+    if (panelMenu)
+    {
+        panel = {
+            bounds.left,
+            bounds.top,
+            bounds.right / 2,
+            bounds.bottom - 50,
+        };
+    }
+    if (!panelMenu)
+    {
+        panel = {
+            bounds.left,
+            bounds.top,
+            bounds.right / 2,
+            bounds.bottom,
+        };
+    }
+    return panel;
+}
+
+RECT GetRightPanelBounds(HWND window)
+{
+    RECT bounds = {0, 0, 0, 0};
+    RECT panel;
+    GetClientRect(window, &bounds);
+    if (panelMenu)
+    {
+        panel = {
+            bounds.right / 2,
+            bounds.top,
+            bounds.right,
+            bounds.bottom - 50,
+        };
+    }
+    if (!panelMenu)
+    {
+        panel = {
+            bounds.right / 2,
+            bounds.top,
+            bounds.right,
+            bounds.bottom,
+        };
+    }
+    return panel;
+}
+
+RECT GetBottomPanelBounds(HWND window)
+{
+    RECT bounds = {0, 0, 0, 0};
+    RECT panel;
+    GetClientRect(window, &bounds);
+    if (panelMenu)
+    {
+        panel = {
+            bounds.left,
+            bounds.bottom - 75,
+            bounds.right,
+            bounds.bottom,
+        };
+    }
+    if (!panelMenu)
+    {
+        panel = {0, 0, 0, 0};
+    }
+    return panel;
 }
 
 bool WindowTop(HWND window)
@@ -145,5 +256,20 @@ bool PanelSplit(HWND window)
         SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         return false;
     }
-    return false;
+}
+
+bool PanelHideMenu(HWND window)
+{
+    if (!panelMenu)
+    {
+        panelMenu = true;
+        SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        return true;
+    }
+    else
+    {
+        panelMenu = false;
+        SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        return false;
+    }
 }

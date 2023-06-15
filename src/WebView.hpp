@@ -37,86 +37,6 @@ bool GetAppDataPath()
     return true;
 }
 
-RECT GetWindowBounds(HWND window)
-{
-    RECT bounds = {0, 0, 0, 0};
-    if (GetClientRect(window, &bounds))
-    {
-        return bounds;
-    }
-    return bounds;
-}
-
-RECT GetFullPanelBounds(HWND window)
-{
-    RECT bounds = {0, 0, 0, 0};
-    if (GetClientRect(window, &bounds))
-    {
-        RECT fullPanel = {
-            bounds.left,
-            bounds.top,
-            bounds.right,
-            bounds.bottom - 50,
-        };
-        return fullPanel;
-    }
-    return bounds;
-}
-
-RECT GetHiddenPanelBounds(HWND window)
-{
-    RECT bounds = {0, 0, 0, 0};
-    return bounds;
-}
-
-RECT GetLeftPanelBounds(HWND window)
-{
-    RECT bounds = {0, 0, 0, 0};
-    if (GetClientRect(window, &bounds))
-    {
-        RECT leftPanel = {
-            bounds.left,
-            bounds.top,
-            bounds.right / 2,
-            bounds.bottom - 50,
-        };
-        return leftPanel;
-    }
-    return bounds;
-}
-
-RECT GetRightPanelBounds(HWND window)
-{
-    RECT bounds = {0, 0, 0, 0};
-    if (GetClientRect(window, &bounds))
-    {
-        RECT rightPanel = {
-            bounds.right / 2,
-            bounds.top,
-            bounds.right,
-            bounds.bottom - 50,
-        };
-        return rightPanel;
-    }
-    return bounds;
-}
-
-RECT GetBottomPanelBounds(HWND window)
-{
-    RECT bounds = {0, 0, 0, 0};
-    if (GetClientRect(window, &bounds))
-    {
-        RECT rightPanel = {
-            bounds.left,
-            bounds.bottom - 75,
-            bounds.right,
-            bounds.bottom,
-        };
-        return rightPanel;
-    }
-    return bounds;
-}
-
 // void WebViewMessages(HWND window, wil::unique_cotaskmem_string message)
 // {
 //     if ((std::wstring)message.get() == std::wstring(L"F2").c_str())
@@ -254,6 +174,11 @@ void InitializeWebView1(HWND window, std::filesystem::path userData)
                                             isSplit = PanelSplit(window);
                                         }
                                         if ((std::wstring)message.get() ==
+                                            std::wstring(L"F9").c_str())
+                                        {
+                                            panelMenu = PanelHideMenu(window);
+                                        }
+                                        if ((std::wstring)message.get() ==
                                             std::wstring(L"close").c_str())
                                         {
                                             SendMessageW(window, WM_CLOSE, 0, 0);
@@ -301,6 +226,8 @@ void InitializeWebView2(HWND window, std::filesystem::path userData)
                             wv_settings2->put_IsStatusBarEnabled(true);
                             wv_settings2->put_IsWebMessageEnabled(true);
                             wv_settings2->put_IsZoomControlEnabled(true);
+                            if (!isSplit)
+                                wv_controller2->put_Bounds(GetHiddenPanelBounds(window));
                             if (isSplit)
                                 wv_controller2->put_Bounds(GetRightPanelBounds(window));
                             wv2->Navigate(url2.c_str());
@@ -384,7 +311,10 @@ void InitializeWebView3(HWND window, std::filesystem::path userData)
                             wv_settings3->put_IsStatusBarEnabled(false);
                             wv_settings3->put_IsWebMessageEnabled(true);
                             wv_settings3->put_IsZoomControlEnabled(false);
-                            wv_controller3->put_Bounds(GetBottomPanelBounds(window));
+                            if (!panelMenu)
+                                wv_controller3->put_Bounds(GetBottomPanelBounds(window));
+                            if (panelMenu)
+                                wv_controller3->put_Bounds(GetBottomPanelBounds(window));
                             wv3->Navigate(url3.c_str());
                             EventRegistrationToken token;
                             wv3->ExecuteScript(wvScriptBottom.c_str(), nullptr);
