@@ -100,7 +100,7 @@ void InitializeWebView1(HWND window, std::filesystem::path userData)
                             wv_settings->put_IsStatusBarEnabled(true);
                             wv_settings->put_IsWebMessageEnabled(true);
                             wv_settings->put_IsZoomControlEnabled(true);
-                            SendMessageW(window, WM_SIZE, 0, 0);
+                            wv_controller->put_Bounds(GetWebView1Bounds(window));
                             wv->Navigate(url1.c_str());
                             wv->ExecuteScript(wvScript.c_str(), nullptr);
                             wv->AddScriptToExecuteOnDocumentCreated(wvScript.c_str(), nullptr);
@@ -203,7 +203,7 @@ void InitializeWebView2(HWND window, std::filesystem::path userData)
                             wv_settings2->put_IsStatusBarEnabled(true);
                             wv_settings2->put_IsWebMessageEnabled(true);
                             wv_settings2->put_IsZoomControlEnabled(true);
-                            SendMessageW(window, WM_SIZE, 0, 0);
+                            wv_controller2->put_Bounds(GetWebView2Bounds(window));
                             wv2->Navigate(url2.c_str());
                             EventRegistrationToken msgToken;
                             wv2->ExecuteScript(wvScript.c_str(), nullptr);
@@ -262,7 +262,7 @@ void InitializeWebView3(HWND window, std::filesystem::path userData)
                             wv_settings3->put_IsStatusBarEnabled(false);
                             wv_settings3->put_IsWebMessageEnabled(true);
                             wv_settings3->put_IsZoomControlEnabled(false);
-                            SendMessageW(window, WM_SIZE, 0, 0);
+                            wv_controller3->put_Bounds(GetMenuBounds(window));
                             wv3->Navigate(url3.c_str());
                             EventRegistrationToken msgToken;
                             wv3->ExecuteScript(wvScriptBottom.c_str(), nullptr);

@@ -22,12 +22,12 @@ std::wstring programIcon(L"PROGRAM_ICON");
 std::wstring className(L"window");
 std::wstring windowName(L"Airglow");
 std::wstring menuName(L"menu");
-bool ontop;
-bool maximized;
-bool fullscreen;
-bool split;
-bool swapped;
-bool menu;
+bool ontop = false;
+bool maximized = false;
+bool fullscreen = false;
+bool split = false;
+bool swapped = false;
+bool menu = true;
 
 // GDI+
 unsigned long long gdiplusToken;
