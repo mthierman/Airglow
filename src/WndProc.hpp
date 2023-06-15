@@ -47,7 +47,7 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
 
         if (wv_controller3 != nullptr)
         {
-            wv_controller3->put_Bounds(GetWindowBounds(window));
+            wv_controller3->put_Bounds(GetBottomPanelBounds(window));
         }
     }
     break;

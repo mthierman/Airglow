@@ -47,6 +47,7 @@ RECT GetFullPanelBounds(HWND window);
 RECT GetHiddenPanelBounds(HWND window);
 RECT GetLeftPanelBounds(HWND window);
 RECT GetRightPanelBounds(HWND window);
+RECT GetBottomPanelBounds(HWND window);
 std::filesystem::path userData;
 void InitializeWebView1(HWND window, std::filesystem::path userData);
 void InitializeWebView2(HWND window, std::filesystem::path userData);
@@ -59,6 +60,7 @@ std::wstring wvScript(
 std::wstring url1 = L"https://www.typescriptlang.org/docs/handbook/intro.html";
 std::wstring url2 = L"https://www.typescriptlang.org/play";
 std::wstring url3 = L"https://localhost:8000";
+// std::wstring url3 = L"about:blank";
 wil::unique_cotaskmem_string title;
 
 // WEBVIEW

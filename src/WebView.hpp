@@ -69,6 +69,19 @@ RECT GetRightPanelBounds(HWND window)
     return rightPanel;
 }
 
+RECT GetBottomPanelBounds(HWND window)
+{
+    RECT bounds;
+    GetClientRect(window, &bounds);
+    RECT rightPanel = {
+        bounds.left,
+        bounds.bottom - 75,
+        bounds.right,
+        bounds.bottom,
+    };
+    return rightPanel;
+}
+
 void InitializeWebView1(HWND window, std::filesystem::path userData)
 {
     using namespace Microsoft::WRL;
@@ -312,7 +325,7 @@ void InitializeWebView3(HWND window, std::filesystem::path userData)
                             wv_settings3->put_IsStatusBarEnabled(true);
                             wv_settings3->put_IsWebMessageEnabled(true);
                             wv_settings3->put_IsZoomControlEnabled(true);
-                            wv_controller3->put_Bounds(GetWindowBounds(window));
+                            wv_controller3->put_Bounds(GetBottomPanelBounds(window));
                             wv3->Navigate(url3.c_str());
                             EventRegistrationToken token;
                             wv3->ExecuteScript(wvScript.c_str(), nullptr);
