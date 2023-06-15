@@ -106,8 +106,10 @@ void InitializeWebView1(HWND window, std::filesystem::path userData)
                                     [window](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                     {
                                         sender->get_DocumentTitle(&title);
-                                        auto documentTitle = title.get();
-                                        SetWindowTextW(window, documentTitle);
+                                        // auto documentTitle = title.get();
+                                        // if (isTopmost)
+                                        //     SetWindowTextW(window, documentTitle);
+                                        SetWindowTitle(window);
                                         return S_OK;
                                     })
                                     .Get(),
@@ -177,6 +179,7 @@ void InitializeWebView1(HWND window, std::filesystem::path userData)
                                             std::wstring(L"F9").c_str())
                                         {
                                             isTopmost = WindowTop(window);
+                                            SetWindowTitle(window);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"close").c_str())
@@ -267,6 +270,7 @@ void InitializeWebView2(HWND window, std::filesystem::path userData)
                                             std::wstring(L"F9").c_str())
                                         {
                                             isTopmost = WindowTop(window);
+                                            SetWindowTitle(window);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"close").c_str())
@@ -358,6 +362,7 @@ void InitializeWebView3(HWND window, std::filesystem::path userData)
                                             std::wstring(L"F9").c_str())
                                         {
                                             isTopmost = WindowTop(window);
+                                            SetWindowTitle(window);
                                         }
                                         if ((std::wstring)message.get() ==
                                             std::wstring(L"close").c_str())

@@ -19,6 +19,7 @@ bool PanelSplit(HWND);
 bool WindowMaximize(HWND);
 bool WindowFullscreen(HWND);
 bool WindowTop(HWND);
+void SetWindowTitle(HWND window);
 std::wstring programIcon(L"PROGRAM_ICON");
 std::wstring className(L"window");
 std::wstring windowName(L"Airglow");

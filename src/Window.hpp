@@ -257,19 +257,33 @@ bool WindowTop(HWND window)
     {
         SetWindowPos(window, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         FlashWindowEx(&fwi);
-        // auto documentTitle = title.get();
-        // std::wstring changeTitle = std::wstring(documentTitle);
-        // SetWindowTextW(window, changeTitle.c_str());
         return false;
     }
     else
     {
         SetWindowPos(window, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         FlashWindowEx(&fwi);
-        // auto documentTitle = title.get();
-        // std::wstring changeTitle = std::wstring(documentTitle) + L" [On Top]";
-        // SetWindowTextW(window, changeTitle.c_str());
         return true;
     }
     return false;
+}
+
+void SetWindowTitle(HWND window)
+{
+    if (title != nullptr)
+    {
+        auto documentTitle = title.get();
+        if (isTopmost)
+        {
+            std::wstring changeTitle = std::wstring(documentTitle) + L" [On Top]";
+            SetWindowTextW(window, changeTitle.c_str());
+        }
+        if (!isTopmost)
+        {
+            std::wstring changeTitle = std::wstring(documentTitle);
+            SetWindowTextW(window, changeTitle.c_str());
+        }
+    }
+    if (title == nullptr)
+        SetWindowTextW(window, L"Airglow");
 }

@@ -115,6 +115,7 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
         if (wparam == VK_F9)
         {
             isTopmost = WindowTop(window);
+            SetWindowTitle(window);
         }
         if (wparam == 0x57)
         {
