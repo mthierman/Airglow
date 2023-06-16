@@ -176,69 +176,6 @@ RECT GetMainPanelBounds(HWND window)
             bounds.bottom,
         };
     }
-    // if (menu)
-    // {
-    //     if (!split & !swapped)
-    //     {
-    //         panel = {
-    //             bounds.left,
-    //             bounds.top,
-    //             bounds.right,
-    //             bounds.bottom - 50,
-    //         };
-    //     }
-    //     if (!split & swapped)
-    //     {
-    //         panel = {0, 0, 0, 0};
-    //     }
-    //     if (split & !swapped)
-    //     {
-    //         panel = {
-    //             bounds.left,
-    //             bounds.top,
-    //             bounds.right / 2,
-    //             bounds.bottom - 50,
-    //         };
-    //     }
-    //     if (split & swapped)
-    //     {
-    //         panel = {
-    //             bounds.right / 2,
-    //             bounds.top,
-    //             bounds.right,
-    //             bounds.bottom - 50,
-    //         };
-    //     }
-    // }
-    // if (!menu)
-    // {
-    //     if (!split & !swapped)
-    //     {
-    //         panel = bounds;
-    //     }
-    //     if (!split & swapped)
-    //     {
-    //         panel = {0, 0, 0, 0};
-    //     }
-    //     if (split & !swapped)
-    //     {
-    //         panel = {
-    //             bounds.left,
-    //             bounds.top,
-    //             bounds.right / 2,
-    //             bounds.bottom,
-    //         };
-    //     }
-    //     if (split & swapped)
-    //     {
-    //         panel = {
-    //             bounds.right / 2,
-    //             bounds.top,
-    //             bounds.right,
-    //             bounds.bottom,
-    //         };
-    //     }
-    // }
     return panel;
 }
 
@@ -273,74 +210,6 @@ RECT GetSidePanelBounds(HWND window)
             bounds.bottom,
         };
     }
-    // if (menu)
-    // {
-    //     if (!split & !swapped)
-    //     {
-    //         panel = {0, 0, 0, 0};
-    //     }
-    //     if (!split & swapped)
-    //     {
-    //         panel = {
-    //             bounds.left,
-    //             bounds.top,
-    //             bounds.right,
-    //             bounds.bottom - 50,
-    //         };
-    //     }
-    //     if (split & !swapped)
-    //     {
-    //         panel = {
-    //             bounds.right / 2,
-    //             bounds.top,
-    //             bounds.right,
-    //             bounds.bottom - 50,
-    //         };
-    //     }
-    //     if (split & swapped)
-    //     {
-    //         panel = {
-    //             bounds.left,
-    //             bounds.top,
-    //             bounds.right / 2,
-    //             bounds.bottom - 50,
-    //         };
-    //     }
-    // }
-    // if (!menu)
-    // {
-    //     if (!split & !swapped)
-    //     {
-    //         panel = {0, 0, 0, 0};
-    //     }
-    //     if (!split & swapped)
-    //     {
-    //         panel = {
-    //             bounds.left,
-    //             bounds.top,
-    //             bounds.right,
-    //             bounds.bottom,
-    //         };
-    //     }
-    //     if (split & !swapped)
-    //     {
-    //         panel = {
-    //             bounds.right / 2,
-    //             bounds.top,
-    //             bounds.right,
-    //             bounds.bottom,
-    //         };
-    //     }
-    //     if (split & swapped)
-    //     {
-    //         panel = {
-    //             bounds.left,
-    //             bounds.top,
-    //             bounds.right / 2,
-    //             bounds.bottom,
-    //         };
-    //     }
-    // }
     return panel;
 }
 
@@ -415,6 +284,7 @@ bool WindowMaximize(HWND window)
         if (wp.showCmd == SW_SHOWNORMAL)
         {
             ShowWindow(window, SW_MAXIMIZE);
+            SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
             SetWindowTitle(window);
             SetWindowIcon(window);
             return true;
@@ -422,6 +292,7 @@ bool WindowMaximize(HWND window)
         if (wp.showCmd == SW_SHOWMAXIMIZED)
         {
             ShowWindow(window, SW_SHOWNORMAL);
+            SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
             SetWindowTitle(window);
             SetWindowIcon(window);
             return false;
