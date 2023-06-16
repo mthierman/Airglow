@@ -42,7 +42,7 @@ std::filesystem::path GetSettingsFilePath()
     {
         nlohmann::json defaultSettings = DefaultSettings();
         std::ofstream output(file);
-        output << defaultSettings;
+        output << defaultSettings.dump(4);
         output.close();
     }
     return file;
