@@ -8,6 +8,7 @@ __int64 __stdcall WndProc(HWND, UINT, WPARAM, LPARAM);
 unsigned short MakeWindowClass(HINSTANCE);
 HWND MakeWindow(HINSTANCE);
 HWND InitializeWindow(HINSTANCE, int);
+void SetWindowTitle(HWND window);
 RECT GetWebView1Bounds(HWND window);
 RECT GetWebView2Bounds(HWND window);
 RECT GetMenuBounds(HWND window);
@@ -26,7 +27,7 @@ bool maximized = false;
 bool fullscreen = false;
 bool split = false;
 bool swapped = false;
-bool menu = true;
+bool menu = false;
 
 // GDI+
 unsigned long long gdiplusToken;

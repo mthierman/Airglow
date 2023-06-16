@@ -49,6 +49,37 @@ HWND InitializeWindow(HINSTANCE instance, int ncs)
     return window;
 }
 
+void SetWindowTitle(HWND window)
+{
+    std::wstring titleTop = L" [On Top]";
+    if (!swapped)
+    {
+        wil::unique_cotaskmem_string wv_title;
+        wv->get_DocumentTitle(&wv_title);
+        auto title = wv_title.get();
+        if (!ontop)
+            SetWindowTextW(window, title);
+        if (ontop)
+        {
+            std::wstring add = title + titleTop;
+            SetWindowTextW(window, add.c_str());
+        }
+    }
+    else
+    {
+        wil::unique_cotaskmem_string wv_title;
+        wv2->get_DocumentTitle(&wv_title);
+        auto title = wv_title.get();
+        if (!ontop)
+            SetWindowTextW(window, title);
+        if (ontop)
+        {
+            std::wstring add = title + titleTop;
+            SetWindowTextW(window, add.c_str());
+        }
+    }
+}
+
 RECT GetWebView1Bounds(HWND window)
 {
     RECT bounds = {0, 0, 0, 0};
@@ -250,20 +281,15 @@ bool PanelSwap(HWND window)
     if (!swapped)
     {
         swapped = true;
-        wil::unique_cotaskmem_string wv_title;
-        wv2->get_DocumentTitle(&wv_title);
-        auto title = wv_title.get();
-        SetWindowTextW(window, title);
+        SetWindowTitle(window);
         SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         return true;
     }
+
     else
     {
         swapped = false;
-        wil::unique_cotaskmem_string wv_title;
-        wv->get_DocumentTitle(&wv_title);
-        auto title = wv_title.get();
-        SetWindowTextW(window, title);
+        SetWindowTitle(window);
         SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         return false;
     }
@@ -331,12 +357,16 @@ bool WindowTop(HWND window)
     auto topMost = GetWindowLongPtrW(window, GWL_EXSTYLE);
     if (topMost & WS_EX_TOPMOST)
     {
+        ontop = false;
+        SetWindowTitle(window);
         SetWindowPos(window, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         FlashWindowEx(&fwi);
         return false;
     }
     else
     {
+        ontop = true;
+        SetWindowTitle(window);
         SetWindowPos(window, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         FlashWindowEx(&fwi);
         return true;

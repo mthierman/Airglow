@@ -77,7 +77,6 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
         if (wparam == VK_F2)
         {
             swapped = PanelSwap(window);
-            // SetWindowTitle(window);
         }
         if (wparam == VK_F4)
         {
@@ -94,7 +93,6 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
         if (wparam == VK_F9)
         {
             ontop = WindowTop(window);
-            // SetWindowTitle(window);
         }
         if (wparam == 0x57)
         {

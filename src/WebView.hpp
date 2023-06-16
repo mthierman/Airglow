@@ -110,11 +110,7 @@ void InitializeWebView1(HWND window, std::filesystem::path userData)
                                 Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
                                     [window](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                     {
-                                        wil::unique_cotaskmem_string wv_title;
-                                        sender->get_DocumentTitle(&wv_title);
-                                        auto title = wv_title.get();
-                                        if (!swapped)
-                                            SetWindowTextW(window, title);
+                                        SetWindowTitle(window);
                                         return S_OK;
                                     })
                                     .Get(),
@@ -216,11 +212,7 @@ void InitializeWebView2(HWND window, std::filesystem::path userData)
                                 Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
                                     [window](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                     {
-                                        wil::unique_cotaskmem_string wv_title;
-                                        sender->get_DocumentTitle(&wv_title);
-                                        auto title = wv_title.get();
-                                        if (swapped)
-                                            SetWindowTextW(window, title);
+                                        SetWindowTitle(window);
                                         return S_OK;
                                     })
                                     .Get(),
