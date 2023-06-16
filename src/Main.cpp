@@ -1,7 +1,6 @@
 #include "Main.hpp"
 #include "WndProc.hpp"
 #include "Window.hpp"
-#include "Theme.hpp"
 #include "WebView.hpp"
 #include "Settings.hpp"
 

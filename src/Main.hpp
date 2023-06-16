@@ -19,6 +19,19 @@ bool PanelSwap(HWND window);
 bool WindowMaximize(HWND);
 bool WindowFullscreen(HWND);
 bool WindowTop(HWND);
+bool CheckSystemDarkMode();
+bool SetDarkTitle();
+bool SetDarkMode(HWND);
+bool SetMica(HWND);
+bool SetWindow(HWND, int);
+enum PreferredAppMode
+{
+    Default,
+    AllowDark,
+    ForceDark,
+    ForceLight,
+    Max
+};
 std::wstring programIcon(L"PROGRAM_ICON");
 std::wstring className(L"window");
 std::wstring windowName(L"Airglow");
@@ -48,20 +61,22 @@ Gdiplus::GdiplusStartupInput gdiplusStartupInput;
 std::wstring wvBackgroundColor(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR");
 std::wstring wvBackgroundColorValue(L"0");
 std::wstring wvAdditionalBrowserArgs(L"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS");
+std::wstring wvAdditionalBrowserArgsValue(L"--enable-features="
+                                          L"msWebView2BrowserHitTransparent");
+
+// std::wstring wvAdditionalBrowserArgsValue(L"");
+
 // std::wstring wvAdditionalBrowserArgsValue(L"--enable-features="
 //                                           L"OverlayScrollbar,"
 //                                           L"msOverlayScrollbarWinStyle,"
 //                                           L"msOverlayScrollbarWinStyleAnimation,"
 //                                           L"msWebView2BrowserHitTransparent");
-std::wstring wvAdditionalBrowserArgsValue(L"--enable-features="
-                                          L"msWebView2BrowserHitTransparent");
-// std::wstring wvAdditionalBrowserArgsValue(L"");
+
 // std::wstring wvAdditionalBrowserArgsValue(L"--enable-features="
 //                                           L"OverlayScrollbar,"
 //                                           L"msOverlayScrollbarWinStyle:scrollbar_mode/full_mode,"
 //                                           L"msOverlayScrollbarWinStyleAnimation");
 
-// DEBUG
 // std::wstring wvAdditionalBrowserArgsValue(L"--enable-features="
 //                                           L"OverlayScrollbar,"
 //                                           L"msOverlayScrollbarWinStyle,"
@@ -107,18 +122,3 @@ std::wstring url1 = L"https://www.google.com/";
 std::wstring url2 = L"https://www.bing.com/";
 std::wstring url3 = L"about:blank";
 // std::wstring url3 = L"https://localhost:8000";
-
-// THEME
-bool CheckSystemDarkMode();
-bool SetDarkTitle();
-bool SetDarkMode(HWND);
-bool SetMica(HWND);
-bool SetWindow(HWND, int);
-enum PreferredAppMode
-{
-    Default,
-    AllowDark,
-    ForceDark,
-    ForceLight,
-    Max
-};
