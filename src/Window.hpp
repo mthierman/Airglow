@@ -250,12 +250,20 @@ bool PanelSwap(HWND window)
     if (!swapped)
     {
         swapped = true;
+        wil::unique_cotaskmem_string wv_title;
+        wv2->get_DocumentTitle(&wv_title);
+        auto title = wv_title.get();
+        SetWindowTextW(window, title);
         SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         return true;
     }
     else
     {
         swapped = false;
+        wil::unique_cotaskmem_string wv_title;
+        wv->get_DocumentTitle(&wv_title);
+        auto title = wv_title.get();
+        SetWindowTextW(window, title);
         SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         return false;
     }
@@ -334,24 +342,4 @@ bool WindowTop(HWND window)
         return true;
     }
     return false;
-}
-
-void SetWindowTitle(HWND window)
-{
-    if (title != nullptr)
-    {
-        auto documentTitle = title.get();
-        if (ontop)
-        {
-            std::wstring changeTitle = std::wstring(documentTitle) + L" [On Top]";
-            SetWindowTextW(window, changeTitle.c_str());
-        }
-        if (!ontop)
-        {
-            std::wstring changeTitle = std::wstring(documentTitle);
-            SetWindowTextW(window, changeTitle.c_str());
-        }
-    }
-    if (title == nullptr)
-        SetWindowTextW(window, L"Airglow");
 }

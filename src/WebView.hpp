@@ -62,7 +62,6 @@ void WebViewMessages(HWND window, PWSTR message)
     if ((std::wstring)message == std::wstring(L"F9").c_str())
     {
         ontop = WindowTop(window);
-        SetWindowTitle(window);
     }
     if ((std::wstring)message == std::wstring(L"close").c_str())
     {
@@ -111,8 +110,11 @@ void InitializeWebView1(HWND window, std::filesystem::path userData)
                                 Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
                                     [window](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                     {
-                                        sender->get_DocumentTitle(&title);
-                                        SetWindowTitle(window);
+                                        wil::unique_cotaskmem_string wv_title;
+                                        sender->get_DocumentTitle(&wv_title);
+                                        auto title = wv_title.get();
+                                        if (!swapped)
+                                            SetWindowTextW(window, title);
                                         return S_OK;
                                     })
                                     .Get(),
@@ -205,9 +207,57 @@ void InitializeWebView2(HWND window, std::filesystem::path userData)
                             wv_settings2->put_IsZoomControlEnabled(true);
                             wv_controller2->put_Bounds(GetWebView2Bounds(window));
                             wv2->Navigate(url2.c_str());
-                            EventRegistrationToken msgToken;
                             wv2->ExecuteScript(wvScript.c_str(), nullptr);
                             wv2->AddScriptToExecuteOnDocumentCreated(wvScript.c_str(), nullptr);
+                            EventRegistrationToken msgToken;
+                            EventRegistrationToken faviconChangedToken;
+                            EventRegistrationToken documentTitleChangedToken;
+                            wv->add_DocumentTitleChanged(
+                                Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
+                                    [window](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                    {
+                                        wil::unique_cotaskmem_string wv_title;
+                                        sender->get_DocumentTitle(&wv_title);
+                                        auto title = wv_title.get();
+                                        if (swapped)
+                                            SetWindowTextW(window, title);
+                                        return S_OK;
+                                    })
+                                    .Get(),
+                                &documentTitleChangedToken);
+                            wv->add_FaviconChanged(
+                                Callback<ICoreWebView2FaviconChangedEventHandler>(
+                                    [window](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                    {
+                                        LPWSTR faviconUri;
+                                        wv->get_FaviconUri(&faviconUri);
+                                        OutputDebugStringW(faviconUri);
+                                        wv->GetFavicon(
+                                            COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
+                                            Callback<ICoreWebView2GetFaviconCompletedHandler>(
+                                                [window](HRESULT result,
+                                                         IStream* iconStream) -> HRESULT
+                                                {
+                                                    if (iconStream != nullptr)
+                                                    {
+                                                        Gdiplus::Bitmap iconBitmap(iconStream);
+                                                        wil::unique_hicon icon;
+                                                        if (iconBitmap.GetHICON(&icon) ==
+                                                            Gdiplus::Status::Ok)
+                                                        {
+                                                            auto favicon = std::move(icon);
+                                                            // SendMessageW(window, WM_SETICON,
+                                                            //              ICON_BIG,
+                                                            //              (LPARAM)favicon.get());
+                                                        }
+                                                    }
+                                                    return S_OK;
+                                                })
+                                                .Get());
+                                        return S_OK;
+                                    })
+                                    .Get(),
+                                &faviconChangedToken);
                             wv2->add_WebMessageReceived(
                                 Microsoft::WRL::Callback<
                                     ICoreWebView2WebMessageReceivedEventHandler>(

@@ -17,7 +17,6 @@ bool PanelSwap(HWND window);
 bool WindowMaximize(HWND);
 bool WindowFullscreen(HWND);
 bool WindowTop(HWND);
-void SetWindowTitle(HWND window);
 std::wstring programIcon(L"PROGRAM_ICON");
 std::wstring className(L"window");
 std::wstring windowName(L"Airglow");
@@ -87,11 +86,12 @@ std::wstring wvScriptBottom(
     L"if (e.key === 'F3') {e.preventDefault();} "
     L"else "
     L"{console.log(e); window.chrome.webview.postMessage(e.key)}}}}");
-std::wstring url1 = L"https://www.typescriptlang.org/docs/handbook/intro.html";
-std::wstring url2 = L"https://www.typescriptlang.org/play";
+// std::wstring url1 = L"https://www.typescriptlang.org/docs/handbook/intro.html";
+// std::wstring url2 = L"https://www.typescriptlang.org/play";
+std::wstring url1 = L"https://www.google.com/";
+std::wstring url2 = L"https://www.bing.com/";
 std::wstring url3 = L"https://localhost:8000";
 // std::wstring url3 = L"about:blank";
-wil::unique_cotaskmem_string title;
 
 // THEME
 bool CheckSystemDarkMode();
