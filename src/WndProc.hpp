@@ -34,6 +34,24 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
         SetDarkMode(window);
     }
     break;
+    case WM_ACTIVATE:
+    {
+        SendMessageW(window, WM_SETFOCUS, 0, 0);
+    }
+    break;
+    case WM_SETFOCUS:
+    {
+        if (wv_controller != nullptr & wv_controller2 != nullptr)
+        {
+            if (!swapped)
+                wv_controller->MoveFocus(
+                    COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+            if (swapped)
+                wv_controller2->MoveFocus(
+                    COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+        }
+    }
+    break;
     case WM_SIZE:
     case WM_WINDOWPOSCHANGING:
     {
@@ -50,15 +68,7 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
         // {
         //     wv_controller3->put_Bounds(GetMenuBounds(window));
         // }
-        if (wv_controller != nullptr & wv_controller2 != nullptr)
-        {
-            if (!swapped)
-                wv_controller->MoveFocus(
-                    COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-            if (swapped)
-                wv_controller2->MoveFocus(
-                    COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-        }
+        SendMessageW(window, WM_SETFOCUS, 0, 0);
     }
     break;
     case WM_GETMINMAXINFO:

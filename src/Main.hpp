@@ -37,11 +37,18 @@ Gdiplus::GdiplusStartupInput gdiplusStartupInput;
 std::wstring wvBackgroundColor(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR");
 std::wstring wvBackgroundColorValue(L"0");
 std::wstring wvAdditionalBrowserArgs(L"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS");
+// std::wstring wvAdditionalBrowserArgsValue(L"--enable-features="
+//                                           L"OverlayScrollbar,"
+//                                           L"msOverlayScrollbarWinStyle,"
+//                                           L"msOverlayScrollbarWinStyleAnimation,"
+//                                           L"msWebView2BrowserHitTransparent");
 std::wstring wvAdditionalBrowserArgsValue(L"--enable-features="
-                                          L"OverlayScrollbar,"
-                                          L"msOverlayScrollbarWinStyle,"
-                                          L"msOverlayScrollbarWinStyleAnimation,"
                                           L"msWebView2BrowserHitTransparent");
+// std::wstring wvAdditionalBrowserArgsValue(L"");
+// std::wstring wvAdditionalBrowserArgsValue(L"--enable-features="
+//                                           L"OverlayScrollbar,"
+//                                           L"msOverlayScrollbarWinStyle:scrollbar_mode/full_mode,"
+//                                           L"msOverlayScrollbarWinStyleAnimation");
 
 // DEBUG
 // std::wstring wvAdditionalBrowserArgsValue(L"--enable-features="
