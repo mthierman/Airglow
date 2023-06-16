@@ -22,12 +22,22 @@ std::wstring programIcon(L"PROGRAM_ICON");
 std::wstring className(L"window");
 std::wstring windowName(L"Airglow");
 std::wstring menuName(L"menu");
+RECT dimensions = {0, 0, 0, 0};
 bool ontop = false;
 bool maximized = false;
 bool fullscreen = false;
 bool split = false;
 bool swapped = false;
 bool menu = false;
+
+// SETTINGS
+std::wstring ToWide(std::string input);
+std::string ToString(std::wstring input);
+std::filesystem::path GetAppDataPath();
+std::filesystem::path GetSettingsFilePath();
+nlohmann::json DefaultSettings();
+nlohmann::json LoadSettings(std::filesystem::path settingsFile);
+void SaveSettings(nlohmann::json input, std::filesystem::path settingsFile);
 
 // GDI+
 unsigned long long gdiplusToken;
@@ -77,12 +87,10 @@ static wil::com_ptr<ICoreWebView2_19> wv3;
 static wil::com_ptr<ICoreWebView2Settings> wv_settings3;
 
 bool CommandLineUrl();
-bool GetAppDataPath();
-std::filesystem::path userData;
 void WebViewMessages(HWND window, PWSTR message);
-void InitializeMenu(HWND window, std::filesystem::path userData);
-void InitializeMainPanel(HWND window, std::filesystem::path userData);
-void InitializeSidePanel(HWND window, std::filesystem::path userData);
+void InitializeMenu(HWND window, std::filesystem::path appData);
+void InitializeMainPanel(HWND window, std::filesystem::path appData);
+void InitializeSidePanel(HWND window, std::filesystem::path appData);
 std::wstring wvScript(
     L"document.onreadystatechange = () => {if (document.readyState === 'complete') {onkeydown = "
     L"(e) => {if (e.ctrlKey && e.key === 'w') {window.chrome.webview.postMessage('close')} "

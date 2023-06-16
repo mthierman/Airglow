@@ -21,22 +21,6 @@ bool CommandLineUrl()
     return false;
 }
 
-bool GetAppDataPath()
-{
-    std::wstring path;
-    PWSTR buffer;
-    auto getKnownFolderPath = SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &buffer);
-    if (getKnownFolderPath != S_OK)
-    {
-        CoTaskMemFree(buffer);
-        return false;
-    }
-    path = buffer;
-    userData = path + std::filesystem::path::preferred_separator + L"Airglow";
-    CoTaskMemFree(buffer);
-    return true;
-}
-
 void WebViewMessages(HWND window, PWSTR message)
 {
     if ((std::wstring)message == std::wstring(L"F1").c_str())

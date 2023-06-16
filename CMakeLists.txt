@@ -48,11 +48,24 @@ else()
         URL https://github.com/Tracktion/choc/archive/refs/heads/main.zip
     )
     FetchContent_MakeAvailable(choc)
+    set(CHOC_PKG ${choc_SOURCE_DIR})
+endif()
+
+if(DEFINED ENV{JSON_PKG})
+    set(JSON_PKG $ENV{JSON_PKG})
+else()
+    FetchContent_Declare(
+        json
+        URL https://github.com/nlohmann/json/releases/download/v3.11.2/include.zip
+    )
+    FetchContent_MakeAvailable(json)
+    set(JSON_PKG ${json_SOURCE_DIR}/single_include/nlohmann)
 endif()
 
 message(STATUS ${WEBVIEW_PKG})
 message(STATUS ${WIL_PKG})
 message(STATUS ${CHOC_PKG})
+message(STATUS ${JSON_PKG})
 
 add_executable(
     ${PROJECT_NAME}
@@ -81,6 +94,7 @@ target_include_directories(
     ${CHOC_PKG}/platform
     ${CHOC_PKG}/text
     ${CHOC_PKG}/threading
+    ${JSON_PKG}
 )
 
 target_link_directories(

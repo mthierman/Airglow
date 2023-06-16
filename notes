@@ -3,3 +3,14 @@ wil::unique_cotaskmem_string wv_favicon;
 wv->get_FaviconUri(&wv_favicon);
 auto icon = wv_favicon.get();
 OutputDebugStringW(icon);
+
+// std::string s = setting["dimensions"].dump();
+// OutputDebugStringW(ToWide(s).c_str());
+// auto get = setting["dimensions"].get<std::vector<int>>();
+// int left = get[0];
+// int top = get[1];
+// int right = get[2];
+// int bottom = get[3];
+// RECT bounds = {get[1], get[2], get[3], get[4]};
+// std::string settings = setting.dump();
+// OutputDebugStringW(ToWide(settings).c_str());

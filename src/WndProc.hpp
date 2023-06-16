@@ -117,6 +117,9 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
     break;
     case WM_CLOSE:
     {
+        auto settingsFile = GetSettingsFilePath();
+        nlohmann::json settings = LoadSettings(settingsFile);
+        SaveSettings(settings, settingsFile);
         Gdiplus::GdiplusShutdown(gdiplusToken);
         DestroyWindow(window);
     }

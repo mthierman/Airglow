@@ -8,4 +8,9 @@
 #include <winrt/Windows.UI.ViewManagement.h>
 #include <gdiplus.h>
 #include <ShlObj.h>
+#include <locale>
+#include <codecvt>
+#include <string>
 #include <filesystem>
+#include <fstream>
+#include <json.hpp>

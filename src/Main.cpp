@@ -3,17 +3,22 @@
 #include "Window.hpp"
 #include "Theme.hpp"
 #include "WebView.hpp"
+#include "Settings.hpp"
 
 int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
 {
     auto window = InitializeWindow(instance, ncs);
     auto appData = GetAppDataPath();
-    if (appData)
+    auto settingsFile = GetSettingsFilePath();
+    nlohmann::json settings = LoadSettings(settingsFile);
+
+    if (!appData.empty())
     {
-        // InitializeMenu(window, userData);
-        InitializeMainPanel(window, userData);
-        InitializeSidePanel(window, userData);
+        // InitializeMenu(window, appData);
+        InitializeMainPanel(window, appData);
+        InitializeSidePanel(window, appData);
     }
+
     MSG msg = {};
     while (GetMessageW(&msg, nullptr, 0, 0))
     {
