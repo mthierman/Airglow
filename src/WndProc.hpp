@@ -37,7 +37,7 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
     case WM_SIZE:
     case WM_WINDOWPOSCHANGING:
     {
-        TestingResize(window);
+        // TestingResize(window);
         if (wv_controller != nullptr)
         {
             wv_controller->put_Bounds(GetWebView1Bounds(window));

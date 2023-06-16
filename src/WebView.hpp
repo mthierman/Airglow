@@ -256,7 +256,10 @@ void InitializeWebView3(HWND window, std::filesystem::path userData)
                             wv_settings3->put_IsStatusBarEnabled(false);
                             wv_settings3->put_IsWebMessageEnabled(true);
                             wv_settings3->put_IsZoomControlEnabled(false);
-                            wv_controller3->put_Bounds(GetMenuBounds(window));
+                            if (menu)
+                                wv_controller3->put_Bounds(GetMenuBounds(window));
+                            // RECT bounds = {0, 0, 0, 0};
+                            // wv_controller3->put_Bounds(bounds);
                             wv3->Navigate(url3.c_str());
                             EventRegistrationToken msgToken;
                             wv3->ExecuteScript(wvScriptBottom.c_str(), nullptr);
