@@ -91,8 +91,8 @@ std::wstring wvScriptBottom(
 // std::wstring url2 = L"https://www.typescriptlang.org/play";
 std::wstring url1 = L"https://www.google.com/";
 std::wstring url2 = L"https://www.bing.com/";
-std::wstring url3 = L"https://localhost:8000";
-// std::wstring url3 = L"about:blank";
+// std::wstring url3 = L"https://localhost:8000";
+std::wstring url3 = L"about:blank";
 
 // THEME
 bool CheckSystemDarkMode();

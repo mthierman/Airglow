@@ -80,7 +80,7 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
         }
         if (wparam == VK_F4)
         {
-            menu = PanelHideMenu(window);
+            // menu = PanelHideMenu(window);
         }
         if (wparam == VK_F6)
         {
