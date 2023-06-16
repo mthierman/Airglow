@@ -30,6 +30,8 @@ void WebViewMessages(HWND window, PWSTR message)
     if ((std::wstring)message == std::wstring(L"F2").c_str())
     {
         swapped = PanelSwap(window);
+        SetWindowTitle(window);
+        SetWindowIcon(window);
     }
     if ((std::wstring)message == std::wstring(L"F4").c_str())
     {
@@ -46,6 +48,8 @@ void WebViewMessages(HWND window, PWSTR message)
     if ((std::wstring)message == std::wstring(L"F9").c_str())
     {
         ontop = WindowTop(window);
+        SetWindowTitle(window);
+        SetWindowIcon(window);
     }
     if ((std::wstring)message == std::wstring(L"close").c_str())
     {

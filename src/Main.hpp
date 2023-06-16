@@ -9,6 +9,7 @@ unsigned short MakeWindowClass(HINSTANCE);
 HWND MakeWindow(HINSTANCE);
 HWND InitializeWindow(HINSTANCE, int);
 void SetWindowTitle(HWND window);
+void SetWindowIcon(HWND window);
 RECT GetMenuBounds(HWND window);
 RECT GetMainPanelBounds(HWND window);
 RECT GetSidePanelBounds(HWND window);

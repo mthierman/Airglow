@@ -219,16 +219,12 @@ bool PanelHideMenu(HWND window)
     {
         menu = true;
         SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-        SetWindowTitle(window);
-        SetWindowIcon(window);
         return true;
     }
     else
     {
         menu = false;
         SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-        SetWindowTitle(window);
-        SetWindowIcon(window);
         return false;
     }
 }
@@ -239,16 +235,12 @@ bool PanelSplit(HWND window)
     {
         split = true;
         SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-        SetWindowTitle(window);
-        SetWindowIcon(window);
         return true;
     }
     else
     {
         split = false;
         SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-        SetWindowTitle(window);
-        SetWindowIcon(window);
         return false;
     }
 }
@@ -259,8 +251,6 @@ bool PanelSwap(HWND window)
     {
         swapped = true;
         SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-        SetWindowTitle(window);
-        SetWindowIcon(window);
         return true;
     }
 
@@ -268,8 +258,6 @@ bool PanelSwap(HWND window)
     {
         swapped = false;
         SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-        SetWindowTitle(window);
-        SetWindowIcon(window);
         return false;
     }
 }
@@ -285,16 +273,12 @@ bool WindowMaximize(HWND window)
         {
             ShowWindow(window, SW_MAXIMIZE);
             SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-            SetWindowTitle(window);
-            SetWindowIcon(window);
             return true;
         }
         if (wp.showCmd == SW_SHOWMAXIMIZED)
         {
             ShowWindow(window, SW_SHOWNORMAL);
             SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-            SetWindowTitle(window);
-            SetWindowIcon(window);
             return false;
         }
     }
@@ -316,8 +300,6 @@ bool WindowFullscreen(HWND window)
                          mi.rcMonitor.right - mi.rcMonitor.left,
                          mi.rcMonitor.bottom - mi.rcMonitor.top,
                          SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
-            SetWindowTitle(window);
-            SetWindowIcon(window);
             return true;
         }
     }
@@ -328,8 +310,6 @@ bool WindowFullscreen(HWND window)
                      SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
         SetWindowPos(window, nullptr, position.left, position.top, (position.right - position.left),
                      (position.bottom - position.top), 0);
-        SetWindowTitle(window);
-        SetWindowIcon(window);
         return false;
     }
     return false;
@@ -349,8 +329,6 @@ bool WindowTop(HWND window)
         ontop = false;
         SetWindowPos(window, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         FlashWindowEx(&fwi);
-        SetWindowTitle(window);
-        SetWindowIcon(window);
         return false;
     }
     else
@@ -358,8 +336,6 @@ bool WindowTop(HWND window)
         ontop = true;
         SetWindowPos(window, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         FlashWindowEx(&fwi);
-        SetWindowTitle(window);
-        SetWindowIcon(window);
         return true;
     }
     return false;
