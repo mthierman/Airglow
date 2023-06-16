@@ -44,11 +44,11 @@ jobs:
           if ("${{ github.ref_name }}" -eq "main") {
             $title = "Airglow $version"
             gh release delete $version -y
-            gh release create $version $zip --notes-file $changes -t $title
+            gh release create $version $exe $zip --notes-file $changes -t $title
           }
 
           if ("${{ github.ref_name }}" -eq "dev") {
             $title = "Airglow Nightly"
             gh release delete nightly -y
-            gh release create nightly $zip --notes-file $changes -t $title --prerelease
+            gh release create nightly $exe $zip --notes-file $changes -t $title --prerelease
           }
