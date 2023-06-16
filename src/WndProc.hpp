@@ -68,6 +68,7 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
         minmax->ptMinTrackSize.y = 600;
     }
     break;
+    case WM_SYSKEYDOWN:
     case WM_KEYDOWN:
     {
         if (wparam == VK_F1)
@@ -82,7 +83,7 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
         {
             // menu = PanelHideMenu(window);
         }
-        if (wparam == VK_F6)
+        if (wparam == VK_F10)
         {
             maximized = WindowMaximize(window);
         }

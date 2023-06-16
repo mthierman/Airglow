@@ -51,7 +51,7 @@ void WebViewMessages(HWND window, PWSTR message)
     {
         // menu = PanelHideMenu(window);
     }
-    if ((std::wstring)message == std::wstring(L"F6").c_str())
+    if ((std::wstring)message == std::wstring(L"F10").c_str())
     {
         maximized = WindowMaximize(window);
     }
