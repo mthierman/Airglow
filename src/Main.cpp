@@ -10,9 +10,9 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
     auto appData = GetAppDataPath();
     if (appData)
     {
-        InitializeWebView1(window, userData);
-        InitializeWebView2(window, userData);
-        InitializeWebView3(window, userData);
+        // InitializeMenu(window, userData);
+        InitializeMainPanel(window, userData);
+        InitializeSidePanel(window, userData);
     }
     MSG msg = {};
     while (GetMessageW(&msg, nullptr, 0, 0))

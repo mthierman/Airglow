@@ -40,16 +40,16 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
         // TestingResize(window);
         if (wv_controller != nullptr)
         {
-            wv_controller->put_Bounds(GetWebView1Bounds(window));
+            wv_controller->put_Bounds(GetMainPanelBounds(window));
         }
         if (wv_controller2 != nullptr)
         {
-            wv_controller2->put_Bounds(GetWebView2Bounds(window));
+            wv_controller2->put_Bounds(GetSidePanelBounds(window));
         }
-        if (wv_controller3 != nullptr)
-        {
-            wv_controller3->put_Bounds(GetMenuBounds(window));
-        }
+        // if (wv_controller3 != nullptr)
+        // {
+        //     wv_controller3->put_Bounds(GetMenuBounds(window));
+        // }
         if (wv_controller != nullptr & wv_controller2 != nullptr)
         {
             if (!swapped)

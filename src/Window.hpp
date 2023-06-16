@@ -128,167 +128,219 @@ void SetWindowIcon(HWND window)
     }
 }
 
-RECT GetWebView1Bounds(HWND window)
-{
-    RECT bounds = {0, 0, 0, 0};
-    RECT panel;
-    GetClientRect(window, &bounds);
-    if (menu)
-    {
-        if (!split & !swapped)
-        {
-            panel = {
-                bounds.left,
-                bounds.top,
-                bounds.right,
-                bounds.bottom - 50,
-            };
-        }
-        if (!split & swapped)
-        {
-            panel = {0, 0, 0, 0};
-        }
-        if (split & !swapped)
-        {
-            panel = {
-                bounds.left,
-                bounds.top,
-                bounds.right / 2,
-                bounds.bottom - 50,
-            };
-        }
-        if (split & swapped)
-        {
-            panel = {
-                bounds.right / 2,
-                bounds.top,
-                bounds.right,
-                bounds.bottom - 50,
-            };
-        }
-    }
-    if (!menu)
-    {
-        if (!split & !swapped)
-        {
-            panel = bounds;
-        }
-        if (!split & swapped)
-        {
-            panel = {0, 0, 0, 0};
-        }
-        if (split & !swapped)
-        {
-            panel = {
-                bounds.left,
-                bounds.top,
-                bounds.right / 2,
-                bounds.bottom,
-            };
-        }
-        if (split & swapped)
-        {
-            panel = {
-                bounds.right / 2,
-                bounds.top,
-                bounds.right,
-                bounds.bottom,
-            };
-        }
-    }
-    return panel;
-}
-
-RECT GetWebView2Bounds(HWND window)
-{
-    RECT bounds = {0, 0, 0, 0};
-    RECT panel;
-    GetClientRect(window, &bounds);
-    if (menu)
-    {
-        if (!split & !swapped)
-        {
-            panel = {0, 0, 0, 0};
-        }
-        if (!split & swapped)
-        {
-            panel = {
-                bounds.left,
-                bounds.top,
-                bounds.right,
-                bounds.bottom - 50,
-            };
-        }
-        if (split & !swapped)
-        {
-            panel = {
-                bounds.right / 2,
-                bounds.top,
-                bounds.right,
-                bounds.bottom - 50,
-            };
-        }
-        if (split & swapped)
-        {
-            panel = {
-                bounds.left,
-                bounds.top,
-                bounds.right / 2,
-                bounds.bottom - 50,
-            };
-        }
-    }
-    if (!menu)
-    {
-        if (!split & !swapped)
-        {
-            panel = {0, 0, 0, 0};
-        }
-        if (!split & swapped)
-        {
-            panel = {
-                bounds.left,
-                bounds.top,
-                bounds.right,
-                bounds.bottom,
-            };
-        }
-        if (split & !swapped)
-        {
-            panel = {
-                bounds.right / 2,
-                bounds.top,
-                bounds.right,
-                bounds.bottom,
-            };
-        }
-        if (split & swapped)
-        {
-            panel = {
-                bounds.left,
-                bounds.top,
-                bounds.right / 2,
-                bounds.bottom,
-            };
-        }
-    }
-    return panel;
-}
-
 RECT GetMenuBounds(HWND window)
 {
     RECT bounds = {0, 0, 0, 0};
-    RECT panel;
+    RECT panel = {0, 0, 0, 0};
     GetClientRect(window, &bounds);
     if (menu)
     {
         panel = {
             bounds.left,
-            bounds.bottom - 50,
+            bounds.top,
             bounds.right,
             bounds.bottom,
         };
     }
+    return panel;
+}
+
+RECT GetMainPanelBounds(HWND window)
+{
+    RECT bounds = {0, 0, 0, 0};
+    RECT panel = {0, 0, 0, 0};
+    GetClientRect(window, &bounds);
+    if (!split & !swapped)
+    {
+        panel = bounds;
+    }
+    if (!split & swapped)
+    {
+        return panel;
+    }
+    if (split & !swapped)
+    {
+        panel = {
+            bounds.left,
+            bounds.top,
+            bounds.right / 2,
+            bounds.bottom,
+        };
+    }
+    if (split & swapped)
+    {
+        panel = {
+            bounds.right / 2,
+            bounds.top,
+            bounds.right,
+            bounds.bottom,
+        };
+    }
+    // if (menu)
+    // {
+    //     if (!split & !swapped)
+    //     {
+    //         panel = {
+    //             bounds.left,
+    //             bounds.top,
+    //             bounds.right,
+    //             bounds.bottom - 50,
+    //         };
+    //     }
+    //     if (!split & swapped)
+    //     {
+    //         panel = {0, 0, 0, 0};
+    //     }
+    //     if (split & !swapped)
+    //     {
+    //         panel = {
+    //             bounds.left,
+    //             bounds.top,
+    //             bounds.right / 2,
+    //             bounds.bottom - 50,
+    //         };
+    //     }
+    //     if (split & swapped)
+    //     {
+    //         panel = {
+    //             bounds.right / 2,
+    //             bounds.top,
+    //             bounds.right,
+    //             bounds.bottom - 50,
+    //         };
+    //     }
+    // }
+    // if (!menu)
+    // {
+    //     if (!split & !swapped)
+    //     {
+    //         panel = bounds;
+    //     }
+    //     if (!split & swapped)
+    //     {
+    //         panel = {0, 0, 0, 0};
+    //     }
+    //     if (split & !swapped)
+    //     {
+    //         panel = {
+    //             bounds.left,
+    //             bounds.top,
+    //             bounds.right / 2,
+    //             bounds.bottom,
+    //         };
+    //     }
+    //     if (split & swapped)
+    //     {
+    //         panel = {
+    //             bounds.right / 2,
+    //             bounds.top,
+    //             bounds.right,
+    //             bounds.bottom,
+    //         };
+    //     }
+    // }
+    return panel;
+}
+
+RECT GetSidePanelBounds(HWND window)
+{
+    RECT bounds = {0, 0, 0, 0};
+    RECT panel = {0, 0, 0, 0};
+    GetClientRect(window, &bounds);
+    if (!split & !swapped)
+    {
+        return panel;
+    }
+    if (!split & swapped)
+    {
+        panel = bounds;
+    }
+    if (split & !swapped)
+    {
+        panel = {
+            bounds.right / 2,
+            bounds.top,
+            bounds.right,
+            bounds.bottom,
+        };
+    }
+    if (split & swapped)
+    {
+        panel = {
+            bounds.left,
+            bounds.top,
+            bounds.right / 2,
+            bounds.bottom,
+        };
+    }
+    // if (menu)
+    // {
+    //     if (!split & !swapped)
+    //     {
+    //         panel = {0, 0, 0, 0};
+    //     }
+    //     if (!split & swapped)
+    //     {
+    //         panel = {
+    //             bounds.left,
+    //             bounds.top,
+    //             bounds.right,
+    //             bounds.bottom - 50,
+    //         };
+    //     }
+    //     if (split & !swapped)
+    //     {
+    //         panel = {
+    //             bounds.right / 2,
+    //             bounds.top,
+    //             bounds.right,
+    //             bounds.bottom - 50,
+    //         };
+    //     }
+    //     if (split & swapped)
+    //     {
+    //         panel = {
+    //             bounds.left,
+    //             bounds.top,
+    //             bounds.right / 2,
+    //             bounds.bottom - 50,
+    //         };
+    //     }
+    // }
+    // if (!menu)
+    // {
+    //     if (!split & !swapped)
+    //     {
+    //         panel = {0, 0, 0, 0};
+    //     }
+    //     if (!split & swapped)
+    //     {
+    //         panel = {
+    //             bounds.left,
+    //             bounds.top,
+    //             bounds.right,
+    //             bounds.bottom,
+    //         };
+    //     }
+    //     if (split & !swapped)
+    //     {
+    //         panel = {
+    //             bounds.right / 2,
+    //             bounds.top,
+    //             bounds.right,
+    //             bounds.bottom,
+    //         };
+    //     }
+    //     if (split & swapped)
+    //     {
+    //         panel = {
+    //             bounds.left,
+    //             bounds.top,
+    //             bounds.right / 2,
+    //             bounds.bottom,
+    //         };
+    //     }
+    // }
     return panel;
 }
 
@@ -298,12 +350,16 @@ bool PanelHideMenu(HWND window)
     {
         menu = true;
         SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        SetWindowTitle(window);
+        SetWindowIcon(window);
         return true;
     }
     else
     {
         menu = false;
         SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        SetWindowTitle(window);
+        SetWindowIcon(window);
         return false;
     }
 }
@@ -314,12 +370,16 @@ bool PanelSplit(HWND window)
     {
         split = true;
         SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        SetWindowTitle(window);
+        SetWindowIcon(window);
         return true;
     }
     else
     {
         split = false;
         SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        SetWindowTitle(window);
+        SetWindowIcon(window);
         return false;
     }
 }
@@ -329,18 +389,18 @@ bool PanelSwap(HWND window)
     if (!swapped)
     {
         swapped = true;
+        SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         SetWindowTitle(window);
         SetWindowIcon(window);
-        SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         return true;
     }
 
     else
     {
         swapped = false;
+        SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         SetWindowTitle(window);
         SetWindowIcon(window);
-        SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         return false;
     }
 }
@@ -355,11 +415,15 @@ bool WindowMaximize(HWND window)
         if (wp.showCmd == SW_SHOWNORMAL)
         {
             ShowWindow(window, SW_MAXIMIZE);
+            SetWindowTitle(window);
+            SetWindowIcon(window);
             return true;
         }
         if (wp.showCmd == SW_SHOWMAXIMIZED)
         {
             ShowWindow(window, SW_SHOWNORMAL);
+            SetWindowTitle(window);
+            SetWindowIcon(window);
             return false;
         }
     }
@@ -381,6 +445,8 @@ bool WindowFullscreen(HWND window)
                          mi.rcMonitor.right - mi.rcMonitor.left,
                          mi.rcMonitor.bottom - mi.rcMonitor.top,
                          SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
+            SetWindowTitle(window);
+            SetWindowIcon(window);
             return true;
         }
     }
@@ -391,6 +457,8 @@ bool WindowFullscreen(HWND window)
                      SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
         SetWindowPos(window, nullptr, position.left, position.top, (position.right - position.left),
                      (position.bottom - position.top), 0);
+        SetWindowTitle(window);
+        SetWindowIcon(window);
         return false;
     }
     return false;
@@ -408,17 +476,19 @@ bool WindowTop(HWND window)
     if (topMost & WS_EX_TOPMOST)
     {
         ontop = false;
-        SetWindowTitle(window);
         SetWindowPos(window, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         FlashWindowEx(&fwi);
+        SetWindowTitle(window);
+        SetWindowIcon(window);
         return false;
     }
     else
     {
         ontop = true;
-        SetWindowTitle(window);
         SetWindowPos(window, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         FlashWindowEx(&fwi);
+        SetWindowTitle(window);
+        SetWindowIcon(window);
         return true;
     }
     return false;

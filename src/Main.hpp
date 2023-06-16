@@ -9,9 +9,9 @@ unsigned short MakeWindowClass(HINSTANCE);
 HWND MakeWindow(HINSTANCE);
 HWND InitializeWindow(HINSTANCE, int);
 void SetWindowTitle(HWND window);
-RECT GetWebView1Bounds(HWND window);
-RECT GetWebView2Bounds(HWND window);
 RECT GetMenuBounds(HWND window);
+RECT GetMainPanelBounds(HWND window);
+RECT GetSidePanelBounds(HWND window);
 bool PanelHideMenu(HWND);
 bool PanelSplit(HWND);
 bool PanelSwap(HWND window);
@@ -73,9 +73,9 @@ bool CommandLineUrl();
 bool GetAppDataPath();
 std::filesystem::path userData;
 void WebViewMessages(HWND window, PWSTR message);
-void InitializeWebView1(HWND window, std::filesystem::path userData);
-void InitializeWebView2(HWND window, std::filesystem::path userData);
-void InitializeWebView3(HWND window, std::filesystem::path userData);
+void InitializeMenu(HWND window, std::filesystem::path userData);
+void InitializeMainPanel(HWND window, std::filesystem::path userData);
+void InitializeSidePanel(HWND window, std::filesystem::path userData);
 std::wstring wvScript(
     L"document.onreadystatechange = () => {if (document.readyState === 'complete') {onkeydown = "
     L"(e) => {if (e.ctrlKey && e.key === 'w') {window.chrome.webview.postMessage('close')} "
@@ -87,12 +87,10 @@ std::wstring wvScriptBottom(
     L"if (e.key === 'F3') {e.preventDefault();} "
     L"else "
     L"{console.log(e); window.chrome.webview.postMessage(e.key)}}}}");
-// std::wstring url1 = L"https://www.typescriptlang.org/docs/handbook/intro.html";
-// std::wstring url2 = L"https://www.typescriptlang.org/play";
 std::wstring url1 = L"https://www.google.com/";
 std::wstring url2 = L"https://www.bing.com/";
-// std::wstring url3 = L"https://localhost:8000";
 std::wstring url3 = L"about:blank";
+// std::wstring url3 = L"https://localhost:8000";
 
 // THEME
 bool CheckSystemDarkMode();
