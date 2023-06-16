@@ -80,6 +80,54 @@ void SetWindowTitle(HWND window)
     }
 }
 
+void SetWindowIcon(HWND window)
+{
+    using namespace Microsoft::WRL;
+
+    if (!swapped)
+    {
+        wv->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
+                       Callback<ICoreWebView2GetFaviconCompletedHandler>(
+                           [window](HRESULT result, IStream* iconStream) -> HRESULT
+                           {
+                               if (iconStream != nullptr)
+                               {
+                                   Gdiplus::Bitmap iconBitmap(iconStream);
+                                   wil::unique_hicon icon;
+                                   if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
+                                   {
+                                       auto favicon = std::move(icon);
+                                       SendMessageW(window, WM_SETICON, ICON_BIG,
+                                                    (LPARAM)favicon.get());
+                                   }
+                               }
+                               return S_OK;
+                           })
+                           .Get());
+    }
+    if (swapped)
+    {
+        wv2->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
+                        Callback<ICoreWebView2GetFaviconCompletedHandler>(
+                            [window](HRESULT result, IStream* iconStream) -> HRESULT
+                            {
+                                if (iconStream != nullptr)
+                                {
+                                    Gdiplus::Bitmap iconBitmap(iconStream);
+                                    wil::unique_hicon icon;
+                                    if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
+                                    {
+                                        auto favicon = std::move(icon);
+                                        SendMessageW(window, WM_SETICON, ICON_BIG,
+                                                     (LPARAM)favicon.get());
+                                    }
+                                }
+                                return S_OK;
+                            })
+                            .Get());
+    }
+}
+
 RECT GetWebView1Bounds(HWND window)
 {
     RECT bounds = {0, 0, 0, 0};
@@ -282,6 +330,7 @@ bool PanelSwap(HWND window)
     {
         swapped = true;
         SetWindowTitle(window);
+        SetWindowIcon(window);
         SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         return true;
     }
@@ -290,6 +339,7 @@ bool PanelSwap(HWND window)
     {
         swapped = false;
         SetWindowTitle(window);
+        SetWindowIcon(window);
         SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         return false;
     }

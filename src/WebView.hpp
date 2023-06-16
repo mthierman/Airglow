@@ -119,31 +119,7 @@ void InitializeWebView1(HWND window, std::filesystem::path userData)
                                 Callback<ICoreWebView2FaviconChangedEventHandler>(
                                     [window](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                     {
-                                        LPWSTR faviconUri;
-                                        wv->get_FaviconUri(&faviconUri);
-                                        OutputDebugStringW(faviconUri);
-                                        wv->GetFavicon(
-                                            COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
-                                            Callback<ICoreWebView2GetFaviconCompletedHandler>(
-                                                [window](HRESULT result,
-                                                         IStream* iconStream) -> HRESULT
-                                                {
-                                                    if (iconStream != nullptr)
-                                                    {
-                                                        Gdiplus::Bitmap iconBitmap(iconStream);
-                                                        wil::unique_hicon icon;
-                                                        if (iconBitmap.GetHICON(&icon) ==
-                                                            Gdiplus::Status::Ok)
-                                                        {
-                                                            auto favicon = std::move(icon);
-                                                            SendMessageW(window, WM_SETICON,
-                                                                         ICON_BIG,
-                                                                         (LPARAM)favicon.get());
-                                                        }
-                                                    }
-                                                    return S_OK;
-                                                })
-                                                .Get());
+                                        SetWindowIcon(window);
                                         return S_OK;
                                     })
                                     .Get(),
@@ -221,31 +197,7 @@ void InitializeWebView2(HWND window, std::filesystem::path userData)
                                 Callback<ICoreWebView2FaviconChangedEventHandler>(
                                     [window](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                     {
-                                        LPWSTR faviconUri;
-                                        wv->get_FaviconUri(&faviconUri);
-                                        OutputDebugStringW(faviconUri);
-                                        wv->GetFavicon(
-                                            COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
-                                            Callback<ICoreWebView2GetFaviconCompletedHandler>(
-                                                [window](HRESULT result,
-                                                         IStream* iconStream) -> HRESULT
-                                                {
-                                                    if (iconStream != nullptr)
-                                                    {
-                                                        Gdiplus::Bitmap iconBitmap(iconStream);
-                                                        wil::unique_hicon icon;
-                                                        if (iconBitmap.GetHICON(&icon) ==
-                                                            Gdiplus::Status::Ok)
-                                                        {
-                                                            auto favicon = std::move(icon);
-                                                            // SendMessageW(window, WM_SETICON,
-                                                            //              ICON_BIG,
-                                                            //              (LPARAM)favicon.get());
-                                                        }
-                                                    }
-                                                    return S_OK;
-                                                })
-                                                .Get());
+                                        SetWindowIcon(window);
                                         return S_OK;
                                     })
                                     .Get(),

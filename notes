@@ -1,0 +1,5 @@
+using namespace Microsoft::WRL;
+wil::unique_cotaskmem_string wv_favicon;
+wv->get_FaviconUri(&wv_favicon);
+auto icon = wv_favicon.get();
+OutputDebugStringW(icon);
