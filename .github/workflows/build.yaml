@@ -16,10 +16,12 @@ jobs:
         with:
           fetch-depth: 5
       - uses: actions/cache@v3
-        id: nuget-cache
+        id: library-cache
         with:
-          path: build/libs
-          key: nuget-cache-${{ hashFiles('**/CMakeLists.txt') }}
+          path: |
+            build/libs
+            build/_deps
+          key: library-cache-${{ hashFiles('**/CMakeLists.txt') }}
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |

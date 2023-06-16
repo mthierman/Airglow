@@ -12,6 +12,8 @@ math(EXPR BITNESS "${CMAKE_SIZEOF_VOID_P} * 8" OUTPUT_FORMAT DECIMAL)
 message(STATUS "${PROJECT_NAME} v${PROJECT_VERSION} (${BITNESS}-bit) [${CMAKE_BUILD_TYPE}]")
 file(WRITE ${CMAKE_BINARY_DIR}/version.txt "v${PROJECT_VERSION}")
 
+include(FetchContent)
+
 set(WEBVIEW "Microsoft.Web.WebView2")
 set(WEBVIEW_VER "1.0.1823.32")
 
