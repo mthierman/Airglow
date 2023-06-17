@@ -29,7 +29,8 @@ HWND MakeWindow(HINSTANCE instance)
 HWND InitializeWindow(HINSTANCE instance, int ncs)
 {
     SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
-    SetEnvironmentVariableW(wvBackgroundColor.c_str(), wvBackgroundColorValue.c_str());
+    SetEnvironmentVariableW(std::wstring(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR").c_str(),
+                            std::wstring(L"0").c_str());
 
     auto atom = MakeWindowClass(instance);
 

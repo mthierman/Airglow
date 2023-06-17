@@ -5,8 +5,7 @@ std::wstring programIcon(L"PROGRAM_ICON");
 std::wstring className(L"window");
 std::wstring windowName(L"Airglow");
 std::wstring menuName(L"menu");
-std::wstring wvBackgroundColor(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR");
-std::wstring wvBackgroundColorValue(L"0");
+
 std::wstring script;
 std::wstring menuScript;
 
