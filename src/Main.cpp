@@ -3,11 +3,16 @@
 #include "Window.hpp"
 #include "WebView.hpp"
 #include "Settings.hpp"
+#include "Utility.hpp"
 
 int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
 {
     auto window = InitializeWindow(instance, ncs);
-    auto appData = GetAppDataPath();
+
+    appData = GetAppDataPath();
+
+    script = GetScriptFile(appData);
+
     if (std::filesystem::exists(appData))
     {
         InitializeMenu(window, appData);
@@ -15,6 +20,7 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
         InitializeSidePanel(window, appData);
         Startup(window);
     }
+
     MSG msg = {};
     while (GetMessageW(&msg, nullptr, 0, 0))
     {

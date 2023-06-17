@@ -65,7 +65,7 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
     case WM_SIZE:
     case WM_WINDOWPOSCHANGING:
     {
-        TestingResize(window);
+        // TestingResize(window);
 
         if (wv_controller != nullptr)
             wv_controller->put_Bounds(GetMainPanelBounds(window));
@@ -86,7 +86,6 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
         minmax->ptMinTrackSize.y = 600;
     }
     break;
-    case WM_SYSKEYDOWN:
     case WM_KEYDOWN:
     {
         if (wparam == VK_F1)
@@ -108,7 +107,7 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
             SetWindowIcon(window);
         }
 
-        if (wparam == VK_F10)
+        if (wparam == VK_F5)
         {
             maximized = WindowMaximize(window);
         }

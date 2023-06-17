@@ -97,45 +97,52 @@ void SetWindowIcon(HWND window)
 
     if (!swapped)
     {
-        wv->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
-                       Callback<ICoreWebView2GetFaviconCompletedHandler>(
-                           [window](HRESULT result, IStream* iconStream) -> HRESULT
-                           {
-                               if (iconStream != nullptr)
+        if (wv_controller != nullptr)
+        {
+            wv->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
+                           Callback<ICoreWebView2GetFaviconCompletedHandler>(
+                               [window](HRESULT result, IStream* iconStream) -> HRESULT
                                {
-                                   Gdiplus::Bitmap iconBitmap(iconStream);
-                                   wil::unique_hicon icon;
-                                   if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
+                                   if (iconStream != nullptr)
                                    {
-                                       auto favicon = std::move(icon);
-                                       SendMessageW(window, WM_SETICON, ICON_BIG,
-                                                    (LPARAM)favicon.get());
+                                       Gdiplus::Bitmap iconBitmap(iconStream);
+                                       wil::unique_hicon icon;
+                                       if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
+                                       {
+                                           auto favicon = std::move(icon);
+                                           SendMessageW(window, WM_SETICON, ICON_BIG,
+                                                        (LPARAM)favicon.get());
+                                       }
                                    }
-                               }
-                               return S_OK;
-                           })
-                           .Get());
+                                   return S_OK;
+                               })
+                               .Get());
+        }
     }
-    if (swapped)
+
+    else
     {
-        wv2->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
-                        Callback<ICoreWebView2GetFaviconCompletedHandler>(
-                            [window](HRESULT result, IStream* iconStream) -> HRESULT
-                            {
-                                if (iconStream != nullptr)
+        if (wv_controller2 != nullptr)
+        {
+            wv2->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
+                            Callback<ICoreWebView2GetFaviconCompletedHandler>(
+                                [window](HRESULT result, IStream* iconStream) -> HRESULT
                                 {
-                                    Gdiplus::Bitmap iconBitmap(iconStream);
-                                    wil::unique_hicon icon;
-                                    if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
+                                    if (iconStream != nullptr)
                                     {
-                                        auto favicon = std::move(icon);
-                                        SendMessageW(window, WM_SETICON, ICON_BIG,
-                                                     (LPARAM)favicon.get());
+                                        Gdiplus::Bitmap iconBitmap(iconStream);
+                                        wil::unique_hicon icon;
+                                        if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
+                                        {
+                                            auto favicon = std::move(icon);
+                                            SendMessageW(window, WM_SETICON, ICON_BIG,
+                                                         (LPARAM)favicon.get());
+                                        }
                                     }
-                                }
-                                return S_OK;
-                            })
-                            .Get());
+                                    return S_OK;
+                                })
+                                .Get());
+        }
     }
 }
 
@@ -295,13 +302,13 @@ bool WindowMaximize(HWND window)
 {
     WINDOWPLACEMENT wp = {};
     wp.length = sizeof(WINDOWPLACEMENT);
-
     auto placement = GetWindowPlacement(window, &wp);
 
     if (!fullscreen)
     {
         if (wp.showCmd == SW_SHOWNORMAL)
         {
+            maximized = true;
             ShowWindow(window, SW_MAXIMIZE);
             SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
@@ -310,6 +317,7 @@ bool WindowMaximize(HWND window)
 
         if (wp.showCmd == SW_SHOWMAXIMIZED)
         {
+            maximized = false;
             ShowWindow(window, SW_SHOWNORMAL);
             SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 
@@ -386,6 +394,27 @@ bool WindowTop(HWND window)
     }
 
     return false;
+}
+
+void SetFocus()
+{
+    if (wv_controller != nullptr & wv_controller2 != nullptr)
+    {
+        if (!swapped)
+            wv_controller->MoveFocus(
+                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+
+        if (swapped)
+            wv_controller2->MoveFocus(
+                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+    }
+
+    if (wv_controller3 != nullptr)
+    {
+        if (menu)
+            wv_controller3->MoveFocus(
+                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+    }
 }
 
 bool CheckSystemDarkMode()
@@ -531,7 +560,7 @@ void Startup(HWND window)
 {
     Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
 
-    auto settingsFile = GetSettingsFilePath();
+    auto settingsFile = GetSettingsFilePath(appData);
 
     nlohmann::json settings = LoadSettings(settingsFile);
     dimensions = settings["dimensions"].get<std::vector<int>>();
@@ -560,7 +589,7 @@ void Shutdown(HWND window)
 {
     Gdiplus::GdiplusShutdown(gdiplusToken);
 
-    auto settingsFile = GetSettingsFilePath();
+    auto settingsFile = GetSettingsFilePath(appData);
     nlohmann::json settings = CurrentSettings(window);
     SaveSettings(settings, settingsFile);
 
