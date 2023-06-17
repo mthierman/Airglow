@@ -206,6 +206,8 @@ bool WindowMaximize(HWND window)
             return false;
         }
     }
+
+    return false;
 }
 
 bool WindowFullscreen(HWND window)
@@ -239,6 +241,8 @@ bool WindowFullscreen(HWND window)
 
         return false;
     }
+
+    return false;
 }
 
 bool WindowTop(HWND window)
