@@ -6,9 +6,6 @@ std::wstring className(L"window");
 std::wstring windowName(L"Airglow");
 std::wstring menuName(L"menu");
 
-std::wstring script;
-std::wstring menuScript;
-
 // MAIN
 int __stdcall wWinMain(HINSTANCE, HINSTANCE, PWSTR, int);
 __int64 __stdcall WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -60,8 +57,8 @@ std::wstring mainpage;
 std::wstring sidepage;
 
 // GDI+
-unsigned long long gdiplusToken;
-Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+static unsigned long long gdiplusToken;
+static Gdiplus::GdiplusStartupInput gdiplusStartupInput;
 
 // WEBVIEW
 void InitializeWebViews(HWND, std::filesystem::path);

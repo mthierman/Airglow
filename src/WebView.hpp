@@ -33,8 +33,9 @@ void InitializeWebViews(HWND window, std::filesystem::path userData)
                             settings_settings->put_IsZoomControlEnabled(false);
                             settings_controller->put_Bounds(GetMenuBounds(window));
                             settings_wv->Navigate(L"about:blank");
-                            settings_wv->ExecuteScript(menuScript.c_str(), nullptr);
-                            settings_wv->AddScriptToExecuteOnDocumentCreated(menuScript.c_str(),
+                            auto script = GetMenuScript(appData);
+                            settings_wv->ExecuteScript(script.c_str(), nullptr);
+                            settings_wv->AddScriptToExecuteOnDocumentCreated(script.c_str(),
                                                                              nullptr);
 
                             settings_wv->add_WebMessageReceived(
@@ -96,6 +97,7 @@ void InitializeWebViews(HWND window, std::filesystem::path userData)
                                 main_wv->Navigate(mainpage.c_str());
                             }
 
+                            auto script = GetScript(appData);
                             main_wv->ExecuteScript(script.c_str(), nullptr);
                             main_wv->AddScriptToExecuteOnDocumentCreated(script.c_str(), nullptr);
 
@@ -178,6 +180,7 @@ void InitializeWebViews(HWND window, std::filesystem::path userData)
                                 side_wv->Navigate(sidepage.c_str());
                             }
 
+                            auto script = GetScript(appData);
                             side_wv->ExecuteScript(script.c_str(), nullptr);
                             side_wv->AddScriptToExecuteOnDocumentCreated(script.c_str(), nullptr);
 

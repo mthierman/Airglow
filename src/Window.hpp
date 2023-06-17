@@ -386,11 +386,17 @@ bool SetWindow(HWND window, int ncs)
 
 void UpdateFocus()
 {
-    if (!swapped)
+    if (menu)
+        if (settings_controller != nullptr)
+            settings_controller->MoveFocus(
+                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+
+    if (!swapped & !menu)
         if (main_controller != nullptr)
             main_controller->MoveFocus(
                 COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-    if (swapped)
+
+    if (swapped & !menu)
         if (side_controller != nullptr)
             side_controller->MoveFocus(
                 COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
