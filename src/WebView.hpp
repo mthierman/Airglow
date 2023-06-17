@@ -32,7 +32,7 @@ void InitializeWebViews(HWND window, std::filesystem::path userData)
                             settings_settings->put_IsWebMessageEnabled(true);
                             settings_settings->put_IsZoomControlEnabled(false);
                             settings_controller->put_Bounds(GetMenuBounds(window));
-                            settings_wv->Navigate(L"https://localhost:8000");
+                            settings_wv->Navigate(L"about:blank");
                             settings_wv->ExecuteScript(menuScript.c_str(), nullptr);
                             settings_wv->AddScriptToExecuteOnDocumentCreated(menuScript.c_str(),
                                                                              nullptr);
