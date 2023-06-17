@@ -8,7 +8,7 @@
 
 int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
 {
-    auto window = InitializeWindow(instance, ncs);
+    window = InitializeWindow(instance, ncs);
 
     appData = GetAppDataPath();
     settingsFile = GetSettingsFilePath(appData);
@@ -18,7 +18,7 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
         InitializeWebViews(window, appData);
     }
 
-    Startup(window);
+    Startup();
 
     MSG msg = {};
     while (GetMessageW(&msg, nullptr, 0, 0))
@@ -29,7 +29,7 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
     return 0;
 }
 
-void Startup(HWND window)
+void Startup()
 {
     LoadSettings();
 
@@ -40,7 +40,7 @@ void Startup(HWND window)
         ShowWindow(window, SW_MAXIMIZE);
 }
 
-void Shutdown(HWND window)
+void Shutdown()
 {
     ShowWindow(window, SW_SHOWNORMAL);
     RECT rect;

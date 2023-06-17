@@ -106,7 +106,7 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
     break;
     case WM_CLOSE:
     {
-        Shutdown(window);
+        Shutdown();
     }
     break;
     case WM_DESTROY:

@@ -1,4 +1,4 @@
-void Messages(HWND window, std::wstring message)
+void Messages(std::wstring message)
 {
     std::wstring splitKey = std::wstring(L"F1");
     std::wstring swapKey = std::wstring(L"F2");

@@ -2,14 +2,15 @@
 
 // MAIN
 int __stdcall wWinMain(HINSTANCE, HINSTANCE, PWSTR, int);
-void Startup(HWND);
-void Shutdown(HWND);
+void Startup();
+void Shutdown();
 
 // MESSAGES
 __int64 __stdcall WndProc(HWND, UINT, WPARAM, LPARAM);
-void Messages(HWND, std::wstring);
+void Messages(std::wstring);
 
 // WINDOW
+HWND window;
 unsigned short MakeWindowClass(HINSTANCE);
 HWND MakeWindow(HINSTANCE);
 HWND InitializeWindow(HINSTANCE, int);
