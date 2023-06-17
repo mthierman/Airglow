@@ -36,7 +36,7 @@ std::wstring programIcon(L"PROGRAM_ICON");
 std::wstring className(L"window");
 std::wstring windowName(L"Airglow");
 std::wstring menuName(L"menu");
-RECT dimensions = {0, 0, 0, 0};
+std::vector<int> dimensions = {0, 0, 0, 0};
 bool ontop = false;
 bool maximized = false;
 bool fullscreen = false;
