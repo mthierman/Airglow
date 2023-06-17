@@ -386,12 +386,12 @@ bool SetWindow(HWND window, int ncs)
 void SetWindowFocus(HWND window)
 {
     if (!swapped)
-        if (wv_controller != nullptr)
-            wv_controller->MoveFocus(
+        if (main_controller != nullptr)
+            main_controller->MoveFocus(
                 COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
     if (swapped)
-        if (wv_controller2 != nullptr)
-            wv_controller2->MoveFocus(
+        if (side_controller != nullptr)
+            side_controller->MoveFocus(
                 COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 }
 
@@ -417,12 +417,12 @@ void WindowResizing(HWND window)
 {
     // DebugMessages(window);
 
-    if (wv_controller != nullptr)
-        wv_controller->put_Bounds(GetMainPanelBounds(window));
+    if (main_controller != nullptr)
+        main_controller->put_Bounds(GetMainPanelBounds(window));
 
-    if (wv_controller2 != nullptr)
-        wv_controller2->put_Bounds(GetSidePanelBounds(window));
+    if (side_controller != nullptr)
+        side_controller->put_Bounds(GetSidePanelBounds(window));
 
-    if (wv_controller3 != nullptr)
-        wv_controller3->put_Bounds(GetMenuBounds(window));
+    if (settings_controller != nullptr)
+        settings_controller->put_Bounds(GetMenuBounds(window));
 }

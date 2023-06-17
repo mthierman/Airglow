@@ -17,9 +17,7 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
 
     if (std::filesystem::exists(appData))
     {
-        InitializeMenu(window, appData);
-        InitializeMainPanel(window, appData);
-        InitializeSidePanel(window, appData);
+        InitializeWebViews(window, appData);
     }
 
     Startup(window);

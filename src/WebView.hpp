@@ -1,7 +1,7 @@
-void InitializeMenu(HWND window, std::filesystem::path userData)
-{
-    using namespace Microsoft::WRL;
+using namespace Microsoft::WRL;
 
+void InitializeWebViews(HWND window, std::filesystem::path userData)
+{
     CreateCoreWebView2EnvironmentWithOptions(
         nullptr, userData.c_str(), nullptr,
         Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
@@ -12,35 +12,32 @@ void InitializeMenu(HWND window, std::filesystem::path userData)
                     Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
                         [window](HRESULT result, ICoreWebView2Controller* controller) -> HRESULT
                         {
-                            if (controller != nullptr)
-                            {
-                                wv_controller3 = controller;
-                                wv_controller3->get_CoreWebView2(&wv_core3);
-                            }
-
-                            wv3 = wv_core3.try_query<ICoreWebView2_19>();
-
-                            wv3->get_Settings(&wv_settings3);
-                            wv_settings3->put_AreDefaultContextMenusEnabled(false);
-                            wv_settings3->put_AreDefaultScriptDialogsEnabled(true);
-                            wv_settings3->put_AreDevToolsEnabled(true);
-                            wv_settings3->put_AreHostObjectsAllowed(true);
-                            wv_settings3->put_IsBuiltInErrorPageEnabled(true);
-                            wv_settings3->put_IsScriptEnabled(true);
-                            wv_settings3->put_IsStatusBarEnabled(false);
-                            wv_settings3->put_IsWebMessageEnabled(true);
-                            wv_settings3->put_IsZoomControlEnabled(false);
-
-                            wv_controller3->put_Bounds(GetMenuBounds(window));
-
-                            wv3->Navigate(L"https://localhost:8000");
-
-                            wv3->ExecuteScript(menuScript.c_str(), nullptr);
-                            wv3->AddScriptToExecuteOnDocumentCreated(menuScript.c_str(), nullptr);
-
                             EventRegistrationToken msgToken;
 
-                            wv3->add_WebMessageReceived(
+                            if (controller != nullptr)
+                            {
+                                settings_controller = controller;
+                                settings_controller->get_CoreWebView2(&settings_core);
+                            }
+
+                            settings_wv = settings_core.try_query<ICoreWebView2_19>();
+                            settings_wv->get_Settings(&settings_settings);
+                            settings_settings->put_AreDefaultContextMenusEnabled(false);
+                            settings_settings->put_AreDefaultScriptDialogsEnabled(true);
+                            settings_settings->put_AreDevToolsEnabled(true);
+                            settings_settings->put_AreHostObjectsAllowed(true);
+                            settings_settings->put_IsBuiltInErrorPageEnabled(true);
+                            settings_settings->put_IsScriptEnabled(true);
+                            settings_settings->put_IsStatusBarEnabled(false);
+                            settings_settings->put_IsWebMessageEnabled(true);
+                            settings_settings->put_IsZoomControlEnabled(false);
+                            settings_controller->put_Bounds(GetMenuBounds(window));
+                            settings_wv->Navigate(L"https://localhost:8000");
+                            settings_wv->ExecuteScript(menuScript.c_str(), nullptr);
+                            settings_wv->AddScriptToExecuteOnDocumentCreated(menuScript.c_str(),
+                                                                             nullptr);
+
+                            settings_wv->add_WebMessageReceived(
                                 Callback<ICoreWebView2WebMessageReceivedEventHandler>(
                                     [window](
                                         ICoreWebView2* webview,
@@ -55,69 +52,54 @@ void InitializeMenu(HWND window, std::filesystem::path userData)
                                     })
                                     .Get(),
                                 &msgToken);
+
                             return S_OK;
                         })
                         .Get());
-                return S_OK;
-            })
-            .Get());
-}
 
-void InitializeMainPanel(HWND window, std::filesystem::path userData)
-{
-    using namespace Microsoft::WRL;
-
-    CreateCoreWebView2EnvironmentWithOptions(
-        nullptr, userData.c_str(), nullptr,
-        Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
-            [window](HRESULT result, ICoreWebView2Environment* env) -> HRESULT
-            {
                 env->CreateCoreWebView2Controller(
                     window,
                     Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
                         [window](HRESULT result, ICoreWebView2Controller* controller) -> HRESULT
                         {
-                            if (controller != nullptr)
-                            {
-                                wv_controller = controller;
-                                wv_controller->get_CoreWebView2(&wv_core);
-                            }
-
-                            wv = wv_core.try_query<ICoreWebView2_19>();
-
-                            wv->get_Settings(&wv_settings);
-                            wv_settings->put_AreDefaultContextMenusEnabled(true);
-                            wv_settings->put_AreDefaultScriptDialogsEnabled(true);
-                            wv_settings->put_AreDevToolsEnabled(true);
-                            wv_settings->put_AreHostObjectsAllowed(true);
-                            wv_settings->put_IsBuiltInErrorPageEnabled(true);
-                            wv_settings->put_IsScriptEnabled(true);
-                            wv_settings->put_IsStatusBarEnabled(true);
-                            wv_settings->put_IsWebMessageEnabled(true);
-                            wv_settings->put_IsZoomControlEnabled(true);
-
-                            wv_controller->put_Bounds(GetMainPanelBounds(window));
-
-                            auto args = CommandLine();
-
-                            if (!args.first.empty())
-                            {
-                                wv->Navigate(args.first.c_str());
-                            }
-
-                            else
-                            {
-                                wv->Navigate(mainpage.c_str());
-                            }
-
-                            wv->ExecuteScript(script.c_str(), nullptr);
-                            wv->AddScriptToExecuteOnDocumentCreated(script.c_str(), nullptr);
-
                             EventRegistrationToken msgToken;
                             EventRegistrationToken faviconChangedToken;
                             EventRegistrationToken documentTitleChangedToken;
 
-                            wv->add_DocumentTitleChanged(
+                            if (controller != nullptr)
+                            {
+                                main_controller = controller;
+                                main_controller->get_CoreWebView2(&main_core);
+                            }
+
+                            main_wv = main_core.try_query<ICoreWebView2_19>();
+                            main_wv->get_Settings(&main_settings);
+                            main_settings->put_AreDefaultContextMenusEnabled(true);
+                            main_settings->put_AreDefaultScriptDialogsEnabled(true);
+                            main_settings->put_AreDevToolsEnabled(true);
+                            main_settings->put_AreHostObjectsAllowed(true);
+                            main_settings->put_IsBuiltInErrorPageEnabled(true);
+                            main_settings->put_IsScriptEnabled(true);
+                            main_settings->put_IsStatusBarEnabled(true);
+                            main_settings->put_IsWebMessageEnabled(true);
+                            main_settings->put_IsZoomControlEnabled(true);
+                            main_controller->put_Bounds(GetMainPanelBounds(window));
+
+                            auto args = CommandLine();
+                            if (!args.first.empty())
+                            {
+                                main_wv->Navigate(args.first.c_str());
+                            }
+
+                            else
+                            {
+                                main_wv->Navigate(mainpage.c_str());
+                            }
+
+                            main_wv->ExecuteScript(script.c_str(), nullptr);
+                            main_wv->AddScriptToExecuteOnDocumentCreated(script.c_str(), nullptr);
+
+                            main_wv->add_DocumentTitleChanged(
                                 Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
                                     [window](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                     {
@@ -127,7 +109,7 @@ void InitializeMainPanel(HWND window, std::filesystem::path userData)
                                     .Get(),
                                 &documentTitleChangedToken);
 
-                            wv->add_FaviconChanged(
+                            main_wv->add_FaviconChanged(
                                 Callback<ICoreWebView2FaviconChangedEventHandler>(
                                     [window](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                     {
@@ -137,7 +119,7 @@ void InitializeMainPanel(HWND window, std::filesystem::path userData)
                                     .Get(),
                                 &faviconChangedToken);
 
-                            wv->add_WebMessageReceived(
+                            main_wv->add_WebMessageReceived(
                                 Callback<ICoreWebView2WebMessageReceivedEventHandler>(
                                     [window](
                                         ICoreWebView2* webview,
@@ -157,66 +139,49 @@ void InitializeMainPanel(HWND window, std::filesystem::path userData)
                         })
                         .Get());
 
-                return S_OK;
-            })
-            .Get());
-}
-
-void InitializeSidePanel(HWND window, std::filesystem::path userData)
-{
-    using namespace Microsoft::WRL;
-
-    CreateCoreWebView2EnvironmentWithOptions(
-        nullptr, userData.c_str(), nullptr,
-        Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
-            [window](HRESULT result, ICoreWebView2Environment* env) -> HRESULT
-            {
                 env->CreateCoreWebView2Controller(
                     window,
                     Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
                         [window](HRESULT result, ICoreWebView2Controller* controller) -> HRESULT
                         {
-                            if (controller != nullptr)
-                            {
-                                wv_controller2 = controller;
-                                wv_controller2->get_CoreWebView2(&wv_core2);
-                            }
-
-                            wv2 = wv_core2.try_query<ICoreWebView2_19>();
-
-                            wv2->get_Settings(&wv_settings2);
-                            wv_settings2->put_AreDefaultContextMenusEnabled(true);
-                            wv_settings2->put_AreDefaultScriptDialogsEnabled(true);
-                            wv_settings2->put_AreDevToolsEnabled(true);
-                            wv_settings2->put_AreHostObjectsAllowed(true);
-                            wv_settings2->put_IsBuiltInErrorPageEnabled(true);
-                            wv_settings2->put_IsScriptEnabled(true);
-                            wv_settings2->put_IsStatusBarEnabled(true);
-                            wv_settings2->put_IsWebMessageEnabled(true);
-                            wv_settings2->put_IsZoomControlEnabled(true);
-
-                            wv_controller2->put_Bounds(GetSidePanelBounds(window));
-
-                            auto args = CommandLine();
-
-                            if (!args.second.empty())
-                            {
-                                wv2->Navigate(args.second.c_str());
-                            }
-
-                            else
-                            {
-                                wv2->Navigate(sidepage.c_str());
-                            }
-
-                            wv2->ExecuteScript(script.c_str(), nullptr);
-                            wv2->AddScriptToExecuteOnDocumentCreated(script.c_str(), nullptr);
-
                             EventRegistrationToken msgToken;
                             EventRegistrationToken faviconChangedToken;
                             EventRegistrationToken documentTitleChangedToken;
 
-                            wv->add_DocumentTitleChanged(
+                            if (controller != nullptr)
+                            {
+                                side_controller = controller;
+                                side_controller->get_CoreWebView2(&side_core);
+                            }
+
+                            side_wv = side_core.try_query<ICoreWebView2_19>();
+                            side_wv->get_Settings(&side_settings);
+                            side_settings->put_AreDefaultContextMenusEnabled(true);
+                            side_settings->put_AreDefaultScriptDialogsEnabled(true);
+                            side_settings->put_AreDevToolsEnabled(true);
+                            side_settings->put_AreHostObjectsAllowed(true);
+                            side_settings->put_IsBuiltInErrorPageEnabled(true);
+                            side_settings->put_IsScriptEnabled(true);
+                            side_settings->put_IsStatusBarEnabled(true);
+                            side_settings->put_IsWebMessageEnabled(true);
+                            side_settings->put_IsZoomControlEnabled(true);
+                            side_controller->put_Bounds(GetSidePanelBounds(window));
+
+                            auto args = CommandLine();
+                            if (!args.second.empty())
+                            {
+                                side_wv->Navigate(args.second.c_str());
+                            }
+
+                            else
+                            {
+                                side_wv->Navigate(sidepage.c_str());
+                            }
+
+                            side_wv->ExecuteScript(script.c_str(), nullptr);
+                            side_wv->AddScriptToExecuteOnDocumentCreated(script.c_str(), nullptr);
+
+                            side_wv->add_DocumentTitleChanged(
                                 Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
                                     [window](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                     {
@@ -226,7 +191,7 @@ void InitializeSidePanel(HWND window, std::filesystem::path userData)
                                     .Get(),
                                 &documentTitleChangedToken);
 
-                            wv->add_FaviconChanged(
+                            side_wv->add_FaviconChanged(
                                 Callback<ICoreWebView2FaviconChangedEventHandler>(
                                     [window](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                     {
@@ -236,7 +201,7 @@ void InitializeSidePanel(HWND window, std::filesystem::path userData)
                                     .Get(),
                                 &faviconChangedToken);
 
-                            wv2->add_WebMessageReceived(
+                            side_wv->add_WebMessageReceived(
                                 Callback<ICoreWebView2WebMessageReceivedEventHandler>(
                                     [window](
                                         ICoreWebView2* webview,
@@ -353,7 +318,7 @@ void SetWindowTitle(HWND window)
     if (!swapped)
     {
         wil::unique_cotaskmem_string wv_title;
-        wv->get_DocumentTitle(&wv_title);
+        main_wv->get_DocumentTitle(&wv_title);
         auto title = wv_title.get();
 
         if (!ontop)
@@ -369,7 +334,7 @@ void SetWindowTitle(HWND window)
     else
     {
         wil::unique_cotaskmem_string wv_title;
-        wv2->get_DocumentTitle(&wv_title);
+        side_wv->get_DocumentTitle(&wv_title);
         auto title = wv_title.get();
 
         if (!ontop)
@@ -385,55 +350,53 @@ void SetWindowTitle(HWND window)
 
 void SetWindowIcon(HWND window)
 {
-    using namespace Microsoft::WRL;
-
     if (!swapped)
     {
-        if (wv_controller != nullptr)
+        if (main_controller != nullptr)
         {
-            wv->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
-                           Callback<ICoreWebView2GetFaviconCompletedHandler>(
-                               [window](HRESULT result, IStream* iconStream) -> HRESULT
-                               {
-                                   if (iconStream != nullptr)
-                                   {
-                                       Gdiplus::Bitmap iconBitmap(iconStream);
-                                       wil::unique_hicon icon;
-                                       if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
-                                       {
-                                           auto favicon = std::move(icon);
-                                           SendMessageW(window, WM_SETICON, ICON_BIG,
-                                                        (LPARAM)favicon.get());
-                                       }
-                                   }
-                                   return S_OK;
-                               })
-                               .Get());
+            main_wv->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
+                                Callback<ICoreWebView2GetFaviconCompletedHandler>(
+                                    [window](HRESULT result, IStream* iconStream) -> HRESULT
+                                    {
+                                        if (iconStream != nullptr)
+                                        {
+                                            Gdiplus::Bitmap iconBitmap(iconStream);
+                                            wil::unique_hicon icon;
+                                            if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
+                                            {
+                                                auto favicon = std::move(icon);
+                                                SendMessageW(window, WM_SETICON, ICON_BIG,
+                                                             (LPARAM)favicon.get());
+                                            }
+                                        }
+                                        return S_OK;
+                                    })
+                                    .Get());
         }
     }
 
     else
     {
-        if (wv_controller2 != nullptr)
+        if (side_controller != nullptr)
         {
-            wv2->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
-                            Callback<ICoreWebView2GetFaviconCompletedHandler>(
-                                [window](HRESULT result, IStream* iconStream) -> HRESULT
-                                {
-                                    if (iconStream != nullptr)
+            side_wv->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
+                                Callback<ICoreWebView2GetFaviconCompletedHandler>(
+                                    [window](HRESULT result, IStream* iconStream) -> HRESULT
                                     {
-                                        Gdiplus::Bitmap iconBitmap(iconStream);
-                                        wil::unique_hicon icon;
-                                        if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
+                                        if (iconStream != nullptr)
                                         {
-                                            auto favicon = std::move(icon);
-                                            SendMessageW(window, WM_SETICON, ICON_BIG,
-                                                         (LPARAM)favicon.get());
+                                            Gdiplus::Bitmap iconBitmap(iconStream);
+                                            wil::unique_hicon icon;
+                                            if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
+                                            {
+                                                auto favicon = std::move(icon);
+                                                SendMessageW(window, WM_SETICON, ICON_BIG,
+                                                             (LPARAM)favicon.get());
+                                            }
                                         }
-                                    }
-                                    return S_OK;
-                                })
-                                .Get());
+                                        return S_OK;
+                                    })
+                                    .Get());
         }
     }
 }
