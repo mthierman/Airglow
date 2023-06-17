@@ -30,7 +30,8 @@ HWND InitializeWindow(HINSTANCE instance, int ncs)
 {
     SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
     SetEnvironmentVariableW(wvBackgroundColor.c_str(), wvBackgroundColorValue.c_str());
-    SetEnvironmentVariableW(wvAdditionalBrowserArgs.c_str(), wvAdditionalBrowserArgsValue.c_str());
+    // SetEnvironmentVariableW(wvAdditionalBrowserArgs.c_str(),
+    // wvAdditionalBrowserArgsValue.c_str());
 
     auto atom = MakeWindowClass(instance);
 
@@ -241,101 +242,77 @@ RECT GetSidePanelBounds(HWND window)
     return panel;
 }
 
-bool PanelHideMenu(HWND window)
+void PanelHideMenu(HWND window)
 {
     if (!menu)
     {
         menu = true;
-        SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-
-        return true;
+        SendMessageW(window, WM_SIZE, 0, 0);
     }
 
     else
     {
         menu = false;
-        SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-
-        return false;
+        SendMessageW(window, WM_SIZE, 0, 0);
     }
 }
 
-bool PanelSplit(HWND window)
+void PanelSplit(HWND window)
 {
     if (!split)
     {
         split = true;
-        SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-
-        return true;
+        SendMessageW(window, WM_SIZE, 0, 0);
     }
 
     else
     {
         split = false;
-        SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-
-        return false;
+        SendMessageW(window, WM_SIZE, 0, 0);
     }
 }
 
-bool PanelSwap(HWND window)
+void PanelSwap(HWND window)
 {
     if (!swapped)
     {
         swapped = true;
-        SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-
-        return true;
+        SendMessageW(window, WM_SIZE, 0, 0);
     }
 
     else
     {
         swapped = false;
-        SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-
-        return false;
+        SendMessageW(window, WM_SIZE, 0, 0);
     }
 }
 
-bool WindowMaximize(HWND window)
+void WindowMaximize(HWND window)
 {
-    WINDOWPLACEMENT wp = {};
-    wp.length = sizeof(WINDOWPLACEMENT);
-    auto placement = GetWindowPlacement(window, &wp);
-
     if (!fullscreen)
     {
-        if (wp.showCmd == SW_SHOWNORMAL)
+        if (!maximized)
         {
             maximized = true;
             ShowWindow(window, SW_MAXIMIZE);
-            SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-
-            return true;
         }
 
-        if (wp.showCmd == SW_SHOWMAXIMIZED)
+        else
         {
             maximized = false;
             ShowWindow(window, SW_SHOWNORMAL);
-            SetWindowPos(window, nullptr, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-
-            return false;
         }
     }
-
-    return false;
 }
 
-bool WindowFullscreen(HWND window)
+void WindowFullscreen(HWND window)
 {
     static RECT position;
-
     auto style = GetWindowLongPtrW(window, GWL_STYLE);
 
     if (style & WS_OVERLAPPEDWINDOW)
     {
+        fullscreen = true;
         MONITORINFO mi = {sizeof(mi)};
         GetWindowRect(window, &position);
         if (GetMonitorInfoW(MonitorFromWindow(window, MONITOR_DEFAULTTONEAREST), &mi))
@@ -345,26 +322,21 @@ bool WindowFullscreen(HWND window)
                          mi.rcMonitor.right - mi.rcMonitor.left,
                          mi.rcMonitor.bottom - mi.rcMonitor.top,
                          SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
-
-            return true;
         }
     }
 
     else
     {
+        fullscreen = false;
         SetWindowLongPtrW(window, GWL_STYLE, style | WS_OVERLAPPEDWINDOW);
         SetWindowPos(window, nullptr, 0, 0, 0, 0,
                      SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
         SetWindowPos(window, nullptr, position.left, position.top, (position.right - position.left),
                      (position.bottom - position.top), 0);
-
-        return false;
     }
-
-    return false;
 }
 
-bool WindowTop(HWND window)
+void WindowTop(HWND window)
 {
     FLASHWINFO fwi;
     fwi.cbSize = sizeof(FLASHWINFO);
@@ -380,8 +352,6 @@ bool WindowTop(HWND window)
         ontop = false;
         SetWindowPos(window, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         FlashWindowEx(&fwi);
-
-        return false;
     }
 
     else
@@ -389,31 +359,6 @@ bool WindowTop(HWND window)
         ontop = true;
         SetWindowPos(window, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         FlashWindowEx(&fwi);
-
-        return true;
-    }
-
-    return false;
-}
-
-void SetFocus()
-{
-    if (wv_controller != nullptr & wv_controller2 != nullptr)
-    {
-        if (!swapped)
-            wv_controller->MoveFocus(
-                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-
-        if (swapped)
-            wv_controller2->MoveFocus(
-                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-    }
-
-    if (wv_controller3 != nullptr)
-    {
-        if (menu)
-            wv_controller3->MoveFocus(
-                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
     }
 }
 
@@ -527,6 +472,69 @@ bool SetWindow(HWND window, int ncs)
     return false;
 }
 
+void SetWindowFocus(HWND window)
+{
+    if (!swapped)
+    {
+        if (wv_controller != nullptr & wv_controller2 != nullptr)
+        {
+            wv_controller->MoveFocus(
+                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+        }
+    }
+
+    if (swapped)
+    {
+        if (wv_controller != nullptr & wv_controller2 != nullptr)
+        {
+            wv_controller2->MoveFocus(
+                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+        }
+    }
+
+    if (menu)
+    {
+        if (wv_controller3 != nullptr)
+        {
+
+            wv_controller3->MoveFocus(
+                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+        }
+    }
+}
+
+void TestingResize(HWND window)
+{
+    std::wstring dpi = L"DPI: " + std::to_wstring(GetDpiForWindow(window)) + L"\n";
+    OutputDebugStringW(dpi.c_str());
+
+    RECT client;
+    GetClientRect(window, &client);
+    std::wstring clientRect = L"ClientRect: " + std::to_wstring(client.right - client.left) +
+                              L" x " + std::to_wstring(client.bottom - client.top) + L"\n";
+    OutputDebugStringW(clientRect.c_str());
+
+    RECT bounds;
+    GetWindowRect(window, &bounds);
+    std::wstring windowRect = L"WindowRect: " + std::to_wstring(bounds.right - bounds.left) +
+                              L" x " + std::to_wstring(bounds.bottom - bounds.top) + L"\n";
+    OutputDebugStringW(windowRect.c_str());
+}
+
+void WindowResizing(HWND window)
+{
+    // TestingResize(window);
+
+    if (wv_controller != nullptr)
+        wv_controller->put_Bounds(GetMainPanelBounds(window));
+
+    if (wv_controller2 != nullptr)
+        wv_controller2->put_Bounds(GetSidePanelBounds(window));
+
+    if (wv_controller3 != nullptr)
+        wv_controller3->put_Bounds(GetMenuBounds(window));
+}
+
 std::vector<int> GetBounds(HWND window)
 {
     std::vector<int> bounds = {0, 0, 0, 0};
@@ -573,16 +581,22 @@ void Startup(HWND window)
     mainpage = ToWide(settings["mainpage"].get<std::string>());
     sidepage = ToWide(settings["sidepage"].get<std::string>());
 
-    if (fullscreen)
-        WindowFullscreen(window);
-
-    if (maximized)
-        WindowMaximize(window);
-
-    if (ontop)
-        WindowTop(window);
-
     SetWindowPos(window, nullptr, dimensions[0], dimensions[1], dimensions[2], dimensions[3], 0);
+
+    // if (fullscreen & maximized)
+    // {
+    //     fullscreen = false;
+    //     maximized = false;
+    // }
+
+    // if (!fullscreen & maximized)
+    //     WindowMaximize(window);
+
+    // if (!maximized & fullscreen)
+    //     WindowFullscreen(window);
+
+    // if (ontop)
+    //     WindowTop(window);
 }
 
 void Shutdown(HWND window)

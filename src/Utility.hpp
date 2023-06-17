@@ -48,36 +48,36 @@ void WebViewMessages(HWND window, PWSTR message)
 {
     if ((std::wstring)message == std::wstring(L"F1").c_str())
     {
-        split = PanelSplit(window);
+        PanelSplit(window);
     }
 
     if ((std::wstring)message == std::wstring(L"F2").c_str())
     {
-        swapped = PanelSwap(window);
+        PanelSwap(window);
         SetWindowTitle(window);
         SetWindowIcon(window);
     }
 
     if ((std::wstring)message == std::wstring(L"F4").c_str())
     {
-        menu = PanelHideMenu(window);
+        PanelHideMenu(window);
         SetWindowTitle(window);
         SetWindowIcon(window);
     }
 
     if ((std::wstring)message == std::wstring(L"F5").c_str())
     {
-        maximized = WindowMaximize(window);
+        WindowMaximize(window);
     }
 
     if ((std::wstring)message == std::wstring(L"F11").c_str())
     {
-        fullscreen = WindowFullscreen(window);
+        WindowFullscreen(window);
     }
 
     if ((std::wstring)message == std::wstring(L"F9").c_str())
     {
-        ontop = WindowTop(window);
+        WindowTop(window);
         SetWindowTitle(window);
         SetWindowIcon(window);
     }

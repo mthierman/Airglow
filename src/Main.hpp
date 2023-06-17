@@ -7,33 +7,12 @@ std::wstring windowName(L"Airglow");
 std::wstring menuName(L"menu");
 std::wstring wvBackgroundColor(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR");
 std::wstring wvBackgroundColorValue(L"0");
-std::wstring wvAdditionalBrowserArgs(L"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS");
+// std::wstring wvAdditionalBrowserArgs(L"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS");
+// std::wstring wvAdditionalBrowserArgsValue(L"");
 // std::wstring wvAdditionalBrowserArgsValue(L"--enable-features="
 //                                           L"msWebView2BrowserHitTransparent");
-std::wstring wvAdditionalBrowserArgsValue(L"");
-// std::wstring wvScript(
-//     L"document.onreadystatechange = () => {if (document.readyState === 'complete') {onkeydown = "
-//     L"(e) => {if (e.ctrlKey && e.key === 'w') {window.chrome.webview.postMessage('close')} "
-//     L"else "
-//     L"{window.chrome.webview.postMessage(e.key)}}}}");
-
 std::wstring script;
-
-// std::wstring
-//     wvScript(L"document.onreadystatechange = () => {if (document.readyState === 'interactive') "
-//              L"{let scheme = document.createElement(\"meta\");"
-//              L"scheme.setAttribute(\"name\", \"color-scheme\");"
-//              L"scheme.setAttribute(\"content\", \"light dark\");"
-//              L"document.getElementsByTagName(\"head\")[0].appendChild(scheme);"
-//              L"document.documentElement.style.setProperty(\"color-scheme\", \"light dark\");}}");
-
-// std::wstring wvScriptBottom(
-//     L"document.onreadystatechange = () => {if (document.readyState === 'complete') {onkeydown "
-//     L"= "
-//     L"(e) => {if (e.ctrlKey && e.key === 'w') {window.chrome.webview.postMessage('close')} "
-//     L"if (e.key === 'F3') {e.preventDefault();} "
-//     L"else "
-//     L"{console.log(e); window.chrome.webview.postMessage(e.key)}}}}");
+std::wstring menuScript;
 
 // MAIN
 int __stdcall wWinMain(HINSTANCE, HINSTANCE, PWSTR, int);
@@ -48,18 +27,20 @@ void SetWindowIcon(HWND window);
 RECT GetMenuBounds(HWND window);
 RECT GetMainPanelBounds(HWND window);
 RECT GetSidePanelBounds(HWND window);
-bool PanelHideMenu(HWND);
-bool PanelSplit(HWND);
-bool PanelSwap(HWND window);
-bool WindowMaximize(HWND);
-bool WindowFullscreen(HWND);
-bool WindowTop(HWND);
+void PanelHideMenu(HWND);
+void PanelSplit(HWND);
+void PanelSwap(HWND window);
+void WindowMaximize(HWND);
+void WindowFullscreen(HWND);
+void WindowTop(HWND);
 bool CheckSystemDarkMode();
 bool SetDarkTitle();
 bool SetDarkMode(HWND);
 bool SetMica(HWND);
 bool SetWindow(HWND, int);
-void SetFocus();
+void SetWindowFocus(HWND);
+void TestingResize(HWND);
+void WindowResizing(HWND window);
 std::vector<int> GetBounds(HWND window);
 RECT BoundsToRect(HWND window, std::vector<int> bounds);
 void Startup(HWND window);
@@ -89,7 +70,6 @@ Gdiplus::GdiplusStartupInput gdiplusStartupInput;
 // SETTINGS
 std::filesystem::path GetAppDataPath();
 std::filesystem::path GetSettingsFilePath(std::filesystem::path appData);
-std::wstring GetScriptFile(std::filesystem::path appData);
 nlohmann::json DefaultSettings();
 nlohmann::json CurrentSettings(HWND window);
 nlohmann::json LoadSettings(std::filesystem::path settingsFile);
@@ -97,6 +77,9 @@ void SaveSettings(nlohmann::json input, std::filesystem::path settingsFile);
 std::filesystem::path appData;
 
 // WEBVIEW
+std::wstring GetScriptFile(std::filesystem::path appData);
+std::wstring GetScript(std::filesystem::path appData);
+std::wstring GetMenuScript(std::filesystem::path appData);
 void InitializeMenu(HWND window, std::filesystem::path appData);
 void InitializeMainPanel(HWND window, std::filesystem::path appData);
 void InitializeSidePanel(HWND window, std::filesystem::path appData);

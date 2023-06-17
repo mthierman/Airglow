@@ -11,7 +11,8 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
 
     appData = GetAppDataPath();
 
-    script = GetScriptFile(appData);
+    script = GetScript(appData);
+    menuScript = GetMenuScript(appData);
 
     if (std::filesystem::exists(appData))
     {

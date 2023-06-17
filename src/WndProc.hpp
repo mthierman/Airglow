@@ -1,21 +1,3 @@
-void TestingResize(HWND window)
-{
-    std::wstring dpi = L"DPI: " + std::to_wstring(GetDpiForWindow(window)) + L"\n";
-    OutputDebugStringW(dpi.c_str());
-
-    RECT client;
-    GetClientRect(window, &client);
-    std::wstring clientRect = L"ClientRect: " + std::to_wstring(client.right - client.left) +
-                              L" x " + std::to_wstring(client.bottom - client.top) + L"\n";
-    OutputDebugStringW(clientRect.c_str());
-
-    RECT bounds;
-    GetWindowRect(window, &bounds);
-    std::wstring windowRect = L"WindowRect: " + std::to_wstring(bounds.right - bounds.left) +
-                              L" x " + std::to_wstring(bounds.bottom - bounds.top) + L"\n";
-    OutputDebugStringW(windowRect.c_str());
-}
-
 __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
 {
     switch (msg)
@@ -43,40 +25,16 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
     break;
     case WM_SETFOCUS:
     {
-        if (wv_controller != nullptr & wv_controller2 != nullptr)
-        {
-            if (!swapped)
-                wv_controller->MoveFocus(
-                    COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-
-            if (swapped)
-                wv_controller2->MoveFocus(
-                    COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-        }
-
-        if (wv_controller3 != nullptr)
-        {
-            if (menu)
-                wv_controller3->MoveFocus(
-                    COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-        }
+        SetWindowFocus(window);
+    }
+    break;
+    case WM_WINDOWPOSCHANGING:
+    {
     }
     break;
     case WM_SIZE:
-    case WM_WINDOWPOSCHANGING:
     {
-        // TestingResize(window);
-
-        if (wv_controller != nullptr)
-            wv_controller->put_Bounds(GetMainPanelBounds(window));
-
-        if (wv_controller2 != nullptr)
-            wv_controller2->put_Bounds(GetSidePanelBounds(window));
-
-        if (wv_controller3 != nullptr)
-            wv_controller3->put_Bounds(GetMenuBounds(window));
-
-        SendMessageW(window, WM_SETFOCUS, 0, 0);
+        WindowResizing(window);
     }
     break;
     case WM_GETMINMAXINFO:
@@ -90,36 +48,36 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
     {
         if (wparam == VK_F1)
         {
-            split = PanelSplit(window);
+            PanelSplit(window);
         }
 
         if (wparam == VK_F2)
         {
-            swapped = PanelSwap(window);
+            PanelSwap(window);
             SetWindowTitle(window);
             SetWindowIcon(window);
         }
 
         if (wparam == VK_F4)
         {
-            menu = PanelHideMenu(window);
+            PanelHideMenu(window);
             SetWindowTitle(window);
             SetWindowIcon(window);
         }
 
         if (wparam == VK_F5)
         {
-            maximized = WindowMaximize(window);
+            WindowMaximize(window);
         }
 
         if (wparam == VK_F11)
         {
-            fullscreen = WindowFullscreen(window);
+            WindowFullscreen(window);
         }
 
         if (wparam == VK_F9)
         {
-            ontop = WindowTop(window);
+            WindowTop(window);
             SetWindowTitle(window);
             SetWindowIcon(window);
         }
