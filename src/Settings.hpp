@@ -2,6 +2,7 @@ std::wstring ToWide(std::string input)
 {
     std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
     std::wstring output = converter.from_bytes(input);
+
     return output;
 }
 
@@ -9,6 +10,7 @@ std::string ToString(std::wstring input)
 {
     std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
     std::string output = converter.to_bytes(input);
+
     return output;
 }
 
@@ -17,18 +19,23 @@ std::filesystem::path GetAppDataPath()
     std::filesystem::path path;
     std::wstring outBuffer;
     PWSTR buffer;
+
     auto getKnownFolderPath = SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &buffer);
+
     if (getKnownFolderPath != S_OK)
     {
         CoTaskMemFree(buffer);
         return path;
     }
+
     outBuffer = buffer;
     path = outBuffer + std::filesystem::path::preferred_separator + L"Airglow";
+
     CoTaskMemFree(buffer);
 
     if (!std::filesystem::exists(path))
         std::filesystem::create_directory(path);
+
     return path;
 }
 
@@ -45,6 +52,7 @@ std::filesystem::path GetSettingsFilePath()
         output << defaultSettings.dump(4);
         output.close();
     }
+
     return file;
 }
 
@@ -60,6 +68,7 @@ nlohmann::json DefaultSettings()
     settings["menu"] = false;
     settings["mainpage"] = "https://wwww.google.com/";
     settings["sidepage"] = "https://wwww.google.com/";
+
     return settings;
 }
 
@@ -75,6 +84,7 @@ nlohmann::json CurrentSettings(HWND window)
     settings["menu"] = menu;
     settings["mainpage"] = ToString(mainpage);
     settings["sidepage"] = ToString(sidepage);
+
     return settings;
 }
 
@@ -89,6 +99,7 @@ nlohmann::json LoadSettings(std::filesystem::path settingsFile)
             saved = nlohmann::json::parse(f);
         f.close();
     }
+
     return saved;
 }
 

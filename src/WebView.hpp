@@ -2,19 +2,24 @@ std::pair<std::wstring, std::wstring> CommandLine()
 {
     std::pair<std::wstring, std::wstring> pair;
     int number;
+
     auto cmd = GetCommandLineW();
     auto args = CommandLineToArgvW(cmd, &number);
+
     if (number == 2)
     {
         pair.first = args[1];
         pair.second = args[1];
     }
+
     if (number == 3)
     {
         pair.first = args[1];
         pair.second = args[2];
     }
+
     LocalFree(args);
+
     return pair;
 }
 
@@ -24,32 +29,38 @@ void WebViewMessages(HWND window, PWSTR message)
     {
         split = PanelSplit(window);
     }
+
     if ((std::wstring)message == std::wstring(L"F2").c_str())
     {
         swapped = PanelSwap(window);
         SetWindowTitle(window);
         SetWindowIcon(window);
     }
+
     if ((std::wstring)message == std::wstring(L"F4").c_str())
     {
         menu = PanelHideMenu(window);
         SetWindowTitle(window);
         SetWindowIcon(window);
     }
+
     if ((std::wstring)message == std::wstring(L"F10").c_str())
     {
         maximized = WindowMaximize(window);
     }
+
     if ((std::wstring)message == std::wstring(L"F11").c_str())
     {
         fullscreen = WindowFullscreen(window);
     }
+
     if ((std::wstring)message == std::wstring(L"F9").c_str())
     {
         ontop = WindowTop(window);
         SetWindowTitle(window);
         SetWindowIcon(window);
     }
+
     if ((std::wstring)message == std::wstring(L"close").c_str())
     {
         SendMessageW(window, WM_CLOSE, 0, 0);
