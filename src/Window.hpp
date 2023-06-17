@@ -427,7 +427,32 @@ bool SetWindow(HWND window, int ncs)
     return false;
 }
 
-void WindowSettings(HWND window)
+std::vector<int> GetBounds(HWND window)
+{
+    std::vector<int> bounds = {0, 0, 0, 0};
+    RECT r;
+    if (GetWindowRect(window, &r))
+    {
+        auto x = r.left;
+        auto y = r.top;
+        auto cx = r.right - r.left;
+        auto cy = r.bottom - r.top;
+        bounds = {x, y, cx, cy};
+    }
+    return bounds;
+}
+
+RECT BoundsToRect(HWND window, std::vector<int> bounds)
+{
+    RECT rect;
+    rect.left = bounds[0];
+    rect.top = bounds[1];
+    rect.right = bounds[0] + bounds[2];
+    rect.bottom = bounds[1] + bounds[3];
+    return rect;
+}
+
+void Startup(HWND window)
 {
     auto settingsFile = GetSettingsFilePath();
     nlohmann::json settings = LoadSettings(settingsFile);
@@ -438,6 +463,8 @@ void WindowSettings(HWND window)
     ontop = settings["ontop"].get<bool>();
     split = settings["split"].get<bool>();
     swapped = settings["swapped"].get<bool>();
+    url1 = ToWide(settings["url1"].get<std::string>());
+    url2 = ToWide(settings["url2"].get<std::string>());
     if (fullscreen)
         WindowFullscreen(window);
     if (maximized)
@@ -450,6 +477,6 @@ void WindowSettings(HWND window)
 void Shutdown(HWND window)
 {
     auto settingsFile = GetSettingsFilePath();
-    nlohmann::json settings = LoadSettings(settingsFile);
+    nlohmann::json settings = CurrentSettings(window);
     SaveSettings(settings, settingsFile);
 }

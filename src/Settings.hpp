@@ -58,6 +58,23 @@ nlohmann::json DefaultSettings()
     settings["split"] = false;
     settings["swapped"] = false;
     settings["menu"] = false;
+    settings["url1"] = "about:blank";
+    settings["url2"] = "about:blank";
+    return settings;
+}
+
+nlohmann::json CurrentSettings(HWND window)
+{
+    nlohmann::json settings;
+    settings["dimensions"] = GetBounds(window);
+    settings["ontop"] = ontop;
+    settings["maximized"] = maximized;
+    settings["fullscreen"] = fullscreen;
+    settings["split"] = split;
+    settings["swapped"] = swapped;
+    settings["menu"] = menu;
+    settings["url1"] = ToString(url1);
+    settings["url2"] = ToString(url2);
     return settings;
 }
 

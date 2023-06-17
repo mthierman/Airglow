@@ -24,7 +24,9 @@ bool SetDarkTitle();
 bool SetDarkMode(HWND);
 bool SetMica(HWND);
 bool SetWindow(HWND, int);
-void WindowSettings(HWND window);
+std::vector<int> GetBounds(HWND window);
+RECT BoundsToRect(HWND window, std::vector<int> bounds);
+void Startup(HWND window);
 void Shutdown(HWND window);
 enum PreferredAppMode
 {
@@ -52,6 +54,7 @@ std::string ToString(std::wstring input);
 std::filesystem::path GetAppDataPath();
 std::filesystem::path GetSettingsFilePath();
 nlohmann::json DefaultSettings();
+nlohmann::json CurrentSettings(HWND window);
 nlohmann::json LoadSettings(std::filesystem::path settingsFile);
 void SaveSettings(nlohmann::json input, std::filesystem::path settingsFile);
 
