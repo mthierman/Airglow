@@ -24,6 +24,8 @@ bool SetDarkTitle();
 bool SetDarkMode(HWND);
 bool SetMica(HWND);
 bool SetWindow(HWND, int);
+void WindowSettings(HWND window);
+void Shutdown(HWND window);
 enum PreferredAppMode
 {
     Default,

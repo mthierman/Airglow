@@ -426,3 +426,30 @@ bool SetWindow(HWND window, int ncs)
     }
     return false;
 }
+
+void WindowSettings(HWND window)
+{
+    auto settingsFile = GetSettingsFilePath();
+    nlohmann::json settings = LoadSettings(settingsFile);
+    dimensions = settings["dimensions"].get<std::vector<int>>();
+    fullscreen = settings["fullscreen"].get<bool>();
+    maximized = settings["maximized"].get<bool>();
+    menu = settings["menu"].get<bool>();
+    ontop = settings["ontop"].get<bool>();
+    split = settings["split"].get<bool>();
+    swapped = settings["swapped"].get<bool>();
+    if (fullscreen)
+        WindowFullscreen(window);
+    if (maximized)
+        WindowMaximize(window);
+    if (ontop)
+        WindowTop(window);
+    SetWindowPos(window, nullptr, dimensions[0], dimensions[1], dimensions[2], dimensions[3], 0);
+}
+
+void Shutdown(HWND window)
+{
+    auto settingsFile = GetSettingsFilePath();
+    nlohmann::json settings = LoadSettings(settingsFile);
+    SaveSettings(settings, settingsFile);
+}
