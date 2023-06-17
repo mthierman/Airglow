@@ -9,8 +9,6 @@
 int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
 {
     window = InitializeWindow(instance, ncs);
-    Startup();
-
     appData = GetAppDataPath();
     settingsFile = GetSettingsFilePath(appData);
 
@@ -19,24 +17,28 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
         InitializeWebViews(window, appData);
     }
 
+    Startup();
+
     MSG msg = {};
     while (GetMessageW(&msg, nullptr, 0, 0))
     {
         TranslateMessage(&msg);
         DispatchMessageW(&msg);
     }
+
     return 0;
 }
 
 void Startup()
 {
     LoadSettings();
-
-    Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
-
-    // SetWindowPos(window, nullptr, dimensions[0], dimensions[1], dimensions[2], dimensions[3], 0);
+    OutputDebugStringW(BoolToWide(maximized).c_str());
+    SetWindowPos(window, nullptr, dimensions[0], dimensions[1], dimensions[2], dimensions[3], 0);
+    if (fullscreen)
+        WindowFullscreen(window);
     if (maximized)
         ShowWindow(window, SW_MAXIMIZE);
+    Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
 }
 
 void Shutdown()
@@ -45,10 +47,7 @@ void Shutdown()
     RECT rect;
     GetWindowRect(window, &rect);
     dimensions = RectToBounds(rect);
-
     SaveSettings();
-
     Gdiplus::GdiplusShutdown(gdiplusToken);
-
     DestroyWindow(window);
 }

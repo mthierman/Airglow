@@ -3,7 +3,7 @@ void Messages(std::wstring message)
     std::wstring splitKey = std::wstring(L"F1");
     std::wstring swapKey = std::wstring(L"F2");
     std::wstring hideMenuKey = std::wstring(L"F4");
-    std::wstring maximizeKey = std::wstring(L"F5");
+    std::wstring maximizeKey = std::wstring(L"F6");
     std::wstring fullscreenKey = std::wstring(L"F11");
     std::wstring onTopKey = std::wstring(L"F9");
     std::wstring closeKey = std::wstring(L"close");

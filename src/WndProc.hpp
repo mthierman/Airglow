@@ -4,6 +4,7 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
     {
     case WM_PAINT:
     {
+        DebugMessages(window);
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(window, &ps);
         RECT bounds;
@@ -75,7 +76,7 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
             SendMessageW(window, WM_SETFOCUS, 0, 0);
         }
 
-        if (wparam == VK_F5)
+        if (wparam == VK_F6)
         {
             maximized = WindowMaximize(window);
             SendMessageW(window, WM_SIZE, 0, 0);

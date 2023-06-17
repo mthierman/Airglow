@@ -411,8 +411,6 @@ void UpdateFocus()
 
 void UpdateBounds(HWND window)
 {
-    // DebugMessages(window);
-
     if (main_controller != nullptr)
         main_controller->put_Bounds(GetMainPanelBounds(window));
 
@@ -439,4 +437,6 @@ void DebugMessages(HWND window)
     std::wstring windowRect = L"WindowRect: " + std::to_wstring(bounds.right - bounds.left) +
                               L" x " + std::to_wstring(bounds.bottom - bounds.top) + L"\n";
     OutputDebugStringW(windowRect.c_str());
+
+    OutputDebugStringW(BoolToWide(maximized).c_str());
 }
