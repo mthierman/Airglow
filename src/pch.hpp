@@ -10,8 +10,6 @@
 #include <ShlObj.h>
 #include <locale>
 #include <codecvt>
-#include <string>
 #include <filesystem>
 #include <fstream>
 #include <json.hpp>
-#include <utility>

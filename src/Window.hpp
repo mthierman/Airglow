@@ -148,14 +148,12 @@ RECT GetMainPanelBounds(HWND window)
     RECT bounds = {0, 0, 0, 0};
     RECT panel = {0, 0, 0, 0};
     GetClientRect(window, &bounds);
-    if (!split & !swapped)
-    {
-        panel = bounds;
-    }
-    if (!split & swapped)
-    {
+    if (menu)
         return panel;
-    }
+    if (!split & !swapped)
+        panel = bounds;
+    if (!split & swapped)
+        return panel;
     if (split & !swapped)
     {
         panel = {
@@ -183,13 +181,9 @@ RECT GetSidePanelBounds(HWND window)
     RECT panel = {0, 0, 0, 0};
     GetClientRect(window, &bounds);
     if (!split & !swapped)
-    {
         return panel;
-    }
     if (!split & swapped)
-    {
         panel = bounds;
-    }
     if (split & !swapped)
     {
         panel = {

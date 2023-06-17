@@ -50,12 +50,18 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
                 wv_controller2->MoveFocus(
                     COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
         }
+        if (wv_controller3 != nullptr)
+        {
+            if (menu)
+                wv_controller3->MoveFocus(
+                    COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+        }
     }
     break;
     case WM_SIZE:
     case WM_WINDOWPOSCHANGING:
     {
-        // TestingResize(window);
+        TestingResize(window);
         if (wv_controller != nullptr)
         {
             wv_controller->put_Bounds(GetMainPanelBounds(window));
@@ -64,10 +70,10 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
         {
             wv_controller2->put_Bounds(GetSidePanelBounds(window));
         }
-        // if (wv_controller3 != nullptr)
-        // {
-        //     wv_controller3->put_Bounds(GetMenuBounds(window));
-        // }
+        if (wv_controller3 != nullptr)
+        {
+            wv_controller3->put_Bounds(GetMenuBounds(window));
+        }
         SendMessageW(window, WM_SETFOCUS, 0, 0);
     }
     break;
@@ -93,7 +99,9 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
         }
         if (wparam == VK_F4)
         {
-            // menu = PanelHideMenu(window);
+            menu = PanelHideMenu(window);
+            SetWindowTitle(window);
+            SetWindowIcon(window);
         }
         if (wparam == VK_F10)
         {

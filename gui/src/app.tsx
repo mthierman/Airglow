@@ -1,38 +1,33 @@
 export default function App() {
     return (
-        <div className="flex gap-2 p-2 text-neutral-400">
-            <select className="w-min rounded bg-[#00000060]">
-                <option className="bg-black" value="typescript">
-                    TypeScript
-                </option>
-                <option className="bg-black" value="playground">
-                    TypeScript Playground
-                </option>
-                <option className="bg-black" value="google">
-                    Google
-                </option>
-            </select>
-            <input
-                name="myInput"
-                type="text"
-                className="w-full rounded bg-[#00000060] p-1 text-center outline-none focus:outline-none"
-            />
-            <select className="w-min rounded bg-[#00000060]">
-                <option className="bg-black" value="typescript">
-                    TypeScript
-                </option>
-                <option className="bg-black" value="playground">
-                    TypeScript Playground
-                </option>
-                <option className="bg-black" value="google">
-                    Google
-                </option>
-            </select>
-            <input
-                name="myInput2"
-                type="text"
-                className="w-full rounded bg-[#00000060] p-1 text-center outline-none focus:outline-none"
-            />
+        <div className="h-full w-full rounded p-8">
+            <div className="h-full w-full rounded-xl bg-[#00000040] text-neutral-400 shadow-2xl shadow-neutral-700">
+                <div className="flex flex-col gap-4 p-4">
+                    <div className="text-2xl text-neutral-400">Settings</div>
+                    <label className="text-2x flex items-center">
+                        <span className="w-full whitespace-nowrap">
+                            Homepage: Main Panel
+                        </span>
+                        <input
+                            className="w-full rounded-xl border-2 border-neutral-800 bg-black p-2"
+                            type="url"
+                            name="homepage"
+                            defaultValue="https://www.google.com/"
+                        />
+                    </label>
+                    <label className="text-2x flex items-center">
+                        <span className="w-full whitespace-nowrap">
+                            Homepage: Side Panel
+                        </span>
+                        <input
+                            className="w-full rounded-xl border-2 border-neutral-800 bg-black p-2"
+                            type="url"
+                            name="homepage"
+                            defaultValue="https://www.bing.com/"
+                        />
+                    </label>
+                </div>
+            </div>
         </div>
     );
 }

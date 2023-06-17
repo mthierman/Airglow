@@ -32,7 +32,9 @@ void WebViewMessages(HWND window, PWSTR message)
     }
     if ((std::wstring)message == std::wstring(L"F4").c_str())
     {
-        // menu = PanelHideMenu(window);
+        menu = PanelHideMenu(window);
+        SetWindowTitle(window);
+        SetWindowIcon(window);
     }
     if ((std::wstring)message == std::wstring(L"F10").c_str())
     {
@@ -84,7 +86,7 @@ void InitializeMenu(HWND window, std::filesystem::path userData)
                             wv_settings3->put_IsWebMessageEnabled(true);
                             wv_settings3->put_IsZoomControlEnabled(false);
                             wv_controller3->put_Bounds(GetMenuBounds(window));
-                            // wv3->Navigate(url3.c_str());
+                            wv3->Navigate(L"https://localhost:8000");
                             EventRegistrationToken msgToken;
                             wv3->ExecuteScript(wvScriptBottom.c_str(), nullptr);
                             wv3->AddScriptToExecuteOnDocumentCreated(wvScriptBottom.c_str(),
