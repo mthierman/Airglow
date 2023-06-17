@@ -49,8 +49,8 @@ nlohmann::json DefaultSettings()
     settings["split"] = false;
     settings["swapped"] = false;
     settings["menu"] = false;
-    settings["mainpage"] = "https://wwww.google.com/";
-    settings["sidepage"] = "https://wwww.google.com/";
+    settings["mainpage"] = "https://www.google.com/";
+    settings["sidepage"] = "https://www.google.com/";
 
     return settings;
 }
