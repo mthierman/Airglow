@@ -30,8 +30,6 @@ HWND InitializeWindow(HINSTANCE instance, int ncs)
 {
     SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
     SetEnvironmentVariableW(wvBackgroundColor.c_str(), wvBackgroundColorValue.c_str());
-    // SetEnvironmentVariableW(wvAdditionalBrowserArgs.c_str(),
-    // wvAdditionalBrowserArgsValue.c_str());
 
     auto atom = MakeWindowClass(instance);
 
@@ -55,96 +53,33 @@ HWND InitializeWindow(HINSTANCE instance, int ncs)
     return window;
 }
 
-void SetWindowTitle(HWND window)
+std::vector<int> RectToBounds(HWND window)
 {
-    std::wstring titleTop = L" [On Top]";
+    std::vector<int> bounds = {0, 0, 0, 0};
+    RECT r;
 
-    if (!swapped)
+    if (GetWindowRect(window, &r))
     {
-        wil::unique_cotaskmem_string wv_title;
-        wv->get_DocumentTitle(&wv_title);
-        auto title = wv_title.get();
-
-        if (!ontop)
-            SetWindowTextW(window, title);
-
-        if (ontop)
-        {
-            std::wstring add = title + titleTop;
-            SetWindowTextW(window, add.c_str());
-        }
+        auto x = r.left;
+        auto y = r.top;
+        auto cx = r.right - r.left;
+        auto cy = r.bottom - r.top;
+        bounds = {x, y, cx, cy};
     }
 
-    else
-    {
-        wil::unique_cotaskmem_string wv_title;
-        wv2->get_DocumentTitle(&wv_title);
-        auto title = wv_title.get();
-
-        if (!ontop)
-            SetWindowTextW(window, title);
-
-        if (ontop)
-        {
-            std::wstring add = title + titleTop;
-            SetWindowTextW(window, add.c_str());
-        }
-    }
+    return bounds;
 }
 
-void SetWindowIcon(HWND window)
+RECT BoundsToRect(HWND window, std::vector<int> bounds)
 {
-    using namespace Microsoft::WRL;
+    RECT rect;
 
-    if (!swapped)
-    {
-        if (wv_controller != nullptr)
-        {
-            wv->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
-                           Callback<ICoreWebView2GetFaviconCompletedHandler>(
-                               [window](HRESULT result, IStream* iconStream) -> HRESULT
-                               {
-                                   if (iconStream != nullptr)
-                                   {
-                                       Gdiplus::Bitmap iconBitmap(iconStream);
-                                       wil::unique_hicon icon;
-                                       if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
-                                       {
-                                           auto favicon = std::move(icon);
-                                           SendMessageW(window, WM_SETICON, ICON_BIG,
-                                                        (LPARAM)favicon.get());
-                                       }
-                                   }
-                                   return S_OK;
-                               })
-                               .Get());
-        }
-    }
+    rect.left = bounds[0];
+    rect.top = bounds[1];
+    rect.right = bounds[0] + bounds[2];
+    rect.bottom = bounds[1] + bounds[3];
 
-    else
-    {
-        if (wv_controller2 != nullptr)
-        {
-            wv2->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
-                            Callback<ICoreWebView2GetFaviconCompletedHandler>(
-                                [window](HRESULT result, IStream* iconStream) -> HRESULT
-                                {
-                                    if (iconStream != nullptr)
-                                    {
-                                        Gdiplus::Bitmap iconBitmap(iconStream);
-                                        wil::unique_hicon icon;
-                                        if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
-                                        {
-                                            auto favicon = std::move(icon);
-                                            SendMessageW(window, WM_SETICON, ICON_BIG,
-                                                         (LPARAM)favicon.get());
-                                        }
-                                    }
-                                    return S_OK;
-                                })
-                                .Get());
-        }
-    }
+    return rect;
 }
 
 RECT GetMenuBounds(HWND window)
@@ -533,79 +468,4 @@ void WindowResizing(HWND window)
 
     if (wv_controller3 != nullptr)
         wv_controller3->put_Bounds(GetMenuBounds(window));
-}
-
-std::vector<int> GetBounds(HWND window)
-{
-    std::vector<int> bounds = {0, 0, 0, 0};
-    RECT r;
-
-    if (GetWindowRect(window, &r))
-    {
-        auto x = r.left;
-        auto y = r.top;
-        auto cx = r.right - r.left;
-        auto cy = r.bottom - r.top;
-        bounds = {x, y, cx, cy};
-    }
-
-    return bounds;
-}
-
-RECT BoundsToRect(HWND window, std::vector<int> bounds)
-{
-    RECT rect;
-
-    rect.left = bounds[0];
-    rect.top = bounds[1];
-    rect.right = bounds[0] + bounds[2];
-    rect.bottom = bounds[1] + bounds[3];
-
-    return rect;
-}
-
-void Startup(HWND window)
-{
-    Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
-
-    auto settingsFile = GetSettingsFilePath(appData);
-
-    nlohmann::json settings = LoadSettings(settingsFile);
-    dimensions = settings["dimensions"].get<std::vector<int>>();
-    fullscreen = settings["fullscreen"].get<bool>();
-    maximized = settings["maximized"].get<bool>();
-    menu = settings["menu"].get<bool>();
-    ontop = settings["ontop"].get<bool>();
-    split = settings["split"].get<bool>();
-    swapped = settings["swapped"].get<bool>();
-    mainpage = ToWide(settings["mainpage"].get<std::string>());
-    sidepage = ToWide(settings["sidepage"].get<std::string>());
-
-    SetWindowPos(window, nullptr, dimensions[0], dimensions[1], dimensions[2], dimensions[3], 0);
-
-    // if (fullscreen & maximized)
-    // {
-    //     fullscreen = false;
-    //     maximized = false;
-    // }
-
-    // if (!fullscreen & maximized)
-    //     WindowMaximize(window);
-
-    // if (!maximized & fullscreen)
-    //     WindowFullscreen(window);
-
-    // if (ontop)
-    //     WindowTop(window);
-}
-
-void Shutdown(HWND window)
-{
-    Gdiplus::GdiplusShutdown(gdiplusToken);
-
-    auto settingsFile = GetSettingsFilePath(appData);
-    nlohmann::json settings = CurrentSettings(window);
-    SaveSettings(settings, settingsFile);
-
-    DestroyWindow(window);
 }

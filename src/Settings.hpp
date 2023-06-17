@@ -58,7 +58,7 @@ nlohmann::json DefaultSettings()
 nlohmann::json CurrentSettings(HWND window)
 {
     nlohmann::json settings;
-    settings["dimensions"] = GetBounds(window);
+    settings["dimensions"] = dimensions;
     settings["ontop"] = ontop;
     settings["maximized"] = maximized;
     settings["fullscreen"] = fullscreen;

@@ -105,3 +105,47 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
     }
     return 0;
 }
+
+void WebViewMessages(HWND window, PWSTR message)
+{
+    if ((std::wstring)message == std::wstring(L"F1").c_str())
+    {
+        PanelSplit(window);
+    }
+
+    if ((std::wstring)message == std::wstring(L"F2").c_str())
+    {
+        PanelSwap(window);
+        SetWindowTitle(window);
+        SetWindowIcon(window);
+    }
+
+    if ((std::wstring)message == std::wstring(L"F4").c_str())
+    {
+        PanelHideMenu(window);
+        SetWindowTitle(window);
+        SetWindowIcon(window);
+    }
+
+    if ((std::wstring)message == std::wstring(L"F5").c_str())
+    {
+        WindowMaximize(window);
+    }
+
+    if ((std::wstring)message == std::wstring(L"F11").c_str())
+    {
+        WindowFullscreen(window);
+    }
+
+    if ((std::wstring)message == std::wstring(L"F9").c_str())
+    {
+        WindowTop(window);
+        SetWindowTitle(window);
+        SetWindowIcon(window);
+    }
+
+    if ((std::wstring)message == std::wstring(L"close").c_str())
+    {
+        SendMessageW(window, WM_CLOSE, 0, 0);
+    }
+}

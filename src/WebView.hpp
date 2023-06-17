@@ -1,91 +1,3 @@
-std::wstring GetScriptFile(std::filesystem::path appData)
-{
-    std::stringstream buffer;
-    std::wstring script;
-
-    std::filesystem::path file =
-        (appData.wstring() + std::filesystem::path::preferred_separator + L"Airglow.js");
-
-    if (!std::filesystem::exists(file))
-
-        if (std::filesystem::exists(file))
-        {
-            std::ifstream f(file);
-            if (!std::filesystem::is_empty(file))
-            {
-                buffer << f.rdbuf();
-                script = ToWide(buffer.str());
-            }
-            f.close();
-        }
-
-    return script;
-}
-
-std::wstring GetScript(std::filesystem::path appData)
-{
-    std::wstring script = LR"(
-        document.onreadystatechange = () => {
-            if (document.readyState === "interactive") {
-                let scheme = document.createElement("meta");
-                scheme.setAttribute("name", "color-scheme");
-                scheme.setAttribute("content", "light dark");
-                document.getElementsByTagName("head")[0].appendChild(scheme);
-                document.documentElement.style.setProperty(
-                    "color-scheme",
-                    "light dark"
-                );
-            }
-            if (document.readyState === "complete") {
-                onkeydown = (e) => {
-                    if (e.key === "F3") {
-                        e.preventDefault();
-                    }
-                    if (e.ctrlKey && e.key === "w") {
-                        window.chrome.webview.postMessage("close");
-                    } else {
-                        window.chrome.webview.postMessage(e.key);
-                    }
-                };
-            }
-        };
-    )";
-
-    return script;
-}
-
-std::wstring GetMenuScript(std::filesystem::path appData)
-{
-    std::wstring script = LR"(
-        document.onreadystatechange = () => {
-            if (document.readyState === "interactive") {
-                let scheme = document.createElement("meta");
-                scheme.setAttribute("name", "color-scheme");
-                scheme.setAttribute("content", "light dark");
-                document.getElementsByTagName("head")[0].appendChild(scheme);
-                document.documentElement.style.setProperty(
-                    "color-scheme",
-                    "light dark"
-                );
-            }
-            if (document.readyState === "complete") {
-                onkeydown = (e) => {
-                    if (e.key === "F3") {
-                        e.preventDefault();
-                    }
-                    if (e.ctrlKey && e.key === "w") {
-                        window.chrome.webview.postMessage("close");
-                    } else {
-                        window.chrome.webview.postMessage(e.key);
-                    }
-                };
-            }
-        };
-    )";
-
-    return script;
-}
-
 void InitializeMenu(HWND window, std::filesystem::path userData)
 {
     using namespace Microsoft::WRL;
@@ -347,4 +259,184 @@ void InitializeSidePanel(HWND window, std::filesystem::path userData)
                 return S_OK;
             })
             .Get());
+}
+
+std::wstring GetScriptFile(std::filesystem::path appData)
+{
+    std::stringstream buffer;
+    std::wstring script;
+
+    std::filesystem::path file =
+        (appData.wstring() + std::filesystem::path::preferred_separator + L"Airglow.js");
+
+    if (!std::filesystem::exists(file))
+
+        if (std::filesystem::exists(file))
+        {
+            std::ifstream f(file);
+            if (!std::filesystem::is_empty(file))
+            {
+                buffer << f.rdbuf();
+                script = ToWide(buffer.str());
+            }
+            f.close();
+        }
+
+    return script;
+}
+
+std::wstring GetScript(std::filesystem::path appData)
+{
+    std::wstring script = LR"(
+        document.onreadystatechange = () => {
+            if (document.readyState === "interactive") {
+                let scheme = document.createElement("meta");
+                scheme.setAttribute("name", "color-scheme");
+                scheme.setAttribute("content", "light dark");
+                document.getElementsByTagName("head")[0].appendChild(scheme);
+                document.documentElement.style.setProperty(
+                    "color-scheme",
+                    "light dark"
+                );
+            }
+            if (document.readyState === "complete") {
+                onkeydown = (e) => {
+                    if (e.key === "F3") {
+                        e.preventDefault();
+                    }
+                    if (e.ctrlKey && e.key === "w") {
+                        window.chrome.webview.postMessage("close");
+                    } else {
+                        window.chrome.webview.postMessage(e.key);
+                    }
+                };
+            }
+        };
+    )";
+
+    return script;
+}
+
+std::wstring GetMenuScript(std::filesystem::path appData)
+{
+    std::wstring script = LR"(
+        document.onreadystatechange = () => {
+            if (document.readyState === "interactive") {
+                let scheme = document.createElement("meta");
+                scheme.setAttribute("name", "color-scheme");
+                scheme.setAttribute("content", "light dark");
+                document.getElementsByTagName("head")[0].appendChild(scheme);
+                document.documentElement.style.setProperty(
+                    "color-scheme",
+                    "light dark"
+                );
+            }
+            if (document.readyState === "complete") {
+                onkeydown = (e) => {
+                    if (e.key === "F3") {
+                        e.preventDefault();
+                    }
+                    if (e.ctrlKey && e.key === "w") {
+                        window.chrome.webview.postMessage("close");
+                    } else {
+                        window.chrome.webview.postMessage(e.key);
+                    }
+                };
+            }
+        };
+    )";
+
+    return script;
+}
+
+void SetWindowTitle(HWND window)
+{
+    std::wstring titleTop = L" [On Top]";
+
+    if (!swapped)
+    {
+        wil::unique_cotaskmem_string wv_title;
+        wv->get_DocumentTitle(&wv_title);
+        auto title = wv_title.get();
+
+        if (!ontop)
+            SetWindowTextW(window, title);
+
+        if (ontop)
+        {
+            std::wstring add = title + titleTop;
+            SetWindowTextW(window, add.c_str());
+        }
+    }
+
+    else
+    {
+        wil::unique_cotaskmem_string wv_title;
+        wv2->get_DocumentTitle(&wv_title);
+        auto title = wv_title.get();
+
+        if (!ontop)
+            SetWindowTextW(window, title);
+
+        if (ontop)
+        {
+            std::wstring add = title + titleTop;
+            SetWindowTextW(window, add.c_str());
+        }
+    }
+}
+
+void SetWindowIcon(HWND window)
+{
+    using namespace Microsoft::WRL;
+
+    if (!swapped)
+    {
+        if (wv_controller != nullptr)
+        {
+            wv->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
+                           Callback<ICoreWebView2GetFaviconCompletedHandler>(
+                               [window](HRESULT result, IStream* iconStream) -> HRESULT
+                               {
+                                   if (iconStream != nullptr)
+                                   {
+                                       Gdiplus::Bitmap iconBitmap(iconStream);
+                                       wil::unique_hicon icon;
+                                       if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
+                                       {
+                                           auto favicon = std::move(icon);
+                                           SendMessageW(window, WM_SETICON, ICON_BIG,
+                                                        (LPARAM)favicon.get());
+                                       }
+                                   }
+                                   return S_OK;
+                               })
+                               .Get());
+        }
+    }
+
+    else
+    {
+        if (wv_controller2 != nullptr)
+        {
+            wv2->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
+                            Callback<ICoreWebView2GetFaviconCompletedHandler>(
+                                [window](HRESULT result, IStream* iconStream) -> HRESULT
+                                {
+                                    if (iconStream != nullptr)
+                                    {
+                                        Gdiplus::Bitmap iconBitmap(iconStream);
+                                        wil::unique_hicon icon;
+                                        if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
+                                        {
+                                            auto favicon = std::move(icon);
+                                            SendMessageW(window, WM_SETICON, ICON_BIG,
+                                                         (LPARAM)favicon.get());
+                                        }
+                                    }
+                                    return S_OK;
+                                })
+                                .Get());
+        }
+    }
 }
