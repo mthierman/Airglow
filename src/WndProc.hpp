@@ -1,17 +1,19 @@
 void TestingResize(HWND window)
 {
-    auto dpi = GetDpiForWindow(window);
-    auto test = std::to_wstring(dpi);
-    OutputDebugStringW(L"DPI: ");
-    OutputDebugStringW(test.c_str());
-    OutputDebugStringW(L"\n");
+    std::wstring dpi = L"DPI: " + std::to_wstring(GetDpiForWindow(window)) + L"\n";
+    OutputDebugStringW(dpi.c_str());
+
+    RECT client;
+    GetClientRect(window, &client);
+    std::wstring clientRect = L"ClientRect: " + std::to_wstring(client.right - client.left) +
+                              L" x " + std::to_wstring(client.bottom - client.top) + L"\n";
+    OutputDebugStringW(clientRect.c_str());
 
     RECT bounds;
-    GetClientRect(window, &bounds);
-    auto height = std::to_wstring(bounds.bottom - bounds.top);
-    auto width = std::to_wstring(bounds.right - bounds.left);
-    auto dimensions = L"WINDOW SIZE: " + width + L" x " + height + L"\n";
-    OutputDebugStringW(dimensions.c_str());
+    GetWindowRect(window, &bounds);
+    std::wstring windowRect = L"WindowRect: " + std::to_wstring(bounds.right - bounds.left) +
+                              L" x " + std::to_wstring(bounds.bottom - bounds.top) + L"\n";
+    OutputDebugStringW(windowRect.c_str());
 }
 
 __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
