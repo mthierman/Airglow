@@ -30,6 +30,12 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
     break;
     case WM_WINDOWPOSCHANGING:
     {
+        if (!maximized)
+        {
+            RECT rect;
+            GetWindowRect(window, &rect);
+            dimensions = RectToBounds(rect);
+        }
     }
     break;
     case WM_SIZE:
@@ -48,36 +54,39 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
     {
         if (wparam == VK_F1)
         {
-            PanelSplit(window);
+            split = SplitPanel();
+            SendMessageW(window, WM_SIZE, 0, 0);
         }
 
         if (wparam == VK_F2)
         {
-            PanelSwap(window);
+            swapped = SwapPanel();
+            SendMessageW(window, WM_SIZE, 0, 0);
             SetWindowTitle(window);
             SetWindowIcon(window);
         }
 
         if (wparam == VK_F4)
         {
-            PanelHideMenu(window);
+            menu = HideMenu();
+            SendMessageW(window, WM_SIZE, 0, 0);
             SetWindowTitle(window);
             SetWindowIcon(window);
         }
 
         if (wparam == VK_F5)
         {
-            WindowMaximize(window);
+            maximized = WindowMaximize(window);
         }
 
         if (wparam == VK_F11)
         {
-            WindowFullscreen(window);
+            fullscreen = WindowFullscreen(window);
         }
 
         if (wparam == VK_F9)
         {
-            WindowTop(window);
+            ontop = WindowTop(window);
             SetWindowTitle(window);
             SetWindowIcon(window);
         }
@@ -118,36 +127,42 @@ void WebViewMessages(HWND window, std::wstring message)
 
     if (message == splitKey)
     {
-        PanelSplit(window);
+        split = SplitPanel();
+        SendMessageW(window, WM_SIZE, 0, 0);
+        SendMessageW(window, WM_SETFOCUS, 0, 0);
     }
 
     if (message == swapKey)
     {
-        PanelSwap(window);
+        swapped = SwapPanel();
+        SendMessageW(window, WM_SIZE, 0, 0);
+        SendMessageW(window, WM_SETFOCUS, 0, 0);
         SetWindowTitle(window);
         SetWindowIcon(window);
     }
 
     if (message == hideMenuKey)
     {
-        PanelHideMenu(window);
+        menu = HideMenu();
+        SendMessageW(window, WM_SIZE, 0, 0);
+        SendMessageW(window, WM_SETFOCUS, 0, 0);
         SetWindowTitle(window);
         SetWindowIcon(window);
     }
 
     if (message == maximizeKey)
     {
-        WindowMaximize(window);
+        maximized = WindowMaximize(window);
     }
 
     if (message == fullscreenKey)
     {
-        WindowFullscreen(window);
+        fullscreen = WindowFullscreen(window);
     }
 
     if (message == onTopKey)
     {
-        WindowTop(window);
+        ontop = WindowTop(window);
         SetWindowTitle(window);
         SetWindowIcon(window);
     }

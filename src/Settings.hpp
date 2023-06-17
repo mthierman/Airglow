@@ -25,18 +25,18 @@ std::filesystem::path GetAppDataPath()
 
 std::filesystem::path GetSettingsFilePath(std::filesystem::path appData)
 {
-    std::filesystem::path file =
+    std::filesystem::path path =
         (appData.wstring() + std::filesystem::path::preferred_separator + L"Airglow.json");
 
-    if (!std::filesystem::exists(file))
+    if (!std::filesystem::exists(path))
     {
         nlohmann::json defaultSettings = DefaultSettings();
-        std::ofstream f(file);
+        std::ofstream f(path);
         f << defaultSettings.dump(4);
         f.close();
     }
 
-    return file;
+    return path;
 }
 
 nlohmann::json DefaultSettings()
@@ -55,7 +55,7 @@ nlohmann::json DefaultSettings()
     return settings;
 }
 
-nlohmann::json CurrentSettings(HWND window)
+nlohmann::json CurrentSettings()
 {
     nlohmann::json settings;
     settings["dimensions"] = dimensions;
@@ -71,27 +71,39 @@ nlohmann::json CurrentSettings(HWND window)
     return settings;
 }
 
-nlohmann::json LoadSettings(std::filesystem::path settingsFile)
+nlohmann::json LoadSettings()
 {
-    nlohmann::json saved = DefaultSettings();
+    nlohmann::json settings = DefaultSettings();
 
     if (std::filesystem::exists(settingsFile))
     {
         std::ifstream f(settingsFile);
         if (!std::filesystem::is_empty(settingsFile))
-            saved = nlohmann::json::parse(f);
+            settings = nlohmann::json::parse(f);
         f.close();
     }
 
-    return saved;
+    dimensions = settings["dimensions"].get<std::vector<int>>();
+    fullscreen = settings["fullscreen"].get<bool>();
+    maximized = settings["maximized"].get<bool>();
+    menu = settings["menu"].get<bool>();
+    ontop = settings["ontop"].get<bool>();
+    split = settings["split"].get<bool>();
+    swapped = settings["swapped"].get<bool>();
+    mainpage = ToWide(settings["mainpage"].get<std::string>());
+    sidepage = ToWide(settings["sidepage"].get<std::string>());
+
+    return settings;
 }
 
-void SaveSettings(nlohmann::json input, std::filesystem::path settingsFile)
+void SaveSettings()
 {
+    nlohmann::json settings = CurrentSettings();
+
     if (std::filesystem::exists(settingsFile))
     {
         std::ofstream f(settingsFile);
-        f << input.dump(4);
+        f << settings.dump(4);
         f.close();
     }
 }

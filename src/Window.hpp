@@ -53,31 +53,17 @@ HWND InitializeWindow(HINSTANCE instance, int ncs)
     return window;
 }
 
-std::vector<int> RectToBounds(HWND window)
+std::vector<int> RectToBounds(RECT rect)
 {
-    std::vector<int> bounds = {0, 0, 0, 0};
-    RECT r;
-
-    if (GetWindowRect(window, &r))
-    {
-        auto x = r.left;
-        auto y = r.top;
-        auto cx = r.right - r.left;
-        auto cy = r.bottom - r.top;
-        bounds = {x, y, cx, cy};
-    }
+    std::vector<int> bounds = {rect.left, rect.top, (rect.right - rect.left),
+                               (rect.bottom - rect.top)};
 
     return bounds;
 }
 
-RECT BoundsToRect(HWND window, std::vector<int> bounds)
+RECT BoundsToRect(std::vector<int> bounds)
 {
-    RECT rect;
-
-    rect.left = bounds[0];
-    rect.top = bounds[1];
-    rect.right = bounds[0] + bounds[2];
-    rect.bottom = bounds[1] + bounds[3];
+    RECT rect = {bounds[0], bounds[1], (bounds[0] + bounds[2]), (bounds[1] + bounds[3])};
 
     return rect;
 }
@@ -177,77 +163,58 @@ RECT GetSidePanelBounds(HWND window)
     return panel;
 }
 
-void PanelHideMenu(HWND window)
+bool HideMenu()
 {
     if (!menu)
-    {
-        menu = true;
-        SendMessageW(window, WM_SIZE, 0, 0);
-    }
+        return true;
 
     else
-    {
-        menu = false;
-        SendMessageW(window, WM_SIZE, 0, 0);
-    }
+        return false;
 }
 
-void PanelSplit(HWND window)
+bool SplitPanel()
 {
     if (!split)
-    {
-        split = true;
-        SendMessageW(window, WM_SIZE, 0, 0);
-    }
+        return true;
 
     else
-    {
-        split = false;
-        SendMessageW(window, WM_SIZE, 0, 0);
-    }
+        return false;
 }
 
-void PanelSwap(HWND window)
+bool SwapPanel()
 {
     if (!swapped)
-    {
-        swapped = true;
-        SendMessageW(window, WM_SIZE, 0, 0);
-    }
+        return true;
 
     else
-    {
-        swapped = false;
-        SendMessageW(window, WM_SIZE, 0, 0);
-    }
+        return false;
 }
 
-void WindowMaximize(HWND window)
+bool WindowMaximize(HWND window)
 {
     if (!fullscreen)
     {
         if (!maximized)
         {
-            maximized = true;
             ShowWindow(window, SW_MAXIMIZE);
+            return true;
         }
 
         else
         {
-            maximized = false;
             ShowWindow(window, SW_SHOWNORMAL);
+            return false;
         }
     }
 }
 
-void WindowFullscreen(HWND window)
+bool WindowFullscreen(HWND window)
 {
     static RECT position;
     auto style = GetWindowLongPtrW(window, GWL_STYLE);
 
     if (style & WS_OVERLAPPEDWINDOW)
     {
-        fullscreen = true;
         MONITORINFO mi = {sizeof(mi)};
         GetWindowRect(window, &position);
         if (GetMonitorInfoW(MonitorFromWindow(window, MONITOR_DEFAULTTONEAREST), &mi))
@@ -257,21 +224,24 @@ void WindowFullscreen(HWND window)
                          mi.rcMonitor.right - mi.rcMonitor.left,
                          mi.rcMonitor.bottom - mi.rcMonitor.top,
                          SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
+
+            return true;
         }
     }
 
     else
     {
-        fullscreen = false;
         SetWindowLongPtrW(window, GWL_STYLE, style | WS_OVERLAPPEDWINDOW);
         SetWindowPos(window, nullptr, 0, 0, 0, 0,
                      SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
         SetWindowPos(window, nullptr, position.left, position.top, (position.right - position.left),
                      (position.bottom - position.top), 0);
+
+        return false;
     }
 }
 
-void WindowTop(HWND window)
+bool WindowTop(HWND window)
 {
     FLASHWINFO fwi;
     fwi.cbSize = sizeof(FLASHWINFO);
@@ -284,16 +254,18 @@ void WindowTop(HWND window)
 
     if (topMost & WS_EX_TOPMOST)
     {
-        ontop = false;
         SetWindowPos(window, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         FlashWindowEx(&fwi);
+
+        return true;
     }
 
     else
     {
-        ontop = true;
         SetWindowPos(window, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         FlashWindowEx(&fwi);
+
+        return false;
     }
 }
 

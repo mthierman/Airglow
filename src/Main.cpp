@@ -11,6 +11,7 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
     auto window = InitializeWindow(instance, ncs);
 
     appData = GetAppDataPath();
+    settingsFile = GetSettingsFilePath(appData);
     script = GetScript(appData);
     menuScript = GetMenuScript(appData);
 
@@ -19,8 +20,9 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
         InitializeMenu(window, appData);
         InitializeMainPanel(window, appData);
         InitializeSidePanel(window, appData);
-        Startup(window);
     }
+
+    Startup(window);
 
     MSG msg = {};
     while (GetMessageW(&msg, nullptr, 0, 0))

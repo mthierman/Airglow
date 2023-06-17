@@ -13,27 +13,27 @@ std::wstring menuScript;
 // MAIN
 int __stdcall wWinMain(HINSTANCE, HINSTANCE, PWSTR, int);
 __int64 __stdcall WndProc(HWND, UINT, WPARAM, LPARAM);
-void WebViewMessages(HWND window, std::wstring message);
+void WebViewMessages(HWND, std::wstring);
 
 // APP
-void Startup(HWND window);
-void Shutdown(HWND window);
+void Startup(HWND);
+void Shutdown(HWND);
 
 // WINDOW
 unsigned short MakeWindowClass(HINSTANCE);
 HWND MakeWindow(HINSTANCE);
 HWND InitializeWindow(HINSTANCE, int);
-std::vector<int> RectToBounds(HWND window);
-RECT BoundsToRect(HWND window, std::vector<int> bounds);
-RECT GetMenuBounds(HWND window);
-RECT GetMainPanelBounds(HWND window);
-RECT GetSidePanelBounds(HWND window);
-void PanelHideMenu(HWND);
-void PanelSplit(HWND);
-void PanelSwap(HWND window);
-void WindowMaximize(HWND);
-void WindowFullscreen(HWND);
-void WindowTop(HWND);
+std::vector<int> RectToBounds(RECT);
+RECT BoundsToRect(std::vector<int>);
+RECT GetMenuBounds(HWND);
+RECT GetMainPanelBounds(HWND);
+RECT GetSidePanelBounds(HWND);
+bool HideMenu();
+bool SplitPanel();
+bool SwapPanel();
+bool WindowMaximize(HWND);
+bool WindowFullscreen(HWND);
+bool WindowTop(HWND);
 bool CheckSystemDarkMode();
 bool SetDarkTitle();
 bool SetDarkMode(HWND);
@@ -41,7 +41,7 @@ bool SetMica(HWND);
 bool SetWindow(HWND, int);
 void SetWindowFocus(HWND);
 void TestingResize(HWND);
-void WindowResizing(HWND window);
+void WindowResizing(HWND);
 enum PreferredAppMode
 {
     Default,
@@ -65,14 +65,14 @@ unsigned long long gdiplusToken;
 Gdiplus::GdiplusStartupInput gdiplusStartupInput;
 
 // WEBVIEW
-void InitializeMenu(HWND window, std::filesystem::path appData);
-void InitializeMainPanel(HWND window, std::filesystem::path appData);
-void InitializeSidePanel(HWND window, std::filesystem::path appData);
-std::wstring GetScriptFile(std::filesystem::path appData);
-std::wstring GetScript(std::filesystem::path appData);
-std::wstring GetMenuScript(std::filesystem::path appData);
-void SetWindowTitle(HWND window);
-void SetWindowIcon(HWND window);
+void InitializeMenu(HWND, std::filesystem::path);
+void InitializeMainPanel(HWND, std::filesystem::path);
+void InitializeSidePanel(HWND, std::filesystem::path);
+std::wstring GetScriptFile(std::filesystem::path);
+std::wstring GetScript(std::filesystem::path);
+std::wstring GetMenuScript(std::filesystem::path);
+void SetWindowTitle(HWND);
+void SetWindowIcon(HWND);
 static wil::com_ptr<ICoreWebView2Controller> wv_controller;
 static wil::com_ptr<ICoreWebView2> wv_core;
 static wil::com_ptr<ICoreWebView2_19> wv;
@@ -88,15 +88,16 @@ static wil::com_ptr<ICoreWebView2Settings> wv_settings3;
 
 // SETTINGS
 std::filesystem::path GetAppDataPath();
-std::filesystem::path GetSettingsFilePath(std::filesystem::path appData);
+std::filesystem::path GetSettingsFilePath(std::filesystem::path);
 nlohmann::json DefaultSettings();
-nlohmann::json CurrentSettings(HWND window);
-nlohmann::json LoadSettings(std::filesystem::path settingsFile);
-void SaveSettings(nlohmann::json input, std::filesystem::path settingsFile);
+nlohmann::json CurrentSettings();
+nlohmann::json LoadSettings();
+void SaveSettings();
 std::filesystem::path appData;
+std::filesystem::path settingsFile;
 
 // UTILITY
-std::wstring ToWide(std::string input);
-std::string ToString(std::wstring input);
-std::wstring BoolToWide(bool input);
+std::wstring ToWide(std::string);
+std::string ToString(std::wstring);
+std::wstring BoolToWide(bool);
 std::pair<std::wstring, std::wstring> CommandLine();
