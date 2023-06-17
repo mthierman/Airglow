@@ -1,24 +1,21 @@
-bool CommandLineUrl()
+std::pair<std::wstring, std::wstring> CommandLine()
 {
+    std::pair<std::wstring, std::wstring> pair;
     int number;
     auto cmd = GetCommandLineW();
     auto args = CommandLineToArgvW(cmd, &number);
     if (number == 2)
     {
-        url1 = args[1];
-        url2 = args[1];
-        split = false;
-        return true;
+        pair.first = args[1];
+        pair.second = args[1];
     }
     if (number == 3)
     {
-        url1 = args[1];
-        url2 = args[2];
-        split = true;
-        return true;
+        pair.first = args[1];
+        pair.second = args[2];
     }
     LocalFree(args);
-    return false;
+    return pair;
 }
 
 void WebViewMessages(HWND window, PWSTR message)
@@ -59,6 +56,7 @@ void WebViewMessages(HWND window, PWSTR message)
 
 void InitializeMenu(HWND window, std::filesystem::path userData)
 {
+
     using namespace Microsoft::WRL;
 
     CreateCoreWebView2EnvironmentWithOptions(
@@ -88,7 +86,7 @@ void InitializeMenu(HWND window, std::filesystem::path userData)
                             wv_settings3->put_IsWebMessageEnabled(true);
                             wv_settings3->put_IsZoomControlEnabled(false);
                             wv_controller3->put_Bounds(GetMenuBounds(window));
-                            wv3->Navigate(url3.c_str());
+                            // wv3->Navigate(url3.c_str());
                             EventRegistrationToken msgToken;
                             wv3->ExecuteScript(wvScriptBottom.c_str(), nullptr);
                             wv3->AddScriptToExecuteOnDocumentCreated(wvScriptBottom.c_str(),
@@ -148,7 +146,15 @@ void InitializeMainPanel(HWND window, std::filesystem::path userData)
                             wv_settings->put_IsWebMessageEnabled(true);
                             wv_settings->put_IsZoomControlEnabled(true);
                             wv_controller->put_Bounds(GetMainPanelBounds(window));
-                            wv->Navigate(url1.c_str());
+                            auto args = CommandLine();
+                            if (!args.first.empty())
+                            {
+                                wv->Navigate(args.first.c_str());
+                            }
+                            else
+                            {
+                                wv->Navigate(mainpage.c_str());
+                            }
                             wv->ExecuteScript(wvScript.c_str(), nullptr);
                             wv->AddScriptToExecuteOnDocumentCreated(wvScript.c_str(), nullptr);
                             EventRegistrationToken msgToken;
@@ -226,7 +232,15 @@ void InitializeSidePanel(HWND window, std::filesystem::path userData)
                             wv_settings2->put_IsWebMessageEnabled(true);
                             wv_settings2->put_IsZoomControlEnabled(true);
                             wv_controller2->put_Bounds(GetSidePanelBounds(window));
-                            wv2->Navigate(url2.c_str());
+                            auto args = CommandLine();
+                            if (!args.second.empty())
+                            {
+                                wv2->Navigate(args.second.c_str());
+                            }
+                            else
+                            {
+                                wv2->Navigate(sidepage.c_str());
+                            }
                             wv2->ExecuteScript(wvScript.c_str(), nullptr);
                             wv2->AddScriptToExecuteOnDocumentCreated(wvScript.c_str(), nullptr);
                             EventRegistrationToken msgToken;

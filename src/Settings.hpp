@@ -58,8 +58,8 @@ nlohmann::json DefaultSettings()
     settings["split"] = false;
     settings["swapped"] = false;
     settings["menu"] = false;
-    settings["url1"] = "about:blank";
-    settings["url2"] = "about:blank";
+    settings["mainpage"] = "https://wwww.google.com/";
+    settings["sidepage"] = "https://wwww.google.com/";
     return settings;
 }
 
@@ -73,8 +73,8 @@ nlohmann::json CurrentSettings(HWND window)
     settings["split"] = split;
     settings["swapped"] = swapped;
     settings["menu"] = menu;
-    settings["url1"] = ToString(url1);
-    settings["url2"] = ToString(url2);
+    settings["mainpage"] = ToString(mainpage);
+    settings["sidepage"] = ToString(sidepage);
     return settings;
 }
 
@@ -87,6 +87,7 @@ nlohmann::json LoadSettings(std::filesystem::path settingsFile)
         std::ifstream f(settingsFile);
         if (!std::filesystem::is_empty(settingsFile))
             saved = nlohmann::json::parse(f);
+        f.close();
     }
     return saved;
 }

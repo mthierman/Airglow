@@ -30,8 +30,6 @@ HWND InitializeWindow(HINSTANCE instance, int ncs)
     SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
     SetEnvironmentVariableW(wvBackgroundColor.c_str(), wvBackgroundColorValue.c_str());
     SetEnvironmentVariableW(wvAdditionalBrowserArgs.c_str(), wvAdditionalBrowserArgsValue.c_str());
-    auto args = CommandLineUrl();
-    Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
     auto atom = MakeWindowClass(instance);
     if (!atom)
     {
@@ -454,6 +452,7 @@ RECT BoundsToRect(HWND window, std::vector<int> bounds)
 
 void Startup(HWND window)
 {
+    Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
     auto settingsFile = GetSettingsFilePath();
     nlohmann::json settings = LoadSettings(settingsFile);
     dimensions = settings["dimensions"].get<std::vector<int>>();
@@ -463,8 +462,8 @@ void Startup(HWND window)
     ontop = settings["ontop"].get<bool>();
     split = settings["split"].get<bool>();
     swapped = settings["swapped"].get<bool>();
-    url1 = ToWide(settings["url1"].get<std::string>());
-    url2 = ToWide(settings["url2"].get<std::string>());
+    mainpage = ToWide(settings["mainpage"].get<std::string>());
+    sidepage = ToWide(settings["sidepage"].get<std::string>());
     if (fullscreen)
         WindowFullscreen(window);
     if (maximized)
@@ -476,7 +475,9 @@ void Startup(HWND window)
 
 void Shutdown(HWND window)
 {
+    Gdiplus::GdiplusShutdown(gdiplusToken);
     auto settingsFile = GetSettingsFilePath();
     nlohmann::json settings = CurrentSettings(window);
     SaveSettings(settings, settingsFile);
+    DestroyWindow(window);
 }

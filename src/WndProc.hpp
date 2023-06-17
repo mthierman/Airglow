@@ -41,15 +41,15 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
     break;
     case WM_SETFOCUS:
     {
-        // if (wv_controller != nullptr & wv_controller2 != nullptr)
-        // {
-        //     if (!swapped)
-        //         wv_controller->MoveFocus(
-        //             COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-        //     if (swapped)
-        //         wv_controller2->MoveFocus(
-        //             COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-        // }
+        if (wv_controller != nullptr & wv_controller2 != nullptr)
+        {
+            if (!swapped)
+                wv_controller->MoveFocus(
+                    COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+            if (swapped)
+                wv_controller2->MoveFocus(
+                    COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+        }
     }
     break;
     case WM_SIZE:
@@ -122,8 +122,6 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
     case WM_CLOSE:
     {
         Shutdown(window);
-        Gdiplus::GdiplusShutdown(gdiplusToken);
-        DestroyWindow(window);
     }
     break;
     case WM_DESTROY:
