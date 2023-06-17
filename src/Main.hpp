@@ -40,7 +40,7 @@ bool SetDarkMode(HWND);
 bool SetMica(HWND);
 bool SetWindow(HWND, int);
 void SetWindowFocus(HWND);
-void TestingResize(HWND);
+void DebugMessages(HWND);
 void WindowResizing(HWND);
 enum PreferredAppMode
 {

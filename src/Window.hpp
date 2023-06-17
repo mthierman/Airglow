@@ -385,29 +385,17 @@ bool SetWindow(HWND window, int ncs)
 
 void SetWindowFocus(HWND window)
 {
-    // if (menu)
-    // {
-    //     if (wv_controller3 != nullptr)
-    //         wv_controller3->MoveFocus(
-    //             COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-    // }
-
-    // if (!swapped & !menu)
-    // {
-    //     if (wv_controller != nullptr & wv_controller2 != nullptr)
-    //         wv_controller->MoveFocus(
-    //             COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-    // }
-
-    // if (swapped & !menu)
-    // {
-    //     if (wv_controller != nullptr & wv_controller2 != nullptr)
-    //         wv_controller2->MoveFocus(
-    //             COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-    // }
+    if (!swapped)
+        if (wv_controller != nullptr)
+            wv_controller->MoveFocus(
+                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+    if (swapped)
+        if (wv_controller2 != nullptr)
+            wv_controller2->MoveFocus(
+                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 }
 
-void TestingResize(HWND window)
+void DebugMessages(HWND window)
 {
     std::wstring dpi = L"DPI: " + std::to_wstring(GetDpiForWindow(window)) + L"\n";
     OutputDebugStringW(dpi.c_str());
@@ -427,7 +415,7 @@ void TestingResize(HWND window)
 
 void WindowResizing(HWND window)
 {
-    // TestingResize(window);
+    // DebugMessages(window);
 
     if (wv_controller != nullptr)
         wv_controller->put_Bounds(GetMainPanelBounds(window));
@@ -437,13 +425,4 @@ void WindowResizing(HWND window)
 
     if (wv_controller3 != nullptr)
         wv_controller3->put_Bounds(GetMenuBounds(window));
-
-    if (!swapped)
-        if (wv_controller != nullptr)
-            wv_controller->MoveFocus(
-                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-    if (swapped)
-        if (wv_controller2 != nullptr)
-            wv_controller2->MoveFocus(
-                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 }

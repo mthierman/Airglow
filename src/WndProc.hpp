@@ -20,12 +20,12 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
     break;
     case WM_ACTIVATE:
     {
-        // SendMessageW(window, WM_SETFOCUS, 0, 0);
+        SendMessageW(window, WM_SETFOCUS, 0, 0);
     }
     break;
     case WM_SETFOCUS:
     {
-        // SetWindowFocus(window);
+        SetWindowFocus(window);
     }
     break;
     case WM_WINDOWPOSCHANGING:
@@ -56,12 +56,14 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
         {
             split = SplitPanel();
             SendMessageW(window, WM_SIZE, 0, 0);
+            SendMessageW(window, WM_SETFOCUS, 0, 0);
         }
 
         if (wparam == VK_F2)
         {
             swapped = SwapPanel();
             SendMessageW(window, WM_SIZE, 0, 0);
+            SendMessageW(window, WM_SETFOCUS, 0, 0);
             SetWindowTitle(window);
             SetWindowIcon(window);
         }
@@ -70,6 +72,7 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
         {
             menu = HideMenu();
             SendMessageW(window, WM_SIZE, 0, 0);
+            SendMessageW(window, WM_SETFOCUS, 0, 0);
             SetWindowTitle(window);
             SetWindowIcon(window);
         }
@@ -129,12 +132,14 @@ void WebViewMessages(HWND window, std::wstring message)
     {
         split = SplitPanel();
         SendMessageW(window, WM_SIZE, 0, 0);
+        SendMessageW(window, WM_SETFOCUS, 0, 0);
     }
 
     if (message == swapKey)
     {
         swapped = SwapPanel();
         SendMessageW(window, WM_SIZE, 0, 0);
+        SendMessageW(window, WM_SETFOCUS, 0, 0);
         SetWindowTitle(window);
         SetWindowIcon(window);
     }
@@ -143,6 +148,7 @@ void WebViewMessages(HWND window, std::wstring message)
     {
         menu = HideMenu();
         SendMessageW(window, WM_SIZE, 0, 0);
+        SendMessageW(window, WM_SETFOCUS, 0, 0);
         SetWindowTitle(window);
         SetWindowIcon(window);
     }
