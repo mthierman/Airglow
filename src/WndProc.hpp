@@ -25,7 +25,7 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
     break;
     case WM_SETFOCUS:
     {
-        SetWindowFocus(window);
+        UpdateFocus();
     }
     break;
     case WM_WINDOWPOSCHANGING:
@@ -40,7 +40,8 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
     break;
     case WM_SIZE:
     {
-        WindowResizing(window);
+        UpdateBounds(window);
+        SetWindowTitle(window);
     }
     break;
     case WM_GETMINMAXINFO:
@@ -64,8 +65,6 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
             swapped = SwapPanel();
             SendMessageW(window, WM_SIZE, 0, 0);
             SendMessageW(window, WM_SETFOCUS, 0, 0);
-            SetWindowTitle(window);
-            SetWindowIcon(window);
         }
 
         if (wparam == VK_F4)
@@ -73,25 +72,27 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
             menu = HideMenu();
             SendMessageW(window, WM_SIZE, 0, 0);
             SendMessageW(window, WM_SETFOCUS, 0, 0);
-            SetWindowTitle(window);
-            SetWindowIcon(window);
         }
 
         if (wparam == VK_F5)
         {
             maximized = WindowMaximize(window);
+            SendMessageW(window, WM_SIZE, 0, 0);
+            SendMessageW(window, WM_SETFOCUS, 0, 0);
         }
 
         if (wparam == VK_F11)
         {
             fullscreen = WindowFullscreen(window);
+            SendMessageW(window, WM_SIZE, 0, 0);
+            SendMessageW(window, WM_SETFOCUS, 0, 0);
         }
 
         if (wparam == VK_F9)
         {
             ontop = WindowTop(window);
-            SetWindowTitle(window);
-            SetWindowIcon(window);
+            SendMessageW(window, WM_SIZE, 0, 0);
+            SendMessageW(window, WM_SETFOCUS, 0, 0);
         }
 
         if (wparam == 0x57)
@@ -140,8 +141,6 @@ void WebViewMessages(HWND window, std::wstring message)
         swapped = SwapPanel();
         SendMessageW(window, WM_SIZE, 0, 0);
         SendMessageW(window, WM_SETFOCUS, 0, 0);
-        SetWindowTitle(window);
-        SetWindowIcon(window);
     }
 
     if (message == hideMenuKey)
@@ -149,25 +148,27 @@ void WebViewMessages(HWND window, std::wstring message)
         menu = HideMenu();
         SendMessageW(window, WM_SIZE, 0, 0);
         SendMessageW(window, WM_SETFOCUS, 0, 0);
-        SetWindowTitle(window);
-        SetWindowIcon(window);
     }
 
     if (message == maximizeKey)
     {
         maximized = WindowMaximize(window);
+        SendMessageW(window, WM_SIZE, 0, 0);
+        SendMessageW(window, WM_SETFOCUS, 0, 0);
     }
 
     if (message == fullscreenKey)
     {
         fullscreen = WindowFullscreen(window);
+        SendMessageW(window, WM_SIZE, 0, 0);
+        SendMessageW(window, WM_SETFOCUS, 0, 0);
     }
 
     if (message == onTopKey)
     {
         ontop = WindowTop(window);
-        SetWindowTitle(window);
-        SetWindowIcon(window);
+        SendMessageW(window, WM_SIZE, 0, 0);
+        SendMessageW(window, WM_SETFOCUS, 0, 0);
     }
 
     if (message == closeKey)

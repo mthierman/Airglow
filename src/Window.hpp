@@ -383,7 +383,7 @@ bool SetWindow(HWND window, int ncs)
     return false;
 }
 
-void SetWindowFocus(HWND window)
+void UpdateFocus()
 {
     if (!swapped)
         if (main_controller != nullptr)
@@ -393,6 +393,20 @@ void SetWindowFocus(HWND window)
         if (side_controller != nullptr)
             side_controller->MoveFocus(
                 COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+}
+
+void UpdateBounds(HWND window)
+{
+    // DebugMessages(window);
+
+    if (main_controller != nullptr)
+        main_controller->put_Bounds(GetMainPanelBounds(window));
+
+    if (side_controller != nullptr)
+        side_controller->put_Bounds(GetSidePanelBounds(window));
+
+    if (settings_controller != nullptr)
+        settings_controller->put_Bounds(GetMenuBounds(window));
 }
 
 void DebugMessages(HWND window)
@@ -411,18 +425,4 @@ void DebugMessages(HWND window)
     std::wstring windowRect = L"WindowRect: " + std::to_wstring(bounds.right - bounds.left) +
                               L" x " + std::to_wstring(bounds.bottom - bounds.top) + L"\n";
     OutputDebugStringW(windowRect.c_str());
-}
-
-void WindowResizing(HWND window)
-{
-    // DebugMessages(window);
-
-    if (main_controller != nullptr)
-        main_controller->put_Bounds(GetMainPanelBounds(window));
-
-    if (side_controller != nullptr)
-        side_controller->put_Bounds(GetSidePanelBounds(window));
-
-    if (settings_controller != nullptr)
-        settings_controller->put_Bounds(GetMenuBounds(window));
 }

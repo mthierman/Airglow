@@ -317,33 +317,39 @@ void SetWindowTitle(HWND window)
 
     if (!swapped)
     {
-        wil::unique_cotaskmem_string wv_title;
-        main_wv->get_DocumentTitle(&wv_title);
-        auto title = wv_title.get();
-
-        if (!ontop)
-            SetWindowTextW(window, title);
-
-        if (ontop)
+        if (main_wv != nullptr)
         {
-            std::wstring add = title + titleTop;
-            SetWindowTextW(window, add.c_str());
+            wil::unique_cotaskmem_string s;
+            main_wv->get_DocumentTitle(&s);
+            auto title = s.get();
+
+            if (!ontop)
+                SetWindowTextW(window, title);
+
+            if (ontop)
+            {
+                std::wstring add = title + titleTop;
+                SetWindowTextW(window, add.c_str());
+            }
         }
     }
 
     else
     {
-        wil::unique_cotaskmem_string wv_title;
-        side_wv->get_DocumentTitle(&wv_title);
-        auto title = wv_title.get();
-
-        if (!ontop)
-            SetWindowTextW(window, title);
-
-        if (ontop)
+        if (side_wv != nullptr)
         {
-            std::wstring add = title + titleTop;
-            SetWindowTextW(window, add.c_str());
+            wil::unique_cotaskmem_string s;
+            side_wv->get_DocumentTitle(&s);
+            auto title = s.get();
+
+            if (!ontop)
+                SetWindowTextW(window, title);
+
+            if (ontop)
+            {
+                std::wstring add = title + titleTop;
+                SetWindowTextW(window, add.c_str());
+            }
         }
     }
 }
@@ -352,7 +358,7 @@ void SetWindowIcon(HWND window)
 {
     if (!swapped)
     {
-        if (main_controller != nullptr)
+        if (main_wv != nullptr)
         {
             main_wv->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
                                 Callback<ICoreWebView2GetFaviconCompletedHandler>(
@@ -377,7 +383,7 @@ void SetWindowIcon(HWND window)
 
     else
     {
-        if (side_controller != nullptr)
+        if (side_wv != nullptr)
         {
             side_wv->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
                                 Callback<ICoreWebView2GetFaviconCompletedHandler>(

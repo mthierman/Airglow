@@ -39,9 +39,9 @@ bool SetDarkTitle();
 bool SetDarkMode(HWND);
 bool SetMica(HWND);
 bool SetWindow(HWND, int);
-void SetWindowFocus(HWND);
+void UpdateFocus();
+void UpdateBounds(HWND);
 void DebugMessages(HWND);
-void WindowResizing(HWND);
 enum PreferredAppMode
 {
     Default,
