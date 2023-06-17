@@ -56,9 +56,7 @@ void WebViewMessages(HWND window, PWSTR message)
 
 void InitializeMenu(HWND window, std::filesystem::path userData)
 {
-
     using namespace Microsoft::WRL;
-
     CreateCoreWebView2EnvironmentWithOptions(
         nullptr, userData.c_str(), nullptr,
         Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
@@ -118,7 +116,6 @@ void InitializeMenu(HWND window, std::filesystem::path userData)
 void InitializeMainPanel(HWND window, std::filesystem::path userData)
 {
     using namespace Microsoft::WRL;
-
     CreateCoreWebView2EnvironmentWithOptions(
         nullptr, userData.c_str(), nullptr,
         Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
@@ -204,7 +201,6 @@ void InitializeMainPanel(HWND window, std::filesystem::path userData)
 void InitializeSidePanel(HWND window, std::filesystem::path userData)
 {
     using namespace Microsoft::WRL;
-
     CreateCoreWebView2EnvironmentWithOptions(
         nullptr, userData.c_str(), nullptr,
         Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
