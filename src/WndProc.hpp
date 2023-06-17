@@ -106,45 +106,53 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
     return 0;
 }
 
-void WebViewMessages(HWND window, PWSTR message)
+void WebViewMessages(HWND window, std::wstring message)
 {
-    if ((std::wstring)message == std::wstring(L"F1").c_str())
+    std::wstring splitKey = std::wstring(L"F1");
+    std::wstring swapKey = std::wstring(L"F2");
+    std::wstring hideMenuKey = std::wstring(L"F4");
+    std::wstring maximizeKey = std::wstring(L"F5");
+    std::wstring fullscreenKey = std::wstring(L"F11");
+    std::wstring onTopKey = std::wstring(L"F9");
+    std::wstring closeKey = std::wstring(L"close");
+
+    if (message == splitKey)
     {
         PanelSplit(window);
     }
 
-    if ((std::wstring)message == std::wstring(L"F2").c_str())
+    if (message == swapKey)
     {
         PanelSwap(window);
         SetWindowTitle(window);
         SetWindowIcon(window);
     }
 
-    if ((std::wstring)message == std::wstring(L"F4").c_str())
+    if (message == hideMenuKey)
     {
         PanelHideMenu(window);
         SetWindowTitle(window);
         SetWindowIcon(window);
     }
 
-    if ((std::wstring)message == std::wstring(L"F5").c_str())
+    if (message == maximizeKey)
     {
         WindowMaximize(window);
     }
 
-    if ((std::wstring)message == std::wstring(L"F11").c_str())
+    if (message == fullscreenKey)
     {
         WindowFullscreen(window);
     }
 
-    if ((std::wstring)message == std::wstring(L"F9").c_str())
+    if (message == onTopKey)
     {
         WindowTop(window);
         SetWindowTitle(window);
         SetWindowIcon(window);
     }
 
-    if ((std::wstring)message == std::wstring(L"close").c_str())
+    if (message == closeKey)
     {
         SendMessageW(window, WM_CLOSE, 0, 0);
     }

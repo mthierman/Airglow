@@ -48,7 +48,7 @@ void InitializeMenu(HWND window, std::filesystem::path userData)
                                     {
                                         wil::unique_cotaskmem_string message;
                                         args->TryGetWebMessageAsString(&message);
-                                        auto msg = message.get();
+                                        auto msg = std::wstring(message.get());
                                         WebViewMessages(window, msg);
                                         webview->PostWebMessageAsString(message.get());
                                         return S_OK;

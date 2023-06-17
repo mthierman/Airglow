@@ -13,7 +13,7 @@ std::wstring menuScript;
 // MAIN
 int __stdcall wWinMain(HINSTANCE, HINSTANCE, PWSTR, int);
 __int64 __stdcall WndProc(HWND, UINT, WPARAM, LPARAM);
-void WebViewMessages(HWND window, PWSTR message);
+void WebViewMessages(HWND window, std::wstring message);
 
 // APP
 void Startup(HWND window);

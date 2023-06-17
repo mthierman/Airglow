@@ -11,7 +11,6 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
     auto window = InitializeWindow(instance, ncs);
 
     appData = GetAppDataPath();
-
     script = GetScript(appData);
     menuScript = GetMenuScript(appData);
 
