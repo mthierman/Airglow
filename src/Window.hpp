@@ -1,16 +1,20 @@
 unsigned short MakeWindowClass(HINSTANCE instance)
 {
+    std::wstring className(L"airglow");
+    std::wstring menuName(L"airglowmenu");
+    std::wstring programIcon(L"PROGRAM_ICON");
+
     WNDCLASSEXW wcex = {};
     wcex.cbSize = sizeof(WNDCLASSEX);
-    wcex.style = CS_HREDRAW | CS_VREDRAW;
+    wcex.hInstance = instance;
     wcex.lpfnWndProc = WndProc;
+    wcex.lpszClassName = className.c_str();
+    wcex.lpszMenuName = menuName.c_str();
+    wcex.style = CS_HREDRAW | CS_VREDRAW;
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
-    wcex.hInstance = instance;
-    wcex.hCursor = (HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED);
     wcex.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
-    wcex.lpszMenuName = menuName.c_str();
-    wcex.lpszClassName = className.c_str();
+    wcex.hCursor = (HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED);
     wcex.hIcon = (HICON)LoadImageW(instance, programIcon.c_str(), IMAGE_ICON, 0, 0,
                                    LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
     wcex.hIconSm = (HICON)LoadImageW(instance, programIcon.c_str(), IMAGE_ICON, 0, 0,
@@ -21,6 +25,9 @@ unsigned short MakeWindowClass(HINSTANCE instance)
 
 HWND MakeWindow(HINSTANCE instance)
 {
+    std::wstring className(L"airglow");
+    std::wstring windowName(L"Airglow");
+
     return CreateWindowExW(0, className.c_str(), windowName.c_str(), WS_OVERLAPPEDWINDOW,
                            CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
                            nullptr, instance, nullptr);

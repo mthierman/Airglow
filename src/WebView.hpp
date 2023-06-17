@@ -47,7 +47,7 @@ void InitializeWebViews(HWND window, std::filesystem::path userData)
                                         wil::unique_cotaskmem_string message;
                                         args->TryGetWebMessageAsString(&message);
                                         auto msg = std::wstring(message.get());
-                                        WebViewMessages(window, msg);
+                                        Messages(window, msg);
                                         webview->PostWebMessageAsString(message.get());
                                         return S_OK;
                                     })
@@ -130,7 +130,7 @@ void InitializeWebViews(HWND window, std::filesystem::path userData)
                                         wil::unique_cotaskmem_string message;
                                         args->TryGetWebMessageAsString(&message);
                                         auto msg = message.get();
-                                        WebViewMessages(window, msg);
+                                        Messages(window, msg);
                                         webview->PostWebMessageAsString(message.get());
                                         return S_OK;
                                     })
@@ -213,7 +213,7 @@ void InitializeWebViews(HWND window, std::filesystem::path userData)
                                         wil::unique_cotaskmem_string message;
                                         args->TryGetWebMessageAsString(&message);
                                         auto msg = message.get();
-                                        WebViewMessages(window, msg);
+                                        Messages(window, msg);
                                         webview->PostWebMessageAsString(message.get());
                                         return S_OK;
                                     })

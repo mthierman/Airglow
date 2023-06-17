@@ -1,19 +1,13 @@
 #define PROGRAM_ICON 1
 
-// ENV
-std::wstring programIcon(L"PROGRAM_ICON");
-std::wstring className(L"window");
-std::wstring windowName(L"Airglow");
-std::wstring menuName(L"menu");
-
 // MAIN
 int __stdcall wWinMain(HINSTANCE, HINSTANCE, PWSTR, int);
-__int64 __stdcall WndProc(HWND, UINT, WPARAM, LPARAM);
-void WebViewMessages(HWND, std::wstring);
-
-// APP
 void Startup(HWND);
 void Shutdown(HWND);
+
+// MESSAGES
+__int64 __stdcall WndProc(HWND, UINT, WPARAM, LPARAM);
+void Messages(HWND, std::wstring);
 
 // WINDOW
 unsigned short MakeWindowClass(HINSTANCE);
