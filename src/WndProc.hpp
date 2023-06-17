@@ -42,6 +42,7 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
     {
         UpdateBounds(window);
         SetWindowTitle(window);
+        SetWindowIcon(window);
     }
     break;
     case WM_GETMINMAXINFO:
