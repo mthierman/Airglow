@@ -301,9 +301,6 @@ std::wstring GetScript(std::filesystem::path appData)
             }
             if (document.readyState === "complete") {
                 onkeydown = (e) => {
-                    if (e.key === "F3") {
-                        e.preventDefault();
-                    }
                     if (e.ctrlKey && e.key === "w") {
                         window.chrome.webview.postMessage("close");
                     } else {

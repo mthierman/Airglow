@@ -385,33 +385,26 @@ bool SetWindow(HWND window, int ncs)
 
 void SetWindowFocus(HWND window)
 {
-    if (!swapped)
-    {
-        if (wv_controller != nullptr & wv_controller2 != nullptr)
-        {
-            wv_controller->MoveFocus(
-                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-        }
-    }
+    // if (menu)
+    // {
+    //     if (wv_controller3 != nullptr)
+    //         wv_controller3->MoveFocus(
+    //             COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+    // }
 
-    if (swapped)
-    {
-        if (wv_controller != nullptr & wv_controller2 != nullptr)
-        {
-            wv_controller2->MoveFocus(
-                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-        }
-    }
+    // if (!swapped & !menu)
+    // {
+    //     if (wv_controller != nullptr & wv_controller2 != nullptr)
+    //         wv_controller->MoveFocus(
+    //             COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+    // }
 
-    if (menu)
-    {
-        if (wv_controller3 != nullptr)
-        {
-
-            wv_controller3->MoveFocus(
-                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-        }
-    }
+    // if (swapped & !menu)
+    // {
+    //     if (wv_controller != nullptr & wv_controller2 != nullptr)
+    //         wv_controller2->MoveFocus(
+    //             COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+    // }
 }
 
 void TestingResize(HWND window)
@@ -444,4 +437,13 @@ void WindowResizing(HWND window)
 
     if (wv_controller3 != nullptr)
         wv_controller3->put_Bounds(GetMenuBounds(window));
+
+    if (!swapped)
+        if (wv_controller != nullptr)
+            wv_controller->MoveFocus(
+                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+    if (swapped)
+        if (wv_controller2 != nullptr)
+            wv_controller2->MoveFocus(
+                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 }
