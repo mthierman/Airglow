@@ -1,3 +1,9 @@
+#ifndef _DEBUG
+#define DEBUG false
+#endif
+#ifdef _DEBUG
+#define DEBUG true
+#endif
 #define PROGRAM_ICON 1
 
 // MAIN

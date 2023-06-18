@@ -17,8 +17,8 @@ include(FetchContent)
 set(WEBVIEW "Microsoft.Web.WebView2")
 set(WEBVIEW_VER "1.0.1823.32")
 
-if(DEFINED ENV{WEBVIEW_PKG})
-    set(WEBVIEW_PKG $ENV{WEBVIEW_PKG})
+if(DEFINED ENV{LIB_WEBVIEW})
+    set(WEBVIEW_PKG $ENV{LIB_WEBVIEW})
 else()
     execute_process(
         COMMAND
@@ -30,8 +30,8 @@ endif()
 set(WIL "Microsoft.Windows.ImplementationLibrary")
 set(WIL_VER "1.0.230411.1")
 
-if(DEFINED ENV{WIL_PKG})
-    set(WIL_PKG $ENV{WIL_PKG})
+if(DEFINED ENV{LIB_WIL})
+    set(WIL_PKG $ENV{LIB_WIL})
 else()
     execute_process(
         COMMAND
@@ -40,8 +40,8 @@ else()
     set(WIL_PKG ${CMAKE_BINARY_DIR}/libs/${WIL}.${WIL_VER})
 endif()
 
-if(DEFINED ENV{CHOC})
-    set(CHOC_PKG $ENV{CHOC})
+if(DEFINED ENV{LIB_CHOC})
+    set(CHOC_PKG $ENV{LIB_CHOC})
 else()
     FetchContent_Declare(
         choc
@@ -51,8 +51,8 @@ else()
     set(CHOC_PKG ${choc_SOURCE_DIR})
 endif()
 
-if(DEFINED ENV{JSON_PKG})
-    set(JSON_PKG $ENV{JSON_PKG})
+if(DEFINED ENV{LIB_JSON})
+    set(JSON_PKG $ENV{LIB_JSON})
 else()
     FetchContent_Declare(
         json
