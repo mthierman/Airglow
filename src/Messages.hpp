@@ -66,7 +66,8 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
 
         if (wparam == VK_F6)
         {
-            maximized = Toggle(maximized);
+            if (!fullscreen)
+                maximized = Toggle(maximized);
             MaximizeWindow(window);
             UpdateFocus();
         }
@@ -154,7 +155,8 @@ void Messages(std::wstring message)
 
     if (message == maximizeKey)
     {
-        maximized = Toggle(maximized);
+        if (!fullscreen)
+            maximized = Toggle(maximized);
         MaximizeWindow(window);
         UpdateFocus();
     }
