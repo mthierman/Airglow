@@ -3,7 +3,7 @@ name: Release
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, dev]
 
 permissions:
   contents: write
@@ -30,7 +30,7 @@ jobs:
           & "$vspath\Common7\Tools\Launch-VsDevShell.ps1" -HostArch amd64 -Arch amd64 -SkipAutomaticLocation
           cmake --preset Release
           cmake --build --preset Release
-          
+
           $version = Get-Content "build/version.txt"
 
           git --no-pager log -5 --oneline --no-decorate > build/changes.txt
