@@ -91,4 +91,4 @@ std::wstring BoolToWide(bool);
 std::pair<std::wstring, std::wstring> CommandLine();
 
 // DEBUG
-void DebugMessages(HWND);
+void DebugMessages();
