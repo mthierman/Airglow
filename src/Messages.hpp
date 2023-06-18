@@ -103,6 +103,8 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
             topmost = Toggle(topmost);
             TopmostWindow(window);
             UpdateFocus();
+            SetWindowTitle(window);
+            SetWindowIcon(window);
         }
 
         if (wparam == 0x57)
@@ -189,6 +191,8 @@ void Messages(std::wstring message)
         topmost = Toggle(topmost);
         TopmostWindow(window);
         UpdateFocus();
+        SetWindowTitle(window);
+        SetWindowIcon(window);
     }
 
     if (message == closeKey)
