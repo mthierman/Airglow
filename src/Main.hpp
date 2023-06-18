@@ -29,22 +29,12 @@ enum PreferredAppMode
 };
 
 // STATE
-bool ToggleSwap();
-bool ToggleMenu();
-bool ToggleSplit();
-bool ToggleMaximize();
-bool ToggleFullscreen();
-bool ToggleTopmost();
-
+bool Toggle(bool);
 void MaximizeWindow(HWND);
 void FullscreenWindow(HWND);
 void TopmostWindow(HWND);
-
 void UpdateFocus();
 void UpdateBounds(HWND);
-
-bool WindowTop(HWND);
-
 std::vector<int> dimensions;
 bool menu;
 bool split;

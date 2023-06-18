@@ -23,7 +23,6 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
 
     case WM_WINDOWPOSCHANGED:
     {
-        OutputDebugStringW(L"WM_WINDOWPOSCHANGED");
         UpdateBounds(window);
     }
     break;
@@ -60,7 +59,7 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
     {
         if (wparam == VK_F1)
         {
-            split = ToggleSplit();
+            split = Toggle(split);
             UpdateBounds(window);
             UpdateFocus();
             SetWindowTitle(window);
@@ -69,7 +68,7 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
 
         if (wparam == VK_F2)
         {
-            swapped = ToggleSwap();
+            swapped = Toggle(swapped);
             UpdateBounds(window);
             UpdateFocus();
             SetWindowTitle(window);
@@ -78,7 +77,7 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
 
         if (wparam == VK_F4)
         {
-            menu = ToggleMenu();
+            menu = Toggle(menu);
             UpdateBounds(window);
             UpdateFocus();
             SetWindowTitle(window);
@@ -87,20 +86,23 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
 
         if (wparam == VK_F6)
         {
-            maximized = ToggleMaximize();
+            maximized = Toggle(maximized);
             MaximizeWindow(window);
+            UpdateFocus();
         }
 
         if (wparam == VK_F11)
         {
-            fullscreen = ToggleFullscreen();
+            fullscreen = Toggle(fullscreen);
             FullscreenWindow(window);
+            UpdateFocus();
         }
 
         if (wparam == VK_F9)
         {
-            topmost = ToggleTopmost();
+            topmost = Toggle(topmost);
             TopmostWindow(window);
+            UpdateFocus();
         }
 
         if (wparam == 0x57)
@@ -143,7 +145,7 @@ void Messages(std::wstring message)
 
     if (message == splitKey)
     {
-        split = ToggleSplit();
+        split = Toggle(split);
         UpdateBounds(window);
         UpdateFocus();
         SetWindowTitle(window);
@@ -152,7 +154,7 @@ void Messages(std::wstring message)
 
     if (message == swapKey)
     {
-        swapped = ToggleSwap();
+        swapped = Toggle(swapped);
         UpdateBounds(window);
         UpdateFocus();
         SetWindowTitle(window);
@@ -161,7 +163,7 @@ void Messages(std::wstring message)
 
     if (message == hideMenuKey)
     {
-        menu = ToggleMenu();
+        menu = Toggle(menu);
         UpdateBounds(window);
         UpdateFocus();
         SetWindowTitle(window);
@@ -170,20 +172,23 @@ void Messages(std::wstring message)
 
     if (message == maximizeKey)
     {
-        maximized = ToggleMaximize();
+        maximized = Toggle(maximized);
         MaximizeWindow(window);
+        UpdateFocus();
     }
 
     if (message == fullscreenKey)
     {
-        fullscreen = ToggleFullscreen();
+        fullscreen = Toggle(fullscreen);
         FullscreenWindow(window);
+        UpdateFocus();
     }
 
     if (message == onTopKey)
     {
-        topmost = ToggleTopmost();
+        topmost = Toggle(topmost);
         TopmostWindow(window);
+        UpdateFocus();
     }
 
     if (message == closeKey)

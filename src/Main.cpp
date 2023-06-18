@@ -34,27 +34,23 @@ void Startup()
 {
     LoadSettings();
     Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
-
-    // SetWindowPos(window, nullptr, dimensions[0], dimensions[1], dimensions[2], dimensions[3], 0);
-
-    // if (fullscreen)
-    //     WindowFullscreen(window);
-    // if (maximized)
-    //     ShowWindow(window, SW_MAXIMIZE);
+    SetWindowPos(window, nullptr, dimensions[0], dimensions[1], dimensions[2], dimensions[3], 0);
 }
 
 void Shutdown()
 {
-    // WINDOWPLACEMENT wp = {0};
-    // wp.length = sizeof(WINDOWPLACEMENT);
-    // GetWindowPlacement(window, &wp);
-    // if (wp.showCmd == 3)
-    //     maximized = true;
+    WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
+    GetWindowPlacement(window, &wp);
+    auto cmd = wp.showCmd;
+    if (cmd == 3)
+        maximized = true;
+    else
+        maximized = false;
 
-    // ShowWindow(window, SW_SHOWNORMAL);
-    // RECT rect;
-    // GetWindowRect(window, &rect);
-    // dimensions = RectToBounds(rect);
+    ShowWindow(window, SW_SHOWNORMAL);
+    RECT rect;
+    GetWindowRect(window, &rect);
+    dimensions = RectToBounds(rect);
 
     SaveSettings();
     Gdiplus::GdiplusShutdown(gdiplusToken);

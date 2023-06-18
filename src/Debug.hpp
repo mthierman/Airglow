@@ -1,5 +1,9 @@
 void DebugMessages(HWND window)
 {
+    bool testBool = false;
+    auto test = Toggle(testBool);
+    OutputDebugStringW(BoolToWide(test).c_str());
+
     std::wstring dpi = L"DPI: " + std::to_wstring(GetDpiForWindow(window)) + L"\n";
     OutputDebugStringW(dpi.c_str());
 

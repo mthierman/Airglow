@@ -1,61 +1,4 @@
-// bool Toggle(bool in)
-// {
-//     return
-// }
-
-bool ToggleSwap()
-{
-    if (!swapped)
-        return true;
-
-    else
-        return false;
-}
-
-bool ToggleMenu()
-{
-    if (!menu)
-        return true;
-
-    else
-        return false;
-}
-
-bool ToggleSplit()
-{
-    if (!split)
-        return true;
-
-    else
-        return false;
-}
-
-bool ToggleMaximize()
-{
-    if (!maximized)
-        return true;
-
-    else
-        return false;
-}
-
-bool ToggleFullscreen()
-{
-    if (!fullscreen)
-        return true;
-
-    else
-        return false;
-}
-
-bool ToggleTopmost()
-{
-    if (!topmost)
-        return true;
-
-    else
-        return false;
-}
+bool Toggle(bool b) { return b ? false : true; }
 
 void MaximizeWindow(HWND window)
 {
@@ -71,6 +14,7 @@ void MaximizeWindow(HWND window)
 void FullscreenWindow(HWND window)
 {
     static RECT position;
+
     auto style = GetWindowLongPtrW(window, GWL_STYLE);
 
     if (style & WS_OVERLAPPEDWINDOW)
