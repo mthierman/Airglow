@@ -27,26 +27,6 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
     }
     break;
 
-        // case WM_ACTIVATE:
-        // {
-        //     OutputDebugStringW(L"WM_ACTIVATE");
-        //     SendMessageW(window, WM_SETFOCUS, 0, 0);
-        // }
-        // break;
-
-        // case WM_SETFOCUS:
-        // {
-        //     OutputDebugStringW(L"WM_SETFOCUS");
-        //     UpdateFocus();
-        // }
-        // break;
-
-        // case WM_SIZE:
-        // {
-        //     OutputDebugStringW(L"WM_SIZE");
-        // }
-        // break;
-
     case WM_GETMINMAXINFO:
     {
         LPMINMAXINFO minmax = (LPMINMAXINFO)lparam;
