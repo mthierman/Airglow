@@ -39,6 +39,10 @@ void Startup()
 
 void Shutdown()
 {
+    auto style = GetWindowLongPtrW(window, GWL_STYLE);
+    if (!(style & WS_OVERLAPPEDWINDOW))
+        FullscreenWindow(window);
+
     WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
     GetWindowPlacement(window, &wp);
     auto cmd = wp.showCmd;
