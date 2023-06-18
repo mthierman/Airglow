@@ -21,7 +21,7 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
     Startup();
 
     // DEBUGGING
-    DebugMessages();
+    Tests();
 
     MSG msg = {};
     while (GetMessageW(&msg, nullptr, 0, 0))

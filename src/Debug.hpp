@@ -1,21 +1,4 @@
-// void Tests()
-// {
-//     std::println(stdout, "{}", std::string("Tests:"));
-
-//     bool testBool = false;
-//     auto test = Toggle(testBool);
-//     OutputDebugStringW(BoolToWide(test).c_str());
-
-//     OutputDebugStringW(BoolToWide(maximized).c_str());
-
-//     WINDOWPLACEMENT wp = {};
-//     wp.length = sizeof(WINDOWPLACEMENT);
-//     GetWindowPlacement(window, &wp);
-//     if (wp.showCmd == 3)
-//         OutputDebugStringW(L"MAXIMIZED!");
-// }
-
-void DebugMessages()
+void Tests()
 {
     auto toggleTest = Toggle(false);
     if (toggleTest != false)
