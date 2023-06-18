@@ -108,20 +108,36 @@ RECT GetSidePanelBounds(HWND window)
     return panel;
 }
 
-std::wstring ToWide(std::string input)
+void prints(std::string in)
 {
-    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-    std::wstring output = converter.from_bytes(input);
-
-    return output;
+    std::ostream_iterator<char> out(std::cout);
+    std::format_to(out, "{}", in.c_str());
 }
 
-std::string ToString(std::wstring input)
+void printw(std::wstring in)
 {
-    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-    std::string output = converter.to_bytes(input);
+    std::ostream_iterator<char> out(std::cout);
+    std::format_to(out, "{}", ToString(in).c_str());
+}
 
-    return output;
+std::wstring ToWide(std::string in)
+{
+    int size = MultiByteToWideChar(CP_UTF8, 0, in.c_str(), in.size(), nullptr, 0);
+    std::wstring out;
+    out.resize(size);
+    MultiByteToWideChar(CP_UTF8, 0, in.c_str(), in.size(), out.data(), size);
+
+    return out;
+}
+
+std::string ToString(std::wstring in)
+{
+    int size = WideCharToMultiByte(CP_UTF8, 0, in.c_str(), in.size(), nullptr, 0, nullptr, nullptr);
+    std::string out;
+    out.resize(size);
+    WideCharToMultiByte(CP_UTF8, 0, in.c_str(), in.size(), out.data(), size, nullptr, nullptr);
+
+    return out;
 }
 
 std::wstring BoolToWide(bool input)

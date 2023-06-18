@@ -1,4 +1,10 @@
 #pragma once
+
+#include <filesystem>
+#include <format>
+#include <fstream>
+#include <iostream>
+
 #include <dwmapi.h>
 #include <gdiplus.h>
 #include <ShlObj.h>
@@ -13,9 +19,3 @@
 #include <winrt/Windows.UI.ViewManagement.h>
 
 #include <json.hpp>
-
-#include <codecvt>
-#include <filesystem>
-#include <format>
-#include <fstream>
-#include <locale>

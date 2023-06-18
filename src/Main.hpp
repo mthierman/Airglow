@@ -91,6 +91,8 @@ RECT BoundsToRect(std::vector<int>);
 RECT GetMenuBounds(HWND);
 RECT GetMainPanelBounds(HWND);
 RECT GetSidePanelBounds(HWND);
+void prints(std::string);
+void printw(std::wstring);
 std::wstring ToWide(std::string);
 std::string ToString(std::wstring);
 std::wstring BoolToWide(bool);
