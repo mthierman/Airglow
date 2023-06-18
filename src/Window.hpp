@@ -421,6 +421,14 @@ void UpdateBounds(HWND window)
         settings_controller->put_Bounds(GetMenuBounds(window));
 }
 
+void UpdateWindowState(HWND window)
+{
+    if (maximized)
+        ShowWindow(window, SW_MAXIMIZE);
+    else
+        ShowWindow(window, SW_SHOWNORMAL);
+}
+
 void DebugMessages(HWND window)
 {
     std::wstring dpi = L"DPI: " + std::to_wstring(GetDpiForWindow(window)) + L"\n";
@@ -439,4 +447,10 @@ void DebugMessages(HWND window)
     OutputDebugStringW(windowRect.c_str());
 
     OutputDebugStringW(BoolToWide(maximized).c_str());
+
+    WINDOWPLACEMENT wp = {};
+    wp.length = sizeof(WINDOWPLACEMENT);
+    GetWindowPlacement(window, &wp);
+    if (wp.showCmd == 3)
+        OutputDebugStringW(L"MAXIMIZED!");
 }

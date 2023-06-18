@@ -42,6 +42,7 @@ __int64 __stdcall WndProc(HWND window, UINT msg, WPARAM wparam, LPARAM lparam)
     case WM_SIZE:
     {
         UpdateBounds(window);
+        UpdateWindowState(window);
         SetWindowTitle(window);
         SetWindowIcon(window);
     }

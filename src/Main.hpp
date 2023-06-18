@@ -32,6 +32,7 @@ bool SetMica(HWND);
 bool SetWindow(HWND, int);
 void UpdateFocus();
 void UpdateBounds(HWND);
+void UpdateWindowState(HWND);
 void DebugMessages(HWND);
 enum PreferredAppMode
 {
