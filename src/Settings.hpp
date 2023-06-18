@@ -43,7 +43,7 @@ nlohmann::json DefaultSettings()
 {
     nlohmann::json settings;
     settings["dimensions"] = {0, 0, 800, 600};
-    settings["ontop"] = false;
+    settings["topmost"] = false;
     settings["maximized"] = false;
     settings["fullscreen"] = false;
     settings["split"] = false;
@@ -59,7 +59,7 @@ nlohmann::json CurrentSettings()
 {
     nlohmann::json settings;
     settings["dimensions"] = dimensions;
-    settings["ontop"] = ontop;
+    settings["topmost"] = topmost;
     settings["maximized"] = maximized;
     settings["fullscreen"] = fullscreen;
     settings["split"] = split;
@@ -87,7 +87,7 @@ nlohmann::json LoadSettings()
     fullscreen = settings["fullscreen"].get<bool>();
     maximized = settings["maximized"].get<bool>();
     menu = settings["menu"].get<bool>();
-    ontop = settings["ontop"].get<bool>();
+    topmost = settings["topmost"].get<bool>();
     split = settings["split"].get<bool>();
     swapped = settings["swapped"].get<bool>();
     mainpage = ToWide(settings["mainpage"].get<std::string>());

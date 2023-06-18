@@ -327,10 +327,10 @@ void SetWindowTitle(HWND window)
             main_wv->get_DocumentTitle(&s);
             auto title = s.get();
 
-            if (!ontop)
+            if (!topmost)
                 SetWindowTextW(window, title);
 
-            if (ontop)
+            if (topmost)
             {
                 std::wstring add = title + titleTop;
                 SetWindowTextW(window, add.c_str());
@@ -346,10 +346,10 @@ void SetWindowTitle(HWND window)
             side_wv->get_DocumentTitle(&s);
             auto title = s.get();
 
-            if (!ontop)
+            if (!topmost)
                 SetWindowTextW(window, title);
 
-            if (ontop)
+            if (topmost)
             {
                 std::wstring add = title + titleTop;
                 SetWindowTextW(window, add.c_str());

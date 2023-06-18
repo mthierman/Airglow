@@ -1,10 +1,11 @@
 #include "Main.hpp"
-#include "Window.hpp"
-#include "WndProc.hpp"
 #include "Messages.hpp"
+#include "Window.hpp"
+#include "State.hpp"
 #include "WebView.hpp"
 #include "Settings.hpp"
 #include "Utility.hpp"
+#include "Debug.hpp"
 
 int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
 {
@@ -32,21 +33,29 @@ int __stdcall wWinMain(HINSTANCE instance, HINSTANCE hpinstance, PWSTR pcl, int 
 void Startup()
 {
     LoadSettings();
-    OutputDebugStringW(BoolToWide(maximized).c_str());
-    SetWindowPos(window, nullptr, dimensions[0], dimensions[1], dimensions[2], dimensions[3], 0);
-    if (fullscreen)
-        WindowFullscreen(window);
-    if (maximized)
-        ShowWindow(window, SW_MAXIMIZE);
     Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+
+    // SetWindowPos(window, nullptr, dimensions[0], dimensions[1], dimensions[2], dimensions[3], 0);
+
+    // if (fullscreen)
+    //     WindowFullscreen(window);
+    // if (maximized)
+    //     ShowWindow(window, SW_MAXIMIZE);
 }
 
 void Shutdown()
 {
-    ShowWindow(window, SW_SHOWNORMAL);
-    RECT rect;
-    GetWindowRect(window, &rect);
-    dimensions = RectToBounds(rect);
+    // WINDOWPLACEMENT wp = {0};
+    // wp.length = sizeof(WINDOWPLACEMENT);
+    // GetWindowPlacement(window, &wp);
+    // if (wp.showCmd == 3)
+    //     maximized = true;
+
+    // ShowWindow(window, SW_SHOWNORMAL);
+    // RECT rect;
+    // GetWindowRect(window, &rect);
+    // dimensions = RectToBounds(rect);
+
     SaveSettings();
     Gdiplus::GdiplusShutdown(gdiplusToken);
     DestroyWindow(window);

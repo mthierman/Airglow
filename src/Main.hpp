@@ -14,26 +14,11 @@ HWND window;
 unsigned short MakeWindowClass(HINSTANCE);
 HWND MakeWindow(HINSTANCE);
 HWND InitializeWindow(HINSTANCE, int);
-std::vector<int> RectToBounds(RECT);
-RECT BoundsToRect(std::vector<int>);
-RECT GetMenuBounds(HWND);
-RECT GetMainPanelBounds(HWND);
-RECT GetSidePanelBounds(HWND);
-bool HideMenu();
-bool SplitPanel();
-bool SwapPanel();
-bool WindowMaximize(HWND);
-bool WindowFullscreen(HWND);
-bool WindowTop(HWND);
 bool CheckSystemDarkMode();
 bool SetDarkTitle();
 bool SetDarkMode(HWND);
 bool SetMica(HWND);
 bool SetWindow(HWND, int);
-void UpdateFocus();
-void UpdateBounds(HWND);
-void UpdateWindowState(HWND);
-void DebugMessages(HWND);
 enum PreferredAppMode
 {
     Default,
@@ -42,13 +27,31 @@ enum PreferredAppMode
     ForceLight,
     Max
 };
+
+// STATE
+bool ToggleSwap();
+bool ToggleMenu();
+bool ToggleSplit();
+bool ToggleMaximize();
+bool ToggleFullscreen();
+bool ToggleTopmost();
+
+void MaximizeWindow(HWND);
+void FullscreenWindow(HWND);
+void TopmostWindow(HWND);
+
+void UpdateFocus();
+void UpdateBounds(HWND);
+
+bool WindowTop(HWND);
+
 std::vector<int> dimensions;
-bool ontop;
-bool maximized;
-bool fullscreen;
+bool menu;
 bool split;
 bool swapped;
-bool menu;
+bool maximized;
+bool fullscreen;
+bool topmost;
 std::wstring mainpage;
 std::wstring sidepage;
 
@@ -87,7 +90,15 @@ std::filesystem::path appData;
 std::filesystem::path settingsFile;
 
 // UTILITY
+std::vector<int> RectToBounds(RECT);
+RECT BoundsToRect(std::vector<int>);
+RECT GetMenuBounds(HWND);
+RECT GetMainPanelBounds(HWND);
+RECT GetSidePanelBounds(HWND);
 std::wstring ToWide(std::string);
 std::string ToString(std::wstring);
 std::wstring BoolToWide(bool);
 std::pair<std::wstring, std::wstring> CommandLine();
+
+// DEBUG
+void DebugMessages(HWND);
