@@ -377,16 +377,18 @@ void WebView::Messages(HWND hwnd, std::wstring message)
 
     if (message == fullscreenKey)
     {
-        // pSettings->boolFullscreen = Utility::Toggle(pSettings->boolFullscreen);
-        // WebView::UpdateBounds(hwnd);
-        // WebView::UpdateFocus();
+        pSettings->boolFullscreen = Utility::Toggle(pSettings->boolFullscreen);
+        MainWindow::Fullscreen(hwnd);
+        WebView::UpdateBounds(hwnd);
+        WebView::UpdateFocus();
     }
 
     if (message == onTopKey)
     {
-        // pSettings->boolTopmost = Utility::Toggle(pSettings->boolTopmost);
-        // WebView::UpdateBounds(hwnd);
-        // WebView::UpdateFocus();
+        pSettings->boolTopmost = Utility::Toggle(pSettings->boolTopmost);
+        MainWindow::Topmost(hwnd);
+        WebView::UpdateBounds(hwnd);
+        WebView::UpdateFocus();
     }
 
     if (message == closeKey)

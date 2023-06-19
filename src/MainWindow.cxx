@@ -86,29 +86,16 @@ bool MainWindow::Show(HWND hwnd, int ncs)
 
 void MainWindow::Maximize(HWND hwnd)
 {
-
     if (pSettings->boolMaximized)
         ShowWindow(hwnd, SW_NORMAL);
     if (!pSettings->boolMaximized)
         ShowWindow(hwnd, SW_MAXIMIZE);
-
-    // if (!pSettings->boolFullscreen)
-    // {
-    //     if (pSettings->boolMaximized)
-    //         ShowWindow(hwnd, SW_NORMAL);
-    //     if (!pSettings->boolMaximized)
-    //         ShowWindow(hwnd, SW_MAXIMIZE);
-    // }
-
-    // FullscreenWindow(hwnd);
 }
 
 void MainWindow::Fullscreen(HWND hwnd)
 {
     static RECT position;
-
     auto style = GetWindowLongPtrW(hwnd, GWL_STYLE);
-
     if (style & WS_OVERLAPPEDWINDOW)
     {
         MONITORINFO mi = {sizeof(mi)};
@@ -141,9 +128,7 @@ void MainWindow::Topmost(HWND hwnd)
     fwi.dwFlags = FLASHW_CAPTION;
     fwi.uCount = 1;
     fwi.dwTimeout = 100;
-
     auto top = GetWindowLongPtrW(hwnd, GWL_EXSTYLE);
-
     if (top & WS_EX_TOPMOST)
     {
         SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
@@ -319,16 +304,18 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
 
     if (wparam == VK_F11)
     {
-        // pSettings->boolFullscreen = Utility::Toggle(pSettings->boolFullscreen);
-        // WebView::UpdateBounds(hwnd);
-        // WebView::UpdateFocus();
+        pSettings->boolFullscreen = Utility::Toggle(pSettings->boolFullscreen);
+        Fullscreen(hwnd);
+        WebView::UpdateBounds(hwnd);
+        WebView::UpdateFocus();
     }
 
     if (wparam == VK_F9)
     {
-        // pSettings->boolTopmost = Utility::Toggle(pSettings->boolTopmost);
-        // WebView::UpdateBounds(hwnd);
-        // WebView::UpdateFocus();
+        pSettings->boolTopmost = Utility::Toggle(pSettings->boolTopmost);
+        Topmost(hwnd);
+        WebView::UpdateBounds(hwnd);
+        WebView::UpdateFocus();
     }
 
     if (wparam == 0x57)
