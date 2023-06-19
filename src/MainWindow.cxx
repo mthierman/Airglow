@@ -159,12 +159,12 @@ int MainWindow::_OnGetMinMaxInfo(LPARAM lparam)
 
 int MainWindow::_OnPaint(HWND hwnd)
 {
-    // PAINTSTRUCT ps;
-    // HDC hdc = BeginPaint(hwnd, &ps);
-    // RECT bounds;
-    // GetClientRect(hwnd, &bounds);
-    // FillRect(hdc, &bounds, (HBRUSH)GetStockObject(BLACK_BRUSH));
-    // EndPaint(hwnd, &ps);
+    PAINTSTRUCT ps;
+    HDC hdc = BeginPaint(hwnd, &ps);
+    RECT bounds;
+    GetClientRect(hwnd, &bounds);
+    FillRect(hdc, &bounds, (HBRUSH)GetStockObject(BLACK_BRUSH));
+    EndPaint(hwnd, &ps);
 
     return 0;
 }
