@@ -23,18 +23,15 @@ class WebView
     static std::unique_ptr<WebView> Create(HWND, Settings*);
     static void Initialize(HWND);
     static Settings* pSettings;
-
     static void Messages(HWND, std::wstring);
-
     static void UpdateBounds(HWND);
     static void UpdateFocus();
     static RECT FullBounds(HWND);
     static RECT MenuBounds(HWND);
     static RECT MainBounds(HWND);
     static RECT SideBounds(HWND);
-
-    // void SetWindowTitle(HWND);
-    // void SetWindowIcon(HWND);
+    void SetWindowTitle(HWND);
+    void SetWindowIcon(HWND);
 
   private:
     WebView(HWND, Settings*);

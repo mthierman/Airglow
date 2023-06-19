@@ -16,7 +16,6 @@ class MainWindow
     static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
     HWND m_hWnd;
 
-    // MESSAGES
     int _OnCommand();
     int _OnCreate(HWND);
     int _OnClose(HWND);
@@ -30,7 +29,6 @@ class MainWindow
     int _OnSettingChange(HWND);
     int _OnKeyDown(HWND, WPARAM);
 
-    // THEME
     bool CheckSystemDarkMode();
     bool SetDarkTitle();
     bool SetDarkMode(HWND);
