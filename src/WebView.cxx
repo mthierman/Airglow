@@ -111,8 +111,8 @@ void WebView::Initialize(HWND hwnd)
                             {
                                 main_wv->Navigate(args.first.c_str());
                             }
-
-                            main_wv->Navigate(L"https://www.google.com/");
+                            else
+                                main_wv->Navigate(L"https://www.google.com/");
 
                             auto script = GetMenuScript();
                             main_wv->ExecuteScript(script.c_str(), nullptr);
@@ -196,8 +196,8 @@ void WebView::Initialize(HWND hwnd)
                             {
                                 side_wv->Navigate(args.second.c_str());
                             }
-
-                            side_wv->Navigate(L"https://www.bing.com/");
+                            else
+                                side_wv->Navigate(L"https://www.bing.com/");
 
                             auto script = GetMenuScript();
                             side_wv->ExecuteScript(script.c_str(), nullptr);
