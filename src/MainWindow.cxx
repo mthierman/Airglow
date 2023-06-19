@@ -362,21 +362,3 @@ void MainWindow::TopmostWindow(HWND hwnd)
         FlashWindowEx(&fwi);
     }
 }
-
-void MainWindow::UpdateFocus()
-{
-    // if (settings.menu)
-    //     if (settings_controller != nullptr)
-    //         settings_controller->MoveFocus(
-    //             COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-
-    // if (!settings.swapped & !settings.menu)
-    //     if (main_controller != nullptr)
-    //         main_controller->MoveFocus(
-    //             COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-
-    // if (settings.swapped & !settings.menu)
-    //     if (side_controller != nullptr)
-    //         side_controller->MoveFocus(
-    //             COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-}

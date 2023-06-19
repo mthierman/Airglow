@@ -414,6 +414,24 @@ void WebView::BoundsUpdate(HWND hwnd)
         side_controller->put_Bounds(SideBounds(hwnd));
 }
 
+void WebView::FocusUpdate()
+{
+    if (pSettings->boolMenu)
+        if (settings_controller != nullptr)
+            settings_controller->MoveFocus(
+                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+
+    if (!pSettings->boolSwapped & !pSettings->boolMenu)
+        if (main_controller != nullptr)
+            main_controller->MoveFocus(
+                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+
+    if (pSettings->boolSwapped & !pSettings->boolMenu)
+        if (side_controller != nullptr)
+            side_controller->MoveFocus(
+                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+}
+
 RECT WebView::FullBounds(HWND hwnd)
 {
     RECT bounds = {0, 0, 0, 0};
