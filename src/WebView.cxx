@@ -1,24 +1,14 @@
 #include "WebView.hxx"
 
 Settings* WebView::pSettings = nullptr;
-static wil::com_ptr<ICoreWebView2_19> settings_wv;
-static wil::com_ptr<ICoreWebView2Controller> settings_controller;
-static wil::com_ptr<ICoreWebView2> settings_core;
-static wil::com_ptr<ICoreWebView2Settings> settings_settings;
-static wil::com_ptr<ICoreWebView2_19> main_wv;
-static wil::com_ptr<ICoreWebView2Controller> main_controller;
-static wil::com_ptr<ICoreWebView2> main_core;
-static wil::com_ptr<ICoreWebView2Settings> main_settings;
-static wil::com_ptr<ICoreWebView2_19> side_wv;
-static wil::com_ptr<ICoreWebView2Controller> side_controller;
-static wil::com_ptr<ICoreWebView2> side_core;
-static wil::com_ptr<ICoreWebView2Settings> side_settings;
 
 WebView::WebView(HWND hwnd, Settings* settings) {}
 
 std::unique_ptr<WebView> WebView::Create(HWND hwnd, Settings* settings)
 {
-    auto pWebView = std::unique_ptr<WebView>(new WebView(hwnd, pSettings));
+    pSettings = settings;
+
+    auto pWebView = std::unique_ptr<WebView>(new WebView(hwnd, settings));
 
     return pWebView;
 }
@@ -40,7 +30,6 @@ void WebView::Initialize(HWND hwnd)
 
                                   if (controller != nullptr)
                                   {
-                                      OutputDebugStringW(L"CONTROLLER NULL");
                                       settings_controller = controller;
                                       settings_controller->get_CoreWebView2(&settings_core);
                                   }
@@ -56,7 +45,7 @@ void WebView::Initialize(HWND hwnd)
                                   settings_settings->put_IsStatusBarEnabled(false);
                                   settings_settings->put_IsWebMessageEnabled(true);
                                   settings_settings->put_IsZoomControlEnabled(false);
-                                  //   settings_controller->put_Bounds(GetMenuBounds(hwnd));
+                                  settings_controller->put_Bounds(GetMenuBounds(hwnd));
 
                                   settings_wv->Navigate(L"https://www.example.com/");
 
@@ -114,7 +103,7 @@ void WebView::Initialize(HWND hwnd)
                             main_settings->put_IsStatusBarEnabled(true);
                             main_settings->put_IsWebMessageEnabled(true);
                             main_settings->put_IsZoomControlEnabled(true);
-                            // main_controller->put_Bounds(GetMainPanelBounds(hwnd));
+                            main_controller->put_Bounds(GetMainPanelBounds(hwnd));
 
                             auto args = Utility::CommandLine();
 
@@ -199,7 +188,7 @@ void WebView::Initialize(HWND hwnd)
                             side_settings->put_IsStatusBarEnabled(true);
                             side_settings->put_IsWebMessageEnabled(true);
                             side_settings->put_IsZoomControlEnabled(true);
-                            // side_controller->put_Bounds(GetSidePanelBounds(hwnd));
+                            side_controller->put_Bounds(GetSidePanelBounds(hwnd));
 
                             auto args = Utility::CommandLine();
 
@@ -415,9 +404,6 @@ void WebView::Messages(std::wstring message)
 
 void WebView::UpdateBounds(HWND hwnd)
 {
-    if (settings_controller == nullptr)
-        OutputDebugStringW(L"NULL");
-
     if (main_controller != nullptr)
         main_controller->put_Bounds(GetMainPanelBounds(hwnd));
 
@@ -444,17 +430,15 @@ RECT WebView::GetMenuBounds(HWND hwnd)
     GetClientRect(hwnd, &bounds);
 
     if (pSettings->boolMenu)
+    {
         OutputDebugStringW(L"TRUE");
-
-    // if (pSettings->boolMenu)
-    // {
-    //     panel = {
-    //         bounds.left,
-    //         bounds.top,
-    //         bounds.right,
-    //         bounds.bottom,
-    //     };
-    // }
+        panel = {
+            bounds.left,
+            bounds.top,
+            bounds.right,
+            bounds.bottom,
+        };
+    }
 
     return panel;
 }
@@ -465,34 +449,34 @@ RECT WebView::GetMainPanelBounds(HWND window)
     RECT panel = {0, 0, 0, 0};
     GetClientRect(window, &bounds);
 
-    // if (pSettings->boolMenu)
-    //     return panel;
+    if (pSettings->boolMenu)
+        return panel;
 
-    // if (!split & !swapped)
-    //     panel = bounds;
+    if (!pSettings->boolSplit & !pSettings->boolSwapped)
+        panel = bounds;
 
-    // if (!split & swapped)
-    //     return panel;
+    if (!pSettings->boolSplit & pSettings->boolSwapped)
+        return panel;
 
-    // if (split & !swapped)
-    // {
-    //     panel = {
-    //         bounds.left,
-    //         bounds.top,
-    //         bounds.right / 2,
-    //         bounds.bottom,
-    //     };
-    // }
+    if (pSettings->boolSplit & !pSettings->boolSwapped)
+    {
+        panel = {
+            bounds.left,
+            bounds.top,
+            bounds.right / 2,
+            bounds.bottom,
+        };
+    }
 
-    // if (split & swapped)
-    // {
-    //     panel = {
-    //         bounds.right / 2,
-    //         bounds.top,
-    //         bounds.right,
-    //         bounds.bottom,
-    //     };
-    // }
+    if (pSettings->boolSplit & pSettings->boolSwapped)
+    {
+        panel = {
+            bounds.right / 2,
+            bounds.top,
+            bounds.right,
+            bounds.bottom,
+        };
+    }
 
     return panel;
 }
@@ -503,34 +487,34 @@ RECT WebView::GetSidePanelBounds(HWND window)
     RECT panel = {0, 0, 0, 0};
     GetClientRect(window, &bounds);
 
-    // if (pSettings->boolMenu)
-    //     return panel;
+    if (pSettings->boolMenu)
+        return panel;
 
-    // if (!split & !swapped)
-    //     return panel;
+    if (!pSettings->boolSplit & !pSettings->boolSwapped)
+        return panel;
 
-    // if (!split & swapped)
-    //     panel = bounds;
+    if (!pSettings->boolSplit & pSettings->boolSwapped)
+        panel = bounds;
 
-    // if (split & !swapped)
-    // {
-    //     panel = {
-    //         bounds.right / 2,
-    //         bounds.top,
-    //         bounds.right,
-    //         bounds.bottom,
-    //     };
-    // }
+    if (pSettings->boolSplit & !pSettings->boolSwapped)
+    {
+        panel = {
+            bounds.right / 2,
+            bounds.top,
+            bounds.right,
+            bounds.bottom,
+        };
+    }
 
-    // if (split & swapped)
-    // {
-    //     panel = {
-    //         bounds.left,
-    //         bounds.top,
-    //         bounds.right / 2,
-    //         bounds.bottom,
-    //     };
-    // }
+    if (pSettings->boolSplit & pSettings->boolSwapped)
+    {
+        panel = {
+            bounds.left,
+            bounds.top,
+            bounds.right / 2,
+            bounds.bottom,
+        };
+    }
 
     return panel;
 }

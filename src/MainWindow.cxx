@@ -11,7 +11,8 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Set
 {
     pSettings = settings;
     // pSettings->boolMenu = true;
-    // pSettings->Save();
+    pSettings->boolSplit = true;
+    pSettings->Save();
 
     std::wstring className(L"airglow");
     std::wstring menuName(L"airglowmenu");
@@ -161,25 +162,25 @@ int MainWindow::_OnGetMinMaxInfo(LPARAM lparam)
 
 int MainWindow::_OnPaint(HWND hwnd)
 {
-    PAINTSTRUCT ps;
-    HDC hdc = BeginPaint(hwnd, &ps);
-    RECT bounds;
-    GetClientRect(hwnd, &bounds);
-    FillRect(hdc, &bounds, (HBRUSH)GetStockObject(BLACK_BRUSH));
-    EndPaint(hwnd, &ps);
+    // PAINTSTRUCT ps;
+    // HDC hdc = BeginPaint(hwnd, &ps);
+    // RECT bounds;
+    // GetClientRect(hwnd, &bounds);
+    // FillRect(hdc, &bounds, (HBRUSH)GetStockObject(BLACK_BRUSH));
+    // EndPaint(hwnd, &ps);
 
     return 0;
 }
 
-int MainWindow::_OnSize(HWND hwnd)
+int MainWindow::_OnSize(HWND hwnd) { return 0; }
+
+int MainWindow::_OnSizing(HWND hwnd) { return 0; }
+
+int MainWindow::_OnWindowPosChanged(HWND hwnd)
 {
     WebView::UpdateBounds(hwnd);
     return 0;
 }
-
-int MainWindow::_OnSizing(HWND hwnd) { return 0; }
-
-int MainWindow::_OnWindowPosChanged(HWND hwnd) { return 0; }
 
 int MainWindow::_OnSettingChange(HWND hwnd)
 {
