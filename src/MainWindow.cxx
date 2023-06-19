@@ -1,17 +1,17 @@
 #include "MainWindow.hxx"
 
+Settings* MainWindow::pSettings = nullptr;
+
 unsigned long long MainWindow::gdiplusToken;
 Gdiplus::GdiplusStartupInput MainWindow::gdiplusStartupInput;
-Settings* MainWindow::pSettings;
 
-MainWindow::MainWindow(HINSTANCE hinstance, int ncs, Settings* settings){};
+MainWindow::MainWindow(HINSTANCE hinstance, int ncs, Settings* settings) {}
 
 std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Settings* settings)
 {
-    // settings->boolSplit = false;
-    // settings->Save();
     pSettings = settings;
-    pSettings->boolSplit = false;
+    // pSettings->boolMenu = true;
+    // pSettings->Save();
 
     std::wstring className(L"airglow");
     std::wstring menuName(L"airglowmenu");
@@ -42,7 +42,7 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Set
         return nullptr;
     }
 
-    auto pMainWindow = std::unique_ptr<MainWindow>(new MainWindow(hinstance, ncs, settings));
+    auto pMainWindow = std::unique_ptr<MainWindow>(new MainWindow(hinstance, ncs, pSettings));
 
     HWND hwnd = CreateWindowExW(0, className.c_str(), appName.c_str(), WS_OVERLAPPEDWINDOW,
                                 CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
@@ -101,7 +101,9 @@ __int64 __stdcall MainWindow::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARA
         case WM_PAINT:
             return pMainWindow->_OnPaint(hwnd);
         case WM_SIZE:
-            return pMainWindow->_OnSize();
+            return pMainWindow->_OnSize(hwnd);
+        case WM_SIZING:
+            return pMainWindow->_OnSizing(hwnd);
         case WM_WINDOWPOSCHANGED:
             return pMainWindow->_OnWindowPosChanged(hwnd);
         case WM_SETTINGCHANGE:
@@ -112,34 +114,6 @@ __int64 __stdcall MainWindow::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARA
     }
 
     return DefWindowProc(hwnd, msg, wparam, lparam);
-}
-
-bool MainWindow::_ShowWindow(HWND hwnd, int ncs)
-{
-    auto cloakOn = TRUE;
-    auto cloakOff = FALSE;
-    auto cloak = S_OK;
-
-    cloak = DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOn, sizeof(cloakOn));
-
-    if (SUCCEEDED(cloak))
-    {
-        auto uncloak = S_OK;
-
-        SetWindowPos(hwnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOREDRAW);
-        uncloak = DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOff, sizeof(cloakOff));
-
-        if (SUCCEEDED(uncloak))
-        {
-            ShowWindow(hwnd, ncs);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    return false;
 }
 
 int MainWindow::_OnCommand() { return 0; }
@@ -162,12 +136,6 @@ int MainWindow::_OnCreate(HWND hwnd)
 int MainWindow::_OnClose(HWND hwnd)
 {
     Gdiplus::GdiplusShutdown(gdiplusToken);
-
-    pSettings->boolSplit = false;
-    pSettings->Save();
-    // this->pSettings->boolSplit = true;
-    // this->pSettings->Save();
-
     DestroyWindow(hwnd);
 
     return 0;
@@ -203,7 +171,13 @@ int MainWindow::_OnPaint(HWND hwnd)
     return 0;
 }
 
-int MainWindow::_OnSize() { return 0; }
+int MainWindow::_OnSize(HWND hwnd)
+{
+    WebView::UpdateBounds(hwnd);
+    return 0;
+}
+
+int MainWindow::_OnSizing(HWND hwnd) { return 0; }
 
 int MainWindow::_OnWindowPosChanged(HWND hwnd) { return 0; }
 
@@ -296,6 +270,34 @@ bool MainWindow::SetMica(HWND hwnd)
     return false;
 }
 
+bool MainWindow::Show(HWND hwnd, int ncs)
+{
+    auto cloakOn = TRUE;
+    auto cloakOff = FALSE;
+    auto cloak = S_OK;
+
+    cloak = DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOn, sizeof(cloakOn));
+
+    if (SUCCEEDED(cloak))
+    {
+        auto uncloak = S_OK;
+
+        SetWindowPos(hwnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOREDRAW);
+        uncloak = DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOff, sizeof(cloakOff));
+
+        if (SUCCEEDED(uncloak))
+        {
+            ShowWindow(hwnd, ncs);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    return false;
+}
+
 bool MainWindow::Toggle(bool b) { return b ? false : true; }
 
 void MainWindow::MaximizeWindow(HWND window)
@@ -379,122 +381,4 @@ void MainWindow::UpdateFocus()
     //     if (side_controller != nullptr)
     //         side_controller->MoveFocus(
     //             COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-}
-
-void MainWindow::UpdateBounds(HWND hwnd)
-{
-    if (main_controller != nullptr)
-        main_controller->put_Bounds(GetMainPanelBounds(hwnd));
-
-    if (side_controller != nullptr)
-        side_controller->put_Bounds(GetSidePanelBounds(hwnd));
-
-    if (settings_controller != nullptr)
-        settings_controller->put_Bounds(GetMenuBounds(hwnd));
-}
-
-RECT MainWindow::GetFullBounds(HWND window)
-{
-    RECT bounds = {0, 0, 0, 0};
-
-    GetClientRect(window, &bounds);
-
-    auto panel = bounds;
-
-    return panel;
-}
-
-RECT MainWindow::GetMenuBounds(HWND window)
-{
-    RECT bounds = {0, 0, 0, 0};
-    RECT panel = {0, 0, 0, 0};
-
-    GetClientRect(window, &bounds);
-
-    // if (menu)
-    // {
-    //     panel = {
-    //         bounds.left,
-    //         bounds.top,
-    //         bounds.right,
-    //         bounds.bottom,
-    //     };
-    // }
-
-    return panel;
-}
-
-RECT MainWindow::GetMainPanelBounds(HWND window)
-{
-    RECT bounds = {0, 0, 0, 0};
-    RECT panel = {0, 0, 0, 0};
-
-    GetClientRect(window, &bounds);
-
-    // if (menu)
-    //     return panel;
-
-    // if (!split & !swapped)
-    //     panel = bounds;
-
-    // if (!split & swapped)
-    //     return panel;
-
-    // if (split & !swapped)
-    // {
-    //     panel = {
-    //         bounds.left,
-    //         bounds.top,
-    //         bounds.right / 2,
-    //         bounds.bottom,
-    //     };
-    // }
-
-    // if (split & swapped)
-    // {
-    //     panel = {
-    //         bounds.right / 2,
-    //         bounds.top,
-    //         bounds.right,
-    //         bounds.bottom,
-    //     };
-    // }
-
-    return panel;
-}
-
-RECT MainWindow::GetSidePanelBounds(HWND window)
-{
-    RECT bounds = {0, 0, 0, 0};
-    RECT panel = {0, 0, 0, 0};
-
-    GetClientRect(window, &bounds);
-
-    // if (!split & !swapped)
-    //     return panel;
-
-    // if (!split & swapped)
-    //     panel = bounds;
-
-    // if (split & !swapped)
-    // {
-    //     panel = {
-    //         bounds.right / 2,
-    //         bounds.top,
-    //         bounds.right,
-    //         bounds.bottom,
-    //     };
-    // }
-
-    // if (split & swapped)
-    // {
-    //     panel = {
-    //         bounds.left,
-    //         bounds.top,
-    //         bounds.right / 2,
-    //         bounds.bottom,
-    //     };
-    // }
-
-    return panel;
 }

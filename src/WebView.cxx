@@ -1,14 +1,36 @@
 #include "WebView.hxx"
 
-WebView::WebView(){};
+Settings* WebView::pSettings = nullptr;
+static wil::com_ptr<ICoreWebView2_19> settings_wv;
+static wil::com_ptr<ICoreWebView2Controller> settings_controller;
+static wil::com_ptr<ICoreWebView2> settings_core;
+static wil::com_ptr<ICoreWebView2Settings> settings_settings;
+static wil::com_ptr<ICoreWebView2_19> main_wv;
+static wil::com_ptr<ICoreWebView2Controller> main_controller;
+static wil::com_ptr<ICoreWebView2> main_core;
+static wil::com_ptr<ICoreWebView2Settings> main_settings;
+static wil::com_ptr<ICoreWebView2_19> side_wv;
+static wil::com_ptr<ICoreWebView2Controller> side_controller;
+static wil::com_ptr<ICoreWebView2> side_core;
+static wil::com_ptr<ICoreWebView2Settings> side_settings;
 
-void WebView::Create(HWND hwnd, std::filesystem::path userData)
+WebView::WebView(HWND hwnd, Settings* settings) {}
+
+std::unique_ptr<WebView> WebView::Create(HWND hwnd, Settings* settings)
+{
+    auto pWebView = std::unique_ptr<WebView>(new WebView(hwnd, pSettings));
+
+    return pWebView;
+}
+
+void WebView::Initialize(HWND hwnd)
 {
     CreateCoreWebView2EnvironmentWithOptions(
-        nullptr, userData.c_str(), nullptr,
+        nullptr, pSettings->pathData.c_str(), nullptr,
         Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
             [hwnd](HRESULT result, ICoreWebView2Environment* env) -> HRESULT
             {
+                // SETTINGS WEBVIEW
                 env->CreateCoreWebView2Controller(
                     hwnd, Microsoft::WRL::Callback<
                               ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
@@ -18,6 +40,7 @@ void WebView::Create(HWND hwnd, std::filesystem::path userData)
 
                                   if (controller != nullptr)
                                   {
+                                      OutputDebugStringW(L"CONTROLLER NULL");
                                       settings_controller = controller;
                                       settings_controller->get_CoreWebView2(&settings_core);
                                   }
@@ -33,9 +56,10 @@ void WebView::Create(HWND hwnd, std::filesystem::path userData)
                                   settings_settings->put_IsStatusBarEnabled(false);
                                   settings_settings->put_IsWebMessageEnabled(true);
                                   settings_settings->put_IsZoomControlEnabled(false);
-                                  settings_controller->put_Bounds(MainWindow::GetMenuBounds(hwnd));
-                                  settings_wv->Navigate(L"about:blank");
-                                  //   settings_wv->Navigate(L"https://localhost:8000/");
+                                  //   settings_controller->put_Bounds(GetMenuBounds(hwnd));
+
+                                  settings_wv->Navigate(L"https://www.example.com/");
+
                                   auto script = GetMenuScript();
                                   settings_wv->ExecuteScript(script.c_str(), nullptr);
                                   settings_wv->AddScriptToExecuteOnDocumentCreated(script.c_str(),
@@ -62,6 +86,7 @@ void WebView::Create(HWND hwnd, std::filesystem::path userData)
                               })
                               .Get());
 
+                // MAIN WEBVIEW
                 env->CreateCoreWebView2Controller(
                     hwnd,
                     Microsoft::WRL::Callback<
@@ -89,8 +114,7 @@ void WebView::Create(HWND hwnd, std::filesystem::path userData)
                             main_settings->put_IsStatusBarEnabled(true);
                             main_settings->put_IsWebMessageEnabled(true);
                             main_settings->put_IsZoomControlEnabled(true);
-                            // main_controller->put_Bounds(MainWindow::GetMainPanelBounds(hwnd));
-                            main_controller->put_Bounds(MainWindow::GetFullBounds(hwnd));
+                            // main_controller->put_Bounds(GetMainPanelBounds(hwnd));
 
                             auto args = Utility::CommandLine();
 
@@ -98,6 +122,8 @@ void WebView::Create(HWND hwnd, std::filesystem::path userData)
                             {
                                 main_wv->Navigate(args.first.c_str());
                             }
+
+                            settings_wv->Navigate(L"https://www.google.com/");
 
                             auto script = GetMenuScript();
                             main_wv->ExecuteScript(script.c_str(), nullptr);
@@ -145,6 +171,7 @@ void WebView::Create(HWND hwnd, std::filesystem::path userData)
                         })
                         .Get());
 
+                // SIDE WEBVIEW
                 env->CreateCoreWebView2Controller(
                     hwnd,
                     Microsoft::WRL::Callback<
@@ -172,7 +199,7 @@ void WebView::Create(HWND hwnd, std::filesystem::path userData)
                             side_settings->put_IsStatusBarEnabled(true);
                             side_settings->put_IsWebMessageEnabled(true);
                             side_settings->put_IsZoomControlEnabled(true);
-                            side_controller->put_Bounds(MainWindow::GetSidePanelBounds(hwnd));
+                            // side_controller->put_Bounds(GetSidePanelBounds(hwnd));
 
                             auto args = Utility::CommandLine();
 
@@ -180,6 +207,8 @@ void WebView::Create(HWND hwnd, std::filesystem::path userData)
                             {
                                 side_wv->Navigate(args.second.c_str());
                             }
+
+                            settings_wv->Navigate(L"https://www.bing.com/");
 
                             auto script = GetMenuScript();
                             side_wv->ExecuteScript(script.c_str(), nullptr);
@@ -317,6 +346,195 @@ std::wstring WebView::GetMenuScript()
     return script;
 }
 
+void WebView::Messages(std::wstring message)
+{
+    //     std::wstring splitKey = std::wstring(L"F1");
+    //     std::wstring swapKey = std::wstring(L"F2");
+    //     std::wstring hideMenuKey = std::wstring(L"F4");
+    //     std::wstring maximizeKey = std::wstring(L"F6");
+    //     std::wstring fullscreenKey = std::wstring(L"F11");
+    //     std::wstring onTopKey = std::wstring(L"F9");
+    //     std::wstring closeKey = std::wstring(L"close");
+
+    //     if (message == splitKey)
+    //     {
+    //         split = Toggle(split);
+    //         UpdateBounds(window);
+    //         UpdateFocus();
+    //         SetWindowTitle(window);
+    //         SetWindowIcon(window);
+    //     }
+
+    //     if (message == swapKey)
+    //     {
+    //         swapped = Toggle(swapped);
+    //         UpdateBounds(window);
+    //         UpdateFocus();
+    //         SetWindowTitle(window);
+    //         SetWindowIcon(window);
+    //     }
+
+    //     if (message == hideMenuKey)
+    //     {
+    //         menu = Toggle(menu);
+    //         UpdateBounds(window);
+    //         UpdateFocus();
+    //         SetWindowTitle(window);
+    //         SetWindowIcon(window);
+    //     }
+
+    //     if (message == maximizeKey)
+    //     {
+    //         if (!fullscreen)
+    //             maximized = Toggle(maximized);
+    //         MaximizeWindow(window);
+    //         UpdateFocus();
+    //     }
+
+    //     if (message == fullscreenKey)
+    //     {
+    //         fullscreen = Toggle(fullscreen);
+    //         FullscreenWindow(window);
+    //         UpdateFocus();
+    //     }
+
+    //     if (message == onTopKey)
+    //     {
+    //         topmost = Toggle(topmost);
+    //         TopmostWindow(window);
+    //         UpdateFocus();
+    //         SetWindowTitle(window);
+    //         SetWindowIcon(window);
+    //     }
+
+    //     if (message == closeKey)
+    //     {
+    //         SendMessageW(window, WM_CLOSE, 0, 0);
+    //     }
+}
+
+void WebView::UpdateBounds(HWND hwnd)
+{
+    if (settings_controller == nullptr)
+        OutputDebugStringW(L"NULL");
+
+    if (main_controller != nullptr)
+        main_controller->put_Bounds(GetMainPanelBounds(hwnd));
+
+    if (side_controller != nullptr)
+        side_controller->put_Bounds(GetSidePanelBounds(hwnd));
+
+    if (settings_controller != nullptr)
+        settings_controller->put_Bounds(GetMenuBounds(hwnd));
+}
+
+RECT WebView::GetFullBounds(HWND hwnd)
+{
+    RECT bounds = {0, 0, 0, 0};
+    GetClientRect(hwnd, &bounds);
+    auto panel = bounds;
+
+    return panel;
+}
+
+RECT WebView::GetMenuBounds(HWND hwnd)
+{
+    RECT bounds = {0, 0, 0, 0};
+    RECT panel = {0, 0, 0, 0};
+    GetClientRect(hwnd, &bounds);
+
+    if (pSettings->boolMenu)
+        OutputDebugStringW(L"TRUE");
+
+    // if (pSettings->boolMenu)
+    // {
+    //     panel = {
+    //         bounds.left,
+    //         bounds.top,
+    //         bounds.right,
+    //         bounds.bottom,
+    //     };
+    // }
+
+    return panel;
+}
+
+RECT WebView::GetMainPanelBounds(HWND window)
+{
+    RECT bounds = {0, 0, 0, 0};
+    RECT panel = {0, 0, 0, 0};
+    GetClientRect(window, &bounds);
+
+    // if (pSettings->boolMenu)
+    //     return panel;
+
+    // if (!split & !swapped)
+    //     panel = bounds;
+
+    // if (!split & swapped)
+    //     return panel;
+
+    // if (split & !swapped)
+    // {
+    //     panel = {
+    //         bounds.left,
+    //         bounds.top,
+    //         bounds.right / 2,
+    //         bounds.bottom,
+    //     };
+    // }
+
+    // if (split & swapped)
+    // {
+    //     panel = {
+    //         bounds.right / 2,
+    //         bounds.top,
+    //         bounds.right,
+    //         bounds.bottom,
+    //     };
+    // }
+
+    return panel;
+}
+
+RECT WebView::GetSidePanelBounds(HWND window)
+{
+    RECT bounds = {0, 0, 0, 0};
+    RECT panel = {0, 0, 0, 0};
+    GetClientRect(window, &bounds);
+
+    // if (pSettings->boolMenu)
+    //     return panel;
+
+    // if (!split & !swapped)
+    //     return panel;
+
+    // if (!split & swapped)
+    //     panel = bounds;
+
+    // if (split & !swapped)
+    // {
+    //     panel = {
+    //         bounds.right / 2,
+    //         bounds.top,
+    //         bounds.right,
+    //         bounds.bottom,
+    //     };
+    // }
+
+    // if (split & swapped)
+    // {
+    //     panel = {
+    //         bounds.left,
+    //         bounds.top,
+    //         bounds.right / 2,
+    //         bounds.bottom,
+    //     };
+    // }
+
+    return panel;
+}
+
 // void WebView::SetWindowTitle(HWND window)
 // {
 //     std::wstring titleTop = L" [On Top]";
@@ -414,70 +632,3 @@ std::wstring WebView::GetMenuScript()
 //         }
 //     }
 // }
-
-void WebView::Messages(std::wstring message)
-{
-    //     std::wstring splitKey = std::wstring(L"F1");
-    //     std::wstring swapKey = std::wstring(L"F2");
-    //     std::wstring hideMenuKey = std::wstring(L"F4");
-    //     std::wstring maximizeKey = std::wstring(L"F6");
-    //     std::wstring fullscreenKey = std::wstring(L"F11");
-    //     std::wstring onTopKey = std::wstring(L"F9");
-    //     std::wstring closeKey = std::wstring(L"close");
-
-    //     if (message == splitKey)
-    //     {
-    //         split = Toggle(split);
-    //         UpdateBounds(window);
-    //         UpdateFocus();
-    //         SetWindowTitle(window);
-    //         SetWindowIcon(window);
-    //     }
-
-    //     if (message == swapKey)
-    //     {
-    //         swapped = Toggle(swapped);
-    //         UpdateBounds(window);
-    //         UpdateFocus();
-    //         SetWindowTitle(window);
-    //         SetWindowIcon(window);
-    //     }
-
-    //     if (message == hideMenuKey)
-    //     {
-    //         menu = Toggle(menu);
-    //         UpdateBounds(window);
-    //         UpdateFocus();
-    //         SetWindowTitle(window);
-    //         SetWindowIcon(window);
-    //     }
-
-    //     if (message == maximizeKey)
-    //     {
-    //         if (!fullscreen)
-    //             maximized = Toggle(maximized);
-    //         MaximizeWindow(window);
-    //         UpdateFocus();
-    //     }
-
-    //     if (message == fullscreenKey)
-    //     {
-    //         fullscreen = Toggle(fullscreen);
-    //         FullscreenWindow(window);
-    //         UpdateFocus();
-    //     }
-
-    //     if (message == onTopKey)
-    //     {
-    //         topmost = Toggle(topmost);
-    //         TopmostWindow(window);
-    //         UpdateFocus();
-    //         SetWindowTitle(window);
-    //         SetWindowIcon(window);
-    //     }
-
-    //     if (message == closeKey)
-    //     {
-    //         SendMessageW(window, WM_CLOSE, 0, 0);
-    //     }
-}

@@ -7,9 +7,10 @@ class MainWindow
 {
   public:
     static std::unique_ptr<MainWindow> Create(HINSTANCE, int, Settings*);
+    // static WebView* pWebView;
     static Settings* pSettings;
     static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
-    static bool _ShowWindow(HWND, int);
+    static bool Show(HWND, int);
     HWND m_hWnd;
 
     // MESSAGES
@@ -20,7 +21,8 @@ class MainWindow
     int _OnDpiChanged();
     int _OnGetMinMaxInfo(LPARAM);
     int _OnPaint(HWND);
-    int _OnSize();
+    int _OnSize(HWND);
+    int _OnSizing(HWND);
     int _OnWindowPosChanged(HWND);
     int _OnSettingChange(HWND);
     int _OnKeyDown(HWND, WPARAM);
@@ -37,11 +39,6 @@ class MainWindow
     void FullscreenWindow(HWND);
     void TopmostWindow(HWND);
     void UpdateFocus();
-    void UpdateBounds(HWND);
-    static RECT GetFullBounds(HWND);
-    static RECT GetMenuBounds(HWND);
-    static RECT GetMainPanelBounds(HWND);
-    static RECT GetSidePanelBounds(HWND);
 
   private:
     static unsigned long long gdiplusToken;

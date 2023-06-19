@@ -1,6 +1,6 @@
 #include "Settings.hxx"
 
-Settings::Settings(){};
+Settings::Settings() {}
 
 std::unique_ptr<Settings> Settings::Create()
 {
