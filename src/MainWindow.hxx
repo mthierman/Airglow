@@ -9,8 +9,11 @@ class MainWindow
   public:
     static std::unique_ptr<MainWindow> Create(HINSTANCE, int, Settings*);
     static Settings* pSettings;
-    static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
     static bool Show(HWND, int);
+    static void Maximize(HWND);
+    static void Fullscreen(HWND);
+    static void Topmost(HWND);
+    static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
     HWND m_hWnd;
 
     // MESSAGES
@@ -32,12 +35,6 @@ class MainWindow
     bool SetDarkTitle();
     bool SetDarkMode(HWND);
     bool SetMica(HWND);
-
-    // POSITION
-    static void UpdateWindow(HWND);
-    static void FullscreenWindow(HWND);
-    static void TopmostWindow(HWND);
-    static void UpdateFocus();
 
   private:
     static unsigned long long gdiplusToken;

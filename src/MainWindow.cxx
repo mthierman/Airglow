@@ -56,6 +56,107 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Set
     return pMainWindow;
 }
 
+bool MainWindow::Show(HWND hwnd, int ncs)
+{
+    auto cloakOn = TRUE;
+    auto cloakOff = FALSE;
+    auto cloak = S_OK;
+
+    cloak = DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOn, sizeof(cloakOn));
+
+    if (SUCCEEDED(cloak))
+    {
+        auto uncloak = S_OK;
+
+        SetWindowPos(hwnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOREDRAW);
+        uncloak = DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOff, sizeof(cloakOff));
+
+        if (SUCCEEDED(uncloak))
+        {
+            ShowWindow(hwnd, ncs);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    return false;
+}
+
+void MainWindow::Maximize(HWND hwnd)
+{
+
+    if (pSettings->boolMaximized)
+        ShowWindow(hwnd, SW_NORMAL);
+    if (!pSettings->boolMaximized)
+        ShowWindow(hwnd, SW_MAXIMIZE);
+
+    // if (!pSettings->boolFullscreen)
+    // {
+    //     if (pSettings->boolMaximized)
+    //         ShowWindow(hwnd, SW_NORMAL);
+    //     if (!pSettings->boolMaximized)
+    //         ShowWindow(hwnd, SW_MAXIMIZE);
+    // }
+
+    // FullscreenWindow(hwnd);
+}
+
+void MainWindow::Fullscreen(HWND hwnd)
+{
+    static RECT position;
+
+    auto style = GetWindowLongPtrW(hwnd, GWL_STYLE);
+
+    if (style & WS_OVERLAPPEDWINDOW)
+    {
+        MONITORINFO mi = {sizeof(mi)};
+        GetWindowRect(hwnd, &position);
+        if (GetMonitorInfoW(MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST), &mi))
+        {
+            SetWindowLongPtrW(hwnd, GWL_STYLE, style & ~WS_OVERLAPPEDWINDOW);
+            SetWindowPos(hwnd, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top,
+                         mi.rcMonitor.right - mi.rcMonitor.left,
+                         mi.rcMonitor.bottom - mi.rcMonitor.top,
+                         SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
+        }
+    }
+
+    else
+    {
+        SetWindowLongPtrW(hwnd, GWL_STYLE, style | WS_OVERLAPPEDWINDOW);
+        SetWindowPos(hwnd, nullptr, 0, 0, 0, 0,
+                     SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
+        SetWindowPos(hwnd, nullptr, position.left, position.top, (position.right - position.left),
+                     (position.bottom - position.top), 0);
+    }
+}
+
+void MainWindow::Topmost(HWND hwnd)
+{
+    FLASHWINFO fwi;
+    fwi.cbSize = sizeof(FLASHWINFO);
+    fwi.hwnd = hwnd;
+    fwi.dwFlags = FLASHW_CAPTION;
+    fwi.uCount = 1;
+    fwi.dwTimeout = 100;
+
+    auto top = GetWindowLongPtrW(hwnd, GWL_EXSTYLE);
+
+    if (top & WS_EX_TOPMOST)
+    {
+        SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        FlashWindowEx(&fwi);
+    }
+
+    else
+    {
+        SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        FlashWindowEx(&fwi);
+    }
+}
+
 template <class T, class U, HWND(U::*m_hWnd)>
 T* InstanceFromWndProc(HWND hwnd, UINT msg, LPARAM lparam)
 {
@@ -174,7 +275,7 @@ int MainWindow::_OnSizing(HWND hwnd) { return 0; }
 
 int MainWindow::_OnWindowPosChanged(HWND hwnd)
 {
-    WebView::BoundsUpdate(hwnd);
+    WebView::UpdateBounds(hwnd);
     return 0;
 }
 
@@ -189,47 +290,45 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
     if (wparam == VK_F1)
     {
         pSettings->boolSplit = Utility::Toggle(pSettings->boolSplit);
-        WebView::BoundsUpdate(hwnd);
-        WebView::FocusUpdate();
+        WebView::UpdateBounds(hwnd);
+        WebView::UpdateFocus();
     }
 
     if (wparam == VK_F2)
     {
         pSettings->boolSwapped = Utility::Toggle(pSettings->boolSwapped);
-        WebView::BoundsUpdate(hwnd);
-        WebView::FocusUpdate();
+        WebView::UpdateBounds(hwnd);
+        WebView::UpdateFocus();
     }
 
     if (wparam == VK_F4)
     {
         pSettings->boolMenu = Utility::Toggle(pSettings->boolMenu);
-        WebView::BoundsUpdate(hwnd);
-        WebView::FocusUpdate();
+        WebView::UpdateBounds(hwnd);
+        WebView::UpdateFocus();
     }
 
     if (wparam == VK_F6)
     {
         if (!pSettings->boolFullscreen)
             pSettings->boolMaximized = Utility::Toggle(pSettings->boolMaximized);
-        UpdateWindow(hwnd);
-        WebView::BoundsUpdate(hwnd);
-        WebView::FocusUpdate();
+        Maximize(hwnd);
+        WebView::UpdateBounds(hwnd);
+        WebView::UpdateFocus();
     }
 
     if (wparam == VK_F11)
     {
         // pSettings->boolFullscreen = Utility::Toggle(pSettings->boolFullscreen);
-        // UpdateWindow(hwnd);
-        // WebView::BoundsUpdate(hwnd);
-        // WebView::FocusUpdate();
+        // WebView::UpdateBounds(hwnd);
+        // WebView::UpdateFocus();
     }
 
     if (wparam == VK_F9)
     {
         // pSettings->boolTopmost = Utility::Toggle(pSettings->boolTopmost);
-        // UpdateWindow(hwnd);
-        // WebView::BoundsUpdate(hwnd);
-        // WebView::FocusUpdate();
+        // WebView::UpdateBounds(hwnd);
+        // WebView::UpdateFocus();
     }
 
     if (wparam == 0x57)
@@ -321,105 +420,4 @@ bool MainWindow::SetMica(HWND hwnd)
     }
 
     return false;
-}
-
-bool MainWindow::Show(HWND hwnd, int ncs)
-{
-    auto cloakOn = TRUE;
-    auto cloakOff = FALSE;
-    auto cloak = S_OK;
-
-    cloak = DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOn, sizeof(cloakOn));
-
-    if (SUCCEEDED(cloak))
-    {
-        auto uncloak = S_OK;
-
-        SetWindowPos(hwnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOREDRAW);
-        uncloak = DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOff, sizeof(cloakOff));
-
-        if (SUCCEEDED(uncloak))
-        {
-            ShowWindow(hwnd, ncs);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    return false;
-}
-
-void MainWindow::UpdateWindow(HWND hwnd)
-{
-
-    if (pSettings->boolMaximized)
-        ShowWindow(hwnd, SW_NORMAL);
-    if (!pSettings->boolMaximized)
-        ShowWindow(hwnd, SW_MAXIMIZE);
-
-    // if (!pSettings->boolFullscreen)
-    // {
-    //     if (pSettings->boolMaximized)
-    //         ShowWindow(hwnd, SW_NORMAL);
-    //     if (!pSettings->boolMaximized)
-    //         ShowWindow(hwnd, SW_MAXIMIZE);
-    // }
-
-    // FullscreenWindow(hwnd);
-}
-
-void MainWindow::FullscreenWindow(HWND hwnd)
-{
-    static RECT position;
-
-    auto style = GetWindowLongPtrW(hwnd, GWL_STYLE);
-
-    if (style & WS_OVERLAPPEDWINDOW)
-    {
-        MONITORINFO mi = {sizeof(mi)};
-        GetWindowRect(hwnd, &position);
-        if (GetMonitorInfoW(MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST), &mi))
-        {
-            SetWindowLongPtrW(hwnd, GWL_STYLE, style & ~WS_OVERLAPPEDWINDOW);
-            SetWindowPos(hwnd, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top,
-                         mi.rcMonitor.right - mi.rcMonitor.left,
-                         mi.rcMonitor.bottom - mi.rcMonitor.top,
-                         SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
-        }
-    }
-
-    else
-    {
-        SetWindowLongPtrW(hwnd, GWL_STYLE, style | WS_OVERLAPPEDWINDOW);
-        SetWindowPos(hwnd, nullptr, 0, 0, 0, 0,
-                     SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
-        SetWindowPos(hwnd, nullptr, position.left, position.top, (position.right - position.left),
-                     (position.bottom - position.top), 0);
-    }
-}
-
-void MainWindow::TopmostWindow(HWND hwnd)
-{
-    FLASHWINFO fwi;
-    fwi.cbSize = sizeof(FLASHWINFO);
-    fwi.hwnd = hwnd;
-    fwi.dwFlags = FLASHW_CAPTION;
-    fwi.uCount = 1;
-    fwi.dwTimeout = 100;
-
-    auto top = GetWindowLongPtrW(hwnd, GWL_EXSTYLE);
-
-    if (top & WS_EX_TOPMOST)
-    {
-        SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-        FlashWindowEx(&fwi);
-    }
-
-    else
-    {
-        SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-        FlashWindowEx(&fwi);
-    }
 }

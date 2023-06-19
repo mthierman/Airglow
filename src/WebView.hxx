@@ -26,8 +26,8 @@ class WebView
 
     static void Messages(HWND, std::wstring);
 
-    static void BoundsUpdate(HWND);
-    static void FocusUpdate();
+    static void UpdateBounds(HWND);
+    static void UpdateFocus();
     static RECT FullBounds(HWND);
     static RECT MenuBounds(HWND);
     static RECT MainBounds(HWND);

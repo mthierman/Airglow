@@ -348,47 +348,45 @@ void WebView::Messages(HWND hwnd, std::wstring message)
     if (message == splitKey)
     {
         pSettings->boolSplit = Utility::Toggle(pSettings->boolSplit);
-        WebView::BoundsUpdate(hwnd);
-        WebView::FocusUpdate();
+        WebView::UpdateBounds(hwnd);
+        WebView::UpdateFocus();
     }
 
     if (message == swapKey)
     {
         pSettings->boolSwapped = Utility::Toggle(pSettings->boolSwapped);
-        WebView::BoundsUpdate(hwnd);
-        WebView::FocusUpdate();
+        WebView::UpdateBounds(hwnd);
+        WebView::UpdateFocus();
     }
 
     if (message == hideMenuKey)
     {
         pSettings->boolMenu = Utility::Toggle(pSettings->boolMenu);
-        WebView::BoundsUpdate(hwnd);
-        WebView::FocusUpdate();
+        WebView::UpdateBounds(hwnd);
+        WebView::UpdateFocus();
     }
 
     if (message == maximizeKey)
     {
         if (!pSettings->boolFullscreen)
             pSettings->boolMaximized = Utility::Toggle(pSettings->boolMaximized);
-        MainWindow::UpdateWindow(hwnd);
-        WebView::BoundsUpdate(hwnd);
-        WebView::FocusUpdate();
+        MainWindow::Maximize(hwnd);
+        WebView::UpdateBounds(hwnd);
+        WebView::UpdateFocus();
     }
 
     if (message == fullscreenKey)
     {
         // pSettings->boolFullscreen = Utility::Toggle(pSettings->boolFullscreen);
-        // MainWindow::UpdateWindow(hwnd);
-        // WebView::BoundsUpdate(hwnd);
-        // WebView::FocusUpdate();
+        // WebView::UpdateBounds(hwnd);
+        // WebView::UpdateFocus();
     }
 
     if (message == onTopKey)
     {
         // pSettings->boolTopmost = Utility::Toggle(pSettings->boolTopmost);
-        // MainWindow::UpdateWindow(hwnd);
-        // WebView::BoundsUpdate(hwnd);
-        // WebView::FocusUpdate();
+        // WebView::UpdateBounds(hwnd);
+        // WebView::UpdateFocus();
     }
 
     if (message == closeKey)
@@ -397,7 +395,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
     }
 }
 
-void WebView::BoundsUpdate(HWND hwnd)
+void WebView::UpdateBounds(HWND hwnd)
 {
     if (settings_controller != nullptr)
         settings_controller->put_Bounds(MenuBounds(hwnd));
@@ -409,7 +407,7 @@ void WebView::BoundsUpdate(HWND hwnd)
         side_controller->put_Bounds(SideBounds(hwnd));
 }
 
-void WebView::FocusUpdate()
+void WebView::UpdateFocus()
 {
     if (pSettings->boolMenu)
         if (settings_controller != nullptr)
