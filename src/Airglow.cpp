@@ -3,6 +3,8 @@
 
 int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
 {
+    HWND hwnd = nullptr;
+
     auto window = MainWindow::Create(hinstance, ncs);
 
     if (!window)
@@ -12,7 +14,7 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
         hwnd = window.get()->m_hWnd;
 
     if (hwnd)
-        ShowWindow(hwnd, SW_SHOWNORMAL);
+        MainWindow::_ShowWindow(hwnd, ncs);
 
     else
         return 0;

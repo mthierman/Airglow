@@ -80,7 +80,7 @@ __int64 __stdcall MainWindow::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARA
         case WM_COMMAND:
             return pMainWindow->_OnCommand();
         case WM_CREATE:
-            return pMainWindow->_OnCreate();
+            return pMainWindow->_OnCreate(hwnd);
         case WM_DESTROY:
             return pMainWindow->_OnDestroy();
         case WM_DPICHANGED:
@@ -98,18 +98,49 @@ __int64 __stdcall MainWindow::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARA
         case WM_KEYDOWN:
             return pMainWindow->_OnKeyDown(hwnd, wparam);
         }
-
-        return DefWindowProc(hwnd, msg, wparam, lparam);
     }
+
+    return DefWindowProc(hwnd, msg, wparam, lparam);
+}
+
+bool MainWindow::_ShowWindow(HWND hwnd, int ncs)
+{
+    auto cloakOn = TRUE;
+    auto cloakOff = FALSE;
+    auto cloak = S_OK;
+
+    cloak = DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOn, sizeof(cloakOn));
+
+    if (SUCCEEDED(cloak))
+    {
+        auto uncloak = S_OK;
+
+        SetWindowPos(hwnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOREDRAW);
+        uncloak = DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOff, sizeof(cloakOff));
+
+        if (SUCCEEDED(uncloak))
+        {
+            ShowWindow(hwnd, ncs);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    return false;
 }
 
 int MainWindow::_OnCommand() { return 0; }
 
-int MainWindow::_OnCreate()
+int MainWindow::_OnCreate(HWND hwnd)
 {
     SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
     SetEnvironmentVariableW(std::wstring(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR").c_str(),
                             std::wstring(L"0").c_str());
+    SetDarkTitle();
+    SetDarkMode(hwnd);
+    SetMica(hwnd);
 
     return 0;
 }
@@ -158,11 +189,10 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam) { return 0; }
 
 bool MainWindow::CheckSystemDarkMode()
 {
-    using namespace winrt::Windows::UI;
-    using namespace winrt::Windows::UI::ViewManagement;
-
-    UISettings settingsCheck = UISettings();
-    Color fgCheck = settingsCheck.GetColorValue(UIColorType::Foreground);
+    winrt::Windows::UI::ViewManagement::UISettings settingsCheck =
+        winrt::Windows::UI::ViewManagement::UISettings();
+    winrt::Windows::UI::Color fgCheck =
+        settingsCheck.GetColorValue(winrt::Windows::UI::ViewManagement::UIColorType::Foreground);
 
     return (((5 * fgCheck.G) + (2 * fgCheck.R) + fgCheck.B) > (8 * 128));
 }
@@ -191,7 +221,7 @@ bool MainWindow::SetDarkTitle()
     return false;
 }
 
-bool MainWindow::SetDarkMode(HWND window)
+bool MainWindow::SetDarkMode(HWND hwnd)
 {
     auto dark = CheckSystemDarkMode();
     auto dwmtrue = TRUE;
@@ -199,14 +229,14 @@ bool MainWindow::SetDarkMode(HWND window)
 
     if (dark)
     {
-        DwmSetWindowAttribute(window, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmtrue, sizeof(dwmtrue));
+        DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmtrue, sizeof(dwmtrue));
 
         return true;
     }
 
     if (!dark)
     {
-        DwmSetWindowAttribute(window, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmfalse, sizeof(dwmfalse));
+        DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmfalse, sizeof(dwmfalse));
 
         return false;
     }
@@ -214,12 +244,12 @@ bool MainWindow::SetDarkMode(HWND window)
     return false;
 }
 
-bool MainWindow::SetMica(HWND window)
+bool MainWindow::SetMica(HWND hwnd)
 {
     MARGINS m = {0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
     auto extend = S_OK;
 
-    extend = DwmExtendFrameIntoClientArea(window, &m);
+    extend = DwmExtendFrameIntoClientArea(hwnd, &m);
 
     if (SUCCEEDED(extend))
     {
@@ -227,38 +257,10 @@ bool MainWindow::SetMica(HWND window)
         backdrop = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
 
         backdrop =
-            DwmSetWindowAttribute(window, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop, sizeof(&backdrop));
+            DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop, sizeof(&backdrop));
 
         if (SUCCEEDED(backdrop))
             return true;
-
-        return false;
-    }
-
-    return false;
-}
-
-bool MainWindow::SetWindow(HWND window, int ncs)
-{
-    auto cloakOn = TRUE;
-    auto cloakOff = FALSE;
-    auto cloak = S_OK;
-
-    cloak = DwmSetWindowAttribute(window, DWMWA_CLOAK, &cloakOn, sizeof(cloakOn));
-
-    if (SUCCEEDED(cloak))
-    {
-        auto uncloak = S_OK;
-
-        SetWindowPos(window, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOREDRAW);
-        uncloak = DwmSetWindowAttribute(window, DWMWA_CLOAK, &cloakOff, sizeof(cloakOff));
-
-        if (SUCCEEDED(uncloak))
-        {
-            ShowWindow(window, ncs);
-
-            return true;
-        }
 
         return false;
     }
