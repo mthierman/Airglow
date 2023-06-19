@@ -30,7 +30,6 @@ class MainWindow
     bool SetMica(HWND);
 
     // STATE
-    static std::pair<std::wstring, std::wstring> CommandLine();
     bool Toggle(bool);
     void MaximizeWindow(HWND);
     void FullscreenWindow(HWND);

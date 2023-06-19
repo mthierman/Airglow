@@ -36,9 +36,8 @@ void WebView::Create(HWND hwnd, std::filesystem::path userData)
                                   settings_settings->put_IsWebMessageEnabled(true);
                                   settings_settings->put_IsZoomControlEnabled(false);
                                   settings_controller->put_Bounds(MainWindow::GetMenuBounds(hwnd));
-                                  //   settings_wv->Navigate(L"about:blank");
+                                  settings_wv->Navigate(L"about:blank");
                                   //   settings_wv->Navigate(L"https://localhost:8000/");
-                                  settings_wv->Navigate(L"https://juce.com/learn/tutorials/");
                                   auto script = GetMenuScript();
                                   settings_wv->ExecuteScript(script.c_str(), nullptr);
                                   settings_wv->AddScriptToExecuteOnDocumentCreated(script.c_str(),
@@ -94,18 +93,13 @@ void WebView::Create(HWND hwnd, std::filesystem::path userData)
                             main_settings->put_IsZoomControlEnabled(true);
                             main_controller->put_Bounds(MainWindow::GetMainPanelBounds(hwnd));
 
-                            // auto args = CommandLine();
-                            // if (!args.first.empty())
-                            // {
-                            //     main_wv->Navigate(args.first.c_str());
-                            // }
+                            auto args = Utility::CommandLine();
 
-                            // else
-                            // {
-                            //     main_wv->Navigate(mainpage.c_str());
-                            // }
+                            if (!args.first.empty())
+                            {
+                                main_wv->Navigate(args.first.c_str());
+                            }
 
-                            main_wv->Navigate(L"https://juce.com/learn/tutorials/");
                             auto script = GetMenuScript();
                             main_wv->ExecuteScript(script.c_str(), nullptr);
                             main_wv->AddScriptToExecuteOnDocumentCreated(script.c_str(), nullptr);
@@ -181,18 +175,13 @@ void WebView::Create(HWND hwnd, std::filesystem::path userData)
                             side_settings->put_IsZoomControlEnabled(true);
                             side_controller->put_Bounds(MainWindow::GetSidePanelBounds(hwnd));
 
-                            // auto args = CommandLine();
-                            // if (!args.second.empty())
-                            // {
-                            //     side_wv->Navigate(args.second.c_str());
-                            // }
+                            auto args = Utility::CommandLine();
 
-                            // else
-                            // {
-                            //     side_wv->Navigate(sidepage.c_str());
-                            // }
+                            if (!args.second.empty())
+                            {
+                                side_wv->Navigate(args.second.c_str());
+                            }
 
-                            side_wv->Navigate(L"https://juce.com/learn/tutorials/");
                             auto script = GetMenuScript();
                             side_wv->ExecuteScript(script.c_str(), nullptr);
                             side_wv->AddScriptToExecuteOnDocumentCreated(script.c_str(), nullptr);

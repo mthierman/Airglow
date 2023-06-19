@@ -369,14 +369,14 @@ void MainWindow::UpdateFocus()
 
 void MainWindow::UpdateBounds(HWND hwnd)
 {
-    // if (main_controller != nullptr)
-    //     main_controller->put_Bounds(GetMainPanelBounds(hwnd));
+    if (main_controller != nullptr)
+        main_controller->put_Bounds(GetMainPanelBounds(hwnd));
 
-    // if (side_controller != nullptr)
-    //     side_controller->put_Bounds(GetSidePanelBounds(hwnd));
+    if (side_controller != nullptr)
+        side_controller->put_Bounds(GetSidePanelBounds(hwnd));
 
-    // if (settings_controller != nullptr)
-    //     settings_controller->put_Bounds(GetMenuBounds(hwnd));
+    if (settings_controller != nullptr)
+        settings_controller->put_Bounds(GetMenuBounds(hwnd));
 }
 
 RECT MainWindow::GetFullBounds(HWND window)
@@ -483,29 +483,4 @@ RECT MainWindow::GetSidePanelBounds(HWND window)
     // }
 
     return panel;
-}
-
-std::pair<std::wstring, std::wstring> MainWindow::CommandLine()
-{
-    std::pair<std::wstring, std::wstring> pair;
-    int number;
-
-    auto cmd = GetCommandLineW();
-    auto args = CommandLineToArgvW(cmd, &number);
-
-    if (number == 2)
-    {
-        pair.first = args[1];
-        pair.second = args[1];
-    }
-
-    if (number == 3)
-    {
-        pair.first = args[1];
-        pair.second = args[2];
-    }
-
-    LocalFree(args);
-
-    return pair;
 }
