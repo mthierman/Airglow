@@ -133,7 +133,7 @@ void WebView::Initialize(HWND hwnd)
                                 Microsoft::WRL::Callback<ICoreWebView2FaviconChangedEventHandler>(
                                     [hwnd](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                     {
-                                        // SetWindowIcon(hwnd);
+                                        SetWindowIcon(hwnd);
                                         return S_OK;
                                     })
                                     .Get(),
@@ -218,7 +218,7 @@ void WebView::Initialize(HWND hwnd)
                                 Microsoft::WRL::Callback<ICoreWebView2FaviconChangedEventHandler>(
                                     [hwnd](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                     {
-                                        // SetWindowIcon(hwnd);
+                                        SetWindowIcon(hwnd);
                                         return S_OK;
                                     })
                                     .Get(),
@@ -581,57 +581,55 @@ void WebView::SetWindowTitle(HWND window)
     }
 }
 
-// void WebView::SetWindowIcon(HWND window)
-// {
-//     if (!swapped)
-//     {
-//         if (main_wv != nullptr)
-//         {
-//             main_wv->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
-//                                 Microsoft::WRL::Callback<ICoreWebView2GetFaviconCompletedHandler>(
-//                                     [window](HRESULT result, IStream* iconStream) -> HRESULT
-//                                     {
-//                                         if (iconStream != nullptr)
-//                                         {
-//                                             Gdiplus::Bitmap iconBitmap(iconStream);
-//                                             wil::unique_hicon icon;
-//                                             if (iconBitmap.GetHICON(&icon) ==
-//                                             Gdiplus::Status::Ok)
-//                                             {
-//                                                 auto favicon = std::move(icon);
-//                                                 SendMessageW(window, WM_SETICON, ICON_BIG,
-//                                                              (LPARAM)favicon.get());
-//                                             }
-//                                         }
-//                                         return S_OK;
-//                                     })
-//                                     .Get());
-//         }
-//     }
+void WebView::SetWindowIcon(HWND window)
+{
+    if (!pSettings->boolSwapped)
+    {
+        if (main_wv != nullptr)
+        {
+            main_wv->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
+                                Microsoft::WRL::Callback<ICoreWebView2GetFaviconCompletedHandler>(
+                                    [window](HRESULT result, IStream* iconStream) -> HRESULT
+                                    {
+                                        if (iconStream != nullptr)
+                                        {
+                                            Gdiplus::Bitmap iconBitmap(iconStream);
+                                            wil::unique_hicon icon;
+                                            if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
+                                            {
+                                                auto favicon = std::move(icon);
+                                                SendMessageW(window, WM_SETICON, ICON_BIG,
+                                                             (LPARAM)favicon.get());
+                                            }
+                                        }
+                                        return S_OK;
+                                    })
+                                    .Get());
+        }
+    }
 
-//     else
-//     {
-//         if (side_wv != nullptr)
-//         {
-//             side_wv->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
-//                                 Microsoft::WRL::Callback<ICoreWebView2GetFaviconCompletedHandler>(
-//                                     [window](HRESULT result, IStream* iconStream) -> HRESULT
-//                                     {
-//                                         if (iconStream != nullptr)
-//                                         {
-//                                             Gdiplus::Bitmap iconBitmap(iconStream);
-//                                             wil::unique_hicon icon;
-//                                             if (iconBitmap.GetHICON(&icon) ==
-//                                             Gdiplus::Status::Ok)
-//                                             {
-//                                                 auto favicon = std::move(icon);
-//                                                 SendMessageW(window, WM_SETICON, ICON_BIG,
-//                                                              (LPARAM)favicon.get());
-//                                             }
-//                                         }
-//                                         return S_OK;
-//                                     })
-//                                     .Get());
-//         }
-//     }
-// }
+    else
+    {
+        if (side_wv != nullptr)
+        {
+            side_wv->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
+                                Microsoft::WRL::Callback<ICoreWebView2GetFaviconCompletedHandler>(
+                                    [window](HRESULT result, IStream* iconStream) -> HRESULT
+                                    {
+                                        if (iconStream != nullptr)
+                                        {
+                                            Gdiplus::Bitmap iconBitmap(iconStream);
+                                            wil::unique_hicon icon;
+                                            if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
+                                            {
+                                                auto favicon = std::move(icon);
+                                                SendMessageW(window, WM_SETICON, ICON_BIG,
+                                                             (LPARAM)favicon.get());
+                                            }
+                                        }
+                                        return S_OK;
+                                    })
+                                    .Get());
+        }
+    }
+}
