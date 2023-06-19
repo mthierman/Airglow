@@ -10,9 +10,6 @@ MainWindow::MainWindow(HINSTANCE hinstance, int ncs, Settings* settings) {}
 std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Settings* settings)
 {
     pSettings = settings;
-    // pSettings->boolMenu = true;
-    pSettings->boolSplit = true;
-    pSettings->Save();
 
     std::wstring className(L"airglow");
     std::wstring menuName(L"airglowmenu");
@@ -178,7 +175,7 @@ int MainWindow::_OnSizing(HWND hwnd) { return 0; }
 
 int MainWindow::_OnWindowPosChanged(HWND hwnd)
 {
-    WebView::UpdateBounds(hwnd);
+    WebView::BoundsUpdate(hwnd);
     return 0;
 }
 
