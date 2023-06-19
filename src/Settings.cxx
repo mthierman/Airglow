@@ -1,15 +1,10 @@
 #include "Settings.hxx"
 
-Settings::Settings(){};
-
-std::unique_ptr<Settings> Settings::Create()
+Settings::Settings()
 {
-    auto pSettings = std::unique_ptr<Settings>(new Settings());
-    pSettings->appData = pSettings->GetAppDataPath();
-    pSettings->settingsFile = pSettings->GetSettingsFilePath();
-
-    return pSettings;
-};
+    appData = GetAppDataPath();
+    settingsFile = GetSettingsFilePath();
+}
 
 std::filesystem::path Settings::GetAppDataPath()
 {
@@ -74,49 +69,49 @@ nlohmann::json Settings::CurrentSettings()
 {
     nlohmann::json settings;
 
-    settings["dimensions"] = this->dimensions;
-    settings["topmost"] = this->topmost;
-    settings["maximized"] = this->maximized;
-    settings["fullscreen"] = this->fullscreen;
-    settings["split"] = this->split;
-    settings["swapped"] = this->swapped;
-    settings["menu"] = this->menu;
-    settings["mainpage"] = this->mainpage;
-    settings["sidepage"] = this->sidepage;
+    settings["dimensions"] = dimensions;
+    settings["topmost"] = topmost;
+    settings["maximized"] = maximized;
+    settings["fullscreen"] = fullscreen;
+    settings["split"] = split;
+    settings["swapped"] = swapped;
+    settings["menu"] = menu;
+    settings["mainpage"] = mainpage;
+    settings["sidepage"] = sidepage;
 
     return settings;
 }
 
 void Settings::LoadSettings()
 {
-    nlohmann::json settings = this->DefaultSettings();
+    nlohmann::json settings = DefaultSettings();
 
-    if (std::filesystem::exists(this->settingsFile))
+    if (std::filesystem::exists(settingsFile))
     {
-        std::ifstream f(this->settingsFile);
-        if (!std::filesystem::is_empty(this->settingsFile))
+        std::ifstream f(settingsFile);
+        if (!std::filesystem::is_empty(settingsFile))
             settings = nlohmann::json::parse(f);
         f.close();
     }
 
-    this->dimensions = settings["dimensions"].get<std::vector<int>>();
-    this->fullscreen = settings["fullscreen"].get<bool>();
-    this->maximized = settings["maximized"].get<bool>();
-    this->menu = settings["menu"].get<bool>();
-    this->topmost = settings["topmost"].get<bool>();
-    this->split = settings["split"].get<bool>();
-    this->swapped = settings["swapped"].get<bool>();
-    this->mainpage = settings["mainpage"].get<std::string>();
-    this->sidepage = settings["sidepage"].get<std::string>();
+    dimensions = settings["dimensions"].get<std::vector<int>>();
+    fullscreen = settings["fullscreen"].get<bool>();
+    maximized = settings["maximized"].get<bool>();
+    menu = settings["menu"].get<bool>();
+    topmost = settings["topmost"].get<bool>();
+    split = settings["split"].get<bool>();
+    swapped = settings["swapped"].get<bool>();
+    mainpage = settings["mainpage"].get<std::string>();
+    sidepage = settings["sidepage"].get<std::string>();
 }
 
 void Settings::SaveSettings()
 {
-    nlohmann::json settings = this->CurrentSettings();
+    nlohmann::json settings = CurrentSettings();
 
-    if (std::filesystem::exists(this->settingsFile))
+    if (std::filesystem::exists(settingsFile))
     {
-        std::ofstream f(this->settingsFile);
+        std::ofstream f(settingsFile);
         f << settings.dump(4);
         f.close();
     }

@@ -3,7 +3,7 @@
 class Settings
 {
   public:
-    static std::unique_ptr<Settings> Create();
+    Settings();
     std::filesystem::path GetAppDataPath();
     std::filesystem::path GetSettingsFilePath();
     nlohmann::json DefaultSettings();
@@ -21,7 +21,4 @@ class Settings
     bool topmost;
     std::string mainpage;
     std::string sidepage;
-
-  private:
-    Settings();
 };

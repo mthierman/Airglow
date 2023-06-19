@@ -51,8 +51,6 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs)
         return nullptr;
     }
 
-    pMainWindow->settings = Settings::Create();
-
     return pMainWindow;
 }
 
@@ -87,6 +85,8 @@ __int64 __stdcall MainWindow::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARA
             return pMainWindow->_OnCommand();
         case WM_CREATE:
             return pMainWindow->_OnCreate(hwnd);
+        case WM_CLOSE:
+            return pMainWindow->_OnClose(hwnd);
         case WM_DESTROY:
             return pMainWindow->_OnDestroy();
         case WM_DPICHANGED:
@@ -155,12 +155,19 @@ int MainWindow::_OnCreate(HWND hwnd)
     return 0;
 }
 
-int MainWindow::_OnDestroy()
+int MainWindow::_OnClose(HWND hwnd)
 {
     Gdiplus::GdiplusShutdown(gdiplusToken);
 
-    this->settings->SaveSettings();
+    settings.SaveSettings();
 
+    DestroyWindow(hwnd);
+
+    return 0;
+}
+
+int MainWindow::_OnDestroy()
+{
     PostQuitMessage(0);
 
     return 0;
@@ -286,9 +293,9 @@ bool MainWindow::Toggle(bool b) { return b ? false : true; }
 
 void MainWindow::MaximizeWindow(HWND window)
 {
-    if (!this->settings->fullscreen)
+    if (!settings.fullscreen)
     {
-        if (!this->settings->maximized)
+        if (!settings.maximized)
             ShowWindow(window, SW_NORMAL);
         else
             ShowWindow(window, SW_MAXIMIZE);
@@ -351,17 +358,17 @@ void MainWindow::TopmostWindow(HWND hwnd)
 
 void MainWindow::UpdateFocus()
 {
-    if (this->settings->menu)
+    if (settings.menu)
         if (settings_controller != nullptr)
             settings_controller->MoveFocus(
                 COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 
-    if (!this->settings->swapped & !this->settings->menu)
+    if (!settings.swapped & !settings.menu)
         if (main_controller != nullptr)
             main_controller->MoveFocus(
                 COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 
-    if (this->settings->swapped & !this->settings->menu)
+    if (settings.swapped & !settings.menu)
         if (side_controller != nullptr)
             side_controller->MoveFocus(
                 COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);

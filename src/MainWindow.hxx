@@ -2,6 +2,8 @@
 
 #include "Settings.hxx"
 
+static Settings settings;
+
 class MainWindow
 {
   public:
@@ -9,11 +11,11 @@ class MainWindow
     static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
     static bool _ShowWindow(HWND, int);
     HWND m_hWnd;
-    std::unique_ptr<Settings> settings;
 
     // MESSAGES
     int _OnCommand();
     int _OnCreate(HWND);
+    int _OnClose(HWND);
     int _OnDestroy();
     int _OnDpiChanged();
     int _OnGetMinMaxInfo(LPARAM);
