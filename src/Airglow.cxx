@@ -1,4 +1,4 @@
-#include "MainWindow.hpp"
+#include "MainWindow.hxx"
 
 int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
 {

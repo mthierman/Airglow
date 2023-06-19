@@ -72,8 +72,8 @@ add_executable(
     WIN32
 
     # src/Main.cpp
-    src/Airglow.cpp
-    src/MainWindow.cpp
+    src/Airglow.cxx
+    src/MainWindow.cxx
     res$<$<CONFIG:Debug>:_debug>$<$<CONFIG:Release>:_release>.rc
 )
 
