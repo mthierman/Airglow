@@ -1,4 +1,3 @@
-#include "Airglow.hpp"
 #include "MainWindow.hpp"
 
 int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
