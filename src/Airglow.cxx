@@ -2,6 +2,8 @@
 #include "Settings.hxx"
 #include "WebView.hxx"
 
+void Tests();
+
 int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
 {
     HWND hwnd = nullptr;
@@ -30,7 +32,7 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
         return 0;
 
 #ifdef _DEBUG
-        // Tests();
+    Tests();
 #endif
 
     MSG msg = {};
