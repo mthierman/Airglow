@@ -1,18 +1,6 @@
+#include "MainWindow.hxx"
 #include "WebView.hxx"
 #include "Utility.hxx"
-
-wil::com_ptr<ICoreWebView2_19> WebView::settings_wv;
-wil::com_ptr<ICoreWebView2Controller> WebView::settings_controller;
-wil::com_ptr<ICoreWebView2> WebView::settings_core;
-wil::com_ptr<ICoreWebView2Settings> WebView::settings_settings;
-wil::com_ptr<ICoreWebView2_19> WebView::main_wv;
-wil::com_ptr<ICoreWebView2Controller> WebView::main_controller;
-wil::com_ptr<ICoreWebView2> WebView::main_core;
-wil::com_ptr<ICoreWebView2Settings> WebView::main_settings;
-wil::com_ptr<ICoreWebView2_19> WebView::side_wv;
-wil::com_ptr<ICoreWebView2Controller> WebView::side_controller;
-wil::com_ptr<ICoreWebView2> WebView::side_core;
-wil::com_ptr<ICoreWebView2Settings> WebView::side_settings;
 
 WebView::WebView(){};
 
@@ -47,14 +35,14 @@ void WebView::Create(HWND hwnd, std::filesystem::path userData)
                                   settings_settings->put_IsStatusBarEnabled(false);
                                   settings_settings->put_IsWebMessageEnabled(true);
                                   settings_settings->put_IsZoomControlEnabled(false);
-                                  settings_controller->put_Bounds(Utility::GetFullBounds(hwnd));
+                                  settings_controller->put_Bounds(MainWindow::GetMenuBounds(hwnd));
                                   //   settings_wv->Navigate(L"about:blank");
                                   //   settings_wv->Navigate(L"https://localhost:8000/");
-                                  settings_wv->Navigate(L"https://example.com/");
-                                  // auto script = GetMenuScript(appData);
-                                  // settings_wv->ExecuteScript(script.c_str(), nullptr);
-                                  // settings_wv->AddScriptToExecuteOnDocumentCreated(script.c_str(),
-                                  //  nullptr);
+                                  settings_wv->Navigate(L"https://juce.com/learn/tutorials/");
+                                  auto script = GetMenuScript();
+                                  settings_wv->ExecuteScript(script.c_str(), nullptr);
+                                  settings_wv->AddScriptToExecuteOnDocumentCreated(script.c_str(),
+                                                                                   nullptr);
 
                                   settings_wv->add_WebMessageReceived(
                                       Microsoft::WRL::Callback<
@@ -66,7 +54,7 @@ void WebView::Create(HWND hwnd, std::filesystem::path userData)
                                               wil::unique_cotaskmem_string message;
                                               args->TryGetWebMessageAsString(&message);
                                               auto msg = std::wstring(message.get());
-                                              // Messages(msg);
+                                              Messages(msg);
                                               webview->PostWebMessageAsString(message.get());
                                               return S_OK;
                                           })
@@ -104,7 +92,7 @@ void WebView::Create(HWND hwnd, std::filesystem::path userData)
                             main_settings->put_IsStatusBarEnabled(true);
                             main_settings->put_IsWebMessageEnabled(true);
                             main_settings->put_IsZoomControlEnabled(true);
-                            // main_controller->put_Bounds(GetMainPanelBounds(hwnd));
+                            main_controller->put_Bounds(MainWindow::GetMainPanelBounds(hwnd));
 
                             // auto args = CommandLine();
                             // if (!args.first.empty())
@@ -117,10 +105,10 @@ void WebView::Create(HWND hwnd, std::filesystem::path userData)
                             //     main_wv->Navigate(mainpage.c_str());
                             // }
 
-                            // auto script = GetScript(appData);
-                            // main_wv->ExecuteScript(script.c_str(), nullptr);
-                            // main_wv->AddScriptToExecuteOnDocumentCreated(script.c_str(),
-                            // nullptr);
+                            main_wv->Navigate(L"https://juce.com/learn/tutorials/");
+                            auto script = GetMenuScript();
+                            main_wv->ExecuteScript(script.c_str(), nullptr);
+                            main_wv->AddScriptToExecuteOnDocumentCreated(script.c_str(), nullptr);
 
                             main_wv->add_DocumentTitleChanged(
                                 Microsoft::WRL::Callback<
@@ -153,7 +141,7 @@ void WebView::Create(HWND hwnd, std::filesystem::path userData)
                                         wil::unique_cotaskmem_string message;
                                         args->TryGetWebMessageAsString(&message);
                                         auto msg = message.get();
-                                        // Messages(msg);
+                                        Messages(msg);
                                         webview->PostWebMessageAsString(message.get());
                                         return S_OK;
                                     })
@@ -191,7 +179,7 @@ void WebView::Create(HWND hwnd, std::filesystem::path userData)
                             side_settings->put_IsStatusBarEnabled(true);
                             side_settings->put_IsWebMessageEnabled(true);
                             side_settings->put_IsZoomControlEnabled(true);
-                            // side_controller->put_Bounds(GetSidePanelBounds(hwnd));
+                            side_controller->put_Bounds(MainWindow::GetSidePanelBounds(hwnd));
 
                             // auto args = CommandLine();
                             // if (!args.second.empty())
@@ -204,10 +192,10 @@ void WebView::Create(HWND hwnd, std::filesystem::path userData)
                             //     side_wv->Navigate(sidepage.c_str());
                             // }
 
-                            // auto script = GetScript(appData);
-                            // side_wv->ExecuteScript(script.c_str(), nullptr);
-                            // side_wv->AddScriptToExecuteOnDocumentCreated(script.c_str(),
-                            // nullptr);
+                            side_wv->Navigate(L"https://juce.com/learn/tutorials/");
+                            auto script = GetMenuScript();
+                            side_wv->ExecuteScript(script.c_str(), nullptr);
+                            side_wv->AddScriptToExecuteOnDocumentCreated(script.c_str(), nullptr);
 
                             side_wv->add_DocumentTitleChanged(
                                 Microsoft::WRL::Callback<
@@ -240,7 +228,7 @@ void WebView::Create(HWND hwnd, std::filesystem::path userData)
                                         wil::unique_cotaskmem_string message;
                                         args->TryGetWebMessageAsString(&message);
                                         auto msg = message.get();
-                                        // Messages(msg);
+                                        Messages(msg);
                                         webview->PostWebMessageAsString(message.get());
                                         return S_OK;
                                     })
@@ -256,90 +244,90 @@ void WebView::Create(HWND hwnd, std::filesystem::path userData)
             .Get());
 }
 
-// std::wstring WebView::GetScriptFile(std::filesystem::path appData)
-// {
-//     std::stringstream buffer;
-//     std::wstring script;
+std::wstring WebView::GetScriptFile(std::filesystem::path appData)
+{
+    std::stringstream buffer;
+    std::wstring script;
 
-//     std::filesystem::path file =
-//         (appData.wstring() + std::filesystem::path::preferred_separator + L"Airglow.js");
+    std::filesystem::path file =
+        (appData.wstring() + std::filesystem::path::preferred_separator + L"Airglow.js");
 
-//     if (!std::filesystem::exists(file))
+    if (!std::filesystem::exists(file))
 
-//         if (std::filesystem::exists(file))
-//         {
-//             std::ifstream f(file);
-//             if (!std::filesystem::is_empty(file))
-//             {
-//                 buffer << f.rdbuf();
-//                 script = ToWide(buffer.str());
-//             }
-//             f.close();
-//         }
+        if (std::filesystem::exists(file))
+        {
+            std::ifstream f(file);
+            if (!std::filesystem::is_empty(file))
+            {
+                buffer << f.rdbuf();
+                script = Utility::ToWide(buffer.str());
+            }
+            f.close();
+        }
 
-//     return script;
-// }
+    return script;
+}
 
-// std::wstring WebView::GetScript(std::filesystem::path appData)
-// {
-//     std::wstring script = LR"(
-//         document.onreadystatechange = () => {
-//             if (document.readyState === "interactive") {
-//                 let scheme = document.createElement("meta");
-//                 scheme.setAttribute("name", "color-scheme");
-//                 scheme.setAttribute("content", "light dark");
-//                 document.getElementsByTagName("head")[0].appendChild(scheme);
-//                 document.documentElement.style.setProperty(
-//                     "color-scheme",
-//                     "light dark"
-//                 );
-//             }
-//             if (document.readyState === "complete") {
-//                 onkeydown = (e) => {
-//                     if (e.ctrlKey && e.key === "w") {
-//                         window.chrome.webview.postMessage("close");
-//                     } else {
-//                         window.chrome.webview.postMessage(e.key);
-//                     }
-//                 };
-//             }
-//         };
-//     )";
+std::wstring WebView::GetScript()
+{
+    std::wstring script = LR"(
+        document.onreadystatechange = () => {
+            if (document.readyState === "interactive") {
+                let scheme = document.createElement("meta");
+                scheme.setAttribute("name", "color-scheme");
+                scheme.setAttribute("content", "light dark");
+                document.getElementsByTagName("head")[0].appendChild(scheme);
+                document.documentElement.style.setProperty(
+                    "color-scheme",
+                    "light dark"
+                );
+            }
+            if (document.readyState === "complete") {
+                onkeydown = (e) => {
+                    if (e.ctrlKey && e.key === "w") {
+                        window.chrome.webview.postMessage("close");
+                    } else {
+                        window.chrome.webview.postMessage(e.key);
+                    }
+                };
+            }
+        };
+    )";
 
-//     return script;
-// }
+    return script;
+}
 
-// std::wstring WebView::GetMenuScript(std::filesystem::path appData)
-// {
-//     std::wstring script = LR"(
-//         document.onreadystatechange = () => {
-//             if (document.readyState === "interactive") {
-//                 let scheme = document.createElement("meta");
-//                 scheme.setAttribute("name", "color-scheme");
-//                 scheme.setAttribute("content", "light dark");
-//                 document.getElementsByTagName("head")[0].appendChild(scheme);
-//                 document.documentElement.style.setProperty(
-//                     "color-scheme",
-//                     "light dark"
-//                 );
-//             }
-//             if (document.readyState === "complete") {
-//                 onkeydown = (e) => {
-//                     if (e.key === "F3") {
-//                         e.preventDefault();
-//                     }
-//                     if (e.ctrlKey && e.key === "w") {
-//                         window.chrome.webview.postMessage("close");
-//                     } else {
-//                         window.chrome.webview.postMessage(e.key);
-//                     }
-//                 };
-//             }
-//         };
-//     )";
+std::wstring WebView::GetMenuScript()
+{
+    std::wstring script = LR"(
+        document.onreadystatechange = () => {
+            if (document.readyState === "interactive") {
+                let scheme = document.createElement("meta");
+                scheme.setAttribute("name", "color-scheme");
+                scheme.setAttribute("content", "light dark");
+                document.getElementsByTagName("head")[0].appendChild(scheme);
+                document.documentElement.style.setProperty(
+                    "color-scheme",
+                    "light dark"
+                );
+            }
+            if (document.readyState === "complete") {
+                onkeydown = (e) => {
+                    if (e.key === "F3") {
+                        e.preventDefault();
+                    }
+                    if (e.ctrlKey && e.key === "w") {
+                        window.chrome.webview.postMessage("close");
+                    } else {
+                        window.chrome.webview.postMessage(e.key);
+                    }
+                };
+            }
+        };
+    )";
 
-//     return script;
-// }
+    return script;
+}
 
 // void WebView::SetWindowTitle(HWND window)
 // {
@@ -438,3 +426,70 @@ void WebView::Create(HWND hwnd, std::filesystem::path userData)
 //         }
 //     }
 // }
+
+void WebView::Messages(std::wstring message)
+{
+    //     std::wstring splitKey = std::wstring(L"F1");
+    //     std::wstring swapKey = std::wstring(L"F2");
+    //     std::wstring hideMenuKey = std::wstring(L"F4");
+    //     std::wstring maximizeKey = std::wstring(L"F6");
+    //     std::wstring fullscreenKey = std::wstring(L"F11");
+    //     std::wstring onTopKey = std::wstring(L"F9");
+    //     std::wstring closeKey = std::wstring(L"close");
+
+    //     if (message == splitKey)
+    //     {
+    //         split = Toggle(split);
+    //         UpdateBounds(window);
+    //         UpdateFocus();
+    //         SetWindowTitle(window);
+    //         SetWindowIcon(window);
+    //     }
+
+    //     if (message == swapKey)
+    //     {
+    //         swapped = Toggle(swapped);
+    //         UpdateBounds(window);
+    //         UpdateFocus();
+    //         SetWindowTitle(window);
+    //         SetWindowIcon(window);
+    //     }
+
+    //     if (message == hideMenuKey)
+    //     {
+    //         menu = Toggle(menu);
+    //         UpdateBounds(window);
+    //         UpdateFocus();
+    //         SetWindowTitle(window);
+    //         SetWindowIcon(window);
+    //     }
+
+    //     if (message == maximizeKey)
+    //     {
+    //         if (!fullscreen)
+    //             maximized = Toggle(maximized);
+    //         MaximizeWindow(window);
+    //         UpdateFocus();
+    //     }
+
+    //     if (message == fullscreenKey)
+    //     {
+    //         fullscreen = Toggle(fullscreen);
+    //         FullscreenWindow(window);
+    //         UpdateFocus();
+    //     }
+
+    //     if (message == onTopKey)
+    //     {
+    //         topmost = Toggle(topmost);
+    //         TopmostWindow(window);
+    //         UpdateFocus();
+    //         SetWindowTitle(window);
+    //         SetWindowIcon(window);
+    //     }
+
+    //     if (message == closeKey)
+    //     {
+    //         SendMessageW(window, WM_CLOSE, 0, 0);
+    //     }
+}

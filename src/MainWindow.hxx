@@ -30,12 +30,17 @@ class MainWindow
     bool SetMica(HWND);
 
     // STATE
+    static std::pair<std::wstring, std::wstring> CommandLine();
     bool Toggle(bool);
     void MaximizeWindow(HWND);
     void FullscreenWindow(HWND);
     void TopmostWindow(HWND);
     void UpdateFocus();
     void UpdateBounds(HWND);
+    static RECT GetFullBounds(HWND);
+    static RECT GetMenuBounds(HWND);
+    static RECT GetMainPanelBounds(HWND);
+    static RECT GetSidePanelBounds(HWND);
 
   private:
     static unsigned long long gdiplusToken;

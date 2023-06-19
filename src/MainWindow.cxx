@@ -1,4 +1,5 @@
 #include "MainWindow.hxx"
+#include "WebView.hxx"
 
 unsigned long long MainWindow::gdiplusToken;
 Gdiplus::GdiplusStartupInput MainWindow::gdiplusStartupInput;
@@ -285,13 +286,13 @@ bool MainWindow::Toggle(bool b) { return b ? false : true; }
 
 void MainWindow::MaximizeWindow(HWND window)
 {
-    // if (!fullscreen)
-    // {
-    //     if (!maximized)
-    //         ShowWindow(window, SW_NORMAL);
-    //     else
-    //         ShowWindow(window, SW_MAXIMIZE);
-    // }
+    if (!this->settings->fullscreen)
+    {
+        if (!this->settings->maximized)
+            ShowWindow(window, SW_NORMAL);
+        else
+            ShowWindow(window, SW_MAXIMIZE);
+    }
 }
 
 void MainWindow::FullscreenWindow(HWND hwnd)
@@ -350,20 +351,20 @@ void MainWindow::TopmostWindow(HWND hwnd)
 
 void MainWindow::UpdateFocus()
 {
-    // if (menu)
-    //     if (settings_controller != nullptr)
-    //         settings_controller->MoveFocus(
-    //             COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+    if (this->settings->menu)
+        if (settings_controller != nullptr)
+            settings_controller->MoveFocus(
+                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 
-    // if (!swapped & !menu)
-    //     if (main_controller != nullptr)
-    //         main_controller->MoveFocus(
-    //             COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+    if (!this->settings->swapped & !this->settings->menu)
+        if (main_controller != nullptr)
+            main_controller->MoveFocus(
+                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 
-    // if (swapped & !menu)
-    //     if (side_controller != nullptr)
-    //         side_controller->MoveFocus(
-    //             COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+    if (this->settings->swapped & !this->settings->menu)
+        if (side_controller != nullptr)
+            side_controller->MoveFocus(
+                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 }
 
 void MainWindow::UpdateBounds(HWND hwnd)
@@ -376,4 +377,135 @@ void MainWindow::UpdateBounds(HWND hwnd)
 
     // if (settings_controller != nullptr)
     //     settings_controller->put_Bounds(GetMenuBounds(hwnd));
+}
+
+RECT MainWindow::GetFullBounds(HWND window)
+{
+    RECT bounds = {0, 0, 0, 0};
+
+    GetClientRect(window, &bounds);
+
+    auto panel = bounds;
+
+    return panel;
+}
+
+RECT MainWindow::GetMenuBounds(HWND window)
+{
+    RECT bounds = {0, 0, 0, 0};
+    RECT panel = {0, 0, 0, 0};
+
+    GetClientRect(window, &bounds);
+
+    // if (menu)
+    // {
+    //     panel = {
+    //         bounds.left,
+    //         bounds.top,
+    //         bounds.right,
+    //         bounds.bottom,
+    //     };
+    // }
+
+    return panel;
+}
+
+RECT MainWindow::GetMainPanelBounds(HWND window)
+{
+    RECT bounds = {0, 0, 0, 0};
+    RECT panel = {0, 0, 0, 0};
+
+    GetClientRect(window, &bounds);
+
+    // if (menu)
+    //     return panel;
+
+    // if (!split & !swapped)
+    //     panel = bounds;
+
+    // if (!split & swapped)
+    //     return panel;
+
+    // if (split & !swapped)
+    // {
+    //     panel = {
+    //         bounds.left,
+    //         bounds.top,
+    //         bounds.right / 2,
+    //         bounds.bottom,
+    //     };
+    // }
+
+    // if (split & swapped)
+    // {
+    //     panel = {
+    //         bounds.right / 2,
+    //         bounds.top,
+    //         bounds.right,
+    //         bounds.bottom,
+    //     };
+    // }
+
+    return panel;
+}
+
+RECT MainWindow::GetSidePanelBounds(HWND window)
+{
+    RECT bounds = {0, 0, 0, 0};
+    RECT panel = {0, 0, 0, 0};
+
+    GetClientRect(window, &bounds);
+
+    // if (!split & !swapped)
+    //     return panel;
+
+    // if (!split & swapped)
+    //     panel = bounds;
+
+    // if (split & !swapped)
+    // {
+    //     panel = {
+    //         bounds.right / 2,
+    //         bounds.top,
+    //         bounds.right,
+    //         bounds.bottom,
+    //     };
+    // }
+
+    // if (split & swapped)
+    // {
+    //     panel = {
+    //         bounds.left,
+    //         bounds.top,
+    //         bounds.right / 2,
+    //         bounds.bottom,
+    //     };
+    // }
+
+    return panel;
+}
+
+std::pair<std::wstring, std::wstring> MainWindow::CommandLine()
+{
+    std::pair<std::wstring, std::wstring> pair;
+    int number;
+
+    auto cmd = GetCommandLineW();
+    auto args = CommandLineToArgvW(cmd, &number);
+
+    if (number == 2)
+    {
+        pair.first = args[1];
+        pair.second = args[1];
+    }
+
+    if (number == 3)
+    {
+        pair.first = args[1];
+        pair.second = args[2];
+    }
+
+    LocalFree(args);
+
+    return pair;
 }
