@@ -33,11 +33,11 @@ class MainWindow
     bool SetDarkMode(HWND);
     bool SetMica(HWND);
 
-    // WINDOW
-    void MaximizeWindow(HWND);
-    void FullscreenWindow(HWND);
-    void TopmostWindow(HWND);
-    void UpdateFocus();
+    // POSITION
+    static void UpdateWindow(HWND);
+    static void FullscreenWindow(HWND);
+    static void TopmostWindow(HWND);
+    static void UpdateFocus();
 
   private:
     static unsigned long long gdiplusToken;

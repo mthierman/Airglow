@@ -211,22 +211,25 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
     {
         if (!pSettings->boolFullscreen)
             pSettings->boolMaximized = Utility::Toggle(pSettings->boolMaximized);
+        UpdateWindow(hwnd);
         WebView::BoundsUpdate(hwnd);
         WebView::FocusUpdate();
     }
 
     if (wparam == VK_F11)
     {
-        pSettings->boolFullscreen = Utility::Toggle(pSettings->boolFullscreen);
-        WebView::BoundsUpdate(hwnd);
-        WebView::FocusUpdate();
+        // pSettings->boolFullscreen = Utility::Toggle(pSettings->boolFullscreen);
+        // UpdateWindow(hwnd);
+        // WebView::BoundsUpdate(hwnd);
+        // WebView::FocusUpdate();
     }
 
     if (wparam == VK_F9)
     {
-        pSettings->boolTopmost = Utility::Toggle(pSettings->boolTopmost);
-        WebView::BoundsUpdate(hwnd);
-        WebView::FocusUpdate();
+        // pSettings->boolTopmost = Utility::Toggle(pSettings->boolTopmost);
+        // UpdateWindow(hwnd);
+        // WebView::BoundsUpdate(hwnd);
+        // WebView::FocusUpdate();
     }
 
     if (wparam == 0x57)
@@ -348,15 +351,23 @@ bool MainWindow::Show(HWND hwnd, int ncs)
     return false;
 }
 
-void MainWindow::MaximizeWindow(HWND window)
+void MainWindow::UpdateWindow(HWND hwnd)
 {
-    // if (!settings.fullscreen)
+
+    if (pSettings->boolMaximized)
+        ShowWindow(hwnd, SW_NORMAL);
+    if (!pSettings->boolMaximized)
+        ShowWindow(hwnd, SW_MAXIMIZE);
+
+    // if (!pSettings->boolFullscreen)
     // {
-    //     if (!settings.maximized)
-    //         ShowWindow(window, SW_NORMAL);
-    //     else
-    //         ShowWindow(window, SW_MAXIMIZE);
+    //     if (pSettings->boolMaximized)
+    //         ShowWindow(hwnd, SW_NORMAL);
+    //     if (!pSettings->boolMaximized)
+    //         ShowWindow(hwnd, SW_MAXIMIZE);
     // }
+
+    // FullscreenWindow(hwnd);
 }
 
 void MainWindow::FullscreenWindow(HWND hwnd)
