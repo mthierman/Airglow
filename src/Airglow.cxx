@@ -19,7 +19,7 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
 
     auto settings = Settings::Create();
     auto appData = settings->GetAppDataPath();
-    auto settingsFile = settings->GetSettingsFilePath(appData);
+    auto settingsFile = settings->GetSettingsFilePath();
 
     if (std::filesystem::exists(appData))
     {
