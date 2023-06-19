@@ -1,7 +1,6 @@
 #include "Airglow.hxx"
 #include "MainWindow.hxx"
 #include "WebView.hxx"
-#include "Settings.hxx"
 
 int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
 {
