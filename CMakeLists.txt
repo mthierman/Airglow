@@ -70,7 +70,10 @@ message(STATUS ${JSON_PKG})
 add_executable(
     ${PROJECT_NAME}
     WIN32
-    src/Main.cpp
+
+    # src/Main.cpp
+    src/Airglow.cpp
+    src/MainWindow.cpp
     res$<$<CONFIG:Debug>:_debug>$<$<CONFIG:Release>:_release>.rc
 )
 
