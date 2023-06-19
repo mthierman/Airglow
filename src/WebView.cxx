@@ -64,7 +64,7 @@ void WebView::Initialize(HWND hwnd)
                                               wil::unique_cotaskmem_string message;
                                               args->TryGetWebMessageAsString(&message);
                                               auto msg = std::wstring(message.get());
-                                              Messages(msg);
+                                              Messages(hwnd, msg);
                                               webview->PostWebMessageAsString(message.get());
                                               return S_OK;
                                           })
@@ -149,7 +149,7 @@ void WebView::Initialize(HWND hwnd)
                                         wil::unique_cotaskmem_string message;
                                         args->TryGetWebMessageAsString(&message);
                                         auto msg = message.get();
-                                        Messages(msg);
+                                        Messages(hwnd, msg);
                                         webview->PostWebMessageAsString(message.get());
                                         return S_OK;
                                     })
@@ -234,7 +234,7 @@ void WebView::Initialize(HWND hwnd)
                                         wil::unique_cotaskmem_string message;
                                         args->TryGetWebMessageAsString(&message);
                                         auto msg = message.get();
-                                        Messages(msg);
+                                        Messages(hwnd, msg);
                                         webview->PostWebMessageAsString(message.get());
                                         return S_OK;
                                     })
@@ -335,71 +335,63 @@ std::wstring WebView::GetMenuScript()
     return script;
 }
 
-void WebView::Messages(std::wstring message)
+void WebView::Messages(HWND hwnd, std::wstring message)
 {
-    //     std::wstring splitKey = std::wstring(L"F1");
-    //     std::wstring swapKey = std::wstring(L"F2");
-    //     std::wstring hideMenuKey = std::wstring(L"F4");
-    //     std::wstring maximizeKey = std::wstring(L"F6");
-    //     std::wstring fullscreenKey = std::wstring(L"F11");
-    //     std::wstring onTopKey = std::wstring(L"F9");
-    //     std::wstring closeKey = std::wstring(L"close");
+    std::wstring splitKey = std::wstring(L"F1");
+    std::wstring swapKey = std::wstring(L"F2");
+    std::wstring hideMenuKey = std::wstring(L"F4");
+    std::wstring maximizeKey = std::wstring(L"F6");
+    std::wstring fullscreenKey = std::wstring(L"F11");
+    std::wstring onTopKey = std::wstring(L"F9");
+    std::wstring closeKey = std::wstring(L"close");
 
-    //     if (message == splitKey)
-    //     {
-    //         split = Toggle(split);
-    //         UpdateBounds(window);
-    //         UpdateFocus();
-    //         SetWindowTitle(window);
-    //         SetWindowIcon(window);
-    //     }
+    if (message == splitKey)
+    {
+        pSettings->boolSplit = Utility::Toggle(pSettings->boolSplit);
+        WebView::BoundsUpdate(hwnd);
+        WebView::FocusUpdate();
+    }
 
-    //     if (message == swapKey)
-    //     {
-    //         swapped = Toggle(swapped);
-    //         UpdateBounds(window);
-    //         UpdateFocus();
-    //         SetWindowTitle(window);
-    //         SetWindowIcon(window);
-    //     }
+    if (message == swapKey)
+    {
+        pSettings->boolSwapped = Utility::Toggle(pSettings->boolSwapped);
+        WebView::BoundsUpdate(hwnd);
+        WebView::FocusUpdate();
+    }
 
-    //     if (message == hideMenuKey)
-    //     {
-    //         menu = Toggle(menu);
-    //         UpdateBounds(window);
-    //         UpdateFocus();
-    //         SetWindowTitle(window);
-    //         SetWindowIcon(window);
-    //     }
+    if (message == hideMenuKey)
+    {
+        pSettings->boolMenu = Utility::Toggle(pSettings->boolMenu);
+        WebView::BoundsUpdate(hwnd);
+        WebView::FocusUpdate();
+    }
 
-    //     if (message == maximizeKey)
-    //     {
-    //         if (!fullscreen)
-    //             maximized = Toggle(maximized);
-    //         MaximizeWindow(window);
-    //         UpdateFocus();
-    //     }
+    if (message == maximizeKey)
+    {
+        if (!pSettings->boolFullscreen)
+            pSettings->boolMaximized = Utility::Toggle(pSettings->boolMaximized);
+        WebView::BoundsUpdate(hwnd);
+        WebView::FocusUpdate();
+    }
 
-    //     if (message == fullscreenKey)
-    //     {
-    //         fullscreen = Toggle(fullscreen);
-    //         FullscreenWindow(window);
-    //         UpdateFocus();
-    //     }
+    if (message == fullscreenKey)
+    {
+        pSettings->boolFullscreen = Utility::Toggle(pSettings->boolFullscreen);
+        WebView::BoundsUpdate(hwnd);
+        WebView::FocusUpdate();
+    }
 
-    //     if (message == onTopKey)
-    //     {
-    //         topmost = Toggle(topmost);
-    //         TopmostWindow(window);
-    //         UpdateFocus();
-    //         SetWindowTitle(window);
-    //         SetWindowIcon(window);
-    //     }
+    if (message == onTopKey)
+    {
+        pSettings->boolTopmost = Utility::Toggle(pSettings->boolTopmost);
+        WebView::BoundsUpdate(hwnd);
+        WebView::FocusUpdate();
+    }
 
-    //     if (message == closeKey)
-    //     {
-    //         SendMessageW(window, WM_CLOSE, 0, 0);
-    //     }
+    if (message == closeKey)
+    {
+        SendMessageW(hwnd, WM_CLOSE, 0, 0);
+    }
 }
 
 void WebView::BoundsUpdate(HWND hwnd)

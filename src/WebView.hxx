@@ -24,7 +24,7 @@ class WebView
     static void Initialize(HWND);
     static Settings* pSettings;
 
-    static void Messages(std::wstring);
+    static void Messages(HWND, std::wstring);
 
     static void BoundsUpdate(HWND);
     static void FocusUpdate();

@@ -185,7 +185,60 @@ int MainWindow::_OnSettingChange(HWND hwnd)
     return 0;
 }
 
-int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam) { return 0; }
+int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
+{
+    if (wparam == VK_F1)
+    {
+        pSettings->boolSplit = Utility::Toggle(pSettings->boolSplit);
+        WebView::BoundsUpdate(hwnd);
+        WebView::FocusUpdate();
+    }
+
+    if (wparam == VK_F2)
+    {
+        pSettings->boolSwapped = Utility::Toggle(pSettings->boolSwapped);
+        WebView::BoundsUpdate(hwnd);
+        WebView::FocusUpdate();
+    }
+
+    if (wparam == VK_F4)
+    {
+        pSettings->boolMenu = Utility::Toggle(pSettings->boolMenu);
+        WebView::BoundsUpdate(hwnd);
+        WebView::FocusUpdate();
+    }
+
+    if (wparam == VK_F6)
+    {
+        if (!pSettings->boolFullscreen)
+            pSettings->boolMaximized = Utility::Toggle(pSettings->boolMaximized);
+        WebView::BoundsUpdate(hwnd);
+        WebView::FocusUpdate();
+    }
+
+    if (wparam == VK_F11)
+    {
+        pSettings->boolFullscreen = Utility::Toggle(pSettings->boolFullscreen);
+        WebView::BoundsUpdate(hwnd);
+        WebView::FocusUpdate();
+    }
+
+    if (wparam == VK_F9)
+    {
+        pSettings->boolTopmost = Utility::Toggle(pSettings->boolTopmost);
+        WebView::BoundsUpdate(hwnd);
+        WebView::FocusUpdate();
+    }
+
+    if (wparam == 0x57)
+    {
+        auto state = GetKeyState(VK_CONTROL);
+        if (state & 0x8000)
+            SendMessageW(hwnd, WM_CLOSE, 0, 0);
+    }
+
+    return 0;
+}
 
 bool MainWindow::CheckSystemDarkMode()
 {
@@ -295,8 +348,6 @@ bool MainWindow::Show(HWND hwnd, int ncs)
 
     return false;
 }
-
-bool MainWindow::Toggle(bool b) { return b ? false : true; }
 
 void MainWindow::MaximizeWindow(HWND window)
 {

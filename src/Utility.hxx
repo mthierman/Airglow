@@ -3,6 +3,7 @@
 class Utility
 {
   public:
+    static bool Toggle(bool);
     static std::vector<int> RectToBounds(RECT);
     static RECT BoundsToRect(std::vector<int>);
     static void prints(std::string);

@@ -1,5 +1,7 @@
 #include "Utility.hxx"
 
+bool Utility::Toggle(bool b) { return b ? false : true; }
+
 std::vector<int> Utility::RectToBounds(RECT rect)
 {
     std::vector<int> bounds = {rect.left, rect.top, (rect.right - rect.left),

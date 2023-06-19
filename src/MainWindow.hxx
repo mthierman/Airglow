@@ -2,6 +2,7 @@
 
 #include "WebView.hxx"
 #include "Settings.hxx"
+#include "Utility.hxx"
 
 class MainWindow
 {
@@ -33,8 +34,7 @@ class MainWindow
     bool SetDarkMode(HWND);
     bool SetMica(HWND);
 
-    // STATE
-    bool Toggle(bool);
+    // WINDOW
     void MaximizeWindow(HWND);
     void FullscreenWindow(HWND);
     void TopmostWindow(HWND);
