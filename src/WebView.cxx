@@ -123,7 +123,7 @@ void WebView::Initialize(HWND hwnd)
                                     ICoreWebView2DocumentTitleChangedEventHandler>(
                                     [hwnd](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                     {
-                                        // SetWindowTitle(hwnd);
+                                        SetWindowTitle(hwnd);
                                         return S_OK;
                                     })
                                     .Get(),
@@ -208,7 +208,7 @@ void WebView::Initialize(HWND hwnd)
                                     ICoreWebView2DocumentTitleChangedEventHandler>(
                                     [hwnd](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                     {
-                                        // SetWindowTitle(hwnd);
+                                        SetWindowTitle(hwnd);
                                         return S_OK;
                                     })
                                     .Get(),
@@ -350,6 +350,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
         pSettings->boolSplit = Utility::Toggle(pSettings->boolSplit);
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
+        WebView::SetWindowTitle(hwnd);
     }
 
     if (message == swapKey)
@@ -357,6 +358,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
         pSettings->boolSwapped = Utility::Toggle(pSettings->boolSwapped);
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
+        WebView::SetWindowTitle(hwnd);
     }
 
     if (message == hideMenuKey)
@@ -364,6 +366,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
         pSettings->boolMenu = Utility::Toggle(pSettings->boolMenu);
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
+        WebView::SetWindowTitle(hwnd);
     }
 
     if (message == maximizeKey)
@@ -373,6 +376,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
         MainWindow::Maximize(hwnd);
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
+        WebView::SetWindowTitle(hwnd);
     }
 
     if (message == fullscreenKey)
@@ -381,6 +385,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
         MainWindow::Fullscreen(hwnd);
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
+        WebView::SetWindowTitle(hwnd);
     }
 
     if (message == onTopKey)
@@ -389,6 +394,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
         MainWindow::Topmost(hwnd);
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
+        WebView::SetWindowTitle(hwnd);
     }
 
     if (message == closeKey)
@@ -532,48 +538,48 @@ RECT WebView::SideBounds(HWND window)
     return panel;
 }
 
-// void WebView::SetWindowTitle(HWND window)
-// {
-//     std::wstring titleTop = L" [On Top]";
+void WebView::SetWindowTitle(HWND window)
+{
+    std::wstring titleTop = L" [On Top]";
 
-//     if (!swapped)
-//     {
-//         if (main_wv != nullptr)
-//         {
-//             wil::unique_cotaskmem_string s;
-//             main_wv->get_DocumentTitle(&s);
-//             auto title = s.get();
+    if (!pSettings->boolSwapped)
+    {
+        if (main_wv != nullptr)
+        {
+            wil::unique_cotaskmem_string s;
+            main_wv->get_DocumentTitle(&s);
+            auto title = s.get();
 
-//             if (!topmost)
-//                 SetWindowTextW(window, title);
+            if (!pSettings->boolTopmost)
+                SetWindowTextW(window, title);
 
-//             if (topmost)
-//             {
-//                 std::wstring add = title + titleTop;
-//                 SetWindowTextW(window, add.c_str());
-//             }
-//         }
-//     }
+            if (pSettings->boolTopmost)
+            {
+                std::wstring add = title + titleTop;
+                SetWindowTextW(window, add.c_str());
+            }
+        }
+    }
 
-//     else
-//     {
-//         if (side_wv != nullptr)
-//         {
-//             wil::unique_cotaskmem_string s;
-//             side_wv->get_DocumentTitle(&s);
-//             auto title = s.get();
+    else
+    {
+        if (side_wv != nullptr)
+        {
+            wil::unique_cotaskmem_string s;
+            side_wv->get_DocumentTitle(&s);
+            auto title = s.get();
 
-//             if (!topmost)
-//                 SetWindowTextW(window, title);
+            if (!pSettings->boolTopmost)
+                SetWindowTextW(window, title);
 
-//             if (topmost)
-//             {
-//                 std::wstring add = title + titleTop;
-//                 SetWindowTextW(window, add.c_str());
-//             }
-//         }
-//     }
-// }
+            if (pSettings->boolTopmost)
+            {
+                std::wstring add = title + titleTop;
+                SetWindowTextW(window, add.c_str());
+            }
+        }
+    }
+}
 
 // void WebView::SetWindowIcon(HWND window)
 // {

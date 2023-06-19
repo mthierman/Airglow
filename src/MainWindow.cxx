@@ -277,6 +277,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
         pSettings->boolSplit = Utility::Toggle(pSettings->boolSplit);
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
+        WebView::SetWindowTitle(hwnd);
     }
 
     if (wparam == VK_F2)
@@ -284,6 +285,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
         pSettings->boolSwapped = Utility::Toggle(pSettings->boolSwapped);
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
+        WebView::SetWindowTitle(hwnd);
     }
 
     if (wparam == VK_F4)
@@ -291,6 +293,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
         pSettings->boolMenu = Utility::Toggle(pSettings->boolMenu);
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
+        WebView::SetWindowTitle(hwnd);
     }
 
     if (wparam == VK_F6)
@@ -300,6 +303,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
         Maximize(hwnd);
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
+        WebView::SetWindowTitle(hwnd);
     }
 
     if (wparam == VK_F11)
@@ -308,6 +312,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
         Fullscreen(hwnd);
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
+        WebView::SetWindowTitle(hwnd);
     }
 
     if (wparam == VK_F9)
@@ -316,6 +321,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
         Topmost(hwnd);
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
+        WebView::SetWindowTitle(hwnd);
     }
 
     if (wparam == 0x57)

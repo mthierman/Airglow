@@ -30,8 +30,8 @@ class WebView
     static RECT MenuBounds(HWND);
     static RECT MainBounds(HWND);
     static RECT SideBounds(HWND);
-    void SetWindowTitle(HWND);
-    void SetWindowIcon(HWND);
+    static void SetWindowTitle(HWND);
+    static void SetWindowIcon(HWND);
 
   private:
     WebView(HWND, Settings*);
