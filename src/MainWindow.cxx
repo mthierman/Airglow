@@ -275,3 +275,100 @@ bool MainWindow::SetMica(HWND hwnd)
 
     return false;
 }
+
+bool MainWindow::Toggle(bool b) { return b ? false : true; }
+
+void MainWindow::MaximizeWindow(HWND window)
+{
+    // if (!fullscreen)
+    // {
+    //     if (!maximized)
+    //         ShowWindow(window, SW_NORMAL);
+    //     else
+    //         ShowWindow(window, SW_MAXIMIZE);
+    // }
+}
+
+void MainWindow::FullscreenWindow(HWND hwnd)
+{
+    static RECT position;
+
+    auto style = GetWindowLongPtrW(hwnd, GWL_STYLE);
+
+    if (style & WS_OVERLAPPEDWINDOW)
+    {
+        MONITORINFO mi = {sizeof(mi)};
+        GetWindowRect(hwnd, &position);
+        if (GetMonitorInfoW(MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST), &mi))
+        {
+            SetWindowLongPtrW(hwnd, GWL_STYLE, style & ~WS_OVERLAPPEDWINDOW);
+            SetWindowPos(hwnd, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top,
+                         mi.rcMonitor.right - mi.rcMonitor.left,
+                         mi.rcMonitor.bottom - mi.rcMonitor.top,
+                         SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
+        }
+    }
+
+    else
+    {
+        SetWindowLongPtrW(hwnd, GWL_STYLE, style | WS_OVERLAPPEDWINDOW);
+        SetWindowPos(hwnd, nullptr, 0, 0, 0, 0,
+                     SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
+        SetWindowPos(hwnd, nullptr, position.left, position.top, (position.right - position.left),
+                     (position.bottom - position.top), 0);
+    }
+}
+
+void MainWindow::TopmostWindow(HWND hwnd)
+{
+    FLASHWINFO fwi;
+    fwi.cbSize = sizeof(FLASHWINFO);
+    fwi.hwnd = hwnd;
+    fwi.dwFlags = FLASHW_CAPTION;
+    fwi.uCount = 1;
+    fwi.dwTimeout = 100;
+
+    auto top = GetWindowLongPtrW(hwnd, GWL_EXSTYLE);
+
+    if (top & WS_EX_TOPMOST)
+    {
+        SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        FlashWindowEx(&fwi);
+    }
+
+    else
+    {
+        SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        FlashWindowEx(&fwi);
+    }
+}
+
+void MainWindow::UpdateFocus()
+{
+    // if (menu)
+    //     if (settings_controller != nullptr)
+    //         settings_controller->MoveFocus(
+    //             COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+
+    // if (!swapped & !menu)
+    //     if (main_controller != nullptr)
+    //         main_controller->MoveFocus(
+    //             COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+
+    // if (swapped & !menu)
+    //     if (side_controller != nullptr)
+    //         side_controller->MoveFocus(
+    //             COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+}
+
+void MainWindow::UpdateBounds(HWND hwnd)
+{
+    // if (main_controller != nullptr)
+    //     main_controller->put_Bounds(GetMainPanelBounds(hwnd));
+
+    // if (side_controller != nullptr)
+    //     side_controller->put_Bounds(GetSidePanelBounds(hwnd));
+
+    // if (settings_controller != nullptr)
+    //     settings_controller->put_Bounds(GetMenuBounds(hwnd));
+}

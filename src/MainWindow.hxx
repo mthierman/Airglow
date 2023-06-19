@@ -25,6 +25,13 @@ class MainWindow
     bool SetDarkMode(HWND);
     bool SetMica(HWND);
 
+    bool Toggle(bool);
+    void MaximizeWindow(HWND);
+    void FullscreenWindow(HWND);
+    void TopmostWindow(HWND);
+    void UpdateFocus();
+    void UpdateBounds(HWND);
+
   private:
     MainWindow(HINSTANCE, int);
     enum PreferredAppMode

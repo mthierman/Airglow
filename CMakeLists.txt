@@ -78,14 +78,13 @@ add_executable(
     src/WebView.cxx
     src/Utility.cxx
 
-    # src/State.cxx
     res$<$<CONFIG:Debug>:_debug>$<$<CONFIG:Release>:_release>.rc
 )
 
 target_precompile_headers(
     ${PROJECT_NAME}
     PRIVATE
-    src/pch.hpp
+    src/PCH.hxx
 )
 
 target_include_directories(

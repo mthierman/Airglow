@@ -5,11 +5,11 @@ class Settings
     std::filesystem::path GetAppDataPath();
     std::filesystem::path GetSettingsFilePath(std::filesystem::path);
     nlohmann::json DefaultSettings();
-    // nlohmann::json CurrentSettings();
-    // nlohmann::json LoadSettings();
-    // void SaveSettings();
-    // std::filesystem::path appData;
-    // std::filesystem::path settingsFile;
+    nlohmann::json CurrentSettings();
+    nlohmann::json LoadSettings();
+    void SaveSettings();
+    std::filesystem::path appData;
+    std::filesystem::path settingsFile;
 
   private:
     Settings();
