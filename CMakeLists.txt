@@ -70,13 +70,11 @@ message(STATUS ${JSON_PKG})
 add_executable(
     ${PROJECT_NAME}
     WIN32
-
-    # src/Main.cpp
     src/Airglow.cxx
     src/MainWindow.cxx
     src/Settings.cxx
-    src/WebView.cxx
     src/Utility.cxx
+    src/WebView.cxx
 
     res$<$<CONFIG:Debug>:_debug>$<$<CONFIG:Release>:_release>.rc
 )
