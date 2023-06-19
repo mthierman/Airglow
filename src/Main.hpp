@@ -1,3 +1,9 @@
+#ifndef _DEBUG
+#define DEBUG false
+#endif
+#ifdef _DEBUG
+#define DEBUG true
+#endif
 #define PROGRAM_ICON 1
 
 // MAIN
@@ -10,17 +16,22 @@ __int64 __stdcall WndProc(HWND, UINT, WPARAM, LPARAM);
 void Messages(std::wstring);
 
 // WINDOW
-class MainWindow
+HWND window;
+unsigned short MakeWindowClass(HINSTANCE);
+HWND MakeWindow(HINSTANCE);
+HWND InitializeWindow(HINSTANCE, int);
+bool CheckSystemDarkMode();
+bool SetDarkTitle();
+bool SetDarkMode(HWND);
+bool SetMica(HWND);
+bool SetWindow(HWND, int);
+enum PreferredAppMode
 {
-  public:
-    static std::unique_ptr<MainWindow> Create(HINSTANCE, int);
-    static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
-    void InitializeWindow(HINSTANCE, int);
-    HWND m_hWnd;
-    int _OnPaint(HWND);
-
-  private:
-    MainWindow(HINSTANCE, int);
+    Default,
+    AllowDark,
+    ForceDark,
+    ForceLight,
+    Max
 };
 
 // STATE
