@@ -1,5 +1,8 @@
 #include "MainWindow.hxx"
 
+unsigned long long MainWindow::gdiplusToken;
+Gdiplus::GdiplusStartupInput MainWindow::gdiplusStartupInput;
+
 MainWindow::MainWindow(HINSTANCE hinstance, int ncs){};
 
 std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs)
@@ -135,9 +138,13 @@ int MainWindow::_OnCommand() { return 0; }
 
 int MainWindow::_OnCreate(HWND hwnd)
 {
+
     SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
     SetEnvironmentVariableW(std::wstring(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR").c_str(),
                             std::wstring(L"0").c_str());
+
+    Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+
     SetDarkTitle();
     SetDarkMode(hwnd);
     SetMica(hwnd);
@@ -147,6 +154,7 @@ int MainWindow::_OnCreate(HWND hwnd)
 
 int MainWindow::_OnDestroy()
 {
+    Gdiplus::GdiplusShutdown(gdiplusToken);
     PostQuitMessage(0);
 
     return 0;

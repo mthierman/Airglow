@@ -1,4 +1,6 @@
 #include "MainWindow.hxx"
+#include "Settings.hxx"
+#include "WebView.hxx"
 
 int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
 {
@@ -15,8 +17,21 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
     if (hwnd)
         MainWindow::_ShowWindow(hwnd, ncs);
 
+    auto settings = Settings::Create();
+    auto appData = settings->GetAppDataPath();
+    auto settingsFile = settings->GetSettingsFilePath(appData);
+
+    if (std::filesystem::exists(appData))
+    {
+        WebView::Create(hwnd, appData);
+    }
+
     else
         return 0;
+
+#ifdef _DEBUG
+        // Tests();
+#endif
 
     MSG msg = {};
     while (GetMessageW(&msg, nullptr, 0, 0))
@@ -27,3 +42,5 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
 
     return 0;
 }
+
+void Tests() { OutputDebugStringW(L"Tests:\n"); }

@@ -5,6 +5,8 @@ class MainWindow
     static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
     static bool _ShowWindow(HWND, int);
     HWND m_hWnd;
+    static unsigned long long gdiplusToken;
+    static Gdiplus::GdiplusStartupInput gdiplusStartupInput;
 
     // MESSAGES
     int _OnCommand();
