@@ -11,25 +11,36 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
     auto window = MainWindow::Create(hinstance, ncs);
 
     if (!window)
-        return 0;
-
-    if (window)
-        hwnd = window.get()->m_hWnd;
-
-    if (hwnd)
-        MainWindow::_ShowWindow(hwnd, ncs);
-
-    auto settings = Settings::Create();
-    auto appData = settings->GetAppDataPath();
-    auto settingsFile = settings->GetSettingsFilePath();
-
-    if (std::filesystem::exists(appData))
     {
-        WebView::Create(hwnd, appData);
+        std::wstring error =
+            L"Window creation failed, last error is " + std::to_wstring(GetLastError());
+        MessageBoxW(nullptr, error.c_str(), std::wstring(L"Airglow").c_str(), MB_ICONERROR);
+        return 0;
     }
 
-    else
+    hwnd = window.get()->m_hWnd;
+
+    if (!hwnd)
+    {
+        std::wstring error =
+            L"Window creation failed, last error is " + std::to_wstring(GetLastError());
+        MessageBoxW(nullptr, error.c_str(), std::wstring(L"Airglow").c_str(), MB_ICONERROR);
         return 0;
+    }
+
+    MainWindow::_ShowWindow(hwnd, ncs);
+
+    if (!std::filesystem::exists(window->settings->appData))
+    {
+        std::wstring error =
+            L"WebView data not found, last error is " + std::to_wstring(GetLastError());
+        MessageBoxW(nullptr, error.c_str(), std::wstring(L"Airglow").c_str(), MB_ICONERROR);
+        return 0;
+    }
+
+    WebView::Create(hwnd, window->settings->appData);
+
+    window->settings->LoadSettings();
 
 #ifdef _DEBUG
     Tests();

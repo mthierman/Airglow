@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Settings.hxx"
+
 class MainWindow
 {
   public:
@@ -7,8 +9,7 @@ class MainWindow
     static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
     static bool _ShowWindow(HWND, int);
     HWND m_hWnd;
-    static unsigned long long gdiplusToken;
-    static Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+    std::unique_ptr<Settings> settings;
 
     // MESSAGES
     int _OnCommand();
@@ -22,11 +23,13 @@ class MainWindow
     int _OnSettingChange(HWND);
     int _OnKeyDown(HWND, WPARAM);
 
+    // THEME
     bool CheckSystemDarkMode();
     bool SetDarkTitle();
     bool SetDarkMode(HWND);
     bool SetMica(HWND);
 
+    // STATE
     bool Toggle(bool);
     void MaximizeWindow(HWND);
     void FullscreenWindow(HWND);
@@ -35,6 +38,8 @@ class MainWindow
     void UpdateBounds(HWND);
 
   private:
+    static unsigned long long gdiplusToken;
+    static Gdiplus::GdiplusStartupInput gdiplusStartupInput;
     MainWindow(HINSTANCE, int);
     enum PreferredAppMode
     {

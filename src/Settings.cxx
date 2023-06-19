@@ -2,7 +2,14 @@
 
 Settings::Settings(){};
 
-std::unique_ptr<Settings> Settings::Create() { return std::unique_ptr<Settings>(new Settings()); };
+std::unique_ptr<Settings> Settings::Create()
+{
+    auto pSettings = std::unique_ptr<Settings>(new Settings());
+    pSettings->appData = pSettings->GetAppDataPath();
+    pSettings->settingsFile = pSettings->GetSettingsFilePath();
+
+    return pSettings;
+};
 
 std::filesystem::path Settings::GetAppDataPath()
 {
@@ -31,7 +38,7 @@ std::filesystem::path Settings::GetAppDataPath()
 
 std::filesystem::path Settings::GetSettingsFilePath()
 {
-    auto appData = this->GetAppDataPath();
+    auto appData = GetAppDataPath();
     std::filesystem::path path =
         (appData.wstring() + std::filesystem::path::preferred_separator + L"Airglow.json");
 
@@ -80,15 +87,14 @@ nlohmann::json Settings::CurrentSettings()
     return settings;
 }
 
-nlohmann::json Settings::LoadSettings()
+void Settings::LoadSettings()
 {
-    auto file = this->GetSettingsFilePath();
     nlohmann::json settings = this->DefaultSettings();
 
-    if (std::filesystem::exists(file))
+    if (std::filesystem::exists(this->settingsFile))
     {
-        std::ifstream f(file);
-        if (!std::filesystem::is_empty(file))
+        std::ifstream f(this->settingsFile);
+        if (!std::filesystem::is_empty(this->settingsFile))
             settings = nlohmann::json::parse(f);
         f.close();
     }
@@ -102,18 +108,15 @@ nlohmann::json Settings::LoadSettings()
     this->swapped = settings["swapped"].get<bool>();
     this->mainpage = settings["mainpage"].get<std::string>();
     this->sidepage = settings["sidepage"].get<std::string>();
-
-    return settings;
 }
 
 void Settings::SaveSettings()
 {
-    auto file = this->GetSettingsFilePath();
     nlohmann::json settings = this->CurrentSettings();
 
-    if (std::filesystem::exists(file))
+    if (std::filesystem::exists(this->settingsFile))
     {
-        std::ofstream f(file);
+        std::ofstream f(this->settingsFile);
         f << settings.dump(4);
         f.close();
     }

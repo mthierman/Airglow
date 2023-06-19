@@ -8,13 +8,10 @@ class Settings
     std::filesystem::path GetSettingsFilePath();
     nlohmann::json DefaultSettings();
     nlohmann::json CurrentSettings();
-    nlohmann::json LoadSettings();
+    void LoadSettings();
     void SaveSettings();
     std::filesystem::path appData;
     std::filesystem::path settingsFile;
-
-  private:
-    Settings();
     std::vector<int> dimensions;
     bool menu;
     bool split;
@@ -24,4 +21,7 @@ class Settings
     bool topmost;
     std::string mainpage;
     std::string sidepage;
+
+  private:
+    Settings();
 };

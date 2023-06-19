@@ -50,6 +50,8 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs)
         return nullptr;
     }
 
+    pMainWindow->settings = Settings::Create();
+
     return pMainWindow;
 }
 
@@ -155,6 +157,9 @@ int MainWindow::_OnCreate(HWND hwnd)
 int MainWindow::_OnDestroy()
 {
     Gdiplus::GdiplusShutdown(gdiplusToken);
+
+    this->settings->SaveSettings();
+
     PostQuitMessage(0);
 
     return 0;
