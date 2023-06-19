@@ -8,7 +8,6 @@ class MainWindow
 {
   public:
     static std::unique_ptr<MainWindow> Create(HINSTANCE, int, Settings*);
-    // static WebView* pWebView;
     static Settings* pSettings;
     static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
     static bool Show(HWND, int);

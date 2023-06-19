@@ -1,7 +1,6 @@
 #include "MainWindow.hxx"
 
 Settings* MainWindow::pSettings = nullptr;
-
 unsigned long long MainWindow::gdiplusToken;
 Gdiplus::GdiplusStartupInput MainWindow::gdiplusStartupInput;
 
