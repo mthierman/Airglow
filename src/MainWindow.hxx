@@ -18,6 +18,7 @@ class MainWindow
 
     int _OnCommand();
     int _OnCreate(HWND);
+    int _OnActivate(HWND);
     int _OnClose(HWND);
     int _OnDestroy();
     int _OnDpiChanged();
@@ -26,6 +27,7 @@ class MainWindow
     int _OnSize(HWND);
     int _OnSizing(HWND);
     int _OnWindowPosChanged(HWND);
+    int _OnSetFocus(HWND);
     int _OnSettingChange(HWND);
     int _OnKeyDown(HWND, WPARAM);
 

@@ -7,10 +7,11 @@ class Settings
     nlohmann::json Defaults();
     void Load(std::filesystem::path);
     nlohmann::json Current();
+    nlohmann::json State();
     void Save();
     std::filesystem::path pathData;
     std::filesystem::path pathSettings;
-    std::vector<int> boolPosition;
+    std::vector<int> vectorPosition;
     bool boolMenu;
     bool boolSplit;
     bool boolSwapped;

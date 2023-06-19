@@ -80,7 +80,7 @@ void Settings::Load(std::filesystem::path path)
         f.close();
     }
 
-    boolPosition = settings["position"].get<std::vector<int>>();
+    vectorPosition = settings["position"].get<std::vector<int>>();
     boolMenu = settings["menu"].get<bool>();
     boolSplit = settings["split"].get<bool>();
     boolSwapped = settings["swapped"].get<bool>();
@@ -94,7 +94,23 @@ void Settings::Load(std::filesystem::path path)
 nlohmann::json Settings::Current()
 {
     nlohmann::json settings;
-    settings["position"] = boolPosition;
+    settings["position"] = vectorPosition;
+    settings["menu"] = boolMenu;
+    settings["split"] = boolSplit;
+    settings["swapped"] = boolSwapped;
+    settings["maximized"] = boolMaximized;
+    settings["fullscreen"] = boolFullscreen;
+    settings["topmost"] = boolTopmost;
+    settings["main"] = stringMain;
+    settings["side"] = stringSide;
+
+    return settings;
+}
+
+nlohmann::json Settings::State()
+{
+    nlohmann::json settings;
+    settings["position"] = vectorPosition;
     settings["menu"] = boolMenu;
     settings["split"] = boolSplit;
     settings["swapped"] = boolSwapped;

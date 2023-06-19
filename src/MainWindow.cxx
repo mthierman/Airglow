@@ -173,6 +173,8 @@ __int64 __stdcall MainWindow::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARA
             return pMainWindow->_OnCommand();
         case WM_CREATE:
             return pMainWindow->_OnCreate(hwnd);
+        case WM_ACTIVATE:
+            return pMainWindow->_OnActivate(hwnd);
         case WM_CLOSE:
             return pMainWindow->_OnClose(hwnd);
         case WM_DESTROY:
@@ -189,6 +191,8 @@ __int64 __stdcall MainWindow::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARA
             return pMainWindow->_OnSizing(hwnd);
         case WM_WINDOWPOSCHANGED:
             return pMainWindow->_OnWindowPosChanged(hwnd);
+        case WM_SETFOCUS:
+            return pMainWindow->_OnSetFocus(hwnd);
         case WM_SETTINGCHANGE:
             return pMainWindow->_OnSettingChange(hwnd);
         case WM_KEYDOWN:
@@ -212,6 +216,20 @@ int MainWindow::_OnCreate(HWND hwnd)
     SetDarkTitle();
     SetDarkMode(hwnd);
     SetMica(hwnd);
+
+    // SetWindowPos(hwnd, nullptr, pSettings->vectorPosition[0], pSettings->vectorPosition[1],
+    //              pSettings->vectorPosition[2], pSettings->vectorPosition[3], 0);
+    // if (pSettings->boolMaximized)
+    //     ShowWindow(hwnd, SW_SHOWMAXIMIZED);
+    // if (pSettings->boolFullscreen)
+    //     Fullscreen(hwnd);
+
+    return 0;
+}
+
+int MainWindow::_OnActivate(HWND hwnd)
+{
+    OutputDebugStringW(L"WM_ACTIVATE");
 
     return 0;
 }
@@ -261,6 +279,13 @@ int MainWindow::_OnSizing(HWND hwnd) { return 0; }
 int MainWindow::_OnWindowPosChanged(HWND hwnd)
 {
     WebView::UpdateBounds(hwnd);
+    return 0;
+}
+
+int MainWindow::_OnSetFocus(HWND hwnd)
+{
+    OutputDebugStringW(L"WM_SETFOCUS");
+    // WebView::UpdateFocus();
     return 0;
 }
 
