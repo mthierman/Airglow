@@ -1,14 +1,20 @@
 #include "Settings.hxx"
 
-Settings::Settings()
+Settings::Settings(){};
+
+std::unique_ptr<Settings> Settings::Create()
 {
-    appData = GetAppDataPath();
-    settingsFile = GetSettingsFilePath();
+    auto pSettings = std::unique_ptr<Settings>(new Settings());
+    pSettings->pathData = pSettings->DataPath();
+    pSettings->pathSettings = pSettings->SettingsPath(pSettings->pathData);
+    pSettings->Load(pSettings->pathSettings);
+
+    return pSettings;
 }
 
-std::filesystem::path Settings::GetAppDataPath()
+std::filesystem::path Settings::DataPath()
 {
-    std::filesystem::path path;
+    std::filesystem::path data;
     std::wstring outBuffer;
     PWSTR buffer;
 
@@ -17,101 +23,97 @@ std::filesystem::path Settings::GetAppDataPath()
     if (getKnownFolderPath != S_OK)
     {
         CoTaskMemFree(buffer);
-        return path;
+        return data;
     }
 
     outBuffer = buffer;
-    path = outBuffer + std::filesystem::path::preferred_separator + L"Airglow";
+    data = outBuffer + std::filesystem::path::preferred_separator + L"Airglow";
 
     CoTaskMemFree(buffer);
 
-    if (!std::filesystem::exists(path))
-        std::filesystem::create_directory(path);
+    if (!std::filesystem::exists(data))
+        std::filesystem::create_directory(data);
 
-    return path;
+    return data;
 }
 
-std::filesystem::path Settings::GetSettingsFilePath()
+std::filesystem::path Settings::SettingsPath(std::filesystem::path path)
 {
-    auto appData = GetAppDataPath();
-    std::filesystem::path path =
-        (appData.wstring() + std::filesystem::path::preferred_separator + L"Airglow.json");
+    std::filesystem::path settings =
+        (path.wstring() + std::filesystem::path::preferred_separator + L"Airglow.json");
+
+    return settings;
+}
+
+nlohmann::json Settings::Defaults()
+{
+    nlohmann::json settings;
+    settings["position"] = {0, 0, 800, 600};
+    settings["menu"] = false;
+    settings["split"] = false;
+    settings["swapped"] = false;
+    settings["maximized"] = false;
+    settings["fullscreen"] = false;
+    settings["topmost"] = false;
+    settings["main"] = "https://www.google.com/";
+    settings["side"] = "https://www.google.com/";
+
+    return settings;
+}
+
+void Settings::Load(std::filesystem::path path)
+{
+    nlohmann::json settings = Defaults();
 
     if (!std::filesystem::exists(path))
     {
-        nlohmann::json defaultSettings = DefaultSettings();
         std::ofstream f(path);
-        f << defaultSettings.dump(4);
+        f << settings.dump(4);
         f.close();
     }
 
-    return path;
-}
-
-nlohmann::json Settings::DefaultSettings()
-{
-    nlohmann::json settings;
-
-    settings["dimensions"] = {0, 0, 800, 600};
-    settings["topmost"] = false;
-    settings["maximized"] = false;
-    settings["fullscreen"] = false;
-    settings["split"] = false;
-    settings["swapped"] = false;
-    settings["menu"] = false;
-    settings["mainpage"] = "https://www.google.com/";
-    settings["sidepage"] = "https://www.google.com/";
-
-    return settings;
-}
-
-nlohmann::json Settings::CurrentSettings()
-{
-    nlohmann::json settings;
-
-    settings["dimensions"] = dimensions;
-    settings["topmost"] = topmost;
-    settings["maximized"] = maximized;
-    settings["fullscreen"] = fullscreen;
-    settings["split"] = split;
-    settings["swapped"] = swapped;
-    settings["menu"] = menu;
-    settings["mainpage"] = mainpage;
-    settings["sidepage"] = sidepage;
-
-    return settings;
-}
-
-void Settings::LoadSettings()
-{
-    nlohmann::json settings = DefaultSettings();
-
-    if (std::filesystem::exists(settingsFile))
+    if (std::filesystem::exists(path))
     {
-        std::ifstream f(settingsFile);
-        if (!std::filesystem::is_empty(settingsFile))
+        std::ifstream f(path);
+        if (!std::filesystem::is_empty(path))
             settings = nlohmann::json::parse(f);
         f.close();
     }
 
-    dimensions = settings["dimensions"].get<std::vector<int>>();
-    fullscreen = settings["fullscreen"].get<bool>();
-    maximized = settings["maximized"].get<bool>();
-    menu = settings["menu"].get<bool>();
-    topmost = settings["topmost"].get<bool>();
-    split = settings["split"].get<bool>();
-    swapped = settings["swapped"].get<bool>();
-    mainpage = settings["mainpage"].get<std::string>();
-    sidepage = settings["sidepage"].get<std::string>();
+    boolPosition = settings["position"].get<std::vector<int>>();
+    boolMenu = settings["menu"].get<bool>();
+    boolSplit = settings["split"].get<bool>();
+    boolSwapped = settings["swapped"].get<bool>();
+    boolMaximized = settings["maximized"].get<bool>();
+    boolFullscreen = settings["fullscreen"].get<bool>();
+    boolTopmost = settings["topmost"].get<bool>();
+    stringMain = settings["main"].get<std::string>();
+    stringSide = settings["side"].get<std::string>();
 }
 
-void Settings::SaveSettings()
+nlohmann::json Settings::Current()
 {
-    nlohmann::json settings = CurrentSettings();
+    nlohmann::json settings;
+    settings["position"] = boolPosition;
+    settings["menu"] = boolMenu;
+    settings["split"] = boolSplit;
+    settings["swapped"] = boolSwapped;
+    settings["maximized"] = boolMaximized;
+    settings["fullscreen"] = boolFullscreen;
+    settings["topmost"] = boolTopmost;
+    settings["main"] = stringMain;
+    settings["side"] = stringSide;
 
-    if (std::filesystem::exists(settingsFile))
+    return settings;
+}
+
+void Settings::Save()
+{
+    nlohmann::json settings = Current();
+
+    if (std::filesystem::exists(pathSettings))
     {
-        std::ofstream f(settingsFile);
+        std::ofstream f(pathSettings);
         f << settings.dump(4);
         f.close();
     }

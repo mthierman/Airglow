@@ -1,13 +1,13 @@
 #pragma once
 
+#include "WebView.hxx"
 #include "Settings.hxx"
-
-static Settings settings;
 
 class MainWindow
 {
   public:
-    static std::unique_ptr<MainWindow> Create(HINSTANCE, int);
+    static std::unique_ptr<MainWindow> Create(HINSTANCE, int, Settings*);
+    static Settings* pSettings;
     static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
     static bool _ShowWindow(HWND, int);
     HWND m_hWnd;
@@ -46,7 +46,6 @@ class MainWindow
   private:
     static unsigned long long gdiplusToken;
     static Gdiplus::GdiplusStartupInput gdiplusStartupInput;
-    MainWindow(HINSTANCE, int);
     enum PreferredAppMode
     {
         Default,
@@ -55,4 +54,7 @@ class MainWindow
         ForceLight,
         Max
     };
+
+  protected:
+    MainWindow(HINSTANCE, int, Settings*);
 };

@@ -1,14 +1,12 @@
 #include "Airglow.hxx"
-#include "MainWindow.hxx"
-#include "WebView.hxx"
 
 int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
 {
-    HWND hwnd = nullptr;
+    HWND hwnd;
 
-    settings = Settings();
+    auto settings = Settings::Create();
 
-    auto window = MainWindow::Create(hinstance, ncs);
+    auto window = MainWindow::Create(hinstance, ncs, settings.get());
 
     if (!window)
     {
@@ -30,7 +28,7 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
 
     MainWindow::_ShowWindow(hwnd, ncs);
 
-    if (!std::filesystem::exists(settings.appData))
+    if (!std::filesystem::exists(settings->pathData))
     {
         std::wstring error =
             L"WebView data not found, last error is " + std::to_wstring(GetLastError());
@@ -38,13 +36,7 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
         return 0;
     }
 
-    WebView::Create(hwnd, settings.appData);
-
-    settings.LoadSettings();
-
-#ifdef _DEBUG
-    Tests();
-#endif
+    WebView::Create(hwnd, settings->pathData);
 
     MSG msg = {};
     while (GetMessageW(&msg, nullptr, 0, 0))
@@ -55,5 +47,3 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
 
     return 0;
 }
-
-void Tests() { OutputDebugStringW(L"Tests:\n"); }

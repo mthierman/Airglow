@@ -1,13 +1,18 @@
 #include "MainWindow.hxx"
-#include "WebView.hxx"
 
 unsigned long long MainWindow::gdiplusToken;
 Gdiplus::GdiplusStartupInput MainWindow::gdiplusStartupInput;
+Settings* MainWindow::pSettings;
 
-MainWindow::MainWindow(HINSTANCE hinstance, int ncs){};
+MainWindow::MainWindow(HINSTANCE hinstance, int ncs, Settings* settings){};
 
-std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs)
+std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Settings* settings)
 {
+    // settings->boolSplit = false;
+    // settings->Save();
+    pSettings = settings;
+    pSettings->boolSplit = false;
+
     std::wstring className(L"airglow");
     std::wstring menuName(L"airglowmenu");
     std::wstring programIcon(L"PROGRAM_ICON");
@@ -37,7 +42,7 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs)
         return nullptr;
     }
 
-    auto pMainWindow = std::unique_ptr<MainWindow>(new MainWindow(hinstance, ncs));
+    auto pMainWindow = std::unique_ptr<MainWindow>(new MainWindow(hinstance, ncs, settings));
 
     HWND hwnd = CreateWindowExW(0, className.c_str(), appName.c_str(), WS_OVERLAPPEDWINDOW,
                                 CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
@@ -141,7 +146,6 @@ int MainWindow::_OnCommand() { return 0; }
 
 int MainWindow::_OnCreate(HWND hwnd)
 {
-
     SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
     SetEnvironmentVariableW(std::wstring(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR").c_str(),
                             std::wstring(L"0").c_str());
@@ -159,7 +163,10 @@ int MainWindow::_OnClose(HWND hwnd)
 {
     Gdiplus::GdiplusShutdown(gdiplusToken);
 
-    settings.SaveSettings();
+    pSettings->boolSplit = false;
+    pSettings->Save();
+    // this->pSettings->boolSplit = true;
+    // this->pSettings->Save();
 
     DestroyWindow(hwnd);
 
@@ -293,13 +300,13 @@ bool MainWindow::Toggle(bool b) { return b ? false : true; }
 
 void MainWindow::MaximizeWindow(HWND window)
 {
-    if (!settings.fullscreen)
-    {
-        if (!settings.maximized)
-            ShowWindow(window, SW_NORMAL);
-        else
-            ShowWindow(window, SW_MAXIMIZE);
-    }
+    // if (!settings.fullscreen)
+    // {
+    //     if (!settings.maximized)
+    //         ShowWindow(window, SW_NORMAL);
+    //     else
+    //         ShowWindow(window, SW_MAXIMIZE);
+    // }
 }
 
 void MainWindow::FullscreenWindow(HWND hwnd)
@@ -358,20 +365,20 @@ void MainWindow::TopmostWindow(HWND hwnd)
 
 void MainWindow::UpdateFocus()
 {
-    if (settings.menu)
-        if (settings_controller != nullptr)
-            settings_controller->MoveFocus(
-                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+    // if (settings.menu)
+    //     if (settings_controller != nullptr)
+    //         settings_controller->MoveFocus(
+    //             COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 
-    if (!settings.swapped & !settings.menu)
-        if (main_controller != nullptr)
-            main_controller->MoveFocus(
-                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+    // if (!settings.swapped & !settings.menu)
+    //     if (main_controller != nullptr)
+    //         main_controller->MoveFocus(
+    //             COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 
-    if (settings.swapped & !settings.menu)
-        if (side_controller != nullptr)
-            side_controller->MoveFocus(
-                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+    // if (settings.swapped & !settings.menu)
+    //     if (side_controller != nullptr)
+    //         side_controller->MoveFocus(
+    //             COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 }
 
 void MainWindow::UpdateBounds(HWND hwnd)

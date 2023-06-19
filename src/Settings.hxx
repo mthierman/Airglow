@@ -3,22 +3,27 @@
 class Settings
 {
   public:
+    static std::unique_ptr<Settings> Create();
+    nlohmann::json Defaults();
+    void Load(std::filesystem::path);
+    nlohmann::json Current();
+    void Save();
+    std::filesystem::path pathData;
+    std::filesystem::path pathSettings;
+    std::vector<int> boolPosition;
+    bool boolMenu;
+    bool boolSplit;
+    bool boolSwapped;
+    bool boolMaximized;
+    bool boolFullscreen;
+    bool boolTopmost;
+    std::string stringMain;
+    std::string stringSide;
+
+  private:
+    std::filesystem::path DataPath();
+    std::filesystem::path SettingsPath(std::filesystem::path appData);
+
+  protected:
     Settings();
-    std::filesystem::path GetAppDataPath();
-    std::filesystem::path GetSettingsFilePath();
-    nlohmann::json DefaultSettings();
-    nlohmann::json CurrentSettings();
-    void LoadSettings();
-    void SaveSettings();
-    std::filesystem::path appData;
-    std::filesystem::path settingsFile;
-    std::vector<int> dimensions;
-    bool menu;
-    bool split;
-    bool swapped;
-    bool maximized;
-    bool fullscreen;
-    bool topmost;
-    std::string mainpage;
-    std::string sidepage;
 };

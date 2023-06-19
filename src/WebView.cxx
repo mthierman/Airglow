@@ -1,6 +1,4 @@
-#include "MainWindow.hxx"
 #include "WebView.hxx"
-#include "Utility.hxx"
 
 WebView::WebView(){};
 
@@ -91,7 +89,8 @@ void WebView::Create(HWND hwnd, std::filesystem::path userData)
                             main_settings->put_IsStatusBarEnabled(true);
                             main_settings->put_IsWebMessageEnabled(true);
                             main_settings->put_IsZoomControlEnabled(true);
-                            main_controller->put_Bounds(MainWindow::GetMainPanelBounds(hwnd));
+                            // main_controller->put_Bounds(MainWindow::GetMainPanelBounds(hwnd));
+                            main_controller->put_Bounds(MainWindow::GetFullBounds(hwnd));
 
                             auto args = Utility::CommandLine();
 
