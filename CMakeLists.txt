@@ -4,7 +4,7 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 project(
     Airglow
-    VERSION 1.0.0
+    VERSION 1.1.0
     LANGUAGES CXX
 )
 
@@ -75,7 +75,6 @@ add_executable(
     src/Settings.cxx
     src/Utility.cxx
     src/WebView.cxx
-
     res$<$<CONFIG:Debug>:_debug>$<$<CONFIG:Release>:_release>.rc
 )
 

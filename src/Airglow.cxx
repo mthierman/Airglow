@@ -40,6 +40,10 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
 
     WebView::Initialize(hwnd);
 
+#ifdef _DEBUG
+    Utility::Tests(hwnd);
+#endif
+
     MSG msg = {};
     while (GetMessageW(&msg, nullptr, 0, 0))
     {
