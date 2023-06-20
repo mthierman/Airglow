@@ -348,7 +348,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
     if (message == splitKey)
     {
 #ifdef _DEBUG
-        Utility::prints("F1 (WebView)\n");
+        // Utility::print("F1 (WebView)\n");
 #endif
         pSettings->boolSplit = Utility::Toggle(pSettings->boolSplit);
         WebView::UpdateBounds(hwnd);
@@ -359,7 +359,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
     if (message == swapKey)
     {
 #ifdef _DEBUG
-        Utility::prints("F2 (WebView)\n");
+        // Utility::print("F2 (WebView)\n");
 #endif
         pSettings->boolSwapped = Utility::Toggle(pSettings->boolSwapped);
         WebView::UpdateBounds(hwnd);
@@ -370,7 +370,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
     if (message == hideMenuKey)
     {
 #ifdef _DEBUG
-        Utility::prints("F4 (WebView)\n");
+        // Utility::print("F4 (WebView)\n");
 #endif
         pSettings->boolMenu = Utility::Toggle(pSettings->boolMenu);
         WebView::UpdateBounds(hwnd);
@@ -381,7 +381,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
     if (message == maximizeKey)
     {
 #ifdef _DEBUG
-        Utility::prints("F6 (WebView)\n");
+        // Utility::print("F6 (WebView)\n");
 #endif
         if (!pSettings->boolFullscreen)
             pSettings->boolMaximized = Utility::Toggle(pSettings->boolMaximized);
@@ -392,7 +392,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
     if (message == fullscreenKey)
     {
 #ifdef _DEBUG
-        Utility::prints("F11 (WebView)\n");
+        // Utility::print("F11 (WebView)\n");
 #endif
         pSettings->boolFullscreen = Utility::Toggle(pSettings->boolFullscreen);
         MainWindow::Fullscreen(hwnd);
@@ -402,7 +402,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
     if (message == onTopKey)
     {
 #ifdef _DEBUG
-        Utility::prints("F9 (WebView)\n");
+        // Utility::print("F9 (WebView)\n");
 #endif
         pSettings->boolTopmost = Utility::Toggle(pSettings->boolTopmost);
         MainWindow::Topmost(hwnd);

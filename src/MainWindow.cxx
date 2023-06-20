@@ -210,7 +210,7 @@ __int64 __stdcall MainWindow::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARA
 int MainWindow::_OnCommand()
 {
 #ifdef _DEBUG
-    Utility::prints(std::string("WM_COMMAND\n"));
+    // Utility::print(std::string("WM_COMMAND\n"));
 #endif
 
     return 0;
@@ -219,7 +219,7 @@ int MainWindow::_OnCommand()
 int MainWindow::_OnCreate(HWND hwnd)
 {
 #ifdef _DEBUG
-    Utility::prints(std::string("WM_CREATE\n"));
+    // Utility::print(std::string("WM_CREATE\n"));
 #endif
 
     SetEnvironmentVariableW(std::wstring(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR").c_str(),
@@ -235,7 +235,8 @@ int MainWindow::_OnCreate(HWND hwnd)
     {
         ShowWindow(hwnd, SW_SHOWMAXIMIZED);
         SetWindowPos(hwnd, nullptr, pSettings->vectorPosition[0], pSettings->vectorPosition[1],
-                     pSettings->vectorPosition[2], pSettings->vectorPosition[3], 0);
+                     pSettings->vectorPosition[2], pSettings->vectorPosition[3],
+                     SWP_NOMOVE | SWP_NOSIZE | SWP_NOREDRAW);
     }
 
     if (pSettings->boolFullscreen)
@@ -255,7 +256,7 @@ int MainWindow::_OnCreate(HWND hwnd)
 int MainWindow::_OnActivate(HWND hwnd)
 {
 #ifdef _DEBUG
-    Utility::prints(std::string("WM_ACTIVATE\n"));
+    // Utility::print(std::string("WM_ACTIVATE\n"));
 #endif
 
     return 0;
@@ -264,13 +265,13 @@ int MainWindow::_OnActivate(HWND hwnd)
 int MainWindow::_OnClose(HWND hwnd)
 {
 #ifdef _DEBUG
-    Utility::prints(std::string("WM_CLOSE\n"));
+    // Utility::print(std::string("WM_CLOSE\n"));
 #endif
 
-    // WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
-    // GetWindowPlacement(hwnd, &wp);
-    // if (wp.showCmd == 3)
-    //     pSettings->boolMaximized = true;
+    WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
+    GetWindowPlacement(hwnd, &wp);
+    if (wp.showCmd == 3)
+        pSettings->boolMaximized = true;
 
     pSettings->Save();
 
@@ -283,7 +284,7 @@ int MainWindow::_OnClose(HWND hwnd)
 int MainWindow::_OnDestroy()
 {
 #ifdef _DEBUG
-    Utility::prints(std::string("WM_DESTROY\n"));
+    // Utility::print(std::string("WM_DESTROY\n"));
 #endif
 
     PostQuitMessage(0);
@@ -294,7 +295,7 @@ int MainWindow::_OnDestroy()
 int MainWindow::_OnDpiChanged()
 {
 #ifdef _DEBUG
-    Utility::prints(std::string("WM_DPICHANGED\n"));
+    // Utility::print(std::string("WM_DPICHANGED\n"));
 #endif
 
     return 0;
@@ -303,7 +304,7 @@ int MainWindow::_OnDpiChanged()
 int MainWindow::_OnGetMinMaxInfo(LPARAM lparam)
 {
 #ifdef _DEBUG
-    Utility::prints(std::string("WM_GETMINMAXINFO\n"));
+    // Utility::print(std::string("WM_GETMINMAXINFO\n"));
 #endif
 
     LPMINMAXINFO minmax = (LPMINMAXINFO)lparam;
@@ -316,7 +317,7 @@ int MainWindow::_OnGetMinMaxInfo(LPARAM lparam)
 int MainWindow::_OnPaint(HWND hwnd)
 {
 #ifdef _DEBUG
-    Utility::prints(std::string("WM_PAINT\n"));
+    // Utility::print(std::string("WM_PAINT\n"));
 #endif
 
     PAINTSTRUCT ps;
@@ -332,7 +333,7 @@ int MainWindow::_OnPaint(HWND hwnd)
 int MainWindow::_OnSize(HWND hwnd)
 {
 #ifdef _DEBUG
-    Utility::prints(std::string("WM_SIZE\n"));
+    // Utility::print(std::string("WM_SIZE\n"));
 #endif
 
     return 0;
@@ -341,7 +342,7 @@ int MainWindow::_OnSize(HWND hwnd)
 int MainWindow::_OnSizing(HWND hwnd)
 {
 #ifdef _DEBUG
-    Utility::prints(std::string("WM_SIZING\n"));
+    // Utility::print(std::string("WM_SIZING\n"));
 #endif
 
     RECT rect;
@@ -354,7 +355,7 @@ int MainWindow::_OnSizing(HWND hwnd)
 int MainWindow::_OnMoving(HWND hwnd)
 {
 #ifdef _DEBUG
-    Utility::prints(std::string("WM_MOVING\n"));
+    // Utility::print(std::string("WM_MOVING\n"));
 #endif
 
     RECT rect;
@@ -367,7 +368,7 @@ int MainWindow::_OnMoving(HWND hwnd)
 int MainWindow::_OnWindowPosChanged(HWND hwnd)
 {
 #ifdef _DEBUG
-    Utility::prints(std::string("WM_WINDOWPOSCHANGED\n"));
+    // Utility::print(std::string("WM_WINDOWPOSCHANGED\n"));
 #endif
 
     WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
@@ -385,7 +386,7 @@ int MainWindow::_OnWindowPosChanged(HWND hwnd)
 int MainWindow::_OnSetFocus(HWND hwnd)
 {
 #ifdef _DEBUG
-    Utility::prints(std::string("WM_SETFOCUS\n"));
+    // Utility::print(std::string("WM_SETFOCUS\n"));
 #endif
 
     return 0;
@@ -394,7 +395,7 @@ int MainWindow::_OnSetFocus(HWND hwnd)
 int MainWindow::_OnSettingChange(HWND hwnd)
 {
 #ifdef _DEBUG
-    Utility::prints(std::string("WM_SETTINGCHANGE\n"));
+    // Utility::print(std::string("WM_SETTINGCHANGE\n"));
 #endif
 
     InvalidateRect(hwnd, nullptr, true);
@@ -406,7 +407,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
     if (wparam == VK_F1)
     {
 #ifdef _DEBUG
-        Utility::prints("F1\n");
+        // Utility::print("F1\n");
 #endif
         pSettings->boolSplit = Utility::Toggle(pSettings->boolSplit);
         WebView::UpdateBounds(hwnd);
@@ -417,7 +418,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
     if (wparam == VK_F2)
     {
 #ifdef _DEBUG
-        Utility::prints("F2\n");
+        // Utility::print("F2\n");
 #endif
         pSettings->boolSwapped = Utility::Toggle(pSettings->boolSwapped);
         WebView::UpdateBounds(hwnd);
@@ -428,7 +429,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
     if (wparam == VK_F4)
     {
 #ifdef _DEBUG
-        Utility::prints("F4\n");
+        // Utility::print("F4\n");
 #endif
         pSettings->boolMenu = Utility::Toggle(pSettings->boolMenu);
         WebView::UpdateBounds(hwnd);
@@ -439,7 +440,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
     if (wparam == VK_F6)
     {
 #ifdef _DEBUG
-        Utility::prints("F6\n");
+        // Utility::print("F6\n");
 #endif
         if (!pSettings->boolFullscreen)
             pSettings->boolMaximized = Utility::Toggle(pSettings->boolMaximized);
@@ -450,7 +451,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
     if (wparam == VK_F11)
     {
 #ifdef _DEBUG
-        Utility::prints("F11\n");
+        // Utility::print("F11\n");
 #endif
         pSettings->boolFullscreen = Utility::Toggle(pSettings->boolFullscreen);
         MainWindow::Fullscreen(hwnd);
@@ -460,7 +461,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
     if (wparam == VK_F9)
     {
 #ifdef _DEBUG
-        Utility::prints("F9\n");
+        // Utility::print("F9\n");
 #endif
         pSettings->boolTopmost = Utility::Toggle(pSettings->boolTopmost);
         MainWindow::Topmost(hwnd);
