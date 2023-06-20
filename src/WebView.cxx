@@ -47,7 +47,7 @@ void WebView::Initialize(HWND hwnd)
                                   settings_settings->put_IsZoomControlEnabled(false);
                                   settings_controller->put_Bounds(MenuBounds(hwnd));
 
-                                  settings_wv->Navigate(L"https://www.example.com/");
+                                  settings_wv->Navigate(L"about:blank");
 
                                   auto script = GetMenuScript();
                                   settings_wv->ExecuteScript(script.c_str(), nullptr);
@@ -348,7 +348,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
     if (message == splitKey)
     {
 #ifdef _DEBUG
-        OutputDebugStringW(L"F1 (WebView)\n");
+        Utility::prints("F1 (WebView)\n");
 #endif
         pSettings->boolSplit = Utility::Toggle(pSettings->boolSplit);
         WebView::UpdateBounds(hwnd);
@@ -359,7 +359,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
     if (message == swapKey)
     {
 #ifdef _DEBUG
-        OutputDebugStringW(L"F2 (WebView)\n");
+        Utility::prints("F2 (WebView)\n");
 #endif
         pSettings->boolSwapped = Utility::Toggle(pSettings->boolSwapped);
         WebView::UpdateBounds(hwnd);
@@ -370,7 +370,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
     if (message == hideMenuKey)
     {
 #ifdef _DEBUG
-        OutputDebugStringW(L"F4 (WebView)\n");
+        Utility::prints("F4 (WebView)\n");
 #endif
         pSettings->boolMenu = Utility::Toggle(pSettings->boolMenu);
         WebView::UpdateBounds(hwnd);
@@ -381,37 +381,31 @@ void WebView::Messages(HWND hwnd, std::wstring message)
     if (message == maximizeKey)
     {
 #ifdef _DEBUG
-        OutputDebugStringW(L"F6 (WebView)\n");
+        Utility::prints("F6 (WebView)\n");
 #endif
         if (!pSettings->boolFullscreen)
             pSettings->boolMaximized = Utility::Toggle(pSettings->boolMaximized);
         MainWindow::Maximize(hwnd);
         WebView::UpdateBounds(hwnd);
-        WebView::UpdateFocus();
-        WebView::SetWindowTitle(hwnd);
     }
 
     if (message == fullscreenKey)
     {
 #ifdef _DEBUG
-        OutputDebugStringW(L"F11 (WebView)\n");
+        Utility::prints("F11 (WebView)\n");
 #endif
         pSettings->boolFullscreen = Utility::Toggle(pSettings->boolFullscreen);
         MainWindow::Fullscreen(hwnd);
         WebView::UpdateBounds(hwnd);
-        WebView::UpdateFocus();
-        WebView::SetWindowTitle(hwnd);
     }
 
     if (message == onTopKey)
     {
 #ifdef _DEBUG
-        OutputDebugStringW(L"F9 (WebView)\n");
+        Utility::prints("F9 (WebView)\n");
 #endif
         pSettings->boolTopmost = Utility::Toggle(pSettings->boolTopmost);
         MainWindow::Topmost(hwnd);
-        WebView::UpdateBounds(hwnd);
-        WebView::UpdateFocus();
         WebView::SetWindowTitle(hwnd);
     }
 

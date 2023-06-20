@@ -26,6 +26,7 @@ class MainWindow
     int _OnPaint(HWND);
     int _OnSize(HWND);
     int _OnSizing(HWND);
+    int _OnMoving(HWND);
     int _OnWindowPosChanged(HWND);
     int _OnSetFocus(HWND);
     int _OnSettingChange(HWND);
