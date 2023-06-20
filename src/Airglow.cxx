@@ -10,9 +10,13 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
     {
         std::wstring error =
             L"WebView data not found, last error is " + std::to_wstring(GetLastError());
-        MessageBoxW(nullptr, error.c_str(), std::wstring(L"Airglow").c_str(), MB_ICONERROR);
+        Utility::msgboxw(error);
         return 0;
     }
+
+    std::string error = "Data folder not found";
+    Utility::error(error);
+    return 0;
 
     auto pWindow = MainWindow::Create(hinstance, ncs, pSettings.get());
 
@@ -20,7 +24,7 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
     {
         std::wstring error =
             L"Window creation failed, last error is " + std::to_wstring(GetLastError());
-        MessageBoxW(nullptr, error.c_str(), std::wstring(L"Airglow").c_str(), MB_ICONERROR);
+        Utility::msgboxw(error);
         return 0;
     }
 
@@ -30,7 +34,7 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
     {
         std::wstring error =
             L"Window creation failed, last error is " + std::to_wstring(GetLastError());
-        MessageBoxW(nullptr, error.c_str(), std::wstring(L"Airglow").c_str(), MB_ICONERROR);
+        Utility::msgboxw(error);
         return 0;
     }
 

@@ -17,9 +17,31 @@ RECT Utility::BoundsToRect(std::vector<int> bounds)
     return rect;
 }
 
-void Utility::prints(std::string in) { OutputDebugStringW(ToWide(in).c_str()); }
+void Utility::print(std::string in) { OutputDebugStringW(ToWide(in).c_str()); }
 
 void Utility::printw(std::wstring in) { OutputDebugStringW(in.c_str()); }
+
+void Utility::msgbox(std::string in)
+{
+    MessageBoxW(nullptr, ToWide(in).c_str(), std::wstring(L"Airglow").c_str(), 0);
+};
+
+void Utility::msgboxw(std::wstring in)
+{
+    MessageBoxW(nullptr, in.c_str(), std::wstring(L"Airglow").c_str(), 0);
+};
+
+void Utility::error(std::string in)
+{
+    std::wstring error = ToWide(in + ". Error: " + std::to_string(GetLastError()));
+    MessageBoxW(nullptr, error.c_str(), std::wstring(L"Airglow").c_str(), 0);
+};
+
+void Utility::errorw(std::wstring in)
+{
+    std::wstring error = in + L". Error: " + std::to_wstring(GetLastError());
+    MessageBoxW(nullptr, error.c_str(), std::wstring(L"Airglow").c_str(), 0);
+};
 
 std::wstring Utility::ToWide(std::string in)
 {
@@ -75,7 +97,7 @@ void Utility::Tests(HWND hwnd)
 {
     auto toggleTest = Utility::Toggle(false);
     if (toggleTest != false)
-        Utility::prints("Toggle(): TEST FAILED\n");
+        Utility::print("Toggle(): TEST FAILED\n");
 
     std::wstring dpi = L"DPI: " + std::to_wstring(GetDpiForWindow(hwnd)) + L"\n";
     Utility::printw(dpi);
@@ -98,7 +120,7 @@ void Utility::Tests(HWND hwnd)
     wp.length = sizeof(WINDOWPLACEMENT);
     GetWindowPlacement(hwnd, &wp);
     if (wp.showCmd == 3)
-        Utility::prints("Window is maximized\n");
+        Utility::print("Window is maximized\n");
 
     auto acp = GetACP();
     Utility::printw(std::to_wstring(acp));
