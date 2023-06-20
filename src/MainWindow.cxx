@@ -231,19 +231,21 @@ int MainWindow::_OnCreate(HWND hwnd)
     SetDarkMode(hwnd);
     SetMica(hwnd);
 
-    if (pSettings->boolMaximized)
+    if (!pSettings->boolFullscreen & pSettings->boolMaximized)
     {
         ShowWindow(hwnd, SW_SHOWMAXIMIZED);
         SetWindowPos(hwnd, nullptr, pSettings->vectorPosition[0], pSettings->vectorPosition[1],
                      pSettings->vectorPosition[2], pSettings->vectorPosition[3], 0);
     }
+
     if (pSettings->boolFullscreen)
     {
         SetWindowPos(hwnd, nullptr, pSettings->vectorPosition[0], pSettings->vectorPosition[1],
                      pSettings->vectorPosition[2], pSettings->vectorPosition[3], 0);
         Fullscreen(hwnd);
     }
-    else if (!pSettings->boolMaximized & !pSettings->boolFullscreen)
+
+    if (!pSettings->boolFullscreen & !pSettings->boolMaximized)
         SetWindowPos(hwnd, nullptr, pSettings->vectorPosition[0], pSettings->vectorPosition[1],
                      pSettings->vectorPosition[2], pSettings->vectorPosition[3], 0);
 
@@ -265,12 +267,10 @@ int MainWindow::_OnClose(HWND hwnd)
     Utility::prints(std::string("WM_CLOSE\n"));
 #endif
 
-    WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
-    GetWindowPlacement(hwnd, &wp);
-    if (wp.showCmd == 3)
-        pSettings->boolMaximized = true;
-    else
-        pSettings->boolMaximized = false;
+    // WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
+    // GetWindowPlacement(hwnd, &wp);
+    // if (wp.showCmd == 3)
+    //     pSettings->boolMaximized = true;
 
     pSettings->Save();
 
@@ -369,6 +369,13 @@ int MainWindow::_OnWindowPosChanged(HWND hwnd)
 #ifdef _DEBUG
     Utility::prints(std::string("WM_WINDOWPOSCHANGED\n"));
 #endif
+
+    WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
+    GetWindowPlacement(hwnd, &wp);
+    if (wp.showCmd == 3)
+        pSettings->boolMaximized = true;
+    else
+        pSettings->boolMaximized = false;
 
     WebView::UpdateBounds(hwnd);
 
