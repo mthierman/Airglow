@@ -2,12 +2,40 @@
     "version": 6,
     "cmakeMinimumRequired": {
         "major": 3,
-        "minor": 25,
+        "minor": 26,
         "patch": 0
     },
     "configurePresets": [
         {
-            "name": "Debug",
+            "name": "release",
+            "displayName": "Release",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "1"
+            },
+            "environment": {}
+        },
+        {
+            "name": "cl",
+            "displayName": "Release (MSVC)",
+            "inherits": "release",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "cl"
+            }
+        },
+        {
+            "name": "clang",
+            "displayName": "Release (Clang)",
+            "inherits": "release",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "clang"
+            }
+        },
+        {
+            "name": "debug",
+            "displayName": "Debug",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/build",
             "cacheVariables": {
@@ -17,24 +45,53 @@
             "environment": {}
         },
         {
-            "name": "Release",
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build",
+            "name": "clDebug",
+            "displayName": "Debug (MSVC)",
+            "inherits": "debug",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release",
-                "CMAKE_EXPORT_COMPILE_COMMANDS": "1"
-            },
-            "environment": {}
+                "CMAKE_CXX_COMPILER": "cl"
+            }
+        },
+        {
+            "name": "clangDebug",
+            "displayName": "Debug (Clang)",
+            "inherits": "debug",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "clang"
+            }
         }
     ],
     "buildPresets": [
         {
-            "name": "Debug",
-            "configurePreset": "Debug"
+            "name": "release",
+            "displayName": "Release",
+            "configurePreset": "release"
         },
         {
-            "name": "Release",
-            "configurePreset": "Release"
+            "name": "cl",
+            "displayName": "Release (MSVC)",
+            "configurePreset": "cl"
+        },
+        {
+            "name": "clang",
+            "configurePreset": "Release Clang"
+        },
+        {
+            "name": "debug",
+            "displayName": "Debug",
+            "configurePreset": "debug"
+        },
+
+        {
+            "name": "clDebug",
+            "displayName": "Debug (MSVC)",
+            "configurePreset": "clDebug"
+        },
+
+        {
+            "name": "clangDebug",
+            "displayName": "Debug (Clang)",
+            "configurePreset": "clangDebug"
         }
     ]
 }
