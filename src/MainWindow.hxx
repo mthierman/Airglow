@@ -9,7 +9,7 @@ class MainWindow
   public:
     static std::unique_ptr<MainWindow> Create(HINSTANCE, int, Settings*);
     static Settings* pSettings;
-    static bool Show(HWND, int);
+    static void Show(HWND, int);
     static void Maximize(HWND);
     static void Fullscreen(HWND);
     static void Topmost(HWND);

@@ -54,32 +54,26 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Set
     return pMainWindow;
 }
 
-bool MainWindow::Show(HWND hwnd, int ncs)
+void MainWindow::Show(HWND hwnd, int ncs)
 {
     auto cloakOn = TRUE;
     auto cloakOff = FALSE;
-    auto cloak = S_OK;
+    DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOn, sizeof(cloakOn));
+    SetWindowPos(hwnd, nullptr, pSettings->vectorPosition[0], pSettings->vectorPosition[1],
+                 pSettings->vectorPosition[2], pSettings->vectorPosition[3], 0);
+    DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOff, sizeof(cloakOff));
 
-    cloak = DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOn, sizeof(cloakOn));
+    if (!pSettings->boolFullscreen & !pSettings->boolMaximized)
+        ShowWindow(hwnd, SW_SHOWDEFAULT);
 
-    if (SUCCEEDED(cloak))
+    if (!pSettings->boolFullscreen & pSettings->boolMaximized)
+        ShowWindow(hwnd, SW_MAXIMIZE);
+
+    if (pSettings->boolFullscreen)
     {
-        auto uncloak = S_OK;
-
-        SetWindowPos(hwnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOREDRAW);
-        uncloak = DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOff, sizeof(cloakOff));
-
-        if (SUCCEEDED(uncloak))
-        {
-            ShowWindow(hwnd, ncs);
-
-            return true;
-        }
-
-        return false;
+        ShowWindow(hwnd, SW_SHOWDEFAULT);
+        Fullscreen(hwnd);
     }
-
-    return false;
 }
 
 void MainWindow::Maximize(HWND hwnd)
@@ -235,18 +229,14 @@ int MainWindow::_OnCreate(HWND hwnd)
     SetDarkMode(hwnd);
     SetMica(hwnd);
 
-    SetWindowPos(hwnd, nullptr, pSettings->vectorPosition[0], pSettings->vectorPosition[1],
-                 pSettings->vectorPosition[2], pSettings->vectorPosition[3], 0);
+    // SetWindowPos(hwnd, nullptr, pSettings->vectorPosition[0], pSettings->vectorPosition[1],
+    //              pSettings->vectorPosition[2], pSettings->vectorPosition[3], 0);
 
-    if (!pSettings->boolFullscreen & pSettings->boolMaximized)
-    {
-        ShowWindow(hwnd, SW_MAXIMIZE);
-    }
+    // if (!pSettings->boolFullscreen & pSettings->boolMaximized)
+    //     ShowWindow(hwnd, SW_MAXIMIZE);
 
-    if (pSettings->boolFullscreen)
-    {
-        Fullscreen(hwnd);
-    }
+    // if (pSettings->boolFullscreen)
+    //     Fullscreen(hwnd);
 
     return 0;
 }
@@ -380,6 +370,12 @@ int MainWindow::_OnWindowPosChanged(HWND hwnd)
 #ifdef _DEBUG
     // Utility::print(std::string("WM_WINDOWPOSCHANGED\n"));
 #endif
+
+    WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
+    GetWindowPlacement(hwnd, &wp);
+    std::wstring param = std::to_wstring(wp.showCmd);
+    Utility::printw(param);
+
     WebView::UpdateBounds(hwnd);
 
     return 0;
