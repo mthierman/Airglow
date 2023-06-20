@@ -10,7 +10,7 @@ class Config
     tao::json::value Current();
     void Load();
     void SaveOnce();
-    void Open();
+    void Stream();
     void Save();
     void Close();
     void Tests();

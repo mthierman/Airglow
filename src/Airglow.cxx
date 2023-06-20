@@ -35,7 +35,6 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
     MSG msg = {};
     while (GetMessageW(&msg, nullptr, 0, 0))
     {
-        pConfig->Save();
         TranslateMessage(&msg);
         DispatchMessageW(&msg);
     }

@@ -115,13 +115,15 @@ void Config::SaveOnce()
     }
 }
 
+void Config::Stream() { streamSettingsPath = std::ofstream(pathSettings); }
+
 void Config::Save()
 {
-    streamSettingsPath = std::ofstream(pathSettings);
     auto config = Current();
     streamSettingsPath << std::setw(4) << config << std::endl;
-    streamSettingsPath.close();
 }
+
+void Config::Close() { streamSettingsPath.close(); }
 
 void Config::Tests()
 {

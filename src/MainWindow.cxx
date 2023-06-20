@@ -172,7 +172,7 @@ __int64 __stdcall MainWindow::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARA
         case WM_CREATE:
             return pMainWindow->_OnCreate(hwnd);
         case WM_ACTIVATE:
-            return pMainWindow->_OnActivate(hwnd);
+            return pMainWindow->_OnActivate(hwnd, wparam);
         case WM_CLOSE:
             return pMainWindow->_OnClose(hwnd);
         case WM_DESTROY:
@@ -191,6 +191,8 @@ __int64 __stdcall MainWindow::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARA
             return pMainWindow->_OnMoving(hwnd);
         case WM_WINDOWPOSCHANGED:
             return pMainWindow->_OnWindowPosChanged(hwnd);
+        case WM_WINDOWPOSCHANGING:
+            return pMainWindow->_OnWindowPosChanging(hwnd);
         case WM_SETFOCUS:
             return pMainWindow->_OnSetFocus(hwnd);
         case WM_SETTINGCHANGE:
@@ -208,7 +210,7 @@ __int64 __stdcall MainWindow::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARA
 int MainWindow::_OnCommand()
 {
 #ifdef _DEBUG
-    // Utility::print(std::string("WM_COMMAND\n"));
+    Utility::print(std::string("WM_COMMAND\n"));
 #endif
 
     return 0;
@@ -232,11 +234,29 @@ int MainWindow::_OnCreate(HWND hwnd)
     return 0;
 }
 
-int MainWindow::_OnActivate(HWND hwnd)
+int MainWindow::_OnActivate(HWND hwnd, WPARAM wparam)
 {
 #ifdef _DEBUG
     // Utility::print(std::string("WM_ACTIVATE\n"));
+    // if (wparam == WA_ACTIVE)
+    //     Utility::print("WA_ACTIVE");
+
+    // if (wparam == WA_CLICKACTIVE)
+    //     Utility::print("WA_CLICKACTIVE");
+
+    // if (wparam == WA_INACTIVE)
+    //     Utility::print("WA_INACTIVE");
 #endif
+
+    if ((wparam == WA_ACTIVE) || (wparam == WA_CLICKACTIVE))
+    {
+        pConfig->Stream();
+    }
+
+    if (wparam == WA_INACTIVE)
+    {
+        pConfig->Close();
+    }
 
     return 0;
 }
@@ -247,14 +267,15 @@ int MainWindow::_OnClose(HWND hwnd)
     // Utility::print(std::string("WM_CLOSE\n"));
 #endif
 
-    WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
-    GetWindowPlacement(hwnd, &wp);
-    if (wp.showCmd == 3)
-        pConfig->boolMaximized = true;
-    else
-        pConfig->boolMaximized = false;
+    // WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
+    // GetWindowPlacement(hwnd, &wp);
+    // if (wp.showCmd == 3)
+    //     pConfig->boolMaximized = true;
+    // else
+    //     pConfig->boolMaximized = false;
 
-    pConfig->Save();
+    // pConfig->Close();
+    // pConfig->Save();
 
     Gdiplus::GdiplusShutdown(gdiplusToken);
     DestroyWindow(hwnd);
@@ -366,8 +387,22 @@ int MainWindow::_OnWindowPosChanged(HWND hwnd)
     GetWindowPlacement(hwnd, &wp);
     if (wp.showCmd == 3)
         pConfig->boolMaximized = true;
+    else
+        pConfig->boolMaximized = false;
 
     WebView::UpdateBounds(hwnd);
+
+    pConfig->Save();
+    pConfig->Close();
+
+    return 0;
+}
+
+int MainWindow::_OnWindowPosChanging(HWND hwnd)
+{
+#ifdef _DEBUG
+    // Utility::print(std::string("WM_WINDOWPOSCHANGING\n"));
+#endif
 
     return 0;
 }
