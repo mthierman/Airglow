@@ -243,7 +243,7 @@ int MainWindow::_OnCreate(HWND hwnd)
                      pSettings->vectorPosition[2], pSettings->vectorPosition[3], 0);
         Fullscreen(hwnd);
     }
-    else
+    else if (!pSettings->boolMaximized & !pSettings->boolFullscreen)
         SetWindowPos(hwnd, nullptr, pSettings->vectorPosition[0], pSettings->vectorPosition[1],
                      pSettings->vectorPosition[2], pSettings->vectorPosition[3], 0);
 
