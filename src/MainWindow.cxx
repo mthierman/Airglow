@@ -87,7 +87,11 @@ void MainWindow::Maximize(HWND hwnd)
     WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
     GetWindowPlacement(hwnd, &wp);
     if (wp.showCmd == 3)
+    {
         ShowWindow(hwnd, SW_NORMAL);
+        SetWindowPos(hwnd, nullptr, pSettings->vectorPosition[0], pSettings->vectorPosition[1],
+                     pSettings->vectorPosition[2], pSettings->vectorPosition[3], 0);
+    }
     else
         ShowWindow(hwnd, SW_MAXIMIZE);
 }
@@ -341,7 +345,9 @@ int MainWindow::_OnSizing(HWND hwnd)
     // Utility::print(std::string("WM_SIZING\n"));
 #endif
 
-    if (!pSettings->boolFullscreen & !pSettings->boolMaximized)
+    WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
+    GetWindowPlacement(hwnd, &wp);
+    if (!pSettings->boolFullscreen & wp.showCmd != 3)
     {
         RECT rect;
         GetWindowRect(hwnd, &rect);
@@ -357,7 +363,9 @@ int MainWindow::_OnMoving(HWND hwnd)
     // Utility::print(std::string("WM_MOVING\n"));
 #endif
 
-    if (!pSettings->boolFullscreen & !pSettings->boolMaximized)
+    WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
+    GetWindowPlacement(hwnd, &wp);
+    if (!pSettings->boolFullscreen & wp.showCmd != 3)
     {
         RECT rect;
         GetWindowRect(hwnd, &rect);
