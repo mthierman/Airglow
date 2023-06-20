@@ -383,8 +383,8 @@ void WebView::Messages(HWND hwnd, std::wstring message)
 #ifdef _DEBUG
         // Utility::print("F6 (WebView)\n");
 #endif
-        if (!pConfig->boolFullscreen)
-            pConfig->boolMaximized = Utility::Toggle(pConfig->boolMaximized);
+        // if (!pConfig->boolFullscreen)
+        pConfig->boolMaximized = Utility::Toggle(pConfig->boolMaximized);
         MainWindow::Maximize(hwnd);
         WebView::UpdateBounds(hwnd);
     }

@@ -9,7 +9,10 @@ class Config
     tao::json::value Defaults();
     tao::json::value Current();
     void Load();
+    void SaveOnce();
+    void Open();
     void Save();
+    void Close();
     void Tests();
     std::filesystem::path pathData;
     std::filesystem::path pathSettings;
@@ -26,6 +29,7 @@ class Config
   private:
     std::filesystem::path DataPath();
     std::filesystem::path SettingsPath(std::filesystem::path appData);
+    std::ofstream streamSettingsPath;
 
   protected:
     Config();

@@ -18,16 +18,13 @@ std::filesystem::path Config::DataPath()
     std::wstring outBuffer;
     PWSTR buffer;
 
-    auto getKnownFolderPath = SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &buffer);
-
-    if (getKnownFolderPath != S_OK)
+    if (SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &buffer) != S_OK)
     {
         CoTaskMemFree(buffer);
         return path;
     }
 
-    outBuffer = buffer;
-    path = outBuffer + std::filesystem::path::preferred_separator + L"Airglow";
+    path = std::wstring(buffer) + std::filesystem::path::preferred_separator + L"Airglow";
 
     CoTaskMemFree(buffer);
 
@@ -78,7 +75,7 @@ tao::json::value Config::Current()
 
 void Config::Load()
 {
-    tao::json::value config = Defaults();
+    auto config = Defaults();
 
     if (!std::filesystem::exists(pathSettings))
     {
@@ -106,9 +103,9 @@ void Config::Load()
     stringSide = config.as<std::string>("side");
 }
 
-void Config::Save()
+void Config::SaveOnce()
 {
-    tao::json::value config = Current();
+    auto config = Current();
 
     if (std::filesystem::exists(pathSettings))
     {
@@ -116,6 +113,14 @@ void Config::Save()
         f << std::setw(4) << config << std::endl;
         f.close();
     }
+}
+
+void Config::Save()
+{
+    streamSettingsPath = std::ofstream(pathSettings);
+    auto config = Current();
+    streamSettingsPath << std::setw(4) << config << std::endl;
+    streamSettingsPath.close();
 }
 
 void Config::Tests()
