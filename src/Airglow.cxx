@@ -3,38 +3,22 @@
 int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
 {
     HWND hwnd;
-
     auto pSettings = Settings::Create();
 
     if (!std::filesystem::exists(pSettings->pathData))
     {
-        std::wstring error =
-            L"WebView data not found, last error is " + std::to_wstring(GetLastError());
-        Utility::msgboxw(error);
+        std::string error = "Data folder not found";
+        Utility::error(error);
         return 0;
     }
-
-    std::string error = "Data folder not found";
-    Utility::error(error);
-    return 0;
 
     auto pWindow = MainWindow::Create(hinstance, ncs, pSettings.get());
-
-    if (!pWindow)
-    {
-        std::wstring error =
-            L"Window creation failed, last error is " + std::to_wstring(GetLastError());
-        Utility::msgboxw(error);
-        return 0;
-    }
-
     hwnd = pWindow.get()->m_hWnd;
 
     if (!hwnd)
     {
-        std::wstring error =
-            L"Window creation failed, last error is " + std::to_wstring(GetLastError());
-        Utility::msgboxw(error);
+        std::string error = "Window creation failed";
+        Utility::error(error);
         return 0;
     }
 
