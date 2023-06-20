@@ -354,6 +354,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
         WebView::SetWindowTitle(hwnd);
+        WebView::SetWindowIcon(hwnd);
     }
 
     if (message == swapKey)
@@ -365,6 +366,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
         WebView::SetWindowTitle(hwnd);
+        WebView::SetWindowIcon(hwnd);
     }
 
     if (message == hideMenuKey)
@@ -376,6 +378,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
         WebView::SetWindowTitle(hwnd);
+        WebView::SetWindowIcon(hwnd);
     }
 
     if (message == maximizeKey)

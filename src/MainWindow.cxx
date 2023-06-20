@@ -254,6 +254,8 @@ int MainWindow::_OnClose(HWND hwnd)
     else
         pConfig->boolMaximized = false;
 
+    pConfig->Save();
+
     Gdiplus::GdiplusShutdown(gdiplusToken);
     DestroyWindow(hwnd);
 
@@ -364,8 +366,6 @@ int MainWindow::_OnWindowPosChanged(HWND hwnd)
     GetWindowPlacement(hwnd, &wp);
     if (wp.showCmd == 3)
         pConfig->boolMaximized = true;
-    else
-        pConfig->boolMaximized = false;
 
     WebView::UpdateBounds(hwnd);
 
@@ -402,6 +402,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
         WebView::SetWindowTitle(hwnd);
+        WebView::SetWindowIcon(hwnd);
     }
 
     if (wparam == VK_F2)
@@ -413,6 +414,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
         WebView::SetWindowTitle(hwnd);
+        WebView::SetWindowIcon(hwnd);
     }
 
     if (wparam == VK_F4)
@@ -424,6 +426,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
         WebView::SetWindowTitle(hwnd);
+        WebView::SetWindowIcon(hwnd);
     }
 
     if (wparam == VK_F6)
