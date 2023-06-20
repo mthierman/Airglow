@@ -30,6 +30,7 @@ class MainWindow
     int _OnSetFocus(HWND);
     int _OnSettingChange(HWND);
     int _OnKeyDown(HWND, WPARAM);
+    int _OnChar(HWND, WPARAM);
 
     bool CheckSystemDarkMode();
     bool SetDarkTitle();

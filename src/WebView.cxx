@@ -347,6 +347,9 @@ void WebView::Messages(HWND hwnd, std::wstring message)
 
     if (message == splitKey)
     {
+#ifdef _DEBUG
+        OutputDebugStringW(L"F1 (WebView)\n");
+#endif
         pSettings->boolSplit = Utility::Toggle(pSettings->boolSplit);
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
@@ -355,6 +358,9 @@ void WebView::Messages(HWND hwnd, std::wstring message)
 
     if (message == swapKey)
     {
+#ifdef _DEBUG
+        OutputDebugStringW(L"F2 (WebView)\n");
+#endif
         pSettings->boolSwapped = Utility::Toggle(pSettings->boolSwapped);
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
@@ -363,6 +369,9 @@ void WebView::Messages(HWND hwnd, std::wstring message)
 
     if (message == hideMenuKey)
     {
+#ifdef _DEBUG
+        OutputDebugStringW(L"F4 (WebView)\n");
+#endif
         pSettings->boolMenu = Utility::Toggle(pSettings->boolMenu);
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
@@ -371,6 +380,9 @@ void WebView::Messages(HWND hwnd, std::wstring message)
 
     if (message == maximizeKey)
     {
+#ifdef _DEBUG
+        OutputDebugStringW(L"F6 (WebView)\n");
+#endif
         if (!pSettings->boolFullscreen)
             pSettings->boolMaximized = Utility::Toggle(pSettings->boolMaximized);
         MainWindow::Maximize(hwnd);
@@ -381,6 +393,9 @@ void WebView::Messages(HWND hwnd, std::wstring message)
 
     if (message == fullscreenKey)
     {
+#ifdef _DEBUG
+        OutputDebugStringW(L"F11 (WebView)\n");
+#endif
         pSettings->boolFullscreen = Utility::Toggle(pSettings->boolFullscreen);
         MainWindow::Fullscreen(hwnd);
         WebView::UpdateBounds(hwnd);
@@ -390,6 +405,9 @@ void WebView::Messages(HWND hwnd, std::wstring message)
 
     if (message == onTopKey)
     {
+#ifdef _DEBUG
+        OutputDebugStringW(L"F9 (WebView)\n");
+#endif
         pSettings->boolTopmost = Utility::Toggle(pSettings->boolTopmost);
         MainWindow::Topmost(hwnd);
         WebView::UpdateBounds(hwnd);
@@ -450,7 +468,6 @@ RECT WebView::MenuBounds(HWND hwnd)
 
     if (pSettings->boolMenu)
     {
-        OutputDebugStringW(L"TRUE");
         panel = {
             bounds.left,
             bounds.top,

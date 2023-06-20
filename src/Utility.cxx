@@ -17,17 +17,9 @@ RECT Utility::BoundsToRect(std::vector<int> bounds)
     return rect;
 }
 
-void Utility::prints(std::string in)
-{
-    std::ostream_iterator<char> out(std::cout);
-    std::format_to(out, "{}", in.c_str());
-}
+void Utility::prints(std::string in) { OutputDebugStringW(ToWide(in).c_str()); }
 
-void Utility::printw(std::wstring in)
-{
-    std::ostream_iterator<char> out(std::cout);
-    std::format_to(out, "{}", ToString(in).c_str());
-}
+void Utility::printw(std::wstring in) { OutputDebugStringW(in.c_str()); }
 
 std::wstring Utility::ToWide(std::string in)
 {

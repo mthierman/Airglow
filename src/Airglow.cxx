@@ -47,15 +47,5 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
         DispatchMessageW(&msg);
     }
 
-    // WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
-    // GetWindowPlacement(hwnd, &wp);
-    // auto cmd = wp.showCmd;
-    // if (cmd == 3)
-    //     pSettings->boolMaximized = true;
-    // else
-    //     pSettings->boolMaximized = false;
-
-    // pSettings->Save();
-
     return 0;
 }
