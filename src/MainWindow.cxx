@@ -111,19 +111,10 @@ void MainWindow::Fullscreen(HWND hwnd)
     else
     {
         SetWindowLongPtrW(hwnd, GWL_STYLE, style | WS_OVERLAPPEDWINDOW);
-
         SetWindowPos(hwnd, nullptr, 0, 0, 0, 0,
                      SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
         SetWindowPos(hwnd, nullptr, position.left, position.top, (position.right - position.left),
                      (position.bottom - position.top), 0);
-
-        // ShowWindow(hwnd, SW_SHOWNORMAL);
-
-        // SetWindowPos(hwnd, nullptr, position.left, position.top, (position.right -
-        // position.left),
-        //              (position.bottom - position.top),
-        //              SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER |
-        //              SWP_FRAMECHANGED);
     }
 }
 
@@ -238,8 +229,6 @@ int MainWindow::_OnCreate(HWND hwnd)
     SetDarkMode(hwnd);
     SetMica(hwnd);
 
-    // pConfig->Open();
-
     return 0;
 }
 
@@ -264,8 +253,6 @@ int MainWindow::_OnClose(HWND hwnd)
         pConfig->boolMaximized = true;
     else
         pConfig->boolMaximized = false;
-
-    // pConfig->Close();
 
     Gdiplus::GdiplusShutdown(gdiplusToken);
     DestroyWindow(hwnd);
@@ -371,12 +358,12 @@ int MainWindow::_OnWindowPosChanged(HWND hwnd)
 {
 #ifdef _DEBUG
     // Utility::print(std::string("WM_WINDOWPOSCHANGED\n"));
-#endif
 
     // WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
     // GetWindowPlacement(hwnd, &wp);
     // std::wstring param = std::to_wstring(wp.showCmd);
     // Utility::printw(param);
+#endif
 
     pConfig->Save();
 
