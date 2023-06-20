@@ -50,17 +50,6 @@ else()
     set(CHOC_PKG ${choc_SOURCE_DIR})
 endif()
 
-if(DEFINED ENV{LIB_JSON})
-    set(JSON_PKG $ENV{LIB_JSON})
-else()
-    FetchContent_Declare(
-        nlohmann
-        URL https://github.com/nlohmann/json/releases/download/v3.11.2/include.zip
-    )
-    FetchContent_MakeAvailable(nlohmann)
-    set(JSON_PKG ${json_SOURCE_DIR}/single_include)
-endif()
-
 if(DEFINED ENV{LIB_TAOJSON})
     set(TAOJSON_PKG $ENV{LIB_TAOJSON})
 else()
@@ -86,7 +75,6 @@ endif()
 message(STATUS "WebView2 found: ${WEBVIEW_PKG}")
 message(STATUS "Windows Implementation Library found: ${WIL_PKG}")
 message(STATUS "choc found: ${CHOC_PKG}")
-message(STATUS "nlohmann/json found: ${JSON_PKG}")
 message(STATUS "taocpp/json found: ${TAOJSON_PKG}")
 message(STATUS "taocpp/PEGTL found: ${PEGTL_PKG}")
 
@@ -122,7 +110,6 @@ target_include_directories(
     ${CHOC_PKG}/platform
     ${CHOC_PKG}/text
     ${CHOC_PKG}/threading
-    ${JSON_PKG}
     ${TAOJSON_PKG}
     ${PEGTL_PKG}
 )
