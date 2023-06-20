@@ -234,12 +234,20 @@ int MainWindow::_OnCreate(HWND hwnd)
     SetMica(hwnd);
 
     if (pSettings->boolMaximized)
+    {
         ShowWindow(hwnd, SW_SHOWMAXIMIZED);
+        SetWindowPos(hwnd, nullptr, pSettings->vectorPosition[0], pSettings->vectorPosition[1],
+                     pSettings->vectorPosition[2], pSettings->vectorPosition[3], 0);
+    }
     if (pSettings->boolFullscreen)
+    {
+        SetWindowPos(hwnd, nullptr, pSettings->vectorPosition[0], pSettings->vectorPosition[1],
+                     pSettings->vectorPosition[2], pSettings->vectorPosition[3], 0);
         Fullscreen(hwnd);
-
-    SetWindowPos(hwnd, nullptr, pSettings->vectorPosition[0], pSettings->vectorPosition[1],
-                 pSettings->vectorPosition[2], pSettings->vectorPosition[3], 0);
+    }
+    else
+        SetWindowPos(hwnd, nullptr, pSettings->vectorPosition[0], pSettings->vectorPosition[1],
+                     pSettings->vectorPosition[2], pSettings->vectorPosition[3], 0);
 
     return 0;
 }
