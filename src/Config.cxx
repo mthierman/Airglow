@@ -37,7 +37,7 @@ std::filesystem::path Config::DataPath()
 std::filesystem::path Config::SettingsPath(std::filesystem::path path)
 {
     std::filesystem::path config =
-        (path.wstring() + std::filesystem::path::preferred_separator + L"config.json");
+        (path.wstring() + std::filesystem::path::preferred_separator + L"Config.json");
 
     return config;
 }

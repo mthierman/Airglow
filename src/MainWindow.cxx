@@ -358,14 +358,14 @@ int MainWindow::_OnWindowPosChanged(HWND hwnd)
 {
 #ifdef _DEBUG
     // Utility::print(std::string("WM_WINDOWPOSCHANGED\n"));
-
-    // WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
-    // GetWindowPlacement(hwnd, &wp);
-    // std::wstring param = std::to_wstring(wp.showCmd);
-    // Utility::printw(param);
 #endif
 
-    pConfig->Save();
+    WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
+    GetWindowPlacement(hwnd, &wp);
+    if (wp.showCmd == 3)
+        pConfig->boolMaximized = true;
+    else
+        pConfig->boolMaximized = false;
 
     WebView::UpdateBounds(hwnd);
 
