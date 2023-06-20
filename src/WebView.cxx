@@ -417,7 +417,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
 
     if (message == closeKey)
     {
-        SendMessageW(hwnd, WM_CLOSE, 0, 0);
+        PostMessageW(hwnd, WM_CLOSE, 0, 0);
     }
 }
 

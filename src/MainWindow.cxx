@@ -382,7 +382,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
     {
         auto state = GetKeyState(VK_CONTROL);
         if (state & 0x8000)
-            SendMessageW(hwnd, WM_CLOSE, 0, 0);
+            PostMessageW(hwnd, WM_CLOSE, 0, 0);
     }
 
     return 0;
