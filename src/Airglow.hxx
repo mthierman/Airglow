@@ -2,7 +2,6 @@
 
 #include "MainWindow.hxx"
 #include "WebView.hxx"
-#include "Settings.hxx"
 #include "Config.hxx"
 #include "Utility.hxx"
 

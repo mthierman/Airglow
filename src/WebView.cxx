@@ -1,14 +1,14 @@
 #include "WebView.hxx"
 
-Settings* WebView::pSettings = nullptr;
+Config* WebView::pConfig = nullptr;
 
-WebView::WebView(HWND hwnd, Settings* settings) {}
+WebView::WebView(HWND hwnd, Config* config) {}
 
-std::unique_ptr<WebView> WebView::Create(HWND hwnd, Settings* settings)
+std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
 {
-    pSettings = settings;
+    pConfig = config;
 
-    auto pWebView = std::unique_ptr<WebView>(new WebView(hwnd, settings));
+    auto pWebView = std::unique_ptr<WebView>(new WebView(hwnd, config));
 
     return pWebView;
 }
@@ -16,7 +16,7 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Settings* settings)
 void WebView::Initialize(HWND hwnd)
 {
     CreateCoreWebView2EnvironmentWithOptions(
-        nullptr, pSettings->pathData.c_str(), nullptr,
+        nullptr, pConfig->pathData.c_str(), nullptr,
         Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
             [hwnd](HRESULT result, ICoreWebView2Environment* env) -> HRESULT
             {
@@ -350,7 +350,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
 #ifdef _DEBUG
         // Utility::print("F1 (WebView)\n");
 #endif
-        pSettings->boolSplit = Utility::Toggle(pSettings->boolSplit);
+        pConfig->boolSplit = Utility::Toggle(pConfig->boolSplit);
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
         WebView::SetWindowTitle(hwnd);
@@ -361,7 +361,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
 #ifdef _DEBUG
         // Utility::print("F2 (WebView)\n");
 #endif
-        pSettings->boolSwapped = Utility::Toggle(pSettings->boolSwapped);
+        pConfig->boolSwapped = Utility::Toggle(pConfig->boolSwapped);
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
         WebView::SetWindowTitle(hwnd);
@@ -372,7 +372,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
 #ifdef _DEBUG
         // Utility::print("F4 (WebView)\n");
 #endif
-        pSettings->boolMenu = Utility::Toggle(pSettings->boolMenu);
+        pConfig->boolMenu = Utility::Toggle(pConfig->boolMenu);
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
         WebView::SetWindowTitle(hwnd);
@@ -383,8 +383,8 @@ void WebView::Messages(HWND hwnd, std::wstring message)
 #ifdef _DEBUG
         // Utility::print("F6 (WebView)\n");
 #endif
-        if (!pSettings->boolFullscreen)
-            pSettings->boolMaximized = Utility::Toggle(pSettings->boolMaximized);
+        if (!pConfig->boolFullscreen)
+            pConfig->boolMaximized = Utility::Toggle(pConfig->boolMaximized);
         MainWindow::Maximize(hwnd);
         WebView::UpdateBounds(hwnd);
     }
@@ -394,7 +394,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
 #ifdef _DEBUG
         // Utility::print("F11 (WebView)\n");
 #endif
-        pSettings->boolFullscreen = Utility::Toggle(pSettings->boolFullscreen);
+        pConfig->boolFullscreen = Utility::Toggle(pConfig->boolFullscreen);
         MainWindow::Fullscreen(hwnd);
         WebView::UpdateBounds(hwnd);
     }
@@ -404,7 +404,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
 #ifdef _DEBUG
         // Utility::print("F9 (WebView)\n");
 #endif
-        pSettings->boolTopmost = Utility::Toggle(pSettings->boolTopmost);
+        pConfig->boolTopmost = Utility::Toggle(pConfig->boolTopmost);
         MainWindow::Topmost(hwnd);
         WebView::SetWindowTitle(hwnd);
     }
@@ -429,17 +429,17 @@ void WebView::UpdateBounds(HWND hwnd)
 
 void WebView::UpdateFocus()
 {
-    if (pSettings->boolMenu)
+    if (pConfig->boolMenu)
         if (settings_controller != nullptr)
             settings_controller->MoveFocus(
                 COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 
-    if (!pSettings->boolSwapped & !pSettings->boolMenu)
+    if (!pConfig->boolSwapped & !pConfig->boolMenu)
         if (main_controller != nullptr)
             main_controller->MoveFocus(
                 COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 
-    if (pSettings->boolSwapped & !pSettings->boolMenu)
+    if (pConfig->boolSwapped & !pConfig->boolMenu)
         if (side_controller != nullptr)
             side_controller->MoveFocus(
                 COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
@@ -460,7 +460,7 @@ RECT WebView::MenuBounds(HWND hwnd)
     RECT panel = {0, 0, 0, 0};
     GetClientRect(hwnd, &bounds);
 
-    if (pSettings->boolMenu)
+    if (pConfig->boolMenu)
     {
         panel = {
             bounds.left,
@@ -479,16 +479,16 @@ RECT WebView::MainBounds(HWND window)
     RECT panel = {0, 0, 0, 0};
     GetClientRect(window, &bounds);
 
-    if (pSettings->boolMenu)
+    if (pConfig->boolMenu)
         return panel;
 
-    if (!pSettings->boolSplit & !pSettings->boolSwapped)
+    if (!pConfig->boolSplit & !pConfig->boolSwapped)
         panel = bounds;
 
-    if (!pSettings->boolSplit & pSettings->boolSwapped)
+    if (!pConfig->boolSplit & pConfig->boolSwapped)
         return panel;
 
-    if (pSettings->boolSplit & !pSettings->boolSwapped)
+    if (pConfig->boolSplit & !pConfig->boolSwapped)
     {
         panel = {
             bounds.left,
@@ -498,7 +498,7 @@ RECT WebView::MainBounds(HWND window)
         };
     }
 
-    if (pSettings->boolSplit & pSettings->boolSwapped)
+    if (pConfig->boolSplit & pConfig->boolSwapped)
     {
         panel = {
             bounds.right / 2,
@@ -517,16 +517,16 @@ RECT WebView::SideBounds(HWND window)
     RECT panel = {0, 0, 0, 0};
     GetClientRect(window, &bounds);
 
-    if (pSettings->boolMenu)
+    if (pConfig->boolMenu)
         return panel;
 
-    if (!pSettings->boolSplit & !pSettings->boolSwapped)
+    if (!pConfig->boolSplit & !pConfig->boolSwapped)
         return panel;
 
-    if (!pSettings->boolSplit & pSettings->boolSwapped)
+    if (!pConfig->boolSplit & pConfig->boolSwapped)
         panel = bounds;
 
-    if (pSettings->boolSplit & !pSettings->boolSwapped)
+    if (pConfig->boolSplit & !pConfig->boolSwapped)
     {
         panel = {
             bounds.right / 2,
@@ -536,7 +536,7 @@ RECT WebView::SideBounds(HWND window)
         };
     }
 
-    if (pSettings->boolSplit & pSettings->boolSwapped)
+    if (pConfig->boolSplit & pConfig->boolSwapped)
     {
         panel = {
             bounds.left,
@@ -553,7 +553,7 @@ void WebView::SetWindowTitle(HWND window)
 {
     std::wstring titleTop = L" [On Top]";
 
-    if (!pSettings->boolSwapped)
+    if (!pConfig->boolSwapped)
     {
         if (main_wv != nullptr)
         {
@@ -561,10 +561,10 @@ void WebView::SetWindowTitle(HWND window)
             main_wv->get_DocumentTitle(&s);
             auto title = s.get();
 
-            if (!pSettings->boolTopmost)
+            if (!pConfig->boolTopmost)
                 SetWindowTextW(window, title);
 
-            if (pSettings->boolTopmost)
+            if (pConfig->boolTopmost)
             {
                 std::wstring add = title + titleTop;
                 SetWindowTextW(window, add.c_str());
@@ -580,10 +580,10 @@ void WebView::SetWindowTitle(HWND window)
             side_wv->get_DocumentTitle(&s);
             auto title = s.get();
 
-            if (!pSettings->boolTopmost)
+            if (!pConfig->boolTopmost)
                 SetWindowTextW(window, title);
 
-            if (pSettings->boolTopmost)
+            if (pConfig->boolTopmost)
             {
                 std::wstring add = title + titleTop;
                 SetWindowTextW(window, add.c_str());
@@ -594,7 +594,7 @@ void WebView::SetWindowTitle(HWND window)
 
 void WebView::SetWindowIcon(HWND window)
 {
-    if (!pSettings->boolSwapped)
+    if (!pConfig->boolSwapped)
     {
         if (main_wv != nullptr)
         {

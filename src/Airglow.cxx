@@ -3,16 +3,17 @@
 int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
 {
     HWND hwnd;
-    auto pSettings = Settings::Create();
 
-    if (!std::filesystem::exists(pSettings->pathData))
+    auto pConfig = Config::Create();
+
+    if (!std::filesystem::exists(pConfig->pathData))
     {
         std::string error = "Data folder not found";
         Utility::error(error);
         return 0;
     }
 
-    auto pWindow = MainWindow::Create(hinstance, ncs, pSettings.get());
+    auto pWindow = MainWindow::Create(hinstance, ncs, pConfig.get());
     hwnd = pWindow.get()->m_hWnd;
 
     if (!hwnd)
@@ -24,14 +25,11 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
 
     pWindow->Show(hwnd, ncs);
 
-    auto pWebView = WebView::Create(hwnd, pSettings.get());
+    auto pWebView = WebView::Create(hwnd, pConfig.get());
 
     WebView::Initialize(hwnd);
 
 #ifdef _DEBUG
-    // Utility::Tests(hwnd);
-    auto config = Config::Create();
-    config->Test();
 #endif
 
     MSG msg = {};

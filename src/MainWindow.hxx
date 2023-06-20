@@ -1,14 +1,14 @@
 #pragma once
 
 #include "WebView.hxx"
-#include "Settings.hxx"
+#include "Config.hxx"
 #include "Utility.hxx"
 
 class MainWindow
 {
   public:
-    static std::unique_ptr<MainWindow> Create(HINSTANCE, int, Settings*);
-    static Settings* pSettings;
+    static std::unique_ptr<MainWindow> Create(HINSTANCE, int, Config*);
+    static Config* pConfig;
     static void Show(HWND, int);
     static void Maximize(HWND);
     static void Fullscreen(HWND);
@@ -51,5 +51,5 @@ class MainWindow
     };
 
   protected:
-    MainWindow(HINSTANCE, int, Settings*);
+    MainWindow(HINSTANCE, int, Config*);
 };

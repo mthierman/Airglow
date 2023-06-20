@@ -1,14 +1,14 @@
 #include "MainWindow.hxx"
 
-Settings* MainWindow::pSettings = nullptr;
+Config* MainWindow::pConfig = nullptr;
 unsigned long long MainWindow::gdiplusToken;
 Gdiplus::GdiplusStartupInput MainWindow::gdiplusStartupInput;
 
-MainWindow::MainWindow(HINSTANCE hinstance, int ncs, Settings* settings) {}
+MainWindow::MainWindow(HINSTANCE hinstance, int ncs, Config* config) {}
 
-std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Settings* settings)
+std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Config* config)
 {
-    pSettings = settings;
+    pConfig = config;
 
     std::wstring className(L"airglow");
     std::wstring menuName(L"airglowmenu");
@@ -38,7 +38,7 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Set
         return 0;
     }
 
-    auto pMainWindow = std::unique_ptr<MainWindow>(new MainWindow(hinstance, ncs, pSettings));
+    auto pMainWindow = std::unique_ptr<MainWindow>(new MainWindow(hinstance, ncs, pConfig));
 
     HWND hwnd = CreateWindowExW(0, className.c_str(), appName.c_str(), WS_OVERLAPPEDWINDOW,
                                 CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
@@ -59,17 +59,17 @@ void MainWindow::Show(HWND hwnd, int ncs)
     auto cloakOn = TRUE;
     auto cloakOff = FALSE;
     DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOn, sizeof(cloakOn));
-    SetWindowPos(hwnd, nullptr, pSettings->vectorPosition[0], pSettings->vectorPosition[1],
-                 pSettings->vectorPosition[2], pSettings->vectorPosition[3], 0);
+    SetWindowPos(hwnd, nullptr, pConfig->vectorPosition[0], pConfig->vectorPosition[1],
+                 pConfig->vectorPosition[2], pConfig->vectorPosition[3], 0);
     DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOff, sizeof(cloakOff));
 
-    if (!pSettings->boolFullscreen & !pSettings->boolMaximized)
+    if (!pConfig->boolFullscreen & !pConfig->boolMaximized)
         ShowWindow(hwnd, SW_SHOWDEFAULT);
 
-    if (!pSettings->boolFullscreen & pSettings->boolMaximized)
+    if (!pConfig->boolFullscreen & pConfig->boolMaximized)
         ShowWindow(hwnd, SW_MAXIMIZE);
 
-    if (pSettings->boolFullscreen)
+    if (pConfig->boolFullscreen)
     {
         ShowWindow(hwnd, SW_SHOWDEFAULT);
         Fullscreen(hwnd);
@@ -83,8 +83,8 @@ void MainWindow::Maximize(HWND hwnd)
     if (wp.showCmd == 3)
     {
         ShowWindow(hwnd, SW_NORMAL);
-        SetWindowPos(hwnd, nullptr, pSettings->vectorPosition[0], pSettings->vectorPosition[1],
-                     pSettings->vectorPosition[2], pSettings->vectorPosition[3], 0);
+        SetWindowPos(hwnd, nullptr, pConfig->vectorPosition[0], pConfig->vectorPosition[1],
+                     pConfig->vectorPosition[2], pConfig->vectorPosition[3], 0);
     }
     else
         ShowWindow(hwnd, SW_MAXIMIZE);
@@ -229,13 +229,13 @@ int MainWindow::_OnCreate(HWND hwnd)
     SetDarkMode(hwnd);
     SetMica(hwnd);
 
-    // SetWindowPos(hwnd, nullptr, pSettings->vectorPosition[0], pSettings->vectorPosition[1],
-    //              pSettings->vectorPosition[2], pSettings->vectorPosition[3], 0);
+    // SetWindowPos(hwnd, nullptr, pConfig->vectorPosition[0], pConfig->vectorPosition[1],
+    //              pConfig->vectorPosition[2], pConfig->vectorPosition[3], 0);
 
-    // if (!pSettings->boolFullscreen & pSettings->boolMaximized)
+    // if (!pConfig->boolFullscreen & pConfig->boolMaximized)
     //     ShowWindow(hwnd, SW_MAXIMIZE);
 
-    // if (pSettings->boolFullscreen)
+    // if (pConfig->boolFullscreen)
     //     Fullscreen(hwnd);
 
     return 0;
@@ -259,11 +259,11 @@ int MainWindow::_OnClose(HWND hwnd)
     WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
     GetWindowPlacement(hwnd, &wp);
     if (wp.showCmd == 3)
-        pSettings->boolMaximized = true;
+        pConfig->boolMaximized = true;
     else
-        pSettings->boolMaximized = false;
+        pConfig->boolMaximized = false;
 
-    pSettings->Save();
+    pConfig->Save();
 
     Gdiplus::GdiplusShutdown(gdiplusToken);
     DestroyWindow(hwnd);
@@ -337,11 +337,11 @@ int MainWindow::_OnSizing(HWND hwnd)
 
     WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
     GetWindowPlacement(hwnd, &wp);
-    if (!pSettings->boolFullscreen & (wp.showCmd != 3))
+    if (!pConfig->boolFullscreen & (wp.showCmd != 3))
     {
         RECT rect;
         GetWindowRect(hwnd, &rect);
-        pSettings->vectorPosition = Utility::RectToBounds(rect);
+        pConfig->vectorPosition = Utility::RectToBounds(rect);
     }
 
     return 0;
@@ -355,11 +355,11 @@ int MainWindow::_OnMoving(HWND hwnd)
 
     WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
     GetWindowPlacement(hwnd, &wp);
-    if (!pSettings->boolFullscreen & (wp.showCmd != 3))
+    if (!pConfig->boolFullscreen & (wp.showCmd != 3))
     {
         RECT rect;
         GetWindowRect(hwnd, &rect);
-        pSettings->vectorPosition = Utility::RectToBounds(rect);
+        pConfig->vectorPosition = Utility::RectToBounds(rect);
     }
 
     return 0;
@@ -407,7 +407,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
 #ifdef _DEBUG
         // Utility::print("F1\n");
 #endif
-        pSettings->boolSplit = Utility::Toggle(pSettings->boolSplit);
+        pConfig->boolSplit = Utility::Toggle(pConfig->boolSplit);
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
         WebView::SetWindowTitle(hwnd);
@@ -418,7 +418,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
 #ifdef _DEBUG
         // Utility::print("F2\n");
 #endif
-        pSettings->boolSwapped = Utility::Toggle(pSettings->boolSwapped);
+        pConfig->boolSwapped = Utility::Toggle(pConfig->boolSwapped);
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
         WebView::SetWindowTitle(hwnd);
@@ -429,7 +429,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
 #ifdef _DEBUG
         // Utility::print("F4\n");
 #endif
-        pSettings->boolMenu = Utility::Toggle(pSettings->boolMenu);
+        pConfig->boolMenu = Utility::Toggle(pConfig->boolMenu);
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
         WebView::SetWindowTitle(hwnd);
@@ -440,8 +440,8 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
 #ifdef _DEBUG
         // Utility::print("F6\n");
 #endif
-        if (!pSettings->boolFullscreen)
-            pSettings->boolMaximized = Utility::Toggle(pSettings->boolMaximized);
+        if (!pConfig->boolFullscreen)
+            pConfig->boolMaximized = Utility::Toggle(pConfig->boolMaximized);
         MainWindow::Maximize(hwnd);
         WebView::UpdateBounds(hwnd);
     }
@@ -451,7 +451,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
 #ifdef _DEBUG
         // Utility::print("F11\n");
 #endif
-        pSettings->boolFullscreen = Utility::Toggle(pSettings->boolFullscreen);
+        pConfig->boolFullscreen = Utility::Toggle(pConfig->boolFullscreen);
         MainWindow::Fullscreen(hwnd);
         WebView::UpdateBounds(hwnd);
     }
@@ -461,7 +461,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
 #ifdef _DEBUG
         // Utility::print("F9\n");
 #endif
-        pSettings->boolTopmost = Utility::Toggle(pSettings->boolTopmost);
+        pConfig->boolTopmost = Utility::Toggle(pConfig->boolTopmost);
         MainWindow::Topmost(hwnd);
         WebView::SetWindowTitle(hwnd);
     }

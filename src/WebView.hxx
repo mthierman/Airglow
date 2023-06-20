@@ -1,7 +1,7 @@
 #pragma once
 
 #include "MainWindow.hxx"
-#include "Settings.hxx"
+#include "Config.hxx"
 #include "Utility.hxx"
 
 static wil::com_ptr<ICoreWebView2_19> settings_wv;
@@ -20,9 +20,9 @@ static wil::com_ptr<ICoreWebView2Settings> side_settings;
 class WebView
 {
   public:
-    static std::unique_ptr<WebView> Create(HWND, Settings*);
+    static std::unique_ptr<WebView> Create(HWND, Config*);
     static void Initialize(HWND);
-    static Settings* pSettings;
+    static Config* pConfig;
     static void Messages(HWND, std::wstring);
     static void UpdateBounds(HWND);
     static void UpdateFocus();
@@ -34,7 +34,7 @@ class WebView
     static void SetWindowIcon(HWND);
 
   private:
-    WebView(HWND, Settings*);
+    WebView(HWND, Config*);
     static std::wstring GetScriptFile(std::filesystem::path);
     static std::wstring GetScript();
     static std::wstring GetMenuScript();

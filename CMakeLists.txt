@@ -95,7 +95,6 @@ add_executable(
     WIN32
     src/Airglow.cxx
     src/MainWindow.cxx
-    src/Settings.cxx
     src/Config.cxx
     src/Utility.cxx
     src/WebView.cxx

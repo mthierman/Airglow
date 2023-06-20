@@ -1,5 +1,4 @@
 #include "Config.hxx"
-#include <string>
 
 Config::Config() {}
 
