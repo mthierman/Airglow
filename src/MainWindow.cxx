@@ -231,24 +231,18 @@ int MainWindow::_OnCreate(HWND hwnd)
     SetDarkMode(hwnd);
     SetMica(hwnd);
 
+    SetWindowPos(hwnd, nullptr, pSettings->vectorPosition[0], pSettings->vectorPosition[1],
+                 pSettings->vectorPosition[2], pSettings->vectorPosition[3], 0);
+
     if (!pSettings->boolFullscreen & pSettings->boolMaximized)
     {
-        ShowWindow(hwnd, SW_SHOWMAXIMIZED);
-        SetWindowPos(hwnd, nullptr, pSettings->vectorPosition[0], pSettings->vectorPosition[1],
-                     pSettings->vectorPosition[2], pSettings->vectorPosition[3],
-                     SWP_NOMOVE | SWP_NOSIZE | SWP_NOREDRAW);
+        ShowWindow(hwnd, SW_MAXIMIZE);
     }
 
     if (pSettings->boolFullscreen)
     {
-        SetWindowPos(hwnd, nullptr, pSettings->vectorPosition[0], pSettings->vectorPosition[1],
-                     pSettings->vectorPosition[2], pSettings->vectorPosition[3], 0);
         Fullscreen(hwnd);
     }
-
-    if (!pSettings->boolFullscreen & !pSettings->boolMaximized)
-        SetWindowPos(hwnd, nullptr, pSettings->vectorPosition[0], pSettings->vectorPosition[1],
-                     pSettings->vectorPosition[2], pSettings->vectorPosition[3], 0);
 
     return 0;
 }
@@ -272,6 +266,8 @@ int MainWindow::_OnClose(HWND hwnd)
     GetWindowPlacement(hwnd, &wp);
     if (wp.showCmd == 3)
         pSettings->boolMaximized = true;
+    else
+        pSettings->boolMaximized = false;
 
     pSettings->Save();
 
@@ -345,9 +341,12 @@ int MainWindow::_OnSizing(HWND hwnd)
     // Utility::print(std::string("WM_SIZING\n"));
 #endif
 
-    RECT rect;
-    GetWindowRect(hwnd, &rect);
-    pSettings->vectorPosition = Utility::RectToBounds(rect);
+    if (!pSettings->boolFullscreen & !pSettings->boolMaximized)
+    {
+        RECT rect;
+        GetWindowRect(hwnd, &rect);
+        pSettings->vectorPosition = Utility::RectToBounds(rect);
+    }
 
     return 0;
 }
@@ -358,9 +357,12 @@ int MainWindow::_OnMoving(HWND hwnd)
     // Utility::print(std::string("WM_MOVING\n"));
 #endif
 
-    RECT rect;
-    GetWindowRect(hwnd, &rect);
-    pSettings->vectorPosition = Utility::RectToBounds(rect);
+    if (!pSettings->boolFullscreen & !pSettings->boolMaximized)
+    {
+        RECT rect;
+        GetWindowRect(hwnd, &rect);
+        pSettings->vectorPosition = Utility::RectToBounds(rect);
+    }
 
     return 0;
 }
@@ -371,12 +373,17 @@ int MainWindow::_OnWindowPosChanged(HWND hwnd)
     // Utility::print(std::string("WM_WINDOWPOSCHANGED\n"));
 #endif
 
-    WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
-    GetWindowPlacement(hwnd, &wp);
-    if (wp.showCmd == 3)
-        pSettings->boolMaximized = true;
-    else
-        pSettings->boolMaximized = false;
+    // WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
+    // GetWindowPlacement(hwnd, &wp);
+    // if (wp.showCmd == 3)
+    //     pSettings->boolMaximized = true;
+    // else
+    //     pSettings->boolMaximized = false;
+
+    // WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
+    // GetWindowPlacement(hwnd, &wp);
+    // if (wp.showCmd == 3)
+    //     Utility::print("MAX");
 
     WebView::UpdateBounds(hwnd);
 
