@@ -594,7 +594,7 @@ void WebView::SetWindowTitle(HWND window)
     }
 }
 
-void WebView::SetWindowIcon(HWND window)
+void WebView::SetWindowIcon(HWND hwnd)
 {
     if (!pConfig->boolSwapped)
     {
@@ -602,7 +602,7 @@ void WebView::SetWindowIcon(HWND window)
         {
             main_wv->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
                                 Microsoft::WRL::Callback<ICoreWebView2GetFaviconCompletedHandler>(
-                                    [window](HRESULT result, IStream* iconStream) -> HRESULT
+                                    [hwnd](HRESULT result, IStream* iconStream) -> HRESULT
                                     {
                                         if (iconStream != nullptr)
                                         {
@@ -611,7 +611,7 @@ void WebView::SetWindowIcon(HWND window)
                                             if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
                                             {
                                                 auto favicon = std::move(icon);
-                                                SendMessageW(window, WM_SETICON, ICON_BIG,
+                                                SendMessageW(hwnd, WM_SETICON, ICON_BIG,
                                                              (LPARAM)favicon.get());
                                             }
                                         }
@@ -627,7 +627,7 @@ void WebView::SetWindowIcon(HWND window)
         {
             side_wv->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
                                 Microsoft::WRL::Callback<ICoreWebView2GetFaviconCompletedHandler>(
-                                    [window](HRESULT result, IStream* iconStream) -> HRESULT
+                                    [hwnd](HRESULT result, IStream* iconStream) -> HRESULT
                                     {
                                         if (iconStream != nullptr)
                                         {
@@ -636,7 +636,7 @@ void WebView::SetWindowIcon(HWND window)
                                             if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
                                             {
                                                 auto favicon = std::move(icon);
-                                                SendMessageW(window, WM_SETICON, ICON_BIG,
+                                                SendMessageW(hwnd, WM_SETICON, ICON_BIG,
                                                              (LPARAM)favicon.get());
                                             }
                                         }
