@@ -107,22 +107,6 @@ nlohmann::json Settings::Current()
     return settings;
 }
 
-nlohmann::json Settings::State()
-{
-    nlohmann::json settings;
-    settings["position"] = vectorPosition;
-    settings["menu"] = boolMenu;
-    settings["split"] = boolSplit;
-    settings["swapped"] = boolSwapped;
-    settings["maximized"] = boolMaximized;
-    settings["fullscreen"] = boolFullscreen;
-    settings["topmost"] = boolTopmost;
-    settings["main"] = stringMain;
-    settings["side"] = stringSide;
-
-    return settings;
-}
-
 void Settings::Save()
 {
     nlohmann::json settings = Current();

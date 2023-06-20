@@ -1,13 +1,16 @@
 #pragma once
 
-class Settings
+#include "Utility.hxx"
+
+class Config
 {
   public:
-    static std::unique_ptr<Settings> Create();
-    nlohmann::json Defaults();
-    void Load(std::filesystem::path);
-    nlohmann::json Current();
+    static std::unique_ptr<Config> Create();
+    tao::json::value Defaults();
+    tao::json::value Current();
+    void Load();
     void Save();
+    void Test();
     std::filesystem::path pathData;
     std::filesystem::path pathSettings;
     std::vector<int> vectorPosition;
@@ -25,5 +28,5 @@ class Settings
     std::filesystem::path SettingsPath(std::filesystem::path appData);
 
   protected:
-    Settings();
+    Config();
 };

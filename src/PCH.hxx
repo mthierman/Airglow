@@ -19,4 +19,6 @@
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.UI.ViewManagement.h>
 
-#include <json.hpp>
+#include <nlohmann/json.hpp>
+#include <tao/json.hpp>
+#include <tao/json/contrib/traits.hpp>

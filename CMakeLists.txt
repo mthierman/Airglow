@@ -8,14 +8,16 @@ project(
     LANGUAGES CXX
 )
 
+set(WEBVIEW "Microsoft.Web.WebView2")
+set(WEBVIEW_VER "1.0.1823.32")
+set(WIL "Microsoft.Windows.ImplementationLibrary")
+set(WIL_VER "1.0.230411.1")
+
 math(EXPR BITNESS "${CMAKE_SIZEOF_VOID_P} * 8" OUTPUT_FORMAT DECIMAL)
 message(STATUS "${PROJECT_NAME} v${PROJECT_VERSION} (${BITNESS}-bit) [${CMAKE_BUILD_TYPE}]")
 file(WRITE ${CMAKE_BINARY_DIR}/version.txt "v${PROJECT_VERSION}")
 
 include(FetchContent)
-
-set(WEBVIEW "Microsoft.Web.WebView2")
-set(WEBVIEW_VER "1.0.1823.32")
 
 if(DEFINED ENV{LIB_WEBVIEW})
     set(WEBVIEW_PKG $ENV{LIB_WEBVIEW})
@@ -26,9 +28,6 @@ else()
     )
     set(WEBVIEW_PKG ${CMAKE_BINARY_DIR}/libs/${WEBVIEW}.${WEBVIEW_VER})
 endif()
-
-set(WIL "Microsoft.Windows.ImplementationLibrary")
-set(WIL_VER "1.0.230411.1")
 
 if(DEFINED ENV{LIB_WIL})
     set(WIL_PKG $ENV{LIB_WIL})
@@ -55,17 +54,41 @@ if(DEFINED ENV{LIB_JSON})
     set(JSON_PKG $ENV{LIB_JSON})
 else()
     FetchContent_Declare(
-        json
+        nlohmann
         URL https://github.com/nlohmann/json/releases/download/v3.11.2/include.zip
     )
-    FetchContent_MakeAvailable(json)
-    set(JSON_PKG ${json_SOURCE_DIR}/single_include/nlohmann)
+    FetchContent_MakeAvailable(nlohmann)
+    set(JSON_PKG ${json_SOURCE_DIR}/single_include)
 endif()
 
-message(STATUS ${WEBVIEW_PKG})
-message(STATUS ${WIL_PKG})
-message(STATUS ${CHOC_PKG})
-message(STATUS ${JSON_PKG})
+if(DEFINED ENV{LIB_TAOJSON})
+    set(TAOJSON_PKG $ENV{LIB_TAOJSON})
+else()
+    FetchContent_Declare(
+        json
+        URL https://github.com/taocpp/json.git
+    )
+    FetchContent_MakeAvailable(json)
+    set(TAOJSON_PKG ${json_SOURCE_DIR}/include)
+endif()
+
+if(DEFINED ENV{LIB_PEGTL})
+    set(PEGTL_PKG $ENV{LIB_PEGTL})
+else()
+    FetchContent_Declare(
+        PEGTL
+        URL https://github.com/taocpp/PEGTL.git
+    )
+    FetchContent_MakeAvailable(PEGTL)
+    set(PEGTL_PKG ${json_SOURCE_DIR}/include)
+endif()
+
+message(STATUS "WebView2 found: ${WEBVIEW_PKG}")
+message(STATUS "Windows Implementation Library found: ${WIL_PKG}")
+message(STATUS "choc found: ${CHOC_PKG}")
+message(STATUS "nlohmann/json found: ${JSON_PKG}")
+message(STATUS "taocpp/json found: ${TAOJSON_PKG}")
+message(STATUS "taocpp/PEGTL found: ${PEGTL_PKG}")
 
 add_executable(
     ${PROJECT_NAME}
@@ -73,6 +96,7 @@ add_executable(
     src/Airglow.cxx
     src/MainWindow.cxx
     src/Settings.cxx
+    src/Config.cxx
     src/Utility.cxx
     src/WebView.cxx
     res$<$<CONFIG:Debug>:_debug>$<$<CONFIG:Release>:_release>.rc
@@ -100,6 +124,8 @@ target_include_directories(
     ${CHOC_PKG}/text
     ${CHOC_PKG}/threading
     ${JSON_PKG}
+    ${TAOJSON_PKG}
+    ${PEGTL_PKG}
 )
 
 target_link_directories(

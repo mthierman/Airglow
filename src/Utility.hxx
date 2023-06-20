@@ -14,6 +14,7 @@ class Utility
     static void errorw(std::wstring in);
     static std::wstring ToWide(std::string);
     static std::string ToString(std::wstring);
+    static std::string BoolToString(bool);
     static std::wstring BoolToWide(bool);
     static std::pair<std::wstring, std::wstring> CommandLine();
     static void Tests(HWND);

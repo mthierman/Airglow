@@ -337,7 +337,7 @@ int MainWindow::_OnSizing(HWND hwnd)
 
     WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
     GetWindowPlacement(hwnd, &wp);
-    if (!pSettings->boolFullscreen & wp.showCmd != 3)
+    if (!pSettings->boolFullscreen & (wp.showCmd != 3))
     {
         RECT rect;
         GetWindowRect(hwnd, &rect);
@@ -355,7 +355,7 @@ int MainWindow::_OnMoving(HWND hwnd)
 
     WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
     GetWindowPlacement(hwnd, &wp);
-    if (!pSettings->boolFullscreen & wp.showCmd != 3)
+    if (!pSettings->boolFullscreen & (wp.showCmd != 3))
     {
         RECT rect;
         GetWindowRect(hwnd, &rect);

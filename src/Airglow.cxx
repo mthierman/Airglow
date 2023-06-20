@@ -30,6 +30,8 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
 
 #ifdef _DEBUG
     // Utility::Tests(hwnd);
+    auto config = Config::Create();
+    config->Test();
 #endif
 
     MSG msg = {};

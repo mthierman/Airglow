@@ -17,9 +17,17 @@ RECT Utility::BoundsToRect(std::vector<int> bounds)
     return rect;
 }
 
-void Utility::print(std::string in) { OutputDebugStringW(ToWide(in).c_str()); }
+void Utility::print(std::string in)
+{
+    OutputDebugStringW(ToWide(in).c_str());
+    OutputDebugStringW(L"\n");
+}
 
-void Utility::printw(std::wstring in) { OutputDebugStringW(in.c_str()); }
+void Utility::printw(std::wstring in)
+{
+    OutputDebugStringW(in.c_str());
+    OutputDebugStringW(L"\n");
+}
 
 void Utility::msgbox(std::string in)
 {
@@ -61,6 +69,11 @@ std::string Utility::ToString(std::wstring in)
     WideCharToMultiByte(CP_UTF8, 0, in.c_str(), in.size(), out.data(), size, nullptr, nullptr);
 
     return out;
+}
+
+std::string Utility::BoolToString(bool input)
+{
+    return input ? std::string("true") : std::string("false");
 }
 
 std::wstring Utility::BoolToWide(bool input)
