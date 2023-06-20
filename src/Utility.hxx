@@ -1,21 +1,20 @@
 #pragma once
 
-class Utility
+namespace Utility
 {
-  public:
-    static bool Toggle(bool);
-    static std::vector<int> RectToBounds(RECT);
-    static RECT BoundsToRect(std::vector<int>);
-    static void print(std::string);
-    static void printw(std::wstring);
-    static void msgbox(std::string);
-    static void msgboxw(std::wstring);
-    static void error(std::string in);
-    static void errorw(std::wstring in);
-    static std::wstring ToWide(std::string);
-    static std::string ToString(std::wstring);
-    static std::string BoolToString(bool);
-    static std::wstring BoolToWide(bool);
-    static std::pair<std::wstring, std::wstring> CommandLine();
-    static void Tests(HWND);
-};
+bool Toggle(bool);
+std::vector<int> RectToBounds(RECT);
+RECT BoundsToRect(std::vector<int>);
+void print(std::string);
+void printw(std::wstring);
+void msgbox(std::string);
+void msgboxw(std::wstring);
+void error(std::string in);
+void errorw(std::wstring in);
+std::wstring ToWide(std::string);
+std::string ToString(std::wstring);
+std::string BoolToString(bool);
+std::wstring BoolToWide(bool);
+std::pair<std::wstring, std::wstring> CommandLine();
+void Tests(HWND);
+}; // namespace Utility
