@@ -33,10 +33,9 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Set
 
     if (RegisterClassExW(&wcex) == 0)
     {
-        std::wstring error =
-            L"RegisterClassExW failed, last error is " + std::to_wstring(GetLastError());
-        MessageBoxW(nullptr, error.c_str(), appName.c_str(), MB_ICONERROR);
-        return nullptr;
+        std::string error = "Register window failed";
+        Utility::error(error);
+        return 0;
     }
 
     auto pMainWindow = std::unique_ptr<MainWindow>(new MainWindow(hinstance, ncs, pSettings));
@@ -47,10 +46,9 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Set
 
     if (!hwnd)
     {
-        std::wstring error =
-            L"CreateWindowExW failed, last error is " + std::to_wstring(GetLastError());
-        MessageBoxW(nullptr, error.c_str(), appName.c_str(), MB_ICONERROR);
-        return nullptr;
+        std::string error = "Window creation failed";
+        Utility::error(error);
+        return 0;
     }
 
     return pMainWindow;
