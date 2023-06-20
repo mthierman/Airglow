@@ -118,7 +118,7 @@ void Config::Save()
     }
 }
 
-void Config::Test()
+void Config::Tests()
 {
     Utility::print(std::to_string(vectorPosition[0]));
     Utility::print(std::to_string(vectorPosition[1]));

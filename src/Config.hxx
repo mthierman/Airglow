@@ -10,7 +10,7 @@ class Config
     tao::json::value Current();
     void Load();
     void Save();
-    void Test();
+    void Tests();
     std::filesystem::path pathData;
     std::filesystem::path pathSettings;
     std::vector<int> vectorPosition;
