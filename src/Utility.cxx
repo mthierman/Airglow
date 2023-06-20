@@ -99,4 +99,7 @@ void Utility::Tests(HWND hwnd)
     GetWindowPlacement(hwnd, &wp);
     if (wp.showCmd == 3)
         Utility::prints("Window is maximized\n");
+
+    auto acp = GetACP();
+    Utility::printw(std::to_wstring(acp));
 }

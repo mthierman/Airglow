@@ -76,6 +76,7 @@ add_executable(
     src/Utility.cxx
     src/WebView.cxx
     res$<$<CONFIG:Debug>:_debug>$<$<CONFIG:Release>:_release>.rc
+    app.manifest
 )
 
 target_precompile_headers(

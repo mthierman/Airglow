@@ -224,7 +224,6 @@ int MainWindow::_OnCreate(HWND hwnd)
     Utility::prints(std::string("WM_CREATE\n"));
 #endif
 
-    SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
     SetEnvironmentVariableW(std::wstring(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR").c_str(),
                             std::wstring(L"0").c_str());
 
