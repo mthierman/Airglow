@@ -1,7 +1,5 @@
 #include "WebView.hxx"
 
-using namespace Utility;
-
 Config* WebView::pConfig = nullptr;
 
 WebView::WebView(HWND hwnd, Config* config) {}
@@ -65,7 +63,7 @@ void WebView::Initialize(HWND hwnd)
                                           {
                                               wil::unique_cotaskmem_string message;
                                               args->TryGetWebMessageAsString(&message);
-                                              auto msg = std::wstring(message.get());
+                                              auto msg = wstring(message.get());
                                               Messages(hwnd, msg);
                                               webview->PostWebMessageAsString(message.get());
                                               return S_OK;
@@ -150,7 +148,7 @@ void WebView::Initialize(HWND hwnd)
                                     {
                                         wil::unique_cotaskmem_string message;
                                         args->TryGetWebMessageAsString(&message);
-                                        auto msg = message.get();
+                                        auto msg = wstring(message.get());
                                         Messages(hwnd, msg);
                                         webview->PostWebMessageAsString(message.get());
                                         return S_OK;
@@ -235,7 +233,7 @@ void WebView::Initialize(HWND hwnd)
                                     {
                                         wil::unique_cotaskmem_string message;
                                         args->TryGetWebMessageAsString(&message);
-                                        auto msg = message.get();
+                                        auto msg = wstring(message.get());
                                         Messages(hwnd, msg);
                                         webview->PostWebMessageAsString(message.get());
                                         return S_OK;
@@ -252,19 +250,18 @@ void WebView::Initialize(HWND hwnd)
             .Get());
 }
 
-std::wstring WebView::GetScriptFile(std::filesystem::path appData)
+wstring WebView::GetScriptFile(path appData)
 {
-    std::stringstream buffer;
-    std::wstring script;
+    stringstream buffer;
+    wstring script;
 
-    std::filesystem::path file =
-        (appData.wstring() + std::filesystem::path::preferred_separator + L"Airglow.js");
+    path file = (appData.wstring() + path::preferred_separator + L"Airglow.js");
 
     if (!std::filesystem::exists(file))
 
         if (std::filesystem::exists(file))
         {
-            std::ifstream f(file);
+            ifstream f(file);
             if (!std::filesystem::is_empty(file))
             {
                 buffer << f.rdbuf();
@@ -276,9 +273,9 @@ std::wstring WebView::GetScriptFile(std::filesystem::path appData)
     return script;
 }
 
-std::wstring WebView::GetScript()
+wstring WebView::GetScript()
 {
-    std::wstring script = LR"(
+    wstring script = LR"(
         document.onreadystatechange = () => {
             if (document.readyState === "interactive") {
                 let scheme = document.createElement("meta");
@@ -305,9 +302,9 @@ std::wstring WebView::GetScript()
     return script;
 }
 
-std::wstring WebView::GetMenuScript()
+wstring WebView::GetMenuScript()
 {
-    std::wstring script = LR"(
+    wstring script = LR"(
         document.onreadystatechange = () => {
             if (document.readyState === "interactive") {
                 let scheme = document.createElement("meta");
@@ -337,20 +334,20 @@ std::wstring WebView::GetMenuScript()
     return script;
 }
 
-void WebView::Messages(HWND hwnd, std::wstring message)
+void WebView::Messages(HWND hwnd, wstring message)
 {
-    std::wstring splitKey = std::wstring(L"F1");
-    std::wstring swapKey = std::wstring(L"F2");
-    std::wstring hideMenuKey = std::wstring(L"F4");
-    std::wstring maximizeKey = std::wstring(L"F6");
-    std::wstring fullscreenKey = std::wstring(L"F11");
-    std::wstring onTopKey = std::wstring(L"F9");
-    std::wstring closeKey = std::wstring(L"close");
+    wstring splitKey = wstring(L"F1");
+    wstring swapKey = wstring(L"F2");
+    wstring hideMenuKey = wstring(L"F4");
+    wstring maximizeKey = wstring(L"F6");
+    wstring fullscreenKey = wstring(L"F11");
+    wstring onTopKey = wstring(L"F9");
+    wstring closeKey = wstring(L"close");
 
     if (message == splitKey)
     {
 #ifdef _DEBUG
-        print("F1 (WebView)\n");
+        println("F1 (WebView)");
 #endif
         pConfig->boolSplit = Toggle(pConfig->boolSplit);
         WebView::UpdateBounds(hwnd);
@@ -363,7 +360,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
     if (message == swapKey)
     {
 #ifdef _DEBUG
-        print("F2 (WebView)\n");
+        println("F2 (WebView)");
 #endif
         pConfig->boolSwapped = Toggle(pConfig->boolSwapped);
         WebView::UpdateBounds(hwnd);
@@ -376,7 +373,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
     if (message == hideMenuKey)
     {
 #ifdef _DEBUG
-        print("F4 (WebView)\n");
+        println("F4 (WebView)");
 #endif
         pConfig->boolMenu = Toggle(pConfig->boolMenu);
         WebView::UpdateBounds(hwnd);
@@ -389,7 +386,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
     if (message == maximizeKey)
     {
 #ifdef _DEBUG
-        print("F6 (WebView)\n");
+        println("F6 (WebView)");
 #endif
 
         WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
@@ -403,7 +400,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
     if (message == fullscreenKey)
     {
 #ifdef _DEBUG
-        print("F11 (WebView)\n");
+        println("F11 (WebView)");
 #endif
         pConfig->boolFullscreen = Toggle(pConfig->boolFullscreen);
         MainWindow::Fullscreen(hwnd);
@@ -414,7 +411,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
     if (message == onTopKey)
     {
 #ifdef _DEBUG
-        print("F9 (WebView)\n");
+        println("F9 (WebView)");
 #endif
         pConfig->boolTopmost = Toggle(pConfig->boolTopmost);
         MainWindow::Topmost(hwnd);
@@ -564,7 +561,7 @@ RECT WebView::SideBounds(HWND window)
 
 void WebView::SetWindowTitle(HWND window)
 {
-    std::wstring titleTop = L" [On Top]";
+    wstring titleTop = L" [On Top]";
 
     if (!pConfig->boolSwapped)
     {
@@ -579,7 +576,7 @@ void WebView::SetWindowTitle(HWND window)
 
             if (pConfig->boolTopmost)
             {
-                std::wstring add = title + titleTop;
+                wstring add = title + titleTop;
                 SetWindowTextW(window, add.c_str());
             }
         }
@@ -598,7 +595,7 @@ void WebView::SetWindowTitle(HWND window)
 
             if (pConfig->boolTopmost)
             {
-                std::wstring add = title + titleTop;
+                wstring add = title + titleTop;
                 SetWindowTextW(window, add.c_str());
             }
         }

@@ -19,13 +19,17 @@ RECT BoundsToRect(std::vector<int> bounds)
     return rect;
 }
 
-void print(std::string in)
+void print(std::string in) { OutputDebugStringW(ToWide(in).c_str()); }
+
+void println(std::string in)
 {
     OutputDebugStringW(ToWide(in).c_str());
     OutputDebugStringW(L"\n");
 }
 
-void printw(std::wstring in)
+void wprint(std::wstring in) { OutputDebugStringW(in.c_str()); }
+
+void wprintln(std::wstring in)
 {
     OutputDebugStringW(in.c_str());
     OutputDebugStringW(L"\n");
@@ -112,21 +116,21 @@ void Tests(HWND hwnd)
         print("Toggle(): TEST FAILED\n");
 
     std::wstring dpi = L"DPI: " + std::to_wstring(GetDpiForWindow(hwnd)) + L"\n";
-    printw(dpi);
+    wprint(dpi);
 
     RECT clientRect;
     GetClientRect(hwnd, &clientRect);
     std::wstring clientBounds = L"Client: " + std::to_wstring(clientRect.right - clientRect.left) +
                                 L" x " + std::to_wstring(clientRect.bottom - clientRect.top) +
                                 L"\n";
-    printw(clientBounds.c_str());
+    wprint(clientBounds.c_str());
 
     RECT windowRect;
     GetWindowRect(hwnd, &windowRect);
     std::wstring windowBounds = L"Window: " + std::to_wstring(windowRect.right - windowRect.left) +
                                 L" x " + std::to_wstring(windowRect.bottom - windowRect.top) +
                                 L"\n";
-    printw(windowBounds.c_str());
+    wprint(windowBounds.c_str());
 
     WINDOWPLACEMENT wp;
     wp.length = sizeof(WINDOWPLACEMENT);
@@ -135,7 +139,7 @@ void Tests(HWND hwnd)
         print("Window is maximized\n");
 
     auto acp = GetACP();
-    printw(std::to_wstring(acp));
+    wprint(std::to_wstring(acp));
 }
 
 std::filesystem::path Utility::DataPath()

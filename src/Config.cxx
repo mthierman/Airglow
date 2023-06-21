@@ -1,7 +1,5 @@
 #include "Config.hxx"
 
-using namespace Utility;
-
 Config::Config() {}
 
 std::unique_ptr<Config> Config::Create()
@@ -21,7 +19,7 @@ void Config::Load()
 
     if (std::filesystem::exists(pathSettings) && !std::filesystem::is_empty(pathSettings))
     {
-        std::ifstream f(pathSettings);
+        ifstream f(pathSettings);
         config = json::parse(f);
         f.close();
     }
@@ -32,20 +30,20 @@ void Config::Load()
         Save();
     }
 
-    vectorPosition = config["position"].get<std::vector<int>>();
+    vectorPosition = config["position"].get<position>();
     boolMenu = config["menu"].get<bool>();
     boolSplit = config["split"].get<bool>();
     boolSwapped = config["swapped"].get<bool>();
     boolMaximized = config["maximized"].get<bool>();
     boolFullscreen = config["fullscreen"].get<bool>();
     boolTopmost = config["topmost"].get<bool>();
-    stringMain = config["main"].get<std::string>();
-    stringMain = config["side"].get<std::string>();
+    stringMain = config["main"].get<string>();
+    stringMain = config["side"].get<string>();
 }
 
 void Config::Save()
 {
-    std::ofstream f(pathSettings);
+    ofstream f(pathSettings);
     f << std::setw(4) << Get() << std::endl;
     f.close();
 }

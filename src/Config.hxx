@@ -2,7 +2,15 @@
 
 #include "Utility.hxx"
 
+using namespace Utility;
 using json = nlohmann::json;
+using path = std::filesystem::path;
+using string = std::string;
+using wstring = std::wstring;
+using ofstream = std::ofstream;
+using ifstream = std::ifstream;
+using stringstream = std::stringstream;
+using position = std::vector<int>;
 
 class Config
 {
@@ -13,21 +21,21 @@ class Config
     json Get();
     void Tests();
 
-    std::filesystem::path pathData;
-    std::filesystem::path pathSettings;
+    path pathData;
+    path pathSettings;
 
-    std::vector<int> vectorPosition{0, 0, 800, 600};
+    position vectorPosition{0, 0, 800, 600};
     bool boolMenu{false};
     bool boolSplit{false};
     bool boolSwapped{false};
     bool boolMaximized{true};
     bool boolFullscreen{false};
     bool boolTopmost{false};
-    std::string stringMain{"https://www.google.com/"};
-    std::string stringSide{"https://www.google.com/"};
+    string stringMain{"https://www.google.com/"};
+    string stringSide{"https://www.google.com/"};
 
   private:
-    std::ofstream streamSettingsPath;
+    ofstream streamSettingsPath;
 
   protected:
     Config();

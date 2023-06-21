@@ -22,7 +22,7 @@ class WebView
     static std::unique_ptr<WebView> Create(HWND, Config*);
     static void Initialize(HWND);
     static Config* pConfig;
-    static void Messages(HWND, std::wstring);
+    static void Messages(HWND, wstring);
     static void UpdateBounds(HWND);
     static void UpdateFocus();
     static RECT FullBounds(HWND);
@@ -34,7 +34,7 @@ class WebView
 
   private:
     WebView(HWND, Config*);
-    static std::wstring GetScriptFile(std::filesystem::path);
-    static std::wstring GetScript();
-    static std::wstring GetMenuScript();
+    static wstring GetScriptFile(path);
+    static wstring GetScript();
+    static wstring GetMenuScript();
 };
