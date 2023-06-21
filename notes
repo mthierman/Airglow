@@ -1,0 +1,40 @@
+
+// WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
+// GetWindowPlacement(hwnd, &wp);
+// if (wp.showCmd == 3)
+//     pConfig->boolMaximized = true;
+
+// pConfig->Save();
+
+// WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
+// GetWindowPlacement(hwnd, &wp);
+
+// if (!pConfig->boolFullscreen & (wp.showCmd != 3))
+// {
+//     RECT rect;
+//     GetWindowRect(hwnd, &rect);
+//     pConfig->vectorPosition = Utility::RectToBounds(rect);
+// }
+
+// if (wp.showCmd == 3)
+//     pConfig->boolMaximized = true;
+// else
+//     pConfig->boolMaximized = false;
+
+// pConfig->Save();
+
+// WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
+// GetWindowPlacement(hwnd, &wp);
+// if (wp.showCmd == 3)
+//     pConfig->boolMaximized = true;
+// else
+//     pConfig->boolMaximized = false;
+
+// pConfig->Save();
+
+// WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
+// GetWindowPlacement(hwnd, &wp);
+// if (wp.showCmd == 3)
+//     pConfig->boolMaximized = true;
+// else
+//     pConfig->boolMaximized = false;

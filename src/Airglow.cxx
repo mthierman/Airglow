@@ -39,5 +39,7 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
         DispatchMessageW(&msg);
     }
 
+    pConfig->Save();
+
     return 0;
 }

@@ -24,11 +24,14 @@ class MainWindow
     int _OnDpiChanged();
     int _OnGetMinMaxInfo(LPARAM);
     int _OnPaint(HWND);
-    int _OnSize(HWND);
+    int _OnSize(HWND, WPARAM);
     int _OnSizing(HWND);
+    int _OnEnterSizeMove(HWND);
+    int _OnExitSizeMove(HWND);
+    int _OnMove(HWND);
     int _OnMoving(HWND);
+    // int _OnWindowPosChanging(HWND);
     int _OnWindowPosChanged(HWND);
-    int _OnWindowPosChanging(HWND);
     int _OnSetFocus(HWND);
     int _OnSettingChange(HWND);
     int _OnKeyDown(HWND, WPARAM);

@@ -90,7 +90,9 @@ void MainWindow::Maximize(HWND hwnd)
     }
 
     else
+    {
         ShowWindow(hwnd, SW_MAXIMIZE);
+    }
 }
 
 void MainWindow::Fullscreen(HWND hwnd)
@@ -187,15 +189,21 @@ __int64 __stdcall MainWindow::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARA
         case WM_PAINT:
             return pMainWindow->_OnPaint(hwnd);
         case WM_SIZE:
-            return pMainWindow->_OnSize(hwnd);
+            return pMainWindow->_OnSize(hwnd, wparam);
         case WM_SIZING:
             return pMainWindow->_OnSizing(hwnd);
+        case WM_ENTERSIZEMOVE:
+            return pMainWindow->_OnEnterSizeMove(hwnd);
+        case WM_EXITSIZEMOVE:
+            return pMainWindow->_OnExitSizeMove(hwnd);
+        case WM_MOVE:
+            return pMainWindow->_OnMove(hwnd);
         case WM_MOVING:
             return pMainWindow->_OnMoving(hwnd);
-        case WM_WINDOWPOSCHANGED:
-            return pMainWindow->_OnWindowPosChanged(hwnd);
-        case WM_WINDOWPOSCHANGING:
-            return pMainWindow->_OnWindowPosChanging(hwnd);
+        // case WM_WINDOWPOSCHANGING:
+        //     return pMainWindow->_OnWindowPosChanging(hwnd);
+        // case WM_WINDOWPOSCHANGED:
+        //     return pMainWindow->_OnWindowPosChanged(hwnd);
         case WM_SETFOCUS:
             return pMainWindow->_OnSetFocus(hwnd);
         case WM_SETTINGCHANGE:
@@ -234,8 +242,6 @@ int MainWindow::_OnCreate(HWND hwnd)
     SetDarkMode(hwnd);
     SetMica(hwnd);
 
-    pConfig->Load();
-
     return 0;
 }
 
@@ -253,15 +259,6 @@ int MainWindow::_OnClose(HWND hwnd)
 #ifdef _DEBUG
     // Utility::print(std::string("WM_CLOSE\n"));
 #endif
-
-    WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
-    GetWindowPlacement(hwnd, &wp);
-    if (wp.showCmd == 3)
-        pConfig->boolMaximized = true;
-    else
-        pConfig->boolMaximized = false;
-
-    pConfig->Save();
 
     Gdiplus::GdiplusShutdown(gdiplusToken);
     DestroyWindow(hwnd);
@@ -318,11 +315,25 @@ int MainWindow::_OnPaint(HWND hwnd)
     return 0;
 }
 
-int MainWindow::_OnSize(HWND hwnd)
+int MainWindow::_OnSize(HWND hwnd, WPARAM wparam)
 {
 #ifdef _DEBUG
-    // Utility::print(std::string("WM_SIZE\n"));
+    Utility::print(std::string("WM_SIZE\n"));
 #endif
+
+    if (wparam == 2)
+    {
+        pConfig->boolMaximized = true;
+        pConfig->Save();
+    }
+
+    if (wparam == 1)
+    {
+        pConfig->boolMaximized = false;
+        pConfig->Save();
+    }
+
+    WebView::UpdateBounds(hwnd);
 
     return 0;
 }
@@ -330,17 +341,47 @@ int MainWindow::_OnSize(HWND hwnd)
 int MainWindow::_OnSizing(HWND hwnd)
 {
 #ifdef _DEBUG
-    // Utility::print(std::string("WM_SIZING\n"));
+    Utility::print(std::string("WM_SIZING\n"));
+#endif
+
+    return 0;
+}
+
+int MainWindow::_OnEnterSizeMove(HWND hwnd)
+{
+#ifdef _DEBUG
+    // Utility::print(std::string("WM_ENTERSIZEMOVE\n"));
+#endif
+
+    return 0;
+}
+
+int MainWindow::_OnExitSizeMove(HWND hwnd)
+{
+#ifdef _DEBUG
+    Utility::print(std::string("WM_EXITSIZEMOVE\n"));
 #endif
 
     WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
     GetWindowPlacement(hwnd, &wp);
+
     if (!pConfig->boolFullscreen & (wp.showCmd != 3))
     {
         RECT rect;
         GetWindowRect(hwnd, &rect);
         pConfig->vectorPosition = Utility::RectToBounds(rect);
     }
+
+    pConfig->Save();
+
+    return 0;
+}
+
+int MainWindow::_OnMove(HWND hwnd)
+{
+#ifdef _DEBUG
+    Utility::print(std::string("WM_MOVE\n"));
+#endif
 
     return 0;
 }
@@ -351,37 +392,26 @@ int MainWindow::_OnMoving(HWND hwnd)
     // Utility::print(std::string("WM_MOVING\n"));
 #endif
 
-    WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
-    GetWindowPlacement(hwnd, &wp);
-    if (!pConfig->boolFullscreen & (wp.showCmd != 3))
-    {
-        RECT rect;
-        GetWindowRect(hwnd, &rect);
-        pConfig->vectorPosition = Utility::RectToBounds(rect);
-    }
-
     return 0;
 }
 
-int MainWindow::_OnWindowPosChanged(HWND hwnd)
-{
-#ifdef _DEBUG
-    // Utility::print(std::string("WM_WINDOWPOSCHANGED\n"));
-#endif
+// int MainWindow::_OnWindowPosChanging(HWND hwnd)
+// {
+// #ifdef _DEBUG
+//     // Utility::print(std::string("WM_WINDOWPOSCHANGING\n"));
+// #endif
 
-    WebView::UpdateBounds(hwnd);
+//     return 0;
+// }
 
-    return 0;
-}
+// int MainWindow::_OnWindowPosChanged(HWND hwnd)
+// {
+// #ifdef _DEBUG
+//     Utility::print(std::string("WM_WINDOWPOSCHANGED\n"));
+// #endif
 
-int MainWindow::_OnWindowPosChanging(HWND hwnd)
-{
-#ifdef _DEBUG
-    // Utility::print(std::string("WM_WINDOWPOSCHANGING\n"));
-#endif
-
-    return 0;
-}
+//     return 0;
+// }
 
 int MainWindow::_OnSetFocus(HWND hwnd)
 {
@@ -414,6 +444,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
         WebView::UpdateFocus();
         WebView::SetWindowTitle(hwnd);
         WebView::SetWindowIcon(hwnd);
+        pConfig->Save();
     }
 
     if (wparam == VK_F2)
@@ -426,6 +457,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
         WebView::UpdateFocus();
         WebView::SetWindowTitle(hwnd);
         WebView::SetWindowIcon(hwnd);
+        pConfig->Save();
     }
 
     if (wparam == VK_F4)
@@ -438,6 +470,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
         WebView::UpdateFocus();
         WebView::SetWindowTitle(hwnd);
         WebView::SetWindowIcon(hwnd);
+        pConfig->Save();
     }
 
     if (wparam == VK_F6)
@@ -445,12 +478,12 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
 #ifdef _DEBUG
         // Utility::print("F6\n");
 #endif
+
         if (!pConfig->boolFullscreen)
         {
-            pConfig->boolMaximized = Utility::Toggle(pConfig->boolMaximized);
             MainWindow::Maximize(hwnd);
-            WebView::UpdateBounds(hwnd);
         }
+        pConfig->Save();
     }
 
     if (wparam == VK_F11)
@@ -461,6 +494,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
         pConfig->boolFullscreen = Utility::Toggle(pConfig->boolFullscreen);
         MainWindow::Fullscreen(hwnd);
         WebView::UpdateBounds(hwnd);
+        pConfig->Save();
     }
 
     if (wparam == VK_F9)
@@ -471,6 +505,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
         pConfig->boolTopmost = Utility::Toggle(pConfig->boolTopmost);
         MainWindow::Topmost(hwnd);
         WebView::SetWindowTitle(hwnd);
+        pConfig->Save();
     }
 
     if (wparam == 0x57)
@@ -486,6 +521,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
 int MainWindow::_OnChar(HWND hwnd, WPARAM wparam)
 {
 #ifdef _DEBUG
+    // Utility::print(std::string("WM_CHAR\n"));
 #endif
 
     return 0;

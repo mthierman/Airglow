@@ -355,6 +355,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
         WebView::UpdateFocus();
         WebView::SetWindowTitle(hwnd);
         WebView::SetWindowIcon(hwnd);
+        pConfig->Save();
     }
 
     if (message == swapKey)
@@ -367,6 +368,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
         WebView::UpdateFocus();
         WebView::SetWindowTitle(hwnd);
         WebView::SetWindowIcon(hwnd);
+        pConfig->Save();
     }
 
     if (message == hideMenuKey)
@@ -379,6 +381,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
         WebView::UpdateFocus();
         WebView::SetWindowTitle(hwnd);
         WebView::SetWindowIcon(hwnd);
+        pConfig->Save();
     }
 
     if (message == maximizeKey)
@@ -386,11 +389,11 @@ void WebView::Messages(HWND hwnd, std::wstring message)
 #ifdef _DEBUG
         // Utility::print("F6 (WebView)\n");
 #endif
+
+        pConfig->boolMaximized = Utility::Toggle(pConfig->boolMaximized);
         if (!pConfig->boolFullscreen)
         {
-            pConfig->boolMaximized = Utility::Toggle(pConfig->boolMaximized);
             MainWindow::Maximize(hwnd);
-            WebView::UpdateBounds(hwnd);
         }
     }
 
@@ -402,6 +405,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
         pConfig->boolFullscreen = Utility::Toggle(pConfig->boolFullscreen);
         MainWindow::Fullscreen(hwnd);
         WebView::UpdateBounds(hwnd);
+        pConfig->Save();
     }
 
     if (message == onTopKey)
@@ -412,6 +416,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
         pConfig->boolTopmost = Utility::Toggle(pConfig->boolTopmost);
         MainWindow::Topmost(hwnd);
         WebView::SetWindowTitle(hwnd);
+        pConfig->Save();
     }
 
     if (message == closeKey)

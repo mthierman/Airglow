@@ -8,6 +8,7 @@ std::unique_ptr<Config> Config::Create()
 
     pConfig->pathData = Utility::DataPath();
     pConfig->pathSettings = Utility::SettingsPath(pConfig->pathData);
+    pConfig->Load();
 
     return pConfig;
 }
