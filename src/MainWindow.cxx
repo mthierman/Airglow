@@ -76,22 +76,7 @@ void MainWindow::Show(HWND hwnd, int ncs)
     }
 }
 
-void MainWindow::Maximize(HWND hwnd)
-{
-    WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
-    GetWindowPlacement(hwnd, &wp);
-    if (wp.showCmd == 3)
-    {
-        ShowWindow(hwnd, SW_NORMAL);
-        SetWindowPos(hwnd, nullptr, pConfig->vectorPosition[0], pConfig->vectorPosition[1],
-                     pConfig->vectorPosition[2], pConfig->vectorPosition[3], 0);
-    }
-
-    else
-    {
-        ShowWindow(hwnd, SW_MAXIMIZE);
-    }
-}
+void MainWindow::Maximize(HWND hwnd) {}
 
 void MainWindow::Fullscreen(HWND hwnd)
 {
@@ -435,6 +420,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
 #ifdef _DEBUG
         Utility::print("F1\n");
 #endif
+
         pConfig->boolSplit = Utility::Toggle(pConfig->boolSplit);
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
@@ -448,6 +434,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
 #ifdef _DEBUG
         Utility::print("F2\n");
 #endif
+
         pConfig->boolSwapped = Utility::Toggle(pConfig->boolSwapped);
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
@@ -461,6 +448,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
 #ifdef _DEBUG
         Utility::print("F4\n");
 #endif
+
         pConfig->boolMenu = Utility::Toggle(pConfig->boolMenu);
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
@@ -477,7 +465,17 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
 
         if (!pConfig->boolFullscreen)
         {
-            MainWindow::Maximize(hwnd);
+            WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
+            GetWindowPlacement(hwnd, &wp);
+            if (wp.showCmd == 3)
+            {
+                ShowWindow(hwnd, SW_SHOWNORMAL);
+                SetWindowPos(hwnd, nullptr, pConfig->vectorPosition[0], pConfig->vectorPosition[1],
+                             pConfig->vectorPosition[2], pConfig->vectorPosition[3], 0);
+            }
+
+            else
+                ShowWindow(hwnd, SW_MAXIMIZE);
         }
     }
 
@@ -486,6 +484,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
 #ifdef _DEBUG
         Utility::print("F11\n");
 #endif
+
         pConfig->boolFullscreen = Utility::Toggle(pConfig->boolFullscreen);
         MainWindow::Fullscreen(hwnd);
         WebView::UpdateBounds(hwnd);
@@ -497,6 +496,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
 #ifdef _DEBUG
         Utility::print("F9\n");
 #endif
+
         pConfig->boolTopmost = Utility::Toggle(pConfig->boolTopmost);
         MainWindow::Topmost(hwnd);
         WebView::SetWindowTitle(hwnd);

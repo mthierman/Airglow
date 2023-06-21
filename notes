@@ -38,3 +38,46 @@
 //     pConfig->boolMaximized = true;
 // else
 //     pConfig->boolMaximized = false;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
+    // GetWindowPlacement(hwnd, &wp);
+
+    // if (wp.showCmd == 3)
+    // {
+    //     pConfig->boolMaximized = true;
+    //     ShowWindow(hwnd, SW_NORMAL);
+    //     SetWindowPos(hwnd, nullptr, pConfig->vectorPosition[0], pConfig->vectorPosition[1],
+    //                  pConfig->vectorPosition[2], pConfig->vectorPosition[3], 0);
+    // }
+
+    // else
+    // {
+    //     pConfig->boolMaximized = false;
+    //     ShowWindow(hwnd, SW_MAXIMIZE);
+    // }

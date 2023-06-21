@@ -390,10 +390,12 @@ void WebView::Messages(HWND hwnd, std::wstring message)
         Utility::print("F6 (WebView)\n");
 #endif
 
-        if (!pConfig->boolFullscreen)
-        {
-            MainWindow::Maximize(hwnd);
-        }
+        WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
+        GetWindowPlacement(hwnd, &wp);
+        if (wp.showCmd == 3)
+            ShowWindow(hwnd, SW_SHOWNORMAL);
+        else
+            ShowWindow(hwnd, SW_MAXIMIZE);
     }
 
     if (message == fullscreenKey)
