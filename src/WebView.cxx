@@ -114,7 +114,7 @@ void WebView::Initialize(HWND hwnd)
                             else
                                 main_wv->Navigate(L"https://www.google.com/");
 
-                            auto script = GetMenuScript();
+                            auto script = GetScript();
                             main_wv->ExecuteScript(script.c_str(), nullptr);
                             main_wv->AddScriptToExecuteOnDocumentCreated(script.c_str(), nullptr);
 
@@ -199,7 +199,7 @@ void WebView::Initialize(HWND hwnd)
                             else
                                 side_wv->Navigate(L"https://www.bing.com/");
 
-                            auto script = GetMenuScript();
+                            auto script = GetScript();
                             side_wv->ExecuteScript(script.c_str(), nullptr);
                             side_wv->AddScriptToExecuteOnDocumentCreated(script.c_str(), nullptr);
 
