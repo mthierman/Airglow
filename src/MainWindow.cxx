@@ -302,8 +302,8 @@ int MainWindow::_OnGetMinMaxInfo(HWND hwnd, LPARAM lparam)
     }
 
     LPMINMAXINFO minmax = (LPMINMAXINFO)lparam;
-    minmax->ptMinTrackSize.x = 800;
-    minmax->ptMinTrackSize.y = 600;
+    minmax->ptMinTrackSize.x = 300;
+    minmax->ptMinTrackSize.y = 300;
 
     return 0;
 }
