@@ -74,20 +74,19 @@
         },
         {
             "name": "clang",
-            "configurePreset": "Release Clang"
+            "displayName": "Release (Clang)",
+            "configurePreset": "clang"
         },
         {
             "name": "debug",
             "displayName": "Debug",
             "configurePreset": "debug"
         },
-
         {
             "name": "clDebug",
             "displayName": "Debug (MSVC)",
             "configurePreset": "clDebug"
         },
-
         {
             "name": "clangDebug",
             "displayName": "Debug (Clang)",
