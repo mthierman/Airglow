@@ -10,7 +10,6 @@ class MainWindow
     static std::unique_ptr<MainWindow> Create(HINSTANCE, int, Config*);
     static Config* pConfig;
     static void Show(HWND, int);
-    static void Maximize(HWND);
     static void Fullscreen(HWND);
     static void Topmost(HWND);
     static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
