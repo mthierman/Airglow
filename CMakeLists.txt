@@ -8,7 +8,6 @@ project(
     LANGUAGES CXX
 )
 
-option(CREATE_SYMLINK OFF)
 option(USER_INSTALL OFF)
 option(SYSTEM_INSTALL OFF)
 
@@ -125,13 +124,6 @@ target_compile_definitions(
     PRIVATE
     UNICODE
 )
-
-if(CREATE_SYMLINK)
-    add_custom_command(
-        TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.exe $ENV{SystemDrive}/Programs/${PROJECT_NAME}.exe
-    )
-endif()
 
 if(USER_INSTALL)
     add_custom_command(
