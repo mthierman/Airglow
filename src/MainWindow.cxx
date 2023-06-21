@@ -1,5 +1,7 @@
 #include "MainWindow.hxx"
 
+using namespace Utility;
+
 Config* MainWindow::pConfig = nullptr;
 unsigned long long MainWindow::gdiplusToken;
 Gdiplus::GdiplusStartupInput MainWindow::gdiplusStartupInput;
@@ -33,8 +35,8 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Con
 
     if (RegisterClassExW(&wcex) == 0)
     {
-        std::string error = "Register window failed";
-        Utility::error(error);
+        std::string err = "Register window failed";
+        error(err);
         return 0;
     }
 
@@ -46,8 +48,8 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Con
 
     if (!hwnd)
     {
-        std::string error = "Window creation failed";
-        Utility::error(error);
+        std::string err = "Window creation failed";
+        error(err);
         return 0;
     }
 
@@ -208,7 +210,7 @@ __int64 __stdcall MainWindow::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARA
 int MainWindow::_OnCommand()
 {
 #ifdef _DEBUG
-    Utility::print(std::string("WM_COMMAND\n"));
+    print(std::string("WM_COMMAND\n"));
 #endif
 
     return 0;
@@ -217,7 +219,7 @@ int MainWindow::_OnCommand()
 int MainWindow::_OnCreate(HWND hwnd)
 {
 #ifdef _DEBUG
-    Utility::print(std::string("WM_CREATE\n"));
+    print(std::string("WM_CREATE\n"));
     pConfig->Tests();
 #endif
 
@@ -236,7 +238,7 @@ int MainWindow::_OnCreate(HWND hwnd)
 int MainWindow::_OnActivate(HWND hwnd, WPARAM wparam)
 {
 #ifdef _DEBUG
-    Utility::print(std::string("WM_ACTIVATE\n"));
+    print(std::string("WM_ACTIVATE\n"));
 #endif
 
     return 0;
@@ -245,7 +247,7 @@ int MainWindow::_OnActivate(HWND hwnd, WPARAM wparam)
 int MainWindow::_OnClose(HWND hwnd)
 {
 #ifdef _DEBUG
-    Utility::print(std::string("WM_CLOSE\n"));
+    print(std::string("WM_CLOSE\n"));
 #endif
 
     Gdiplus::GdiplusShutdown(gdiplusToken);
@@ -257,7 +259,7 @@ int MainWindow::_OnClose(HWND hwnd)
 int MainWindow::_OnDestroy()
 {
 #ifdef _DEBUG
-    Utility::print(std::string("WM_DESTROY\n"));
+    print(std::string("WM_DESTROY\n"));
 #endif
 
     PostQuitMessage(0);
@@ -268,7 +270,7 @@ int MainWindow::_OnDestroy()
 int MainWindow::_OnDpiChanged()
 {
 #ifdef _DEBUG
-    Utility::print(std::string("WM_DPICHANGED\n"));
+    print(std::string("WM_DPICHANGED\n"));
 #endif
 
     return 0;
@@ -277,7 +279,7 @@ int MainWindow::_OnDpiChanged()
 int MainWindow::_OnGetMinMaxInfo(HWND hwnd, LPARAM lparam)
 {
 #ifdef _DEBUG
-    Utility::print(std::string("WM_GETMINMAXINFO\n"));
+    print(std::string("WM_GETMINMAXINFO\n"));
 #endif
 
     WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
@@ -298,7 +300,7 @@ int MainWindow::_OnGetMinMaxInfo(HWND hwnd, LPARAM lparam)
 int MainWindow::_OnPaint(HWND hwnd)
 {
 #ifdef _DEBUG
-    Utility::print(std::string("WM_PAINT\n"));
+    print(std::string("WM_PAINT\n"));
 #endif
 
     PAINTSTRUCT ps;
@@ -314,7 +316,7 @@ int MainWindow::_OnPaint(HWND hwnd)
 int MainWindow::_OnSize(HWND hwnd, WPARAM wparam)
 {
 #ifdef _DEBUG
-    Utility::print(std::string("WM_SIZE\n"));
+    print(std::string("WM_SIZE\n"));
 #endif
 
     if (wparam == 2)
@@ -331,7 +333,7 @@ int MainWindow::_OnSize(HWND hwnd, WPARAM wparam)
 int MainWindow::_OnSizing(HWND hwnd)
 {
 #ifdef _DEBUG
-    Utility::print(std::string("WM_SIZING\n"));
+    print(std::string("WM_SIZING\n"));
 #endif
 
     return 0;
@@ -340,7 +342,7 @@ int MainWindow::_OnSizing(HWND hwnd)
 int MainWindow::_OnEnterSizeMove(HWND hwnd)
 {
 #ifdef _DEBUG
-    Utility::print(std::string("WM_ENTERSIZEMOVE\n"));
+    print(std::string("WM_ENTERSIZEMOVE\n"));
 #endif
 
     return 0;
@@ -349,7 +351,7 @@ int MainWindow::_OnEnterSizeMove(HWND hwnd)
 int MainWindow::_OnExitSizeMove(HWND hwnd)
 {
 #ifdef _DEBUG
-    Utility::print(std::string("WM_EXITSIZEMOVE\n"));
+    print(std::string("WM_EXITSIZEMOVE\n"));
 #endif
 
     WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
@@ -359,7 +361,7 @@ int MainWindow::_OnExitSizeMove(HWND hwnd)
     {
         RECT rect;
         GetWindowRect(hwnd, &rect);
-        pConfig->vectorPosition = Utility::RectToBounds(rect);
+        pConfig->vectorPosition = RectToBounds(rect);
     }
 
     pConfig->Save();
@@ -370,7 +372,7 @@ int MainWindow::_OnExitSizeMove(HWND hwnd)
 int MainWindow::_OnMove(HWND hwnd)
 {
 #ifdef _DEBUG
-    Utility::print(std::string("WM_MOVE\n"));
+    print(std::string("WM_MOVE\n"));
 #endif
 
     return 0;
@@ -379,7 +381,7 @@ int MainWindow::_OnMove(HWND hwnd)
 int MainWindow::_OnMoving(HWND hwnd)
 {
 #ifdef _DEBUG
-    Utility::print(std::string("WM_MOVING\n"));
+    print(std::string("WM_MOVING\n"));
 #endif
 
     return 0;
@@ -388,7 +390,7 @@ int MainWindow::_OnMoving(HWND hwnd)
 // int MainWindow::_OnWindowPosChanging(HWND hwnd)
 // {
 // #ifdef _DEBUG
-//     Utility::print(std::string("WM_WINDOWPOSCHANGING\n"));
+//     print(std::string("WM_WINDOWPOSCHANGING\n"));
 // #endif
 
 //     return 0;
@@ -397,7 +399,7 @@ int MainWindow::_OnMoving(HWND hwnd)
 // int MainWindow::_OnWindowPosChanged(HWND hwnd)
 // {
 // #ifdef _DEBUG
-//     Utility::print(std::string("WM_WINDOWPOSCHANGED\n"));
+//     print(std::string("WM_WINDOWPOSCHANGED\n"));
 // #endif
 
 //     return 0;
@@ -406,7 +408,7 @@ int MainWindow::_OnMoving(HWND hwnd)
 int MainWindow::_OnSetFocus(HWND hwnd)
 {
 #ifdef _DEBUG
-    Utility::print(std::string("WM_SETFOCUS\n"));
+    print(std::string("WM_SETFOCUS\n"));
 #endif
 
     return 0;
@@ -415,7 +417,7 @@ int MainWindow::_OnSetFocus(HWND hwnd)
 int MainWindow::_OnSettingChange(HWND hwnd)
 {
 #ifdef _DEBUG
-    Utility::print(std::string("WM_SETTINGCHANGE\n"));
+    print(std::string("WM_SETTINGCHANGE\n"));
 #endif
 
     InvalidateRect(hwnd, nullptr, true);
@@ -427,10 +429,10 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
     if (wparam == VK_F1)
     {
 #ifdef _DEBUG
-        Utility::print("F1\n");
+        print("F1\n");
 #endif
 
-        pConfig->boolSplit = Utility::Toggle(pConfig->boolSplit);
+        pConfig->boolSplit = Toggle(pConfig->boolSplit);
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
         WebView::SetWindowTitle(hwnd);
@@ -441,10 +443,10 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
     if (wparam == VK_F2)
     {
 #ifdef _DEBUG
-        Utility::print("F2\n");
+        print("F2\n");
 #endif
 
-        pConfig->boolSwapped = Utility::Toggle(pConfig->boolSwapped);
+        pConfig->boolSwapped = Toggle(pConfig->boolSwapped);
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
         WebView::SetWindowTitle(hwnd);
@@ -455,10 +457,10 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
     if (wparam == VK_F4)
     {
 #ifdef _DEBUG
-        Utility::print("F4\n");
+        print("F4\n");
 #endif
 
-        pConfig->boolMenu = Utility::Toggle(pConfig->boolMenu);
+        pConfig->boolMenu = Toggle(pConfig->boolMenu);
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
         WebView::SetWindowTitle(hwnd);
@@ -469,7 +471,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
     if (wparam == VK_F6)
     {
 #ifdef _DEBUG
-        Utility::print("F6\n");
+        print("F6\n");
 #endif
 
         if (!pConfig->boolFullscreen)
@@ -491,10 +493,10 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
     if (wparam == VK_F11)
     {
 #ifdef _DEBUG
-        Utility::print("F11\n");
+        print("F11\n");
 #endif
 
-        pConfig->boolFullscreen = Utility::Toggle(pConfig->boolFullscreen);
+        pConfig->boolFullscreen = Toggle(pConfig->boolFullscreen);
         MainWindow::Fullscreen(hwnd);
         WebView::UpdateBounds(hwnd);
         pConfig->Save();
@@ -503,10 +505,10 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
     if (wparam == VK_F9)
     {
 #ifdef _DEBUG
-        Utility::print("F9\n");
+        print("F9\n");
 #endif
 
-        pConfig->boolTopmost = Utility::Toggle(pConfig->boolTopmost);
+        pConfig->boolTopmost = Toggle(pConfig->boolTopmost);
         MainWindow::Topmost(hwnd);
         WebView::SetWindowTitle(hwnd);
         pConfig->Save();
@@ -525,7 +527,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
 int MainWindow::_OnChar(HWND hwnd, WPARAM wparam)
 {
 #ifdef _DEBUG
-    Utility::print(std::string("WM_CHAR\n"));
+    print(std::string("WM_CHAR\n"));
 #endif
 
     return 0;

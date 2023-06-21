@@ -1,8 +1,7 @@
 #pragma once
 
-#include "Config.hxx"
 #include "MainWindow.hxx"
-#include "Utility.hxx"
+#include "Config.hxx"
 
 static wil::com_ptr<ICoreWebView2_19> settings_wv;
 static wil::com_ptr<ICoreWebView2Controller> settings_controller;

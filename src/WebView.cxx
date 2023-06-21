@@ -1,5 +1,7 @@
 #include "WebView.hxx"
 
+using namespace Utility;
+
 Config* WebView::pConfig = nullptr;
 
 WebView::WebView(HWND hwnd, Config* config) {}
@@ -105,7 +107,7 @@ void WebView::Initialize(HWND hwnd)
                             main_settings->put_IsZoomControlEnabled(true);
                             main_controller->put_Bounds(MainBounds(hwnd));
 
-                            auto args = Utility::CommandLine();
+                            auto args = CommandLine();
 
                             if (!args.first.empty())
                             {
@@ -190,14 +192,14 @@ void WebView::Initialize(HWND hwnd)
                             side_settings->put_IsZoomControlEnabled(true);
                             side_controller->put_Bounds(SideBounds(hwnd));
 
-                            auto args = Utility::CommandLine();
+                            auto args = CommandLine();
 
                             if (!args.second.empty())
                             {
                                 side_wv->Navigate(args.second.c_str());
                             }
                             else
-                                side_wv->Navigate(L"https://www.bing.com/");
+                                side_wv->Navigate(L"https://www.google.com/");
 
                             auto script = GetScript();
                             side_wv->ExecuteScript(script.c_str(), nullptr);
@@ -266,7 +268,7 @@ std::wstring WebView::GetScriptFile(std::filesystem::path appData)
             if (!std::filesystem::is_empty(file))
             {
                 buffer << f.rdbuf();
-                script = Utility::ToWide(buffer.str());
+                script = ToWide(buffer.str());
             }
             f.close();
         }
@@ -348,9 +350,9 @@ void WebView::Messages(HWND hwnd, std::wstring message)
     if (message == splitKey)
     {
 #ifdef _DEBUG
-        Utility::print("F1 (WebView)\n");
+        print("F1 (WebView)\n");
 #endif
-        pConfig->boolSplit = Utility::Toggle(pConfig->boolSplit);
+        pConfig->boolSplit = Toggle(pConfig->boolSplit);
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
         WebView::SetWindowTitle(hwnd);
@@ -361,9 +363,9 @@ void WebView::Messages(HWND hwnd, std::wstring message)
     if (message == swapKey)
     {
 #ifdef _DEBUG
-        Utility::print("F2 (WebView)\n");
+        print("F2 (WebView)\n");
 #endif
-        pConfig->boolSwapped = Utility::Toggle(pConfig->boolSwapped);
+        pConfig->boolSwapped = Toggle(pConfig->boolSwapped);
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
         WebView::SetWindowTitle(hwnd);
@@ -374,9 +376,9 @@ void WebView::Messages(HWND hwnd, std::wstring message)
     if (message == hideMenuKey)
     {
 #ifdef _DEBUG
-        Utility::print("F4 (WebView)\n");
+        print("F4 (WebView)\n");
 #endif
-        pConfig->boolMenu = Utility::Toggle(pConfig->boolMenu);
+        pConfig->boolMenu = Toggle(pConfig->boolMenu);
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
         WebView::SetWindowTitle(hwnd);
@@ -387,7 +389,7 @@ void WebView::Messages(HWND hwnd, std::wstring message)
     if (message == maximizeKey)
     {
 #ifdef _DEBUG
-        Utility::print("F6 (WebView)\n");
+        print("F6 (WebView)\n");
 #endif
 
         WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
@@ -401,9 +403,9 @@ void WebView::Messages(HWND hwnd, std::wstring message)
     if (message == fullscreenKey)
     {
 #ifdef _DEBUG
-        Utility::print("F11 (WebView)\n");
+        print("F11 (WebView)\n");
 #endif
-        pConfig->boolFullscreen = Utility::Toggle(pConfig->boolFullscreen);
+        pConfig->boolFullscreen = Toggle(pConfig->boolFullscreen);
         MainWindow::Fullscreen(hwnd);
         WebView::UpdateBounds(hwnd);
         pConfig->Save();
@@ -412,9 +414,9 @@ void WebView::Messages(HWND hwnd, std::wstring message)
     if (message == onTopKey)
     {
 #ifdef _DEBUG
-        Utility::print("F9 (WebView)\n");
+        print("F9 (WebView)\n");
 #endif
-        pConfig->boolTopmost = Utility::Toggle(pConfig->boolTopmost);
+        pConfig->boolTopmost = Toggle(pConfig->boolTopmost);
         MainWindow::Topmost(hwnd);
         WebView::SetWindowTitle(hwnd);
         pConfig->Save();

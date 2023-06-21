@@ -1,8 +1,7 @@
 #pragma once
 
-#include "Config.hxx"
 #include "WebView.hxx"
-#include "Utility.hxx"
+#include "Config.hxx"
 
 class MainWindow
 {

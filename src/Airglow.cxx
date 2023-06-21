@@ -1,5 +1,7 @@
 #include "Airglow.hxx"
 
+using namespace Utility;
+
 int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
 {
     HWND hwnd;
@@ -8,8 +10,8 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
 
     if (!std::filesystem::exists(pConfig->pathData))
     {
-        std::string error = "Data folder not found";
-        Utility::error(error);
+        std::string err = "Data folder not found";
+        error(err);
         return 0;
     }
 
@@ -18,8 +20,8 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
 
     if (!hwnd)
     {
-        std::string error = "Window creation failed";
-        Utility::error(error);
+        std::string err = "Window creation failed";
+        error(err);
         return 0;
     }
 
