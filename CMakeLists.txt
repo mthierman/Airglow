@@ -8,6 +8,10 @@ project(
     LANGUAGES CXX
 )
 
+option(CREATE_SYMLINK OFF)
+option(USER_INSTALL OFF)
+option(SYSTEM_INSTALL OFF)
+
 set(WEBVIEW "Microsoft.Web.WebView2")
 set(WEBVIEW_VER "1.0.1823.32")
 set(WIL "Microsoft.Windows.ImplementationLibrary")
@@ -121,3 +125,24 @@ target_compile_definitions(
     PRIVATE
     UNICODE
 )
+
+if(CREATE_SYMLINK)
+    add_custom_command(
+        TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.exe $ENV{SystemDrive}/Programs/${PROJECT_NAME}.exe
+    )
+endif()
+
+if(USER_INSTALL)
+    add_custom_command(
+        TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.exe $ENV{LocalAppData}/Airglow/${PROJECT_NAME}.exe
+    )
+endif()
+
+if(SYSTEM_INSTALL)
+    add_custom_command(
+        TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.exe $ENV{ProgramFiles}/Airglow/${PROJECT_NAME}.exe
+    )
+endif()
