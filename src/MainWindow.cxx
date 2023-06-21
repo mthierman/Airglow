@@ -318,19 +318,20 @@ int MainWindow::_OnPaint(HWND hwnd)
 int MainWindow::_OnSize(HWND hwnd, WPARAM wparam)
 {
 #ifdef _DEBUG
-    Utility::print(std::string("WM_SIZE\n"));
+    // Utility::print(std::string("WM_SIZE\n"));
 #endif
 
     if (wparam == 2)
     {
+        // Utility::print(std::string("MAXXED!\n"));
         pConfig->boolMaximized = true;
         pConfig->Save();
     }
 
     if (wparam == 1)
     {
-        pConfig->boolMaximized = false;
-        pConfig->Save();
+        // pConfig->boolMaximized = false;
+        // pConfig->Save();
     }
 
     WebView::UpdateBounds(hwnd);
@@ -382,6 +383,9 @@ int MainWindow::_OnMove(HWND hwnd)
 #ifdef _DEBUG
     Utility::print(std::string("WM_MOVE\n"));
 #endif
+
+    pConfig->boolMaximized = false;
+    pConfig->Save();
 
     return 0;
 }
@@ -483,7 +487,6 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
         {
             MainWindow::Maximize(hwnd);
         }
-        pConfig->Save();
     }
 
     if (wparam == VK_F11)
