@@ -17,4 +17,6 @@ std::string BoolToString(bool);
 std::wstring BoolToWide(bool);
 std::pair<std::wstring, std::wstring> CommandLine();
 void Tests(HWND);
+std::filesystem::path DataPath();
+std::filesystem::path SettingsPath(std::filesystem::path appData);
 }; // namespace Utility

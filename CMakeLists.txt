@@ -50,33 +50,21 @@ else()
     set(CHOC_PKG ${choc_SOURCE_DIR})
 endif()
 
-if(DEFINED ENV{LIB_TAOJSON})
-    set(TAOJSON_PKG $ENV{LIB_TAOJSON})
+if(DEFINED ENV{LIB_JSON})
+    set(JSON_PKG $ENV{LIB_JSON})
 else()
     FetchContent_Declare(
         json
-        URL https://github.com/taocpp/json.git
+        URL https://github.com/nlohmann/json/releases/download/v3.11.2/include.zip
     )
     FetchContent_MakeAvailable(json)
-    set(TAOJSON_PKG ${json_SOURCE_DIR}/include)
-endif()
-
-if(DEFINED ENV{LIB_PEGTL})
-    set(PEGTL_PKG $ENV{LIB_PEGTL})
-else()
-    FetchContent_Declare(
-        PEGTL
-        URL https://github.com/taocpp/PEGTL.git
-    )
-    FetchContent_MakeAvailable(PEGTL)
-    set(PEGTL_PKG ${json_SOURCE_DIR}/include)
+    set(JSON_PKG ${json_SOURCE_DIR}/single_include)
 endif()
 
 message(STATUS "WebView2 found: ${WEBVIEW_PKG}")
 message(STATUS "Windows Implementation Library found: ${WIL_PKG}")
 message(STATUS "choc found: ${CHOC_PKG}")
-message(STATUS "taocpp/json found: ${TAOJSON_PKG}")
-message(STATUS "taocpp/PEGTL found: ${PEGTL_PKG}")
+message(STATUS "nlohmann/json found: ${JSON_PKG}")
 
 add_executable(
     ${PROJECT_NAME}
@@ -110,8 +98,7 @@ target_include_directories(
     ${CHOC_PKG}/platform
     ${CHOC_PKG}/text
     ${CHOC_PKG}/threading
-    ${TAOJSON_PKG}
-    ${PEGTL_PKG}
+    ${JSON_PKG}
 )
 
 target_link_directories(

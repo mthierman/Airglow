@@ -2,13 +2,15 @@
 
 #include "Utility.hxx"
 
+using json = nlohmann::json;
+
 class Config
 {
   public:
     static std::unique_ptr<Config> Create();
     void Load();
     void Save();
-    tao::json::value Get();
+    json Get();
     void Tests();
 
     std::filesystem::path pathData;
@@ -25,8 +27,6 @@ class Config
     std::string stringSide{"https://www.google.com/"};
 
   private:
-    std::filesystem::path DataPath();
-    std::filesystem::path SettingsPath(std::filesystem::path appData);
     std::ofstream streamSettingsPath;
 
   protected:

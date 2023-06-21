@@ -137,4 +137,34 @@ void Tests(HWND hwnd)
     auto acp = GetACP();
     printw(std::to_wstring(acp));
 }
+
+std::filesystem::path Utility::DataPath()
+{
+    std::filesystem::path path;
+    std::wstring outBuffer;
+    PWSTR buffer;
+
+    if (SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &buffer) != S_OK)
+    {
+        CoTaskMemFree(buffer);
+        return path;
+    }
+
+    path = std::wstring(buffer) + std::filesystem::path::preferred_separator + L"Airglow";
+
+    CoTaskMemFree(buffer);
+
+    if (!std::filesystem::exists(path))
+        std::filesystem::create_directory(path);
+
+    return path;
+}
+
+std::filesystem::path Utility::SettingsPath(std::filesystem::path path)
+{
+    std::filesystem::path config =
+        (path.wstring() + std::filesystem::path::preferred_separator + L"Config.json");
+
+    return config;
+}
 } // namespace Utility

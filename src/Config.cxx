@@ -6,20 +6,20 @@ std::unique_ptr<Config> Config::Create()
 {
     auto pConfig = std::unique_ptr<Config>(new Config());
 
-    pConfig->pathData = pConfig->DataPath();
-    pConfig->pathSettings = pConfig->SettingsPath(pConfig->pathData);
+    pConfig->pathData = Utility::DataPath();
+    pConfig->pathSettings = Utility::SettingsPath(pConfig->pathData);
 
     return pConfig;
 }
 
 void Config::Load()
 {
-    tao::json::value config;
+    json config;
 
     if (std::filesystem::exists(pathSettings) && !std::filesystem::is_empty(pathSettings))
     {
         std::ifstream f(pathSettings);
-        config = tao::json::from_file(pathSettings);
+        config = json::parse(f);
         f.close();
     }
 
@@ -29,15 +29,15 @@ void Config::Load()
         Save();
     }
 
-    vectorPosition = config.as<std::vector<int>>("position");
-    boolMenu = config.as<bool>("menu");
-    boolSplit = config.as<bool>("split");
-    boolSwapped = config.as<bool>("swapped");
-    boolMaximized = config.as<bool>("maximized");
-    boolFullscreen = config.as<bool>("fullscreen");
-    boolTopmost = config.as<bool>("topmost");
-    stringMain = config.as<std::string>("main");
-    stringSide = config.as<std::string>("side");
+    vectorPosition = config["position"].get<std::vector<int>>();
+    boolMenu = config["menu"].get<bool>();
+    boolSplit = config["split"].get<bool>();
+    boolSwapped = config["swapped"].get<bool>();
+    boolMaximized = config["maximized"].get<bool>();
+    boolFullscreen = config["fullscreen"].get<bool>();
+    boolTopmost = config["topmost"].get<bool>();
+    stringMain = config["main"].get<std::string>();
+    stringMain = config["side"].get<std::string>();
 }
 
 void Config::Save()
@@ -47,9 +47,9 @@ void Config::Save()
     f.close();
 }
 
-tao::json::value Config::Get()
+json Config::Get()
 {
-    tao::json::value config;
+    json config;
     config["position"] = vectorPosition;
     config["menu"] = boolMenu;
     config["split"] = boolSplit;
@@ -65,7 +65,6 @@ tao::json::value Config::Get()
 
 void Config::Tests()
 {
-
     Utility::print(Utility::BoolToString(boolFullscreen));
     Utility::print(stringMain);
     Utility::print(Utility::BoolToString(boolMaximized));
@@ -78,34 +77,4 @@ void Config::Tests()
     Utility::print(Utility::BoolToString(boolSplit));
     Utility::print(Utility::BoolToString(boolSwapped));
     Utility::print(Utility::BoolToString(boolTopmost));
-}
-
-std::filesystem::path Config::DataPath()
-{
-    std::filesystem::path path;
-    std::wstring outBuffer;
-    PWSTR buffer;
-
-    if (SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &buffer) != S_OK)
-    {
-        CoTaskMemFree(buffer);
-        return path;
-    }
-
-    path = std::wstring(buffer) + std::filesystem::path::preferred_separator + L"Airglow";
-
-    CoTaskMemFree(buffer);
-
-    if (!std::filesystem::exists(path))
-        std::filesystem::create_directory(path);
-
-    return path;
-}
-
-std::filesystem::path Config::SettingsPath(std::filesystem::path path)
-{
-    std::filesystem::path config =
-        (path.wstring() + std::filesystem::path::preferred_separator + L"Config.json");
-
-    return config;
 }
