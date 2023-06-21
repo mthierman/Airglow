@@ -6,25 +6,24 @@ class Config
 {
   public:
     static std::unique_ptr<Config> Create();
-    tao::json::value Defaults();
-    tao::json::value Current();
     void Load();
-    void SaveOnce();
-    void Stream();
     void Save();
-    void Close();
+    tao::json::value Get();
     void Tests();
+
+    tao::json::value config;
     std::filesystem::path pathData;
     std::filesystem::path pathSettings;
-    std::vector<int> vectorPosition;
-    bool boolMenu;
-    bool boolSplit;
-    bool boolSwapped;
-    bool boolMaximized;
-    bool boolFullscreen;
-    bool boolTopmost;
-    std::string stringMain;
-    std::string stringSide;
+
+    std::vector<int> vectorPosition{0, 0, 800, 600};
+    bool boolMenu{false};
+    bool boolSplit{false};
+    bool boolSwapped{false};
+    bool boolMaximized{true};
+    bool boolFullscreen{false};
+    bool boolTopmost{false};
+    std::string stringMain{"https://www.google.com/"};
+    std::string stringSide{"https://www.google.com/"};
 
   private:
     std::filesystem::path DataPath();

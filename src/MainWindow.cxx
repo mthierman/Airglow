@@ -63,6 +63,8 @@ void MainWindow::Show(HWND hwnd, int ncs)
                  pConfig->vectorPosition[2], pConfig->vectorPosition[3], 0);
     DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOff, sizeof(cloakOff));
 
+    pConfig->Tests();
+
     if (!pConfig->boolFullscreen & !pConfig->boolMaximized)
         ShowWindow(hwnd, SW_SHOWDEFAULT);
 
@@ -86,6 +88,7 @@ void MainWindow::Maximize(HWND hwnd)
         SetWindowPos(hwnd, nullptr, pConfig->vectorPosition[0], pConfig->vectorPosition[1],
                      pConfig->vectorPosition[2], pConfig->vectorPosition[3], 0);
     }
+
     else
         ShowWindow(hwnd, SW_MAXIMIZE);
 }
@@ -231,6 +234,8 @@ int MainWindow::_OnCreate(HWND hwnd)
     SetDarkMode(hwnd);
     SetMica(hwnd);
 
+    pConfig->Load();
+
     return 0;
 }
 
@@ -238,25 +243,7 @@ int MainWindow::_OnActivate(HWND hwnd, WPARAM wparam)
 {
 #ifdef _DEBUG
     // Utility::print(std::string("WM_ACTIVATE\n"));
-    // if (wparam == WA_ACTIVE)
-    //     Utility::print("WA_ACTIVE");
-
-    // if (wparam == WA_CLICKACTIVE)
-    //     Utility::print("WA_CLICKACTIVE");
-
-    // if (wparam == WA_INACTIVE)
-    //     Utility::print("WA_INACTIVE");
 #endif
-
-    if ((wparam == WA_ACTIVE) || (wparam == WA_CLICKACTIVE))
-    {
-        pConfig->Stream();
-    }
-
-    if (wparam == WA_INACTIVE)
-    {
-        pConfig->Close();
-    }
 
     return 0;
 }
@@ -267,15 +254,14 @@ int MainWindow::_OnClose(HWND hwnd)
     // Utility::print(std::string("WM_CLOSE\n"));
 #endif
 
-    // WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
-    // GetWindowPlacement(hwnd, &wp);
-    // if (wp.showCmd == 3)
-    //     pConfig->boolMaximized = true;
-    // else
-    //     pConfig->boolMaximized = false;
+    WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
+    GetWindowPlacement(hwnd, &wp);
+    if (wp.showCmd == 3)
+        pConfig->boolMaximized = true;
+    else
+        pConfig->boolMaximized = false;
 
-    // pConfig->Close();
-    // pConfig->Save();
+    pConfig->Save();
 
     Gdiplus::GdiplusShutdown(gdiplusToken);
     DestroyWindow(hwnd);
@@ -383,17 +369,7 @@ int MainWindow::_OnWindowPosChanged(HWND hwnd)
     // Utility::print(std::string("WM_WINDOWPOSCHANGED\n"));
 #endif
 
-    WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
-    GetWindowPlacement(hwnd, &wp);
-    if (wp.showCmd == 3)
-        pConfig->boolMaximized = true;
-    else
-        pConfig->boolMaximized = false;
-
     WebView::UpdateBounds(hwnd);
-
-    pConfig->Save();
-    pConfig->Close();
 
     return 0;
 }
