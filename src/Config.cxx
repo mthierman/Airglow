@@ -14,11 +14,19 @@ std::unique_ptr<Config> Config::Create()
 
 void Config::Load()
 {
+    tao::json::value config;
+
     if (std::filesystem::exists(pathSettings) && !std::filesystem::is_empty(pathSettings))
     {
         std::ifstream f(pathSettings);
         config = tao::json::from_file(pathSettings);
         f.close();
+    }
+
+    else
+    {
+        config = Get();
+        Save();
     }
 
     vectorPosition = config.as<std::vector<int>>("position");
@@ -34,12 +42,9 @@ void Config::Load()
 
 void Config::Save()
 {
-    if (std::filesystem::exists(pathSettings))
-    {
-        std::ofstream f(pathSettings);
-        f << std::setw(4) << Get() << std::endl;
-        f.close();
-    }
+    std::ofstream f(pathSettings);
+    f << std::setw(4) << Get() << std::endl;
+    f.close();
 }
 
 tao::json::value Config::Get()

@@ -11,7 +11,6 @@ class Config
     tao::json::value Get();
     void Tests();
 
-    tao::json::value config;
     std::filesystem::path pathData;
     std::filesystem::path pathSettings;
 
