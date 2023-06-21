@@ -58,10 +58,8 @@ void MainWindow::Show(HWND hwnd, int ncs)
 {
     auto cloakOn = TRUE;
     auto cloakOff = FALSE;
+
     DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOn, sizeof(cloakOn));
-    SetWindowPos(hwnd, nullptr, pConfig->vectorPosition[0], pConfig->vectorPosition[1],
-                 pConfig->vectorPosition[2], pConfig->vectorPosition[3], 0);
-    DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOff, sizeof(cloakOff));
 
     if (!pConfig->boolFullscreen & !pConfig->boolMaximized)
         ShowWindow(hwnd, SW_SHOWDEFAULT);
@@ -74,6 +72,8 @@ void MainWindow::Show(HWND hwnd, int ncs)
         ShowWindow(hwnd, SW_SHOWDEFAULT);
         Fullscreen(hwnd);
     }
+
+    DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOff, sizeof(cloakOff));
 }
 
 void MainWindow::Maximize(HWND hwnd) {}
@@ -168,7 +168,7 @@ __int64 __stdcall MainWindow::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARA
         case WM_DPICHANGED:
             return pMainWindow->_OnDpiChanged();
         case WM_GETMINMAXINFO:
-            return pMainWindow->_OnGetMinMaxInfo(lparam);
+            return pMainWindow->_OnGetMinMaxInfo(hwnd, lparam);
         case WM_PAINT:
             return pMainWindow->_OnPaint(hwnd);
         case WM_SIZE:
@@ -270,11 +270,19 @@ int MainWindow::_OnDpiChanged()
     return 0;
 }
 
-int MainWindow::_OnGetMinMaxInfo(LPARAM lparam)
+int MainWindow::_OnGetMinMaxInfo(HWND hwnd, LPARAM lparam)
 {
 #ifdef _DEBUG
     Utility::print(std::string("WM_GETMINMAXINFO\n"));
 #endif
+
+    WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
+    GetWindowPlacement(hwnd, &wp);
+    if (wp.showCmd != 3)
+    {
+        pConfig->boolMaximized = false;
+        pConfig->Save();
+    }
 
     LPMINMAXINFO minmax = (LPMINMAXINFO)lparam;
     minmax->ptMinTrackSize.x = 800;
@@ -360,9 +368,6 @@ int MainWindow::_OnMove(HWND hwnd)
 #ifdef _DEBUG
     Utility::print(std::string("WM_MOVE\n"));
 #endif
-
-    pConfig->boolMaximized = false;
-    pConfig->Save();
 
     return 0;
 }

@@ -22,7 +22,7 @@ class MainWindow
     int _OnClose(HWND);
     int _OnDestroy();
     int _OnDpiChanged();
-    int _OnGetMinMaxInfo(LPARAM);
+    int _OnGetMinMaxInfo(HWND, LPARAM);
     int _OnPaint(HWND);
     int _OnSize(HWND, WPARAM);
     int _OnSizing(HWND);
