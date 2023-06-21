@@ -79,6 +79,14 @@ void MainWindow::Show(HWND hwnd, int ncs)
         Fullscreen(hwnd);
     }
 
+    if (pConfig->boolTopmost)
+    {
+        Topmost(hwnd);
+    }
+
+    else
+        ShowWindow(hwnd, SW_SHOWDEFAULT);
+
     DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOff, sizeof(cloakOff));
 }
 
@@ -419,6 +427,7 @@ int MainWindow::_OnSettingChange(HWND hwnd)
 #endif
 
     InvalidateRect(hwnd, nullptr, true);
+    SetDarkMode(hwnd);
     return 0;
 }
 
