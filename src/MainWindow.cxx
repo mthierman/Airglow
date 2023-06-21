@@ -260,6 +260,7 @@ int MainWindow::_OnClose(HWND hwnd)
     println("WM_CLOSE");
 #endif
 
+    pConfig->Save();
     Gdiplus::GdiplusShutdown(gdiplusToken);
     DestroyWindow(hwnd);
 
