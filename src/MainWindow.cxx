@@ -63,11 +63,9 @@ void MainWindow::Show(HWND hwnd, int ncs)
 
     if (!pConfig->boolFullscreen & !pConfig->boolMaximized)
     {
-        ShowWindow(hwnd, SW_SHOWDEFAULT);
-
-        // RESTORE POSITION:
-        // SetWindowPos(hwnd, nullptr, pConfig->vectorPosition[0], pConfig->vectorPosition[1],
-        //              pConfig->vectorPosition[2], pConfig->vectorPosition[3], 0);
+        SetWindowPos(hwnd, nullptr, pConfig->vectorPosition[0], pConfig->vectorPosition[1],
+                     pConfig->vectorPosition[2], pConfig->vectorPosition[3], 0);
+        ShowWindow(hwnd, SW_SHOWNORMAL);
     }
 
     if (!pConfig->boolFullscreen & pConfig->boolMaximized)
@@ -75,6 +73,8 @@ void MainWindow::Show(HWND hwnd, int ncs)
 
     if (pConfig->boolFullscreen)
     {
+        SetWindowPos(hwnd, nullptr, pConfig->vectorPosition[0], pConfig->vectorPosition[1],
+                     pConfig->vectorPosition[2], pConfig->vectorPosition[3], 0);
         ShowWindow(hwnd, SW_SHOWNORMAL);
         Fullscreen(hwnd);
     }
@@ -85,7 +85,11 @@ void MainWindow::Show(HWND hwnd, int ncs)
     }
 
     else
+    {
+        SetWindowPos(hwnd, nullptr, pConfig->vectorPosition[0], pConfig->vectorPosition[1],
+                     pConfig->vectorPosition[2], pConfig->vectorPosition[3], 0);
         ShowWindow(hwnd, SW_SHOWDEFAULT);
+    }
 
     DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOff, sizeof(cloakOff));
 }
