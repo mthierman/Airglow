@@ -31,7 +31,7 @@ class MainWindow
     int _OnMove(HWND);
     int _OnMoving(HWND);
     // int _OnWindowPosChanging(HWND);
-    int _OnWindowPosChanged(HWND);
+    // int _OnWindowPosChanged(HWND);
     int _OnSetFocus(HWND);
     int _OnSettingChange(HWND);
     int _OnKeyDown(HWND, WPARAM);

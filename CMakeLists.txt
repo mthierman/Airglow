@@ -4,7 +4,7 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 project(
     Airglow
-    VERSION 1.1.1
+    VERSION 1.1.2
     LANGUAGES CXX
 )
 
