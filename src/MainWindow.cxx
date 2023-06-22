@@ -440,101 +440,100 @@ int MainWindow::_OnSettingChange(HWND hwnd)
 
 int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
 {
-    //     if (wparam == VK_F1)
-    //     {
-    // #ifdef _DEBUG
-    //         println("F1");
-    // #endif
+    if (wparam == VK_F1)
+    {
+#ifdef _DEBUG
+        println("F1");
+#endif
 
-    //         pConfig->boolSplit = Toggle(pConfig->boolSplit);
-    //         WebView::UpdateBounds(hwnd);
-    //         WebView::UpdateFocus();
-    //         WebView::SetWindowTitle(hwnd);
-    //         WebView::SetWindowIcon(hwnd);
-    //         pConfig->Save();
-    //     }
+        pConfig->boolSplit = Toggle(pConfig->boolSplit);
+        WebView::UpdateBounds(hwnd);
+        WebView::UpdateFocus();
+        WebView::SetWindowTitle(hwnd);
+        WebView::SetWindowIcon(hwnd);
+        pConfig->Save();
+    }
 
-    //     if (wparam == VK_F2)
-    //     {
-    // #ifdef _DEBUG
-    //         println("F2");
-    // #endif
+    if (wparam == VK_F2)
+    {
+#ifdef _DEBUG
+        println("F2");
+#endif
 
-    //         pConfig->boolSwapped = Toggle(pConfig->boolSwapped);
-    //         WebView::UpdateBounds(hwnd);
-    //         WebView::UpdateFocus();
-    //         WebView::SetWindowTitle(hwnd);
-    //         WebView::SetWindowIcon(hwnd);
-    //         pConfig->Save();
-    //     }
+        pConfig->boolSwapped = Toggle(pConfig->boolSwapped);
+        WebView::UpdateBounds(hwnd);
+        WebView::UpdateFocus();
+        WebView::SetWindowTitle(hwnd);
+        WebView::SetWindowIcon(hwnd);
+        pConfig->Save();
+    }
 
-    //     if (wparam == VK_F4)
-    //     {
-    // #ifdef _DEBUG
-    //         println("F4");
-    // #endif
+    if (wparam == VK_F4)
+    {
+#ifdef _DEBUG
+        println("F4");
+#endif
 
-    //         pConfig->boolMenu = Toggle(pConfig->boolMenu);
-    //         WebView::UpdateBounds(hwnd);
-    //         WebView::UpdateFocus();
-    //         WebView::SetWindowTitle(hwnd);
-    //         WebView::SetWindowIcon(hwnd);
-    //         pConfig->Save();
-    //     }
+        pConfig->boolMenu = Toggle(pConfig->boolMenu);
+        WebView::UpdateBounds(hwnd);
+        WebView::UpdateFocus();
+        WebView::SetWindowTitle(hwnd);
+        WebView::SetWindowIcon(hwnd);
+        pConfig->Save();
+    }
 
-    //     if (wparam == VK_F6)
-    //     {
-    // #ifdef _DEBUG
-    //         println("F6");
-    // #endif
+    if (wparam == VK_F6)
+    {
+#ifdef _DEBUG
+        println("F6");
+#endif
 
-    //         if (!pConfig->boolFullscreen)
-    //         {
-    //             WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
-    //             GetWindowPlacement(hwnd, &wp);
-    //             if (wp.showCmd == 3)
-    //             {
-    //                 ShowWindow(hwnd, SW_SHOWNORMAL);
-    //                 SetWindowPos(hwnd, nullptr, pConfig->vectorPosition[0],
-    //                 pConfig->vectorPosition[1],
-    //                              pConfig->vectorPosition[2], pConfig->vectorPosition[3], 0);
-    //             }
+        if (!pConfig->boolFullscreen)
+        {
+            WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
+            GetWindowPlacement(hwnd, &wp);
+            if (wp.showCmd == 3)
+            {
+                ShowWindow(hwnd, SW_SHOWNORMAL);
+                SetWindowPos(hwnd, nullptr, pConfig->vectorPosition[0], pConfig->vectorPosition[1],
+                             pConfig->vectorPosition[2], pConfig->vectorPosition[3], 0);
+            }
 
-    //             else
-    //                 ShowWindow(hwnd, SW_MAXIMIZE);
-    //         }
-    //     }
+            else
+                ShowWindow(hwnd, SW_MAXIMIZE);
+        }
+    }
 
-    //     if (wparam == VK_F11)
-    //     {
-    // #ifdef _DEBUG
-    //         println("F11");
-    // #endif
+    if (wparam == VK_F11)
+    {
+#ifdef _DEBUG
+        println("F11");
+#endif
 
-    //         pConfig->boolFullscreen = Toggle(pConfig->boolFullscreen);
-    //         MainWindow::Fullscreen(hwnd);
-    //         WebView::UpdateBounds(hwnd);
-    //         pConfig->Save();
-    //     }
+        pConfig->boolFullscreen = Toggle(pConfig->boolFullscreen);
+        MainWindow::Fullscreen(hwnd);
+        WebView::UpdateBounds(hwnd);
+        pConfig->Save();
+    }
 
-    //     if (wparam == VK_F9)
-    //     {
-    // #ifdef _DEBUG
-    //         println("F9");
-    // #endif
+    if (wparam == VK_F9)
+    {
+#ifdef _DEBUG
+        println("F9");
+#endif
 
-    //         pConfig->boolTopmost = Toggle(pConfig->boolTopmost);
-    //         MainWindow::Topmost(hwnd);
-    //         WebView::SetWindowTitle(hwnd);
-    //         pConfig->Save();
-    //     }
+        pConfig->boolTopmost = Toggle(pConfig->boolTopmost);
+        MainWindow::Topmost(hwnd);
+        WebView::SetWindowTitle(hwnd);
+        pConfig->Save();
+    }
 
-    //     if (wparam == 0x57)
-    //     {
-    //         auto state = GetKeyState(VK_CONTROL);
-    //         if (state & 0x8000)
-    //             PostMessageW(hwnd, WM_CLOSE, 0, 0);
-    //     }
+    if (wparam == 0x57)
+    {
+        auto state = GetKeyState(VK_CONTROL);
+        if (state & 0x8000)
+            PostMessageW(hwnd, WM_CLOSE, 0, 0);
+    }
 
     return 0;
 }
