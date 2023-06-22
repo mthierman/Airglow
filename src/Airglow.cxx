@@ -3,29 +3,31 @@
 int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
 {
     HWND hwnd;
+    std::unique_ptr<Config> pConfig;
+    std::unique_ptr<MainWindow> pWindow;
+    std::unique_ptr<WebView> pWebView;
 
-    auto pConfig = Config::Create();
+    pConfig = Config::Create();
 
     if (!std::filesystem::exists(pConfig->pathData))
     {
-        string err = "Data folder not found";
-        error(err);
+        error("Data folder not found");
         return 0;
     }
 
-    auto pWindow = MainWindow::Create(hinstance, ncs, pConfig.get());
+    pWindow = MainWindow::Create(hinstance, ncs, pConfig.get());
+
     hwnd = pWindow.get()->m_hWnd;
 
     if (!hwnd)
     {
-        string err = "Window creation failed";
-        error(err);
+        error("Window creation failed");
         return 0;
     }
 
     pWindow->Show(hwnd, ncs);
 
-    auto pWebView = WebView::Create(hwnd, pConfig.get());
+    pWebView = WebView::Create(hwnd, pConfig.get());
 
     WebView::Initialize(hwnd);
 

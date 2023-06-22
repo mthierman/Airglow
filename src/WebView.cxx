@@ -439,20 +439,23 @@ void WebView::UpdateBounds(HWND hwnd)
 
 void WebView::UpdateFocus()
 {
-    if (pConfig->boolMenu)
-        if (settings_controller != nullptr)
-            settings_controller->MoveFocus(
-                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+    if (pConfig != nullptr)
+    {
+        if (pConfig->boolMenu)
+            if (settings_controller != nullptr)
+                settings_controller->MoveFocus(
+                    COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 
-    if (!pConfig->boolSwapped & !pConfig->boolMenu)
-        if (main_controller != nullptr)
-            main_controller->MoveFocus(
-                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+        if (!pConfig->boolSwapped & !pConfig->boolMenu)
+            if (main_controller != nullptr)
+                main_controller->MoveFocus(
+                    COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 
-    if (pConfig->boolSwapped & !pConfig->boolMenu)
-        if (side_controller != nullptr)
-            side_controller->MoveFocus(
-                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+        if (pConfig->boolSwapped & !pConfig->boolMenu)
+            if (side_controller != nullptr)
+                side_controller->MoveFocus(
+                    COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+    }
 }
 
 RECT WebView::FullBounds(HWND hwnd)
