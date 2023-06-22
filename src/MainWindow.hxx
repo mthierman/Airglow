@@ -12,7 +12,6 @@ class MainWindow
     static void Fullscreen(HWND);
     static void Topmost(HWND);
     static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
-    HWND m_hWnd;
 
     int _OnCommand();
     int _OnCreate(HWND);
@@ -35,14 +34,19 @@ class MainWindow
     int _OnKeyDown(HWND, WPARAM);
     int _OnChar(HWND, WPARAM);
 
+    HWND m_hWnd;
+
+  private:
     bool CheckSystemDarkMode();
     bool SetDarkTitle();
     bool SetDarkMode(HWND);
     bool SetMica(HWND);
+    static bool Cloak(HWND);
+    static bool Uncloak(HWND);
 
-  private:
     static unsigned long long gdiplusToken;
     static Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+
     enum PreferredAppMode
     {
         Default,

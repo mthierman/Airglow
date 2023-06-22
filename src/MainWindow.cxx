@@ -54,12 +54,115 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Con
     return pMainWindow;
 }
 
-void MainWindow::Show(HWND hwnd, int ncs)
+bool MainWindow::CheckSystemDarkMode()
+{
+    winrt::Windows::UI::ViewManagement::UISettings settingsCheck =
+        winrt::Windows::UI::ViewManagement::UISettings();
+    winrt::Windows::UI::Color fgCheck =
+        settingsCheck.GetColorValue(winrt::Windows::UI::ViewManagement::UIColorType::Foreground);
+
+    return (((5 * fgCheck.G) + (2 * fgCheck.R) + fgCheck.B) > (8 * 128));
+}
+
+bool MainWindow::SetDarkTitle()
+{
+    using fnSetPreferredAppMode = PreferredAppMode(WINAPI*)(PreferredAppMode appMode);
+
+    auto uxtheme = LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
+
+    if (uxtheme)
+    {
+        auto ord135 = GetProcAddress(uxtheme, PCSTR MAKEINTRESOURCEW(135));
+
+        if (ord135)
+        {
+            auto SetPreferredAppMode = reinterpret_cast<fnSetPreferredAppMode>(ord135);
+            SetPreferredAppMode(PreferredAppMode::AllowDark);
+        }
+
+        FreeLibrary(uxtheme);
+
+        return true;
+    }
+
+    return false;
+}
+
+bool MainWindow::SetDarkMode(HWND hwnd)
+{
+    auto dark = CheckSystemDarkMode();
+    auto dwmtrue = TRUE;
+    auto dwmfalse = FALSE;
+
+    if (dark)
+    {
+        DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmtrue, sizeof(dwmtrue));
+
+        return true;
+    }
+
+    if (!dark)
+    {
+        DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmfalse, sizeof(dwmfalse));
+
+        return false;
+    }
+
+    return false;
+}
+
+bool MainWindow::SetMica(HWND hwnd)
+{
+    MARGINS m = {0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
+    auto extend = S_OK;
+
+    extend = DwmExtendFrameIntoClientArea(hwnd, &m);
+
+    if (SUCCEEDED(extend))
+    {
+        auto backdrop = S_OK;
+        backdrop = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
+
+        backdrop =
+            DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop, sizeof(&backdrop));
+
+        if (SUCCEEDED(backdrop))
+            return true;
+
+        return false;
+    }
+
+    return false;
+}
+
+bool MainWindow::Cloak(HWND hwnd)
 {
     auto cloakOn = TRUE;
     auto cloakOff = FALSE;
 
-    DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOn, sizeof(cloakOn));
+    if (DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOn, sizeof(cloakOn)) == S_OK)
+        return true;
+
+    else
+        return false;
+}
+
+bool MainWindow::Uncloak(HWND hwnd)
+{
+    auto cloakOn = TRUE;
+    auto cloakOff = FALSE;
+
+    if (DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOff, sizeof(cloakOff)) == S_OK)
+        return true;
+
+    else
+        return false;
+}
+
+void MainWindow::Show(HWND hwnd, int ncs)
+{
+
+    Cloak(hwnd);
 
     if (!pConfig->boolFullscreen & !pConfig->boolMaximized)
     {
@@ -91,11 +194,13 @@ void MainWindow::Show(HWND hwnd, int ncs)
         ShowWindow(hwnd, SW_SHOWDEFAULT);
     }
 
-    DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOff, sizeof(cloakOff));
+    Uncloak(hwnd);
 }
 
 void MainWindow::Fullscreen(HWND hwnd)
 {
+    Cloak(hwnd);
+
     static RECT position;
     auto style = GetWindowLongPtrW(hwnd, GWL_STYLE);
     if (style & WS_OVERLAPPEDWINDOW)
@@ -120,6 +225,8 @@ void MainWindow::Fullscreen(HWND hwnd)
         SetWindowPos(hwnd, nullptr, position.left, position.top, (position.right - position.left),
                      (position.bottom - position.top), 0);
     }
+
+    Uncloak(hwnd);
 }
 
 void MainWindow::Topmost(HWND hwnd)
@@ -545,85 +652,4 @@ int MainWindow::_OnChar(HWND hwnd, WPARAM wparam)
 #endif
 
     return 0;
-}
-
-bool MainWindow::CheckSystemDarkMode()
-{
-    winrt::Windows::UI::ViewManagement::UISettings settingsCheck =
-        winrt::Windows::UI::ViewManagement::UISettings();
-    winrt::Windows::UI::Color fgCheck =
-        settingsCheck.GetColorValue(winrt::Windows::UI::ViewManagement::UIColorType::Foreground);
-
-    return (((5 * fgCheck.G) + (2 * fgCheck.R) + fgCheck.B) > (8 * 128));
-}
-
-bool MainWindow::SetDarkTitle()
-{
-    using fnSetPreferredAppMode = PreferredAppMode(WINAPI*)(PreferredAppMode appMode);
-
-    auto uxtheme = LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
-
-    if (uxtheme)
-    {
-        auto ord135 = GetProcAddress(uxtheme, PCSTR MAKEINTRESOURCEW(135));
-
-        if (ord135)
-        {
-            auto SetPreferredAppMode = reinterpret_cast<fnSetPreferredAppMode>(ord135);
-            SetPreferredAppMode(PreferredAppMode::AllowDark);
-        }
-
-        FreeLibrary(uxtheme);
-
-        return true;
-    }
-
-    return false;
-}
-
-bool MainWindow::SetDarkMode(HWND hwnd)
-{
-    auto dark = CheckSystemDarkMode();
-    auto dwmtrue = TRUE;
-    auto dwmfalse = FALSE;
-
-    if (dark)
-    {
-        DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmtrue, sizeof(dwmtrue));
-
-        return true;
-    }
-
-    if (!dark)
-    {
-        DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmfalse, sizeof(dwmfalse));
-
-        return false;
-    }
-
-    return false;
-}
-
-bool MainWindow::SetMica(HWND hwnd)
-{
-    MARGINS m = {0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
-    auto extend = S_OK;
-
-    extend = DwmExtendFrameIntoClientArea(hwnd, &m);
-
-    if (SUCCEEDED(extend))
-    {
-        auto backdrop = S_OK;
-        backdrop = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
-
-        backdrop =
-            DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop, sizeof(&backdrop));
-
-        if (SUCCEEDED(backdrop))
-            return true;
-
-        return false;
-    }
-
-    return false;
 }
