@@ -34,42 +34,50 @@ void WebView::Initialize(HWND hwnd)
                                       settings_controller->get_CoreWebView2(&settings_core);
                                   }
 
-                                  settings_wv = settings_core.try_query<ICoreWebView2_19>();
-                                  settings_wv->get_Settings(&settings_settings);
-                                  settings_settings->put_AreDefaultContextMenusEnabled(false);
-                                  settings_settings->put_AreDefaultScriptDialogsEnabled(true);
-                                  settings_settings->put_AreDevToolsEnabled(true);
-                                  settings_settings->put_AreHostObjectsAllowed(true);
-                                  settings_settings->put_IsBuiltInErrorPageEnabled(true);
-                                  settings_settings->put_IsScriptEnabled(true);
-                                  settings_settings->put_IsStatusBarEnabled(false);
-                                  settings_settings->put_IsWebMessageEnabled(true);
-                                  settings_settings->put_IsZoomControlEnabled(false);
-                                  settings_controller->put_Bounds(MenuBounds(hwnd));
+                                  if (settings_core != nullptr)
+                                      settings_wv = settings_core.try_query<ICoreWebView2_19>();
+                                  if (settings_wv != nullptr)
+                                      settings_wv->get_Settings(&settings_settings);
+                                  if (settings_settings != nullptr)
+                                  {
+                                      settings_settings->put_AreDefaultContextMenusEnabled(false);
+                                      settings_settings->put_AreDefaultScriptDialogsEnabled(true);
+                                      settings_settings->put_AreDevToolsEnabled(true);
+                                      settings_settings->put_AreHostObjectsAllowed(true);
+                                      settings_settings->put_IsBuiltInErrorPageEnabled(true);
+                                      settings_settings->put_IsScriptEnabled(true);
+                                      settings_settings->put_IsStatusBarEnabled(false);
+                                      settings_settings->put_IsWebMessageEnabled(true);
+                                      settings_settings->put_IsZoomControlEnabled(false);
+                                  }
 
-                                  settings_wv->Navigate(L"about:blank");
+                                  if (settings_wv != nullptr)
+                                  {
+                                      settings_controller->put_Bounds(MenuBounds(hwnd));
+                                      settings_wv->Navigate(L"about:blank");
 
-                                  auto script = GetMenuScript();
-                                  settings_wv->ExecuteScript(script.c_str(), nullptr);
-                                  settings_wv->AddScriptToExecuteOnDocumentCreated(script.c_str(),
-                                                                                   nullptr);
+                                      auto script = GetMenuScript();
+                                      settings_wv->ExecuteScript(script.c_str(), nullptr);
+                                      settings_wv->AddScriptToExecuteOnDocumentCreated(
+                                          script.c_str(), nullptr);
 
-                                  settings_wv->add_WebMessageReceived(
-                                      Microsoft::WRL::Callback<
-                                          ICoreWebView2WebMessageReceivedEventHandler>(
-                                          [hwnd](ICoreWebView2* webview,
-                                                 ICoreWebView2WebMessageReceivedEventArgs* args)
-                                              -> HRESULT
-                                          {
-                                              wil::unique_cotaskmem_string message;
-                                              args->TryGetWebMessageAsString(&message);
-                                              auto msg = wstring(message.get());
-                                              Messages(hwnd, msg);
-                                              webview->PostWebMessageAsString(message.get());
-                                              return S_OK;
-                                          })
-                                          .Get(),
-                                      &msgToken);
+                                      settings_wv->add_WebMessageReceived(
+                                          Microsoft::WRL::Callback<
+                                              ICoreWebView2WebMessageReceivedEventHandler>(
+                                              [hwnd](ICoreWebView2* webview,
+                                                     ICoreWebView2WebMessageReceivedEventArgs* args)
+                                                  -> HRESULT
+                                              {
+                                                  wil::unique_cotaskmem_string message;
+                                                  args->TryGetWebMessageAsString(&message);
+                                                  auto msg = wstring(message.get());
+                                                  Messages(hwnd, msg);
+                                                  webview->PostWebMessageAsString(message.get());
+                                                  return S_OK;
+                                              })
+                                              .Get(),
+                                          &msgToken);
+                                  }
 
                                   return S_OK;
                               })
@@ -92,69 +100,81 @@ void WebView::Initialize(HWND hwnd)
                                 main_controller->get_CoreWebView2(&main_core);
                             }
 
-                            main_wv = main_core.try_query<ICoreWebView2_19>();
-                            main_wv->get_Settings(&main_settings);
-                            main_settings->put_AreDefaultContextMenusEnabled(true);
-                            main_settings->put_AreDefaultScriptDialogsEnabled(true);
-                            main_settings->put_AreDevToolsEnabled(true);
-                            main_settings->put_AreHostObjectsAllowed(true);
-                            main_settings->put_IsBuiltInErrorPageEnabled(true);
-                            main_settings->put_IsScriptEnabled(true);
-                            main_settings->put_IsStatusBarEnabled(true);
-                            main_settings->put_IsWebMessageEnabled(true);
-                            main_settings->put_IsZoomControlEnabled(true);
-                            main_controller->put_Bounds(MainBounds(hwnd));
-
-                            auto args = CommandLine();
-
-                            if (!args.first.empty())
+                            if (main_core != nullptr)
+                                main_wv = main_core.try_query<ICoreWebView2_19>();
+                            if (main_wv != nullptr)
+                                main_wv->get_Settings(&main_settings);
+                            if (main_settings != nullptr)
                             {
-                                main_wv->Navigate(args.first.c_str());
+                                main_settings->put_AreDefaultContextMenusEnabled(true);
+                                main_settings->put_AreDefaultScriptDialogsEnabled(true);
+                                main_settings->put_AreDevToolsEnabled(true);
+                                main_settings->put_AreHostObjectsAllowed(true);
+                                main_settings->put_IsBuiltInErrorPageEnabled(true);
+                                main_settings->put_IsScriptEnabled(true);
+                                main_settings->put_IsStatusBarEnabled(true);
+                                main_settings->put_IsWebMessageEnabled(true);
+                                main_settings->put_IsZoomControlEnabled(true);
                             }
-                            else
-                                main_wv->Navigate(L"https://www.google.com/");
 
-                            auto script = GetScript();
-                            main_wv->ExecuteScript(script.c_str(), nullptr);
-                            main_wv->AddScriptToExecuteOnDocumentCreated(script.c_str(), nullptr);
+                            if (main_wv != nullptr)
+                            {
 
-                            main_wv->add_DocumentTitleChanged(
-                                Microsoft::WRL::Callback<
-                                    ICoreWebView2DocumentTitleChangedEventHandler>(
-                                    [hwnd](ICoreWebView2* sender, IUnknown* args) -> HRESULT
-                                    {
-                                        SetWindowTitle(hwnd);
-                                        return S_OK;
-                                    })
-                                    .Get(),
-                                &documentTitleChangedToken);
+                                main_controller->put_Bounds(MainBounds(hwnd));
 
-                            main_wv->add_FaviconChanged(
-                                Microsoft::WRL::Callback<ICoreWebView2FaviconChangedEventHandler>(
-                                    [hwnd](ICoreWebView2* sender, IUnknown* args) -> HRESULT
-                                    {
-                                        SetWindowIcon(hwnd);
-                                        return S_OK;
-                                    })
-                                    .Get(),
-                                &faviconChangedToken);
+                                auto args = CommandLine();
 
-                            main_wv->add_WebMessageReceived(
-                                Microsoft::WRL::Callback<
-                                    ICoreWebView2WebMessageReceivedEventHandler>(
-                                    [hwnd](
-                                        ICoreWebView2* webview,
-                                        ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT
-                                    {
-                                        wil::unique_cotaskmem_string message;
-                                        args->TryGetWebMessageAsString(&message);
-                                        auto msg = wstring(message.get());
-                                        Messages(hwnd, msg);
-                                        webview->PostWebMessageAsString(message.get());
-                                        return S_OK;
-                                    })
-                                    .Get(),
-                                &msgToken);
+                                if (!args.first.empty())
+                                {
+                                    main_wv->Navigate(args.first.c_str());
+                                }
+                                else
+                                    main_wv->Navigate(L"https://www.google.com/");
+
+                                auto script = GetScript();
+                                main_wv->ExecuteScript(script.c_str(), nullptr);
+                                main_wv->AddScriptToExecuteOnDocumentCreated(script.c_str(),
+                                                                             nullptr);
+
+                                main_wv->add_DocumentTitleChanged(
+                                    Microsoft::WRL::Callback<
+                                        ICoreWebView2DocumentTitleChangedEventHandler>(
+                                        [hwnd](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                        {
+                                            SetWindowTitle(hwnd);
+                                            return S_OK;
+                                        })
+                                        .Get(),
+                                    &documentTitleChangedToken);
+
+                                main_wv->add_FaviconChanged(
+                                    Microsoft::WRL::Callback<
+                                        ICoreWebView2FaviconChangedEventHandler>(
+                                        [hwnd](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                        {
+                                            SetWindowIcon(hwnd);
+                                            return S_OK;
+                                        })
+                                        .Get(),
+                                    &faviconChangedToken);
+
+                                main_wv->add_WebMessageReceived(
+                                    Microsoft::WRL::Callback<
+                                        ICoreWebView2WebMessageReceivedEventHandler>(
+                                        [hwnd](ICoreWebView2* webview,
+                                               ICoreWebView2WebMessageReceivedEventArgs* args)
+                                            -> HRESULT
+                                        {
+                                            wil::unique_cotaskmem_string message;
+                                            args->TryGetWebMessageAsString(&message);
+                                            auto msg = wstring(message.get());
+                                            Messages(hwnd, msg);
+                                            webview->PostWebMessageAsString(message.get());
+                                            return S_OK;
+                                        })
+                                        .Get(),
+                                    &msgToken);
+                            }
 
                             return S_OK;
                         })
@@ -177,69 +197,81 @@ void WebView::Initialize(HWND hwnd)
                                 side_controller->get_CoreWebView2(&side_core);
                             }
 
-                            side_wv = side_core.try_query<ICoreWebView2_19>();
-                            side_wv->get_Settings(&side_settings);
-                            side_settings->put_AreDefaultContextMenusEnabled(true);
-                            side_settings->put_AreDefaultScriptDialogsEnabled(true);
-                            side_settings->put_AreDevToolsEnabled(true);
-                            side_settings->put_AreHostObjectsAllowed(true);
-                            side_settings->put_IsBuiltInErrorPageEnabled(true);
-                            side_settings->put_IsScriptEnabled(true);
-                            side_settings->put_IsStatusBarEnabled(true);
-                            side_settings->put_IsWebMessageEnabled(true);
-                            side_settings->put_IsZoomControlEnabled(true);
-                            side_controller->put_Bounds(SideBounds(hwnd));
-
-                            auto args = CommandLine();
-
-                            if (!args.second.empty())
+                            if (side_core != nullptr)
+                                side_wv = side_core.try_query<ICoreWebView2_19>();
+                            if (side_wv != nullptr)
+                                side_wv->get_Settings(&side_settings);
+                            if (side_settings != nullptr)
                             {
-                                side_wv->Navigate(args.second.c_str());
+                                side_settings->put_AreDefaultContextMenusEnabled(true);
+                                side_settings->put_AreDefaultScriptDialogsEnabled(true);
+                                side_settings->put_AreDevToolsEnabled(true);
+                                side_settings->put_AreHostObjectsAllowed(true);
+                                side_settings->put_IsBuiltInErrorPageEnabled(true);
+                                side_settings->put_IsScriptEnabled(true);
+                                side_settings->put_IsStatusBarEnabled(true);
+                                side_settings->put_IsWebMessageEnabled(true);
+                                side_settings->put_IsZoomControlEnabled(true);
                             }
-                            else
-                                side_wv->Navigate(L"https://www.google.com/");
 
-                            auto script = GetScript();
-                            side_wv->ExecuteScript(script.c_str(), nullptr);
-                            side_wv->AddScriptToExecuteOnDocumentCreated(script.c_str(), nullptr);
+                            if (side_wv != nullptr)
+                            {
 
-                            side_wv->add_DocumentTitleChanged(
-                                Microsoft::WRL::Callback<
-                                    ICoreWebView2DocumentTitleChangedEventHandler>(
-                                    [hwnd](ICoreWebView2* sender, IUnknown* args) -> HRESULT
-                                    {
-                                        SetWindowTitle(hwnd);
-                                        return S_OK;
-                                    })
-                                    .Get(),
-                                &documentTitleChangedToken);
+                                side_controller->put_Bounds(SideBounds(hwnd));
 
-                            side_wv->add_FaviconChanged(
-                                Microsoft::WRL::Callback<ICoreWebView2FaviconChangedEventHandler>(
-                                    [hwnd](ICoreWebView2* sender, IUnknown* args) -> HRESULT
-                                    {
-                                        SetWindowIcon(hwnd);
-                                        return S_OK;
-                                    })
-                                    .Get(),
-                                &faviconChangedToken);
+                                auto args = CommandLine();
 
-                            side_wv->add_WebMessageReceived(
-                                Microsoft::WRL::Callback<
-                                    ICoreWebView2WebMessageReceivedEventHandler>(
-                                    [hwnd](
-                                        ICoreWebView2* webview,
-                                        ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT
-                                    {
-                                        wil::unique_cotaskmem_string message;
-                                        args->TryGetWebMessageAsString(&message);
-                                        auto msg = wstring(message.get());
-                                        Messages(hwnd, msg);
-                                        webview->PostWebMessageAsString(message.get());
-                                        return S_OK;
-                                    })
-                                    .Get(),
-                                &msgToken);
+                                if (!args.second.empty())
+                                {
+                                    side_wv->Navigate(args.second.c_str());
+                                }
+                                else
+                                    side_wv->Navigate(L"https://www.google.com/");
+
+                                auto script = GetScript();
+                                side_wv->ExecuteScript(script.c_str(), nullptr);
+                                side_wv->AddScriptToExecuteOnDocumentCreated(script.c_str(),
+                                                                             nullptr);
+
+                                side_wv->add_DocumentTitleChanged(
+                                    Microsoft::WRL::Callback<
+                                        ICoreWebView2DocumentTitleChangedEventHandler>(
+                                        [hwnd](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                        {
+                                            SetWindowTitle(hwnd);
+                                            return S_OK;
+                                        })
+                                        .Get(),
+                                    &documentTitleChangedToken);
+
+                                side_wv->add_FaviconChanged(
+                                    Microsoft::WRL::Callback<
+                                        ICoreWebView2FaviconChangedEventHandler>(
+                                        [hwnd](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                        {
+                                            SetWindowIcon(hwnd);
+                                            return S_OK;
+                                        })
+                                        .Get(),
+                                    &faviconChangedToken);
+
+                                side_wv->add_WebMessageReceived(
+                                    Microsoft::WRL::Callback<
+                                        ICoreWebView2WebMessageReceivedEventHandler>(
+                                        [hwnd](ICoreWebView2* webview,
+                                               ICoreWebView2WebMessageReceivedEventArgs* args)
+                                            -> HRESULT
+                                        {
+                                            wil::unique_cotaskmem_string message;
+                                            args->TryGetWebMessageAsString(&message);
+                                            auto msg = wstring(message.get());
+                                            Messages(hwnd, msg);
+                                            webview->PostWebMessageAsString(message.get());
+                                            return S_OK;
+                                        })
+                                        .Get(),
+                                    &msgToken);
+                            }
 
                             return S_OK;
                         })

@@ -6,6 +6,10 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
     std::unique_ptr<Config> pConfig;
     std::unique_ptr<MainWindow> pWindow;
     std::unique_ptr<WebView> pWebView;
+    unsigned long long gdiplusToken;
+    Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+
+    Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
 
     pConfig = Config::Create();
 
@@ -35,6 +39,7 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
 #endif
 
     MSG msg = {};
+
     while (GetMessageW(&msg, nullptr, 0, 0))
     {
         TranslateMessage(&msg);
@@ -42,6 +47,8 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
     }
 
     pConfig->Save();
+
+    Gdiplus::GdiplusShutdown(gdiplusToken);
 
     return 0;
 }

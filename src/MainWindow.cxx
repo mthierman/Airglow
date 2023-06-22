@@ -1,8 +1,6 @@
 #include "MainWindow.hxx"
 
 Config* MainWindow::pConfig = nullptr;
-unsigned long long MainWindow::gdiplusToken;
-Gdiplus::GdiplusStartupInput MainWindow::gdiplusStartupInput;
 
 MainWindow::MainWindow(HINSTANCE hinstance, int ncs, Config* config) {}
 
@@ -339,8 +337,6 @@ int MainWindow::_OnCreate(HWND hwnd)
     SetEnvironmentVariableW(wstring(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR").c_str(),
                             wstring(L"0").c_str());
 
-    Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
-
     SetDarkTitle();
     SetDarkMode(hwnd);
     SetMica(hwnd);
@@ -363,8 +359,6 @@ int MainWindow::_OnClose(HWND hwnd)
     println("WM_CLOSE");
 #endif
 
-    pConfig->Save();
-    Gdiplus::GdiplusShutdown(gdiplusToken);
     DestroyWindow(hwnd);
 
     return 0;
