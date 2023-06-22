@@ -70,7 +70,10 @@ bool MainWindow::SetDarkTitle()
 
     auto uxtheme = LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
 
-    if (uxtheme)
+    if (!uxtheme)
+        return false;
+
+    else
     {
         auto ord135 = GetProcAddress(uxtheme, PCSTR MAKEINTRESOURCEW(135));
 
@@ -84,8 +87,6 @@ bool MainWindow::SetDarkTitle()
 
         return true;
     }
-
-    return false;
 }
 
 bool MainWindow::SetDarkMode(HWND hwnd)
@@ -94,13 +95,6 @@ bool MainWindow::SetDarkMode(HWND hwnd)
     auto dwmtrue = TRUE;
     auto dwmfalse = FALSE;
 
-    if (dark)
-    {
-        DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmtrue, sizeof(dwmtrue));
-
-        return true;
-    }
-
     if (!dark)
     {
         DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmfalse, sizeof(dwmfalse));
@@ -108,31 +102,30 @@ bool MainWindow::SetDarkMode(HWND hwnd)
         return false;
     }
 
-    return false;
+    else
+        DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmtrue, sizeof(dwmtrue));
+
+    return true;
 }
 
 bool MainWindow::SetMica(HWND hwnd)
 {
     MARGINS m = {0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
-    auto extend = S_OK;
 
-    extend = DwmExtendFrameIntoClientArea(hwnd, &m);
-
-    if (SUCCEEDED(extend))
-    {
-        auto backdrop = S_OK;
-        backdrop = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
-
-        backdrop =
-            DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop, sizeof(&backdrop));
-
-        if (SUCCEEDED(backdrop))
-            return true;
-
+    if (DwmExtendFrameIntoClientArea(hwnd, &m) != S_OK)
         return false;
-    }
 
-    return false;
+    else
+    {
+        HRESULT backdrop = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
+
+        if (DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop, sizeof(&backdrop)) !=
+            S_OK)
+            return false;
+
+        else
+            return true;
+    }
 }
 
 bool MainWindow::Cloak(HWND hwnd)
@@ -140,11 +133,11 @@ bool MainWindow::Cloak(HWND hwnd)
     auto cloakOn = TRUE;
     auto cloakOff = FALSE;
 
-    if (DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOn, sizeof(cloakOn)) == S_OK)
-        return true;
+    if (DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOn, sizeof(cloakOn)) != S_OK)
+        return false;
 
     else
-        return false;
+        return true;
 }
 
 bool MainWindow::Uncloak(HWND hwnd)
@@ -152,11 +145,11 @@ bool MainWindow::Uncloak(HWND hwnd)
     auto cloakOn = TRUE;
     auto cloakOff = FALSE;
 
-    if (DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOff, sizeof(cloakOff)) == S_OK)
-        return true;
+    if (DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOff, sizeof(cloakOff)) != S_OK)
+        return false;
 
     else
-        return false;
+        return true;
 }
 
 void MainWindow::Show(HWND hwnd, int ncs)
@@ -255,6 +248,7 @@ template <class T, class U, HWND(U::*m_hWnd)>
 T* InstanceFromWndProc(HWND hwnd, UINT msg, LPARAM lparam)
 {
     T* pInstance;
+
     if (msg == WM_NCCREATE)
     {
         LPCREATESTRUCTW pCreateStruct = reinterpret_cast<LPCREATESTRUCTW>(lparam);
@@ -262,10 +256,12 @@ T* InstanceFromWndProc(HWND hwnd, UINT msg, LPARAM lparam)
         SetWindowLongPtrW(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pInstance));
         pInstance->*m_hWnd = hwnd;
     }
+
     else
     {
         pInstance = reinterpret_cast<T*>(GetWindowLongPtrW(hwnd, GWLP_USERDATA));
     }
+
     return pInstance;
 }
 
