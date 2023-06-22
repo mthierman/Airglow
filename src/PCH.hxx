@@ -20,3 +20,5 @@
 #include <winrt/Windows.UI.ViewManagement.h>
 
 #include <nlohmann/json.hpp>
+
+#include <sqlite3.h>

@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.26)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+include(FetchContent)
+
+option(USER_LIBS OFF)
+option(USER_INSTALL OFF)
+option(SYSTEM_INSTALL OFF)
 
 project(
     Airglow
@@ -8,58 +13,63 @@ project(
     LANGUAGES CXX
 )
 
-option(USER_LIBS OFF)
-option(USER_INSTALL OFF)
-option(SYSTEM_INSTALL OFF)
+math(EXPR BITNESS "${CMAKE_SIZEOF_VOID_P} * 8" OUTPUT_FORMAT DECIMAL)
+message(STATUS "${PROJECT_NAME} v${PROJECT_VERSION} (${BITNESS}-bit) [${CMAKE_BUILD_TYPE}]")
+file(WRITE ${CMAKE_BINARY_DIR}/version.txt "${PROJECT_VERSION}")
 
 set(WEBVIEW "Microsoft.Web.WebView2")
 set(WEBVIEW_VER "1.0.1823.32")
 set(WIL "Microsoft.Windows.ImplementationLibrary")
 set(WIL_VER "1.0.230411.1")
 
-math(EXPR BITNESS "${CMAKE_SIZEOF_VOID_P} * 8" OUTPUT_FORMAT DECIMAL)
-message(STATUS "${PROJECT_NAME} v${PROJECT_VERSION} (${BITNESS}-bit) [${CMAKE_BUILD_TYPE}]")
-file(WRITE ${CMAKE_BINARY_DIR}/version.txt "${PROJECT_VERSION}")
-
-include(FetchContent)
-
 if(USER_LIBS)
-    set(WEBVIEW_PKG $ENV{LIB_WEBVIEW})
-    set(WIL_PKG $ENV{LIB_WIL})
-    set(CHOC_PKG $ENV{LIB_CHOC})
-    set(JSON_PKG $ENV{LIB_JSON})
+    file(TO_CMAKE_PATH $ENV{LIB_WEBVIEW} WEBVIEW_PKG)
+    file(TO_CMAKE_PATH $ENV{LIB_WIL} WIL_PKG)
+    file(TO_CMAKE_PATH $ENV{LIB_CHOC} CHOC_PKG)
+    file(TO_CMAKE_PATH $ENV{LIB_JSON} JSON_PKG)
+    file(TO_CMAKE_PATH $ENV{LIB_SQLITE} SQLITE_PKG)
 else()
     execute_process(
         COMMAND
         nuget install ${WEBVIEW} -Version ${WEBVIEW_VER} -OutputDirectory ${CMAKE_BINARY_DIR}/libs
     )
-    set(WEBVIEW_PKG ${CMAKE_BINARY_DIR}/libs/${WEBVIEW}.${WEBVIEW_VER})
+    file(TO_CMAKE_PATH ${CMAKE_BINARY_DIR}/libs/${WEBVIEW}.${WEBVIEW_VER} WEBVIEW_PKG)
 
     execute_process(
         COMMAND
         nuget install ${WIL} -Version ${WIL_VER} -OutputDirectory ${CMAKE_BINARY_DIR}/libs
     )
-    set(WIL_PKG ${CMAKE_BINARY_DIR}/libs/${WIL}.${WIL_VER})
+    file(TO_CMAKE_PATH ${CMAKE_BINARY_DIR}/libs/${WIL}.${WIL_VER} WIL_PKG)
 
     FetchContent_Declare(
         choc
         URL https://github.com/Tracktion/choc/archive/refs/heads/main.zip
     )
     FetchContent_MakeAvailable(choc)
-    set(CHOC_PKG ${choc_SOURCE_DIR})
+    file(TO_CMAKE_PATH ${choc_SOURCE_DIR} CHOC_PKG)
 
     FetchContent_Declare(
         json
         URL https://github.com/nlohmann/json/releases/download/v3.11.2/include.zip
     )
     FetchContent_MakeAvailable(json)
-    set(JSON_PKG ${json_SOURCE_DIR}/single_include)
+    file(TO_CMAKE_PATH ${json_SOURCE_DIR}/single_include JSON_PKG)
+
+    FetchContent_Declare(
+        sqlite3
+        URL https://www.sqlite.org/2023/sqlite-amalgamation-3420000.zip
+    )
+    FetchContent_MakeAvailable(sqlite3)
+    file(TO_CMAKE_PATH ${sqlite3_SOURCE_DIR} SQLITE_PKG)
 endif()
 
-message(STATUS "WebView2 found: ${WEBVIEW_PKG}")
-message(STATUS "Windows Implementation Library found: ${WIL_PKG}")
-message(STATUS "choc found: ${CHOC_PKG}")
-message(STATUS "nlohmann/json found: ${JSON_PKG}")
+message(STATUS "WebView2: ${WEBVIEW_PKG}")
+message(STATUS "Windows Implementation Library: ${WIL_PKG}")
+message(STATUS "choc: ${CHOC_PKG}")
+message(STATUS "nlohmann/json: ${JSON_PKG}")
+message(STATUS "SQLite3: ${SQLITE_PKG}")
+
+set_source_files_properties(${SQLITE_PKG}/sqlite3.c PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
 
 add_executable(
     ${PROJECT_NAME}
@@ -71,6 +81,7 @@ add_executable(
     src/WebView.cxx
     res$<$<CONFIG:Debug>:_debug>$<$<CONFIG:Release>:_release>.rc
     app.manifest
+    ${SQLITE_PKG}/sqlite3.c
 )
 
 target_precompile_headers(
@@ -94,6 +105,7 @@ target_include_directories(
     ${CHOC_PKG}/text
     ${CHOC_PKG}/threading
     ${JSON_PKG}
+    ${SQLITE_PKG}
 )
 
 target_link_directories(
