@@ -8,6 +8,7 @@ project(
     LANGUAGES CXX
 )
 
+option(USER_LIBS OFF)
 option(USER_INSTALL OFF)
 option(SYSTEM_INSTALL OFF)
 
@@ -22,40 +23,31 @@ file(WRITE ${CMAKE_BINARY_DIR}/version.txt "${PROJECT_VERSION}")
 
 include(FetchContent)
 
-if(DEFINED ENV{LIB_WEBVIEW})
+if(USER_LIBS)
     set(WEBVIEW_PKG $ENV{LIB_WEBVIEW})
+    set(WIL_PKG $ENV{LIB_WIL})
+    set(CHOC_PKG $ENV{LIB_CHOC})
+    set(JSON_PKG $ENV{LIB_JSON})
 else()
     execute_process(
         COMMAND
         nuget install ${WEBVIEW} -Version ${WEBVIEW_VER} -OutputDirectory ${CMAKE_BINARY_DIR}/libs
     )
     set(WEBVIEW_PKG ${CMAKE_BINARY_DIR}/libs/${WEBVIEW}.${WEBVIEW_VER})
-endif()
 
-if(DEFINED ENV{LIB_WIL})
-    set(WIL_PKG $ENV{LIB_WIL})
-else()
     execute_process(
         COMMAND
         nuget install ${WIL} -Version ${WIL_VER} -OutputDirectory ${CMAKE_BINARY_DIR}/libs
     )
     set(WIL_PKG ${CMAKE_BINARY_DIR}/libs/${WIL}.${WIL_VER})
-endif()
 
-if(DEFINED ENV{LIB_CHOC})
-    set(CHOC_PKG $ENV{LIB_CHOC})
-else()
     FetchContent_Declare(
         choc
         URL https://github.com/Tracktion/choc/archive/refs/heads/main.zip
     )
     FetchContent_MakeAvailable(choc)
     set(CHOC_PKG ${choc_SOURCE_DIR})
-endif()
 
-if(DEFINED ENV{LIB_JSON})
-    set(JSON_PKG $ENV{LIB_JSON})
-else()
     FetchContent_Declare(
         json
         URL https://github.com/nlohmann/json/releases/download/v3.11.2/include.zip
