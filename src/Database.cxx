@@ -1,9 +1,13 @@
 #include "Database.hxx"
 
+Config* Database::pConfig = nullptr;
+
 Database::Database(Config* config) {}
 
 std::unique_ptr<Database> Database::Create(Config* config)
 {
+    pConfig = config;
+
     auto pDatabase = std::unique_ptr<Database>();
 
     sqlite3* db;
