@@ -626,12 +626,12 @@ void WebView::SetWindowTitle(HWND hwnd)
             auto title = s.get();
 
             if (!pConfig->boolTopmost)
-                SetWindowTextW(window, title);
+                SetWindowTextW(hwnd, title);
 
             if (pConfig->boolTopmost)
             {
                 wstring add = title + titleTop;
-                SetWindowTextW(window, add.c_str());
+                SetWindowTextW(hwnd, add.c_str());
             }
         }
     }
