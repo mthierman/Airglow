@@ -35,6 +35,8 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
 
     WebView::Initialize(hwnd);
 
+    auto db = Database::Create(pConfig.get());
+
 #ifdef _DEBUG
 #endif
 

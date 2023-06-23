@@ -121,6 +121,7 @@ target_link_libraries(
     dwmapi.lib
     gdiplus.lib
     Uxtheme.lib
+    winsqlite3.lib
 )
 
 target_compile_definitions(
