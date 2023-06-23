@@ -3,14 +3,6 @@
 #include "Utility.hxx"
 
 using namespace Utility;
-using json = nlohmann::json;
-using path = std::filesystem::path;
-using string = std::string;
-using wstring = std::wstring;
-using ofstream = std::ofstream;
-using ifstream = std::ifstream;
-using stringstream = std::stringstream;
-using position = std::vector<int>;
 
 class Config
 {

@@ -142,33 +142,32 @@ void Tests(HWND hwnd)
     wprint(std::to_wstring(acp));
 }
 
-std::filesystem::path Utility::DataPath()
+path Utility::DataPath()
 {
-    std::filesystem::path path;
-    std::wstring outBuffer;
+    path dataPath;
+    wstring outBuffer;
     PWSTR buffer;
 
     if (SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &buffer) != S_OK)
     {
         CoTaskMemFree(buffer);
-        return path;
+        return dataPath;
     }
 
-    path = std::wstring(buffer) + std::filesystem::path::preferred_separator + L"Airglow";
+    dataPath = wstring(buffer) + path::preferred_separator + L"Airglow";
 
     CoTaskMemFree(buffer);
 
-    if (!std::filesystem::exists(path))
-        std::filesystem::create_directory(path);
+    if (!std::filesystem::exists(dataPath))
+        std::filesystem::create_directory(dataPath);
 
-    return path;
+    return dataPath;
 }
 
-std::filesystem::path Utility::SettingsPath(std::filesystem::path path)
+path Utility::SettingsPath(path dataPath)
 {
-    std::filesystem::path config =
-        (path.wstring() + std::filesystem::path::preferred_separator + L"Config.json");
+    path settingsPath = (dataPath.wstring() + path::preferred_separator + L"Config.json");
 
-    return config;
+    return settingsPath;
 }
 } // namespace Utility
