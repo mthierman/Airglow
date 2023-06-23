@@ -25,7 +25,7 @@ std::unique_ptr<Database> Database::Create(Config* config)
                       "SIDE TEXT NOT NULL);";
     char* messageError;
 
-    std::string dbFile = pConfig->pathData.string() + "/" + "Airglow.sqlite";
+    std::string dbFile = (pConfig->pathData / "Airglow.sqlite").string();
     const char* dbPath = dbFile.c_str();
 
     auto dbOpen = sqlite3_open(dbPath, &db);
