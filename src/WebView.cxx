@@ -594,7 +594,7 @@ RECT WebView::SideBounds(HWND window)
     return panel;
 }
 
-void WebView::SetWindowTitle(HWND window)
+void WebView::SetWindowTitle(HWND hwnd)
 {
     wstring titleTop = L" [On Top]";
 
@@ -607,12 +607,12 @@ void WebView::SetWindowTitle(HWND window)
             auto title = s.get();
 
             if (!pConfig->boolTopmost)
-                SetWindowTextW(window, title);
+                SetWindowTextW(hwnd, title);
 
             if (pConfig->boolTopmost)
             {
                 wstring add = title + titleTop;
-                SetWindowTextW(window, add.c_str());
+                SetWindowTextW(hwnd, add.c_str());
             }
         }
     }
