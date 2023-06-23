@@ -8,7 +8,12 @@ std::unique_ptr<Database> Database::Create(Config* config)
 
     sqlite3* db;
 
-    auto test = sqlite3_open("Airglow.db", &db);
+    path dbFilePath =
+        (ToWide(config->pathData.string())) + path::preferred_separator + L"Airglow.db";
+    auto dbFilePathConvert = ToString(dbFilePath);
+    const char* dbPath = dbFilePathConvert.c_str();
+
+    auto dbOpen = sqlite3_open(dbPath, &db);
 
     return pDatabase;
 }
