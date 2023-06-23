@@ -10,7 +10,7 @@ option(SYSTEM_INSTALL OFF)
 project(
     Airglow
     VERSION 1.1.3
-    LANGUAGES CXX
+    LANGUAGES C CXX ASM
 )
 
 math(EXPR BITNESS "${CMAKE_SIZEOF_VOID_P} * 8" OUTPUT_FORMAT DECIMAL)
@@ -69,7 +69,8 @@ message(STATUS "choc: ${CHOC_PKG}")
 message(STATUS "nlohmann/json: ${JSON_PKG}")
 message(STATUS "SQLite3: ${SQLITE_PKG}")
 
-set_source_files_properties(${SQLITE_PKG}/sqlite3.c PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
+add_library(sqlite ${SQLITE_PKG}/sqlite3.c ${SQLITE_PKG}/sqlite3.h)
+set_target_properties(sqlite PROPERTIES LINKER_LANGUAGE C)
 
 add_executable(
     ${PROJECT_NAME}
@@ -79,9 +80,9 @@ add_executable(
     src/Config.cxx
     src/Utility.cxx
     src/WebView.cxx
+    src/Database.cxx
     res$<$<CONFIG:Debug>:_debug>$<$<CONFIG:Release>:_release>.rc
     app.manifest
-    ${SQLITE_PKG}/sqlite3.c
 )
 
 target_precompile_headers(
@@ -121,7 +122,7 @@ target_link_libraries(
     dwmapi.lib
     gdiplus.lib
     Uxtheme.lib
-    winsqlite3.lib
+    sqlite
 )
 
 target_compile_definitions(
