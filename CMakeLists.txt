@@ -125,11 +125,11 @@ target_link_libraries(
     sqlite
 )
 
-target_compile_definitions(
-    ${PROJECT_NAME}
-    PRIVATE
-    UNICODE
-)
+# target_compile_definitions(
+# ${PROJECT_NAME}
+# PRIVATE
+# UNICODE
+# )
 
 if(USER_INSTALL)
     add_custom_command(
