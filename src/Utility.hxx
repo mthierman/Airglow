@@ -11,6 +11,7 @@ using position = std::vector<int>;
 
 namespace Utility
 {
+std::pair<wstring, wstring> CommandLine();
 bool Toggle(bool);
 std::vector<int> RectToBounds(RECT);
 RECT BoundsToRect(std::vector<int>);
@@ -26,7 +27,6 @@ wstring ToWide(string);
 string ToString(wstring);
 string BoolToString(bool);
 wstring BoolToWide(bool);
-std::pair<wstring, wstring> CommandLine();
 void Tests(HWND);
 path DataPath();
 path SettingsPath(path appData);
