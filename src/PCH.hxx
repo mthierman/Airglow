@@ -22,3 +22,5 @@
 #include <nlohmann/json.hpp>
 
 #include <sqlite3.h>
+
+#include <curl.h>

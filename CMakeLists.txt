@@ -28,6 +28,7 @@ if(USER_LIBS)
     file(TO_CMAKE_PATH $ENV{LIB_CHOC} CHOC_PKG)
     file(TO_CMAKE_PATH $ENV{LIB_JSON} JSON_PKG)
     file(TO_CMAKE_PATH $ENV{LIB_SQLITE} SQLITE_PKG)
+    file(TO_CMAKE_PATH $ENV{LIB_CURL} CURL_PKG)
 else()
     execute_process(
         COMMAND
@@ -107,6 +108,7 @@ target_include_directories(
     ${CHOC_PKG}/threading
     ${JSON_PKG}
     ${SQLITE_PKG}
+    ${CURL_PKG}/include/curl
 )
 
 target_link_directories(
