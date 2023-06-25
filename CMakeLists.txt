@@ -46,22 +46,29 @@ else()
         choc
         URL https://github.com/Tracktion/choc/archive/refs/heads/main.zip
     )
-    FetchContent_MakeAvailable(choc)
+    FetchContent_Populate(choc)
     file(TO_CMAKE_PATH ${choc_SOURCE_DIR} CHOC_PKG)
 
     FetchContent_Declare(
         json
         URL https://github.com/nlohmann/json/releases/download/v3.11.2/include.zip
     )
-    FetchContent_MakeAvailable(json)
+    FetchContent_Populate(json)
     file(TO_CMAKE_PATH ${json_SOURCE_DIR}/single_include JSON_PKG)
 
     FetchContent_Declare(
         sqlite3
         URL https://www.sqlite.org/2023/sqlite-amalgamation-3420000.zip
     )
-    FetchContent_MakeAvailable(sqlite3)
+    FetchContent_Populate(sqlite3)
     file(TO_CMAKE_PATH ${sqlite3_SOURCE_DIR} SQLITE_PKG)
+
+    FetchContent_Declare(
+        curl
+        URL https://github.com/curl/curl/releases/download/curl-8_1_2/curl-8.1.2.zip
+    )
+    FetchContent_Populate(curl)
+    file(TO_CMAKE_PATH ${curl_SOURCE_DIR} CURL_PKG)
 endif()
 
 message(STATUS "WebView2: ${WEBVIEW_PKG}")
@@ -69,6 +76,7 @@ message(STATUS "Windows Implementation Library: ${WIL_PKG}")
 message(STATUS "choc: ${CHOC_PKG}")
 message(STATUS "nlohmann/json: ${JSON_PKG}")
 message(STATUS "SQLite3: ${SQLITE_PKG}")
+message(STATUS "curl: ${CURL_PKG}")
 
 add_library(sqlite ${SQLITE_PKG}/sqlite3.c ${SQLITE_PKG}/sqlite3.h)
 set_target_properties(sqlite PROPERTIES LINKER_LANGUAGE C)
