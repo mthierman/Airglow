@@ -26,11 +26,17 @@ std::pair<wstring, wstring> CommandLine()
 
     LocalFree(args);
 
-    if (!commands.first.starts_with(L"http") || !commands.first.starts_with(L"https"))
-        commands.first = L"https://" + commands.first;
+    if (!commands.first.empty())
+    {
+        if (!commands.first.starts_with(L"http") || !commands.first.starts_with(L"https"))
+            commands.first = L"https://" + commands.first;
+    }
 
-    if (!commands.second.starts_with(L"http") || !commands.second.starts_with(L"https"))
-        commands.second = L"https://" + commands.second;
+    if (!commands.second.empty())
+    {
+        if (!commands.second.starts_with(L"http") || !commands.second.starts_with(L"https"))
+            commands.second = L"https://" + commands.second;
+    }
 
     return commands;
 }
