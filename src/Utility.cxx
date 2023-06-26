@@ -172,7 +172,7 @@ void Tests(HWND hwnd)
     wprint(std::to_wstring(acp));
 }
 
-path Utility::DataPath()
+path DataPath()
 {
     path dataPath;
     wstring outBuffer;
@@ -194,7 +194,7 @@ path Utility::DataPath()
     return dataPath;
 }
 
-path Utility::SettingsPath(path dataPath)
+path SettingsPath(path dataPath)
 {
     path settingsPath = (dataPath.wstring() + path::preferred_separator + L"Config.json");
 
