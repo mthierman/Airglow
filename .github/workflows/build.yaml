@@ -18,9 +18,7 @@ jobs:
       - uses: actions/cache@v3
         id: library-cache
         with:
-          path: |
-            build/libs
-            build/_deps
+          path: build/_deps
           key: library-cache-${{ hashFiles('**/CMakeLists.txt') }}
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

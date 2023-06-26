@@ -32,15 +32,15 @@ if(USER_LIBS)
 else()
     execute_process(
         COMMAND
-        nuget install ${WEBVIEW} -Version ${WEBVIEW_VER} -OutputDirectory ${CMAKE_BINARY_DIR}/libs
+        nuget install ${WEBVIEW} -Version ${WEBVIEW_VER} -OutputDirectory ${CMAKE_BINARY_DIR}/_deps
     )
-    file(TO_CMAKE_PATH ${CMAKE_BINARY_DIR}/libs/${WEBVIEW}.${WEBVIEW_VER} WEBVIEW_PKG)
+    file(TO_CMAKE_PATH ${CMAKE_BINARY_DIR}/_deps/${WEBVIEW}.${WEBVIEW_VER} WEBVIEW_PKG)
 
     execute_process(
         COMMAND
-        nuget install ${WIL} -Version ${WIL_VER} -OutputDirectory ${CMAKE_BINARY_DIR}/libs
+        nuget install ${WIL} -Version ${WIL_VER} -OutputDirectory ${CMAKE_BINARY_DIR}/_deps
     )
-    file(TO_CMAKE_PATH ${CMAKE_BINARY_DIR}/libs/${WIL}.${WIL_VER} WIL_PKG)
+    file(TO_CMAKE_PATH ${CMAKE_BINARY_DIR}/_deps/${WIL}.${WIL_VER} WIL_PKG)
 
     FetchContent_Declare(
         choc
