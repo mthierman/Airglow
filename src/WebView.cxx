@@ -421,12 +421,20 @@ void WebView::Messages(HWND hwnd, wstring message)
         println("F6 (WebView)");
 #endif
 
-        WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
-        GetWindowPlacement(hwnd, &wp);
-        if (wp.showCmd == 3)
-            ShowWindow(hwnd, SW_SHOWNORMAL);
-        else
-            ShowWindow(hwnd, SW_MAXIMIZE);
+        if (!pConfig->boolFullscreen)
+        {
+            WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
+            GetWindowPlacement(hwnd, &wp);
+            if (wp.showCmd == 3)
+            {
+                ShowWindow(hwnd, SW_SHOWNORMAL);
+                SetWindowPos(hwnd, nullptr, pConfig->vectorPosition[0], pConfig->vectorPosition[1],
+                             pConfig->vectorPosition[2], pConfig->vectorPosition[3], 0);
+            }
+
+            else
+                ShowWindow(hwnd, SW_MAXIMIZE);
+        }
     }
 
     if (message == fullscreenKey)
