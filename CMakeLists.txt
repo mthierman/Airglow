@@ -18,7 +18,7 @@ set(APP_VERSION ${PROJECT_VERSION})
 set(WEBVIEW "Microsoft.Web.WebView2")
 set(WEBVIEW_VER "1.0.1823.32")
 set(WIL "Microsoft.Windows.ImplementationLibrary")
-set(WIL_VER "1.0.230411.1")
+set(WIL_VER "1.0.230629.1")
 
 math(EXPR BITNESS "${CMAKE_SIZEOF_VOID_P} * 8" OUTPUT_FORMAT DECIMAL)
 file(WRITE ${CMAKE_BINARY_DIR}/version.txt "${APP_VERSION}")
