@@ -15,7 +15,7 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
 
     if (!std::filesystem::exists(pConfig->pathData))
     {
-        error("Data folder not found");
+        error(string("Data folder not found"));
         return 0;
     }
 
@@ -25,7 +25,7 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
 
     if (!hwnd)
     {
-        error("Window creation failed");
+        error(string("Window creation failed"));
         return 0;
     }
 

@@ -166,7 +166,7 @@ void Tests(HWND hwnd)
     wp.length = sizeof(WINDOWPLACEMENT);
     GetWindowPlacement(hwnd, &wp);
     if (wp.showCmd == 3)
-        print("Window is maximized\n");
+        println(string("Window is maximized"));
 
     auto acp = GetACP();
     wprint(std::to_wstring(acp));

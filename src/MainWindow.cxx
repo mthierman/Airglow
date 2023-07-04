@@ -31,8 +31,7 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Con
 
     if (RegisterClassExW(&wcex) == 0)
     {
-        string err = "Register window failed";
-        error(err);
+        error(string("Register window failed"));
         return 0;
     }
 
@@ -44,8 +43,7 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Con
 
     if (!hwnd)
     {
-        string err = "Window creation failed";
-        error(err);
+        error(string("Window creation failed"));
         return 0;
     }
 
@@ -441,7 +439,7 @@ int MainWindow::_OnSize(HWND hwnd, WPARAM wparam)
 int MainWindow::_OnSizing(HWND hwnd)
 {
 #ifdef _DEBUG
-    println("WM_SIZING\n");
+    println("WM_SIZING");
 #endif
 
     return 0;
@@ -450,7 +448,7 @@ int MainWindow::_OnSizing(HWND hwnd)
 int MainWindow::_OnEnterSizeMove(HWND hwnd)
 {
 #ifdef _DEBUG
-    println("WM_ENTERSIZEMOVE\n");
+    println("WM_ENTERSIZEMOVE");
 #endif
 
     return 0;
@@ -459,7 +457,7 @@ int MainWindow::_OnEnterSizeMove(HWND hwnd)
 int MainWindow::_OnExitSizeMove(HWND hwnd)
 {
 #ifdef _DEBUG
-    println("WM_EXITSIZEMOVE\n");
+    println("WM_EXITSIZEMOVE");
 #endif
 
     WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
@@ -516,7 +514,7 @@ int MainWindow::_OnMoving(HWND hwnd)
 int MainWindow::_OnSetFocus(HWND hwnd)
 {
 #ifdef _DEBUG
-    println("WM_SETFOCUS\n");
+    println("WM_SETFOCUS");
 #endif
 
     WebView::UpdateFocus();

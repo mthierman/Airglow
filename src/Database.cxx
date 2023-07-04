@@ -32,8 +32,7 @@ std::unique_ptr<Database> Database::Create(Config* config)
 
     if (dbOpen)
     {
-        string err = "Database opening failed";
-        error(err);
+        error(string("Database opening failed"));
         return 0;
     }
 
