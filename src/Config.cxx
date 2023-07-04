@@ -20,7 +20,7 @@ void Config::Load()
     if (std::filesystem::exists(pathSettings) && !std::filesystem::is_empty(pathSettings))
     {
         ifstream f(pathSettings);
-        config = json::parse(f);
+        config = json::parse(f, nullptr, true, true);
         f.close();
     }
 
