@@ -1,6 +1,6 @@
 #include "Database.hxx"
 
-Config* Database::pConfig = nullptr;
+Config* Database::pConfig;
 
 Database::Database(Config* config) {}
 
@@ -9,7 +9,7 @@ std::unique_ptr<Database> Database::Create(Config* config)
     pConfig = config;
     std::string dbFile = (pConfig->pathData / "Airglow.sqlite").string();
 
-    auto pDatabase = std::unique_ptr<Database>();
+    auto pDatabase = std::unique_ptr<Database>(new Database(pConfig));
 
     sqlite3* db;
     std::string sql = "CREATE TABLE CONFIG("
