@@ -132,6 +132,7 @@ target_link_libraries(
     dwmapi.lib
     gdiplus.lib
     Uxtheme.lib
+    Urlmon.lib
     sqlite
 )
 

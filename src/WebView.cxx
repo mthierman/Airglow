@@ -648,6 +648,12 @@ void WebView::SetWindowIcon(HWND hwnd)
     {
         if (main_wv != nullptr)
         {
+#ifdef _DEBUG
+            LPWSTR faviconUri;
+            main_wv->get_FaviconUri(&faviconUri);
+            wprintln(wstring(faviconUri));
+#endif
+
             main_wv->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
                                 Microsoft::WRL::Callback<ICoreWebView2GetFaviconCompletedHandler>(
                                     [hwnd](HRESULT result, IStream* iconStream) -> HRESULT
@@ -673,6 +679,12 @@ void WebView::SetWindowIcon(HWND hwnd)
     {
         if (side_wv != nullptr)
         {
+#ifdef _DEBUG
+            LPWSTR faviconUri;
+            side_wv->get_FaviconUri(&faviconUri);
+            wprintln(wstring(faviconUri));
+#endif
+
             side_wv->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
                                 Microsoft::WRL::Callback<ICoreWebView2GetFaviconCompletedHandler>(
                                     [hwnd](HRESULT result, IStream* iconStream) -> HRESULT

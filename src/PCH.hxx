@@ -9,6 +9,7 @@
 #include <dwmapi.h>
 #include <gdiplus.h>
 #include <ShlObj.h>
+#include <urlmon.h>
 
 #include <WebView2.h>
 
