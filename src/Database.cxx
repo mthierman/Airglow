@@ -1,6 +1,6 @@
 #include "Database.hxx"
 
-Config* Database::pConfig;
+Config* Database::pConfig{nullptr};
 
 Database::Database(Config* config) {}
 

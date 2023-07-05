@@ -1,6 +1,6 @@
 #include "WebView.hxx"
 
-Config* WebView::pConfig = nullptr;
+Config* WebView::pConfig{nullptr};
 
 WebView::WebView(HWND hwnd, Config* config) {}
 
