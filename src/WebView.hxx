@@ -33,8 +33,10 @@ class WebView
     static void SetWindowIcon(HWND);
 
   private:
-    WebView(HWND, Config*);
     static wstring GetScriptFile(path);
     static wstring GetScript();
     static wstring GetMenuScript();
+
+  protected:
+    WebView(HWND, Config*);
 };
