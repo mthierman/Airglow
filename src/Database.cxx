@@ -7,6 +7,7 @@ Database::Database(Config* config) {}
 std::unique_ptr<Database> Database::Create(Config* config)
 {
     pConfig = config;
+
     std::string dbFile = (pConfig->pathData / "Airglow.sqlite").string();
 
     auto pDatabase = std::unique_ptr<Database>(new Database(pConfig));

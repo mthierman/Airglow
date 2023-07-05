@@ -10,11 +10,6 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
 
     auto pWebView = std::unique_ptr<WebView>(new WebView(hwnd, config));
 
-    return pWebView;
-}
-
-void WebView::Initialize(HWND hwnd)
-{
     CreateCoreWebView2EnvironmentWithOptions(
         nullptr, pConfig->pathData.c_str(), nullptr,
         Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
@@ -280,6 +275,8 @@ void WebView::Initialize(HWND hwnd)
                 return S_OK;
             })
             .Get());
+
+    return pWebView;
 }
 
 wstring WebView::GetScriptFile(path appData)

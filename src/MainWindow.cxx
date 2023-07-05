@@ -1,6 +1,6 @@
 #include "MainWindow.hxx"
 
-Config* MainWindow::pConfig = nullptr;
+Config* MainWindow::pConfig{nullptr};
 
 MainWindow::MainWindow(HINSTANCE hinstance, int ncs, Config* config) {}
 

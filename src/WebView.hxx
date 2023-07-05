@@ -20,7 +20,6 @@ class WebView
 {
   public:
     static std::unique_ptr<WebView> Create(HWND, Config*);
-    static void Initialize(HWND);
     static Config* pConfig;
     static void Messages(HWND, wstring);
     static void UpdateBounds(HWND);

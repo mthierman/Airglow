@@ -14,6 +14,14 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
         return 0;
     }
 
+    auto pDatabase = Database::Create(pConfig.get());
+
+    if (!pDatabase)
+    {
+        error(string("Database creation failed"));
+        return 0;
+    }
+
     auto pWindow = MainWindow::Create(hinstance, ncs, pConfig.get());
     auto hwnd = pWindow.get()->m_hWnd;
 
@@ -30,16 +38,6 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
     if (!pWebView)
     {
         error(string("WebView2 creation failed"));
-        return 0;
-    }
-
-    WebView::Initialize(hwnd);
-
-    auto pDatabase = Database::Create(pConfig.get());
-
-    if (!pDatabase)
-    {
-        error(string("Database creation failed"));
         return 0;
     }
 
