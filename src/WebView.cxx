@@ -23,17 +23,17 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
                               {
                                   EventRegistrationToken msgToken;
 
-                                  if (controller != nullptr)
+                                  if (controller)
                                   {
                                       settings_controller = controller;
                                       settings_controller->get_CoreWebView2(&settings_core);
                                   }
 
-                                  if (settings_core != nullptr)
+                                  if (settings_core)
                                       settings_wv = settings_core.try_query<ICoreWebView2_19>();
-                                  if (settings_wv != nullptr)
+                                  if (settings_wv)
                                       settings_wv->get_Settings(&settings_settings);
-                                  if (settings_settings != nullptr)
+                                  if (settings_settings)
                                   {
                                       settings_settings->put_AreDefaultContextMenusEnabled(false);
                                       settings_settings->put_AreDefaultScriptDialogsEnabled(true);
@@ -46,7 +46,7 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
                                       settings_settings->put_IsZoomControlEnabled(false);
                                   }
 
-                                  if (settings_wv != nullptr)
+                                  if (settings_wv)
                                   {
                                       settings_controller->put_Bounds(MenuBounds(hwnd));
                                       settings_wv->Navigate(L"about:blank");
@@ -92,17 +92,17 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
                             EventRegistrationToken faviconChangedToken;
                             EventRegistrationToken documentTitleChangedToken;
 
-                            if (controller != nullptr)
+                            if (controller)
                             {
                                 main_controller = controller;
                                 main_controller->get_CoreWebView2(&main_core);
                             }
 
-                            if (main_core != nullptr)
+                            if (main_core)
                                 main_wv = main_core.try_query<ICoreWebView2_19>();
-                            if (main_wv != nullptr)
+                            if (main_wv)
                                 main_wv->get_Settings(&main_settings);
-                            if (main_settings != nullptr)
+                            if (main_settings)
                             {
                                 main_settings->put_AreDefaultContextMenusEnabled(true);
                                 main_settings->put_AreDefaultScriptDialogsEnabled(true);
@@ -115,7 +115,7 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
                                 main_settings->put_IsZoomControlEnabled(true);
                             }
 
-                            if (main_wv != nullptr)
+                            if (main_wv)
                             {
 
                                 main_controller->put_Bounds(MainBounds(hwnd));
@@ -189,17 +189,17 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
                             EventRegistrationToken faviconChangedToken;
                             EventRegistrationToken documentTitleChangedToken;
 
-                            if (controller != nullptr)
+                            if (controller)
                             {
                                 side_controller = controller;
                                 side_controller->get_CoreWebView2(&side_core);
                             }
 
-                            if (side_core != nullptr)
+                            if (side_core)
                                 side_wv = side_core.try_query<ICoreWebView2_19>();
-                            if (side_wv != nullptr)
+                            if (side_wv)
                                 side_wv->get_Settings(&side_settings);
-                            if (side_settings != nullptr)
+                            if (side_settings)
                             {
                                 side_settings->put_AreDefaultContextMenusEnabled(true);
                                 side_settings->put_AreDefaultScriptDialogsEnabled(true);
@@ -212,7 +212,7 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
                                 side_settings->put_IsZoomControlEnabled(true);
                             }
 
-                            if (side_wv != nullptr)
+                            if (side_wv)
                             {
 
                                 side_controller->put_Bounds(SideBounds(hwnd));
@@ -467,32 +467,32 @@ void WebView::Messages(HWND hwnd, wstring message)
 
 void WebView::UpdateBounds(HWND hwnd)
 {
-    if (settings_controller != nullptr)
+    if (settings_controller)
         settings_controller->put_Bounds(MenuBounds(hwnd));
 
-    if (main_controller != nullptr)
+    if (main_controller)
         main_controller->put_Bounds(MainBounds(hwnd));
 
-    if (side_controller != nullptr)
+    if (side_controller)
         side_controller->put_Bounds(SideBounds(hwnd));
 }
 
 void WebView::UpdateFocus()
 {
-    if (pConfig != nullptr)
+    if (pConfig)
     {
         if (pConfig->boolMenu)
-            if (settings_controller != nullptr)
+            if (settings_controller)
                 settings_controller->MoveFocus(
                     COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 
         if (!pConfig->boolSwapped & !pConfig->boolMenu)
-            if (main_controller != nullptr)
+            if (main_controller)
                 main_controller->MoveFocus(
                     COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 
         if (pConfig->boolSwapped & !pConfig->boolMenu)
-            if (side_controller != nullptr)
+            if (side_controller)
                 side_controller->MoveFocus(
                     COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
     }
@@ -606,7 +606,7 @@ void WebView::SetWindowTitle(HWND hwnd)
 {
     wstring titleTop = L" [On Top]";
 
-    if (!pConfig->boolSwapped && main_wv != nullptr)
+    if (main_wv && !pConfig->boolSwapped)
     {
         wil::unique_cotaskmem_string s;
         main_wv->get_DocumentTitle(&s);
@@ -622,7 +622,7 @@ void WebView::SetWindowTitle(HWND hwnd)
         }
     }
 
-    else if (side_wv != nullptr)
+    else if (side_wv)
     {
         wil::unique_cotaskmem_string s;
         side_wv->get_DocumentTitle(&s);
@@ -641,7 +641,7 @@ void WebView::SetWindowTitle(HWND hwnd)
 
 void WebView::SetWindowIcon(HWND hwnd)
 {
-    if (!pConfig->boolSwapped && main_wv != nullptr)
+    if (main_wv && !pConfig->boolSwapped)
     {
 
 #ifdef _DEBUG
@@ -654,7 +654,7 @@ void WebView::SetWindowIcon(HWND hwnd)
                             Microsoft::WRL::Callback<ICoreWebView2GetFaviconCompletedHandler>(
                                 [hwnd](HRESULT result, IStream* iconStream) -> HRESULT
                                 {
-                                    if (iconStream != nullptr)
+                                    if (iconStream)
                                     {
                                         Gdiplus::Bitmap iconBitmap(iconStream);
                                         wil::unique_hicon icon;
@@ -670,7 +670,7 @@ void WebView::SetWindowIcon(HWND hwnd)
                                 .Get());
     }
 
-    else if (side_wv != nullptr)
+    else if (side_wv)
     {
 #ifdef _DEBUG
         LPWSTR faviconUri;
@@ -682,7 +682,7 @@ void WebView::SetWindowIcon(HWND hwnd)
                             Microsoft::WRL::Callback<ICoreWebView2GetFaviconCompletedHandler>(
                                 [hwnd](HRESULT result, IStream* iconStream) -> HRESULT
                                 {
-                                    if (iconStream != nullptr)
+                                    if (iconStream)
                                     {
                                         Gdiplus::Bitmap iconBitmap(iconStream);
                                         wil::unique_hicon icon;
