@@ -84,20 +84,29 @@ message(STATUS "curl: ${CURL_PKG}")
 add_library(sqlite ${SQLITE_PKG}/sqlite3.c ${SQLITE_PKG}/sqlite3.h)
 set_target_properties(sqlite PROPERTIES LINKER_LANGUAGE C)
 
-file(GLOB SOURCES CONFIGURE_DEPENDS src/*.cxx)
+file(GLOB SOURCES CONFIGURE_DEPENDS ${CMAKE_SOURCE_DIR}/src/*.cxx)
+file(TO_CMAKE_PATH ${CMAKE_SOURCE_DIR}/res$<$<CONFIG:Debug>:_debug>$<$<CONFIG:Release>:_release>.rc RC_FILE)
+file(TO_CMAKE_PATH ${CMAKE_SOURCE_DIR}/app.manifest MANIFEST_FILE)
+file(TO_CMAKE_PATH ${CMAKE_SOURCE_DIR}/src/PCH.hxx PCH_FILE)
 
 add_executable(
     ${APP_TARGET}
     WIN32
     ${SOURCES}
-    res$<$<CONFIG:Debug>:_debug>$<$<CONFIG:Release>:_release>.rc
-    app.manifest
+    ${RC_FILE}
+    ${MANIFEST_FILE}
+)
+
+target_compile_definitions(
+    ${APP_TARGET}
+    PRIVATE
+    UNICODE
 )
 
 target_precompile_headers(
     ${APP_TARGET}
     PRIVATE
-    src/PCH.hxx
+    ${PCH_FILE}
 )
 
 target_include_directories(
@@ -134,12 +143,6 @@ target_link_libraries(
     Uxtheme.lib
     Urlmon.lib
     sqlite
-)
-
-target_compile_definitions(
-    ${APP_TARGET}
-    PRIVATE
-    UNICODE
 )
 
 if(USER_INSTALL)
