@@ -9,7 +9,7 @@ option(SYSTEM_INSTALL OFF)
 
 project(
     Airglow
-    VERSION 1.1.4
+    VERSION 1.1.5
     LANGUAGES C CXX ASM
 )
 
