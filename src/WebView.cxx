@@ -17,69 +17,94 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
             {
                 // SETTINGS WEBVIEW
                 env->CreateCoreWebView2Controller(
-                    hwnd, Microsoft::WRL::Callback<
-                              ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                              [hwnd](HRESULT result, ICoreWebView2Controller* controller) -> HRESULT
-                              {
-                                  EventRegistrationToken msgToken;
+                    hwnd,
+                    Microsoft::WRL::Callback<
+                        ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+                        [hwnd](HRESULT result, ICoreWebView2Controller* controller) -> HRESULT
+                        {
+                            EventRegistrationToken msgToken;
+                            EventRegistrationToken faviconChangedToken;
+                            EventRegistrationToken documentTitleChangedToken;
 
-                                  if (controller)
-                                  {
-                                      settings_controller = controller;
-                                      settings_controller->get_CoreWebView2(&settings_core);
-                                  }
+                            if (controller)
+                            {
+                                settings_controller = controller;
+                                settings_controller->get_CoreWebView2(&settings_core);
+                            }
 
-                                  if (settings_core)
-                                      settings_wv = settings_core.try_query<ICoreWebView2_19>();
-                                  if (settings_wv)
-                                      settings_wv->get_Settings(&settings_settings);
-                                  if (settings_settings)
-                                  {
-                                      settings_settings->put_AreDefaultContextMenusEnabled(false);
-                                      settings_settings->put_AreDefaultScriptDialogsEnabled(true);
-                                      settings_settings->put_AreDevToolsEnabled(true);
-                                      settings_settings->put_AreHostObjectsAllowed(true);
-                                      settings_settings->put_IsBuiltInErrorPageEnabled(true);
-                                      settings_settings->put_IsScriptEnabled(true);
-                                      settings_settings->put_IsStatusBarEnabled(false);
-                                      settings_settings->put_IsWebMessageEnabled(true);
-                                      settings_settings->put_IsZoomControlEnabled(false);
-                                  }
+                            if (settings_core)
+                                settings_wv = settings_core.try_query<ICoreWebView2_19>();
+                            if (settings_wv)
+                                settings_wv->get_Settings(&settings_settings);
+                            if (settings_settings)
+                            {
+                                settings_settings->put_AreDefaultContextMenusEnabled(false);
+                                settings_settings->put_AreDefaultScriptDialogsEnabled(true);
+                                settings_settings->put_AreDevToolsEnabled(true);
+                                settings_settings->put_AreHostObjectsAllowed(true);
+                                settings_settings->put_IsBuiltInErrorPageEnabled(true);
+                                settings_settings->put_IsScriptEnabled(true);
+                                settings_settings->put_IsStatusBarEnabled(false);
+                                settings_settings->put_IsWebMessageEnabled(true);
+                                settings_settings->put_IsZoomControlEnabled(false);
+                            }
 
-                                  if (settings_wv)
-                                  {
-                                      settings_controller->put_Bounds(MenuBounds(hwnd));
-                                      settings_wv->Navigate(L"about:blank");
+                            if (settings_wv)
+                            {
+                                settings_controller->put_Bounds(MenuBounds(hwnd));
+                                settings_wv->Navigate(L"about:blank");
 #ifdef _DEBUG
-                                      settings_wv->Navigate(L"https://localhost:8000/");
+                                settings_wv->Navigate(L"https://localhost:8000/");
 #endif
 
-                                      auto script = GetMenuScript();
-                                      settings_wv->ExecuteScript(script.c_str(), nullptr);
-                                      settings_wv->AddScriptToExecuteOnDocumentCreated(
-                                          script.c_str(), nullptr);
+                                auto script = GetMenuScript();
+                                settings_wv->ExecuteScript(script.c_str(), nullptr);
+                                settings_wv->AddScriptToExecuteOnDocumentCreated(script.c_str(),
+                                                                                 nullptr);
 
-                                      settings_wv->add_WebMessageReceived(
-                                          Microsoft::WRL::Callback<
-                                              ICoreWebView2WebMessageReceivedEventHandler>(
-                                              [hwnd](ICoreWebView2* webview,
-                                                     ICoreWebView2WebMessageReceivedEventArgs* args)
-                                                  -> HRESULT
-                                              {
-                                                  wil::unique_cotaskmem_string message;
-                                                  args->TryGetWebMessageAsString(&message);
-                                                  auto msg = wstring(message.get());
-                                                  Messages(hwnd, msg);
-                                                  webview->PostWebMessageAsString(message.get());
-                                                  return S_OK;
-                                              })
-                                              .Get(),
-                                          &msgToken);
-                                  }
+                                settings_wv->add_DocumentTitleChanged(
+                                    Microsoft::WRL::Callback<
+                                        ICoreWebView2DocumentTitleChangedEventHandler>(
+                                        [hwnd](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                        {
+                                            SetWindowTitle(hwnd);
+                                            return S_OK;
+                                        })
+                                        .Get(),
+                                    &documentTitleChangedToken);
 
-                                  return S_OK;
-                              })
-                              .Get());
+                                settings_wv->add_FaviconChanged(
+                                    Microsoft::WRL::Callback<
+                                        ICoreWebView2FaviconChangedEventHandler>(
+                                        [hwnd](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                        {
+                                            SetWindowIcon(hwnd);
+                                            return S_OK;
+                                        })
+                                        .Get(),
+                                    &faviconChangedToken);
+
+                                settings_wv->add_WebMessageReceived(
+                                    Microsoft::WRL::Callback<
+                                        ICoreWebView2WebMessageReceivedEventHandler>(
+                                        [hwnd](ICoreWebView2* webview,
+                                               ICoreWebView2WebMessageReceivedEventArgs* args)
+                                            -> HRESULT
+                                        {
+                                            wil::unique_cotaskmem_string message;
+                                            args->TryGetWebMessageAsString(&message);
+                                            auto msg = wstring(message.get());
+                                            Messages(hwnd, msg);
+                                            webview->PostWebMessageAsString(message.get());
+                                            return S_OK;
+                                        })
+                                        .Get(),
+                                    &msgToken);
+                            }
+
+                            return S_OK;
+                        })
+                        .Get());
 
                 // MAIN WEBVIEW
                 env->CreateCoreWebView2Controller(
@@ -604,9 +629,23 @@ RECT WebView::SideBounds(HWND window)
 
 void WebView::SetWindowTitle(HWND hwnd)
 {
-    wstring titleTop = L" [On Top]";
+    if (settings_wv && pConfig->boolMenu)
+    {
+        wil::unique_cotaskmem_string s;
+        settings_wv->get_DocumentTitle(&s);
+        auto title = s.get();
 
-    if (main_wv && !pConfig->boolSwapped)
+        if (!pConfig->boolTopmost)
+            SetWindowTextW(hwnd, title);
+
+        if (pConfig->boolTopmost)
+        {
+            wstring add = title + wstring(L" [On Top]");
+            SetWindowTextW(hwnd, add.c_str());
+        }
+    }
+
+    if (main_wv && !pConfig->boolMenu && !pConfig->boolSwapped)
     {
         wil::unique_cotaskmem_string s;
         main_wv->get_DocumentTitle(&s);
@@ -617,12 +656,12 @@ void WebView::SetWindowTitle(HWND hwnd)
 
         if (pConfig->boolTopmost)
         {
-            wstring add = title + titleTop;
+            wstring add = title + wstring(L" [On Top]");
             SetWindowTextW(hwnd, add.c_str());
         }
     }
 
-    else if (side_wv)
+    if (side_wv && !pConfig->boolMenu && pConfig->boolSwapped)
     {
         wil::unique_cotaskmem_string s;
         side_wv->get_DocumentTitle(&s);
@@ -633,7 +672,7 @@ void WebView::SetWindowTitle(HWND hwnd)
 
         if (pConfig->boolTopmost)
         {
-            wstring add = title + titleTop;
+            wstring add = title + wstring(L" [On Top]");
             SetWindowTextW(hwnd, add.c_str());
         }
     }
@@ -641,7 +680,35 @@ void WebView::SetWindowTitle(HWND hwnd)
 
 void WebView::SetWindowIcon(HWND hwnd)
 {
-    if (main_wv && !pConfig->boolSwapped)
+    if (settings_wv && pConfig->boolMenu)
+    {
+#ifdef _DEBUG
+        LPWSTR faviconUri;
+        settings_wv->get_FaviconUri(&faviconUri);
+        wprintln(wstring(faviconUri));
+#endif
+
+        settings_wv->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
+                                Microsoft::WRL::Callback<ICoreWebView2GetFaviconCompletedHandler>(
+                                    [hwnd](HRESULT result, IStream* iconStream) -> HRESULT
+                                    {
+                                        if (iconStream)
+                                        {
+                                            Gdiplus::Bitmap iconBitmap(iconStream);
+                                            wil::unique_hicon icon;
+                                            if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
+                                            {
+                                                auto favicon = std::move(icon);
+                                                SendMessageW(hwnd, WM_SETICON, ICON_BIG,
+                                                             (LPARAM)favicon.get());
+                                            }
+                                        }
+                                        return S_OK;
+                                    })
+                                    .Get());
+    }
+
+    if (main_wv && !pConfig->boolSwapped && !pConfig->boolMenu)
     {
 
 #ifdef _DEBUG
@@ -670,7 +737,7 @@ void WebView::SetWindowIcon(HWND hwnd)
                                 .Get());
     }
 
-    else if (side_wv)
+    if (side_wv && pConfig->boolSwapped && !pConfig->boolMenu)
     {
 #ifdef _DEBUG
         LPWSTR faviconUri;

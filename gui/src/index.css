@@ -9,3 +9,24 @@ body,
     height: 100%;
     background-color: transparent;
 }
+
+@layer base {
+    body {
+        @apply p-2;
+    }
+    #root {
+        @apply h-full w-full rounded p-2 shadow-2xl;
+    }
+    h1 {
+        @apply text-2xl;
+    }
+    .setting {
+        @apply flex flex-row flex-wrap items-center gap-4 p-2;
+    }
+    label {
+        @apply whitespace-nowrap;
+    }
+    input {
+        @apply min-w-0 flex-shrink flex-grow rounded p-2;
+    }
+}
