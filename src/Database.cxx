@@ -31,13 +31,21 @@ std::unique_ptr<Database> Database::Create(Config* config)
 
     auto dbOpen = sqlite3_open(dbPath, &db);
 
-    if (dbOpen)
+    if (dbOpen != SQLITE_OK)
     {
-        error(string("Database opening failed"));
+        error("Database opening failed");
         return 0;
     }
 
-    sqlite3_exec(db, sql.c_str(), NULL, 0, &messageError);
+    auto debExec = sqlite3_exec(db, sql.c_str(), nullptr, 0, &messageError);
+
+    if (!messageError)
+    {
+        error("Database execution failed: " + string(messageError));
+        return 0;
+    }
+
+    sqlite3_free(messageError);
 
     sqlite3_close(db);
 

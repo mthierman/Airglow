@@ -3,11 +3,15 @@
 #include "Config.hxx"
 #include "WebView.hxx"
 
+static unsigned long long gdiplusToken;
+static Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+
 class MainWindow
 {
   public:
     static std::unique_ptr<MainWindow> Create(HINSTANCE, int, Config*);
     static Config* pConfig;
+    HWND m_hwnd;
     static void Show(HWND, int);
     static void Fullscreen(HWND);
     static void Topmost(HWND);
@@ -27,14 +31,12 @@ class MainWindow
     int _OnExitSizeMove(HWND);
     int _OnMove(HWND);
     int _OnMoving(HWND);
-    // int _OnWindowPosChanging(HWND);
-    // int _OnWindowPosChanged(HWND);
+    int _OnWindowPosChanging(HWND);
+    int _OnWindowPosChanged(HWND);
     int _OnSetFocus(HWND);
     int _OnSettingChange(HWND);
     int _OnKeyDown(HWND, WPARAM);
     int _OnChar(HWND, WPARAM);
-
-    HWND m_hWnd;
 
   private:
     bool CheckSystemDarkMode();
@@ -43,9 +45,6 @@ class MainWindow
     bool SetMica(HWND);
     static bool Cloak(HWND);
     static bool Uncloak(HWND);
-
-    static unsigned long long gdiplusToken;
-    static Gdiplus::GdiplusStartupInput gdiplusStartupInput;
 
     enum PreferredAppMode
     {

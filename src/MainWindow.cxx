@@ -31,19 +31,19 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Con
 
     if (RegisterClassExW(&wcex) == 0)
     {
-        error(string("Register window failed"));
+        error("Window registration failed");
         return 0;
     }
 
     auto pMainWindow = std::unique_ptr<MainWindow>(new MainWindow(hinstance, ncs, pConfig));
 
-    HWND hwnd = CreateWindowExW(0, className.c_str(), appName.c_str(), WS_OVERLAPPEDWINDOW,
-                                CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
-                                nullptr, hinstance, pMainWindow.get());
+    HWND handle = CreateWindowExW(0, className.c_str(), appName.c_str(), WS_OVERLAPPEDWINDOW,
+                                  CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+                                  nullptr, nullptr, hinstance, pMainWindow.get());
 
-    if (!hwnd)
+    if (!handle)
     {
-        error(string("Window creation failed"));
+        error("Window creation failed");
         return 0;
     }
 
@@ -240,7 +240,7 @@ void MainWindow::Topmost(HWND hwnd)
     }
 }
 
-template <class T, class U, HWND(U::*m_hWnd)>
+template <class T, class U, HWND(U::*m_hwnd)>
 T* InstanceFromWndProc(HWND hwnd, UINT msg, LPARAM lparam)
 {
     T* pInstance;
@@ -250,7 +250,7 @@ T* InstanceFromWndProc(HWND hwnd, UINT msg, LPARAM lparam)
         LPCREATESTRUCTW pCreateStruct = reinterpret_cast<LPCREATESTRUCTW>(lparam);
         pInstance = reinterpret_cast<T*>(pCreateStruct->lpCreateParams);
         SetWindowLongPtrW(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pInstance));
-        pInstance->*m_hWnd = hwnd;
+        pInstance->*m_hwnd = hwnd;
     }
 
     else
@@ -264,7 +264,7 @@ T* InstanceFromWndProc(HWND hwnd, UINT msg, LPARAM lparam)
 __int64 __stdcall MainWindow::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
     MainWindow* pMainWindow =
-        InstanceFromWndProc<MainWindow, MainWindow, &MainWindow::m_hWnd>(hwnd, msg, lparam);
+        InstanceFromWndProc<MainWindow, MainWindow, &MainWindow::m_hwnd>(hwnd, msg, lparam);
 
     if (pMainWindow)
     {
@@ -298,10 +298,10 @@ __int64 __stdcall MainWindow::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARA
             return pMainWindow->_OnMove(hwnd);
         case WM_MOVING:
             return pMainWindow->_OnMoving(hwnd);
-        // case WM_WINDOWPOSCHANGING:
-        //     return pMainWindow->_OnWindowPosChanging(hwnd);
-        // case WM_WINDOWPOSCHANGED:
-        //     return pMainWindow->_OnWindowPosChanged(hwnd);
+        case WM_WINDOWPOSCHANGING:
+            return pMainWindow->_OnWindowPosChanging(hwnd);
+        case WM_WINDOWPOSCHANGED:
+            return pMainWindow->_OnWindowPosChanged(hwnd);
         case WM_SETFOCUS:
             return pMainWindow->_OnSetFocus(hwnd);
         case WM_SETTINGCHANGE:
@@ -331,6 +331,13 @@ int MainWindow::_OnCreate(HWND hwnd)
     println("WM_CREATE");
     pConfig->Tests();
 #endif
+    auto gdiStartup = Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+
+    if (gdiStartup != Gdiplus::Status::Ok)
+    {
+        error("GDI+ initialization failed");
+        return 0;
+    }
 
     SetEnvironmentVariableW(wstring(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR").c_str(),
                             wstring(L"0").c_str());
@@ -356,6 +363,10 @@ int MainWindow::_OnClose(HWND hwnd)
 #ifdef _DEBUG
     println("WM_CLOSE");
 #endif
+
+    pConfig->Save();
+
+    Gdiplus::GdiplusShutdown(gdiplusToken);
 
     DestroyWindow(hwnd);
 
@@ -493,23 +504,23 @@ int MainWindow::_OnMoving(HWND hwnd)
     return 0;
 }
 
-// int MainWindow::_OnWindowPosChanging(HWND hwnd)
-// {
-// #ifdef _DEBUG
-//     println("WM_WINDOWPOSCHANGING");
-// #endif
+int MainWindow::_OnWindowPosChanging(HWND hwnd)
+{
+#ifdef _DEBUG
+    println("WM_WINDOWPOSCHANGING");
+#endif
 
-//     return 0;
-// }
+    return 0;
+}
 
-// int MainWindow::_OnWindowPosChanged(HWND hwnd)
-// {
-// #ifdef _DEBUG
-//     println("WM_WINDOWPOSCHANGED");
-// #endif
+int MainWindow::_OnWindowPosChanged(HWND hwnd)
+{
+#ifdef _DEBUG
+    println("WM_WINDOWPOSCHANGED");
+#endif
 
-//     return 0;
-// }
+    return 0;
+}
 
 int MainWindow::_OnSetFocus(HWND hwnd)
 {

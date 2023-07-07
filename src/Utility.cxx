@@ -41,31 +41,6 @@ std::pair<wstring, wstring> CommandLine()
     return commands;
 }
 
-// std::pair<std::wstring, std::wstring> CommandLine()
-// {
-//     std::pair<std::wstring, std::wstring> pair;
-//     int number;
-
-//     auto cmd = GetCommandLineW();
-//     auto args = CommandLineToArgvW(cmd, &number);
-
-//     if (number == 2)
-//     {
-//         pair.first = args[1];
-//         pair.second = args[1];
-//     }
-
-//     if (number == 3)
-//     {
-//         pair.first = args[1];
-//         pair.second = args[2];
-//     }
-
-//     LocalFree(args);
-
-//     return pair;
-// }
-
 bool Toggle(bool b) { return b ? false : true; }
 
 position RectToBounds(RECT rect)
@@ -145,28 +120,28 @@ void Tests(HWND hwnd)
 {
     auto toggleTest = Toggle(false);
     if (toggleTest != false)
-        print("Toggle(): TEST FAILED\n");
+        println("Toggle(): TEST FAILED");
 
-    wstring dpi = L"DPI: " + std::to_wstring(GetDpiForWindow(hwnd)) + L"\n";
-    wprint(dpi);
+    wstring dpi = L"DPI: " + std::to_wstring(GetDpiForWindow(hwnd));
+    wprintln(dpi);
 
     RECT clientRect;
     GetClientRect(hwnd, &clientRect);
     wstring clientBounds = L"Client: " + std::to_wstring(clientRect.right - clientRect.left) +
-                           L" x " + std::to_wstring(clientRect.bottom - clientRect.top) + L"\n";
-    wprint(clientBounds.c_str());
+                           L" x " + std::to_wstring(clientRect.bottom - clientRect.top);
+    wprintln(clientBounds.c_str());
 
     RECT windowRect;
     GetWindowRect(hwnd, &windowRect);
     wstring windowBounds = L"Window: " + std::to_wstring(windowRect.right - windowRect.left) +
-                           L" x " + std::to_wstring(windowRect.bottom - windowRect.top) + L"\n";
-    wprint(windowBounds.c_str());
+                           L" x " + std::to_wstring(windowRect.bottom - windowRect.top);
+    wprintln(windowBounds.c_str());
 
     WINDOWPLACEMENT wp;
     wp.length = sizeof(WINDOWPLACEMENT);
     GetWindowPlacement(hwnd, &wp);
     if (wp.showCmd == 3)
-        println(string("Window is maximized"));
+        println("Window is maximized");
 
     auto acp = GetACP();
     wprint(std::to_wstring(acp));
