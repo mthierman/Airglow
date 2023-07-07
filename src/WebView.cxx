@@ -50,6 +50,9 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
                                   {
                                       settings_controller->put_Bounds(MenuBounds(hwnd));
                                       settings_wv->Navigate(L"about:blank");
+#ifdef _DEBUG
+                                      settings_wv->Navigate(L"https://localhost:8000/");
+#endif
 
                                       auto script = GetMenuScript();
                                       settings_wv->ExecuteScript(script.c_str(), nullptr);

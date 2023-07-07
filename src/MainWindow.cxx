@@ -442,8 +442,6 @@ int MainWindow::_OnSize(HWND hwnd, WPARAM wparam)
         pConfig->Save();
     }
 
-    WebView::UpdateBounds(hwnd);
-
     return 0;
 }
 
@@ -518,6 +516,8 @@ int MainWindow::_OnWindowPosChanged(HWND hwnd)
 #ifdef _DEBUG
     println("WM_WINDOWPOSCHANGED");
 #endif
+
+    WebView::UpdateBounds(hwnd);
 
     return 0;
 }
