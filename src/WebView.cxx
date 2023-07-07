@@ -401,6 +401,11 @@ void WebView::Messages(HWND hwnd, wstring message)
     wstring onTopKey = wstring(L"F9");
     wstring closeKey = wstring(L"close");
 
+    if (message == L"TEST")
+    {
+        println("TEST");
+    }
+
     if (message == splitKey)
     {
 #ifdef _DEBUG

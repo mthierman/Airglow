@@ -1,6 +1,11 @@
 export default function App() {
+    function handleButton() {
+        alert("TEST");
+        window.chrome.webview.postMessage("TEST");
+    }
+
     return (
-        <div>
+        <div id="settings">
             <h1>Settings</h1>
             <div className="setting">
                 <label>Main URL</label>
@@ -10,6 +15,9 @@ export default function App() {
                 <label>Side URL</label>
                 <input type="url" name="sideUrl" defaultValue="bing.com" />
             </div>
+            <button onClick={handleButton} id="TestButton">
+                Test
+            </button>
         </div>
     );
 }
