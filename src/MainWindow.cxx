@@ -29,23 +29,15 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Con
     wcex.hIconSm = (HICON)LoadImageW(hinstance, programIcon.c_str(), IMAGE_ICON, 0, 0,
                                      LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
 
-    if (RegisterClassExW(&wcex) == 0)
-    {
-        error("Window registration failed");
-        return 0;
-    }
+    if (!RegisterClassExW(&wcex))
+        return nullptr;
 
     auto pMainWindow = std::unique_ptr<MainWindow>(new MainWindow(hinstance, ncs, pConfig));
 
-    HWND handle = CreateWindowExW(0, className.c_str(), appName.c_str(), WS_OVERLAPPEDWINDOW,
-                                  CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
-                                  nullptr, nullptr, hinstance, pMainWindow.get());
-
-    if (!handle)
-    {
-        error("Window creation failed");
-        return 0;
-    }
+    if (!CreateWindowExW(0, className.c_str(), appName.c_str(), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT,
+                         CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, hinstance,
+                         pMainWindow.get()))
+        return nullptr;
 
     return pMainWindow;
 }
@@ -69,20 +61,17 @@ bool MainWindow::SetDarkTitle()
     if (!uxtheme)
         return false;
 
-    else
+    auto ord135 = GetProcAddress(uxtheme, PCSTR MAKEINTRESOURCEW(135));
+
+    if (ord135)
     {
-        auto ord135 = GetProcAddress(uxtheme, PCSTR MAKEINTRESOURCEW(135));
-
-        if (ord135)
-        {
-            auto SetPreferredAppMode = reinterpret_cast<fnSetPreferredAppMode>(ord135);
-            SetPreferredAppMode(PreferredAppMode::AllowDark);
-        }
-
-        FreeLibrary(uxtheme);
-
-        return true;
+        auto SetPreferredAppMode = reinterpret_cast<fnSetPreferredAppMode>(ord135);
+        SetPreferredAppMode(PreferredAppMode::AllowDark);
     }
+
+    FreeLibrary(uxtheme);
+
+    return true;
 }
 
 bool MainWindow::SetDarkMode(HWND hwnd)
@@ -98,8 +87,7 @@ bool MainWindow::SetDarkMode(HWND hwnd)
         return false;
     }
 
-    else
-        DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmtrue, sizeof(dwmtrue));
+    DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmtrue, sizeof(dwmtrue));
 
     return true;
 }
@@ -108,20 +96,16 @@ bool MainWindow::SetMica(HWND hwnd)
 {
     MARGINS m = {0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
 
-    if (DwmExtendFrameIntoClientArea(hwnd, &m) != S_OK)
+    if (FAILED(DwmExtendFrameIntoClientArea(hwnd, &m)))
         return false;
 
-    else
-    {
-        HRESULT backdrop = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
+    HRESULT backdrop = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
 
-        if (DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop, sizeof(&backdrop)) !=
-            S_OK)
-            return false;
+    if (FAILED(
+            DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop, sizeof(&backdrop))))
+        return false;
 
-        else
-            return true;
-    }
+    return true;
 }
 
 bool MainWindow::Cloak(HWND hwnd)
@@ -129,11 +113,10 @@ bool MainWindow::Cloak(HWND hwnd)
     auto cloakOn = TRUE;
     auto cloakOff = FALSE;
 
-    if (DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOn, sizeof(cloakOn)) != S_OK)
+    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOn, sizeof(cloakOn))))
         return false;
 
-    else
-        return true;
+    return true;
 }
 
 bool MainWindow::Uncloak(HWND hwnd)
@@ -141,16 +124,14 @@ bool MainWindow::Uncloak(HWND hwnd)
     auto cloakOn = TRUE;
     auto cloakOff = FALSE;
 
-    if (DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOff, sizeof(cloakOff)) != S_OK)
+    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOff, sizeof(cloakOff))))
         return false;
 
-    else
-        return true;
+    return true;
 }
 
 void MainWindow::Show(HWND hwnd, int ncs)
 {
-
     Cloak(hwnd);
 
     if (!pConfig->boolFullscreen & !pConfig->boolMaximized)
@@ -254,9 +235,7 @@ T* InstanceFromWndProc(HWND hwnd, UINT msg, LPARAM lparam)
     }
 
     else
-    {
         pInstance = reinterpret_cast<T*>(GetWindowLongPtrW(hwnd, GWLP_USERDATA));
-    }
 
     return pInstance;
 }
@@ -329,15 +308,11 @@ int MainWindow::_OnCreate(HWND hwnd)
 {
 #ifdef _DEBUG
     println("WM_CREATE");
-    pConfig->Tests();
 #endif
     auto gdiStartup = Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
 
     if (gdiStartup != Gdiplus::Status::Ok)
-    {
         error("GDI+ initialization failed");
-        return 0;
-    }
 
     SetEnvironmentVariableW(wstring(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR").c_str(),
                             wstring(L"0").c_str());
@@ -365,9 +340,7 @@ int MainWindow::_OnClose(HWND hwnd)
 #endif
 
     pConfig->Save();
-
     Gdiplus::GdiplusShutdown(gdiplusToken);
-
     DestroyWindow(hwnd);
 
     return 0;
@@ -471,7 +444,6 @@ int MainWindow::_OnExitSizeMove(HWND hwnd)
 
     WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
     GetWindowPlacement(hwnd, &wp);
-
     if (!pConfig->boolFullscreen & (wp.showCmd != 3))
     {
         RECT rect;
@@ -541,6 +513,7 @@ int MainWindow::_OnSettingChange(HWND hwnd)
 
     InvalidateRect(hwnd, nullptr, true);
     SetDarkMode(hwnd);
+
     return 0;
 }
 

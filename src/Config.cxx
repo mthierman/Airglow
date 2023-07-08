@@ -5,7 +5,6 @@ Config::Config() {}
 std::unique_ptr<Config> Config::Create()
 {
     auto pConfig = std::unique_ptr<Config>(new Config());
-
     pConfig->pathData = DataPath();
     pConfig->pathSettings = SettingsPath(pConfig->pathData);
     pConfig->Load();
@@ -66,16 +65,16 @@ json Config::Get()
 
 void Config::Tests()
 {
-    print(BoolToString(boolFullscreen));
-    print(stringMain);
-    print(BoolToString(boolMaximized));
-    print(BoolToString(boolMenu));
-    print(std::to_string(vectorPosition[0]));
-    print(std::to_string(vectorPosition[1]));
-    print(std::to_string(vectorPosition[2]));
-    print(std::to_string(vectorPosition[3]));
-    print(stringSide);
-    print(BoolToString(boolSplit));
-    print(BoolToString(boolSwapped));
-    print(BoolToString(boolTopmost));
+    println(BoolToString(boolFullscreen));
+    println(stringMain);
+    println(BoolToString(boolMaximized));
+    println(BoolToString(boolMenu));
+    println(std::to_string(vectorPosition[0]));
+    println(std::to_string(vectorPosition[1]));
+    println(std::to_string(vectorPosition[2]));
+    println(std::to_string(vectorPosition[3]));
+    println(stringSide);
+    println(BoolToString(boolSplit));
+    println(BoolToString(boolSwapped));
+    println(BoolToString(boolTopmost));
 }

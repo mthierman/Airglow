@@ -26,11 +26,9 @@ std::unique_ptr<Database> Database::Create(Config* config)
                       "MAIN TEXT NOT NULL,"
                       "SIDE TEXT NOT NULL);";
     char* messageError;
-
     const char* dbPath = dbFile.c_str();
 
     auto dbOpen = sqlite3_open(dbPath, &db);
-
     if (dbOpen != SQLITE_OK)
     {
         error("Database opening failed");
@@ -38,7 +36,6 @@ std::unique_ptr<Database> Database::Create(Config* config)
     }
 
     auto debExec = sqlite3_exec(db, sql.c_str(), nullptr, 0, &messageError);
-
     if (!messageError)
     {
         error("Database execution failed: " + string(messageError));
@@ -46,7 +43,6 @@ std::unique_ptr<Database> Database::Create(Config* config)
     }
 
     sqlite3_free(messageError);
-
     sqlite3_close(db);
 
     return pDatabase;

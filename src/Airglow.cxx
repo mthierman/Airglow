@@ -17,6 +17,12 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
     }
 
     auto pWindow = MainWindow::Create(hinstance, ncs, pConfig.get());
+    if (!pWindow)
+    {
+        error("Window creation failed");
+        return 0;
+    }
+
     pWindow->Show(pWindow->m_hwnd, ncs);
 
     auto pWebView = WebView::Create(pWindow->m_hwnd, pConfig.get());
