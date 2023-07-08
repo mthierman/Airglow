@@ -119,6 +119,8 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
                                                     pConfig->stringSide =
                                                         ToString(message.substr(8));
                                                 }
+
+                                                pConfig->Save();
                                             }
 
                                             return S_OK;
