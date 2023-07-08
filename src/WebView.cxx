@@ -107,9 +107,18 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
                                                 auto message = wstring(messageRaw.get());
 
                                                 if (message.compare(0, 8, L"mainUrl ") == 0)
+                                                {
                                                     wprintln(message.substr(8));
+                                                    pConfig->stringMain =
+                                                        ToString(message.substr(8));
+                                                }
+
                                                 if (message.compare(0, 8, L"sideUrl ") == 0)
+                                                {
                                                     wprintln(message.substr(8));
+                                                    pConfig->stringSide =
+                                                        ToString(message.substr(8));
+                                                }
                                             }
 
                                             return S_OK;
