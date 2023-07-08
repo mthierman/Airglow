@@ -7,23 +7,24 @@ option(USER_LIBS OFF)
 option(USER_INSTALL OFF)
 option(SYSTEM_INSTALL OFF)
 
+file(READ ${CMAKE_SOURCE_DIR}/Airglow.json PROJECT_JSON)
+string(JSON APP_NAME GET ${PROJECT_JSON} "name")
+string(JSON APP_VERSION GET ${PROJECT_JSON} "version")
+
 project(
-    Airglow
-    VERSION 1.1.5
+    ${APP_NAME}
+    VERSION ${APP_VERSION}
     LANGUAGES C CXX ASM
 )
 
-set(APP_TARGET ${PROJECT_NAME})
-set(APP_VERSION ${PROJECT_VERSION})
 set(WEBVIEW "Microsoft.Web.WebView2")
 set(WEBVIEW_VER "1.0.1823.32")
 set(WIL "Microsoft.Windows.ImplementationLibrary")
 set(WIL_VER "1.0.230629.1")
 
 math(EXPR BITNESS "${CMAKE_SIZEOF_VOID_P} * 8" OUTPUT_FORMAT DECIMAL)
-file(WRITE ${CMAKE_BINARY_DIR}/version.txt "${APP_VERSION}")
 
-message(STATUS "${APP_TARGET} v${APP_VERSION} (${BITNESS}-bit) [${CMAKE_BUILD_TYPE}]")
+message(STATUS "${APP_NAME} v${APP_VERSION} (${BITNESS}-bit) [${CMAKE_BUILD_TYPE}]")
 
 if(USER_LIBS)
     file(TO_CMAKE_PATH $ENV{LIB_WEBVIEW} WEBVIEW_PKG)
@@ -90,7 +91,7 @@ file(TO_CMAKE_PATH ${CMAKE_SOURCE_DIR}/app.manifest MANIFEST_FILE)
 file(TO_CMAKE_PATH ${CMAKE_SOURCE_DIR}/src/PCH.hxx PCH_FILE)
 
 add_executable(
-    ${APP_TARGET}
+    ${APP_NAME}
     WIN32
     ${SOURCES}
     ${RC_FILE}
@@ -98,19 +99,19 @@ add_executable(
 )
 
 target_compile_definitions(
-    ${APP_TARGET}
+    ${APP_NAME}
     PRIVATE
     UNICODE
 )
 
 target_precompile_headers(
-    ${APP_TARGET}
+    ${APP_NAME}
     PRIVATE
     ${PCH_FILE}
 )
 
 target_include_directories(
-    ${APP_TARGET}
+    ${APP_NAME}
     PRIVATE
     ${WEBVIEW_PKG}/build/native/include
     ${WIL_PKG}/include
@@ -129,13 +130,13 @@ target_include_directories(
 )
 
 target_link_directories(
-    ${APP_TARGET}
+    ${APP_NAME}
     PRIVATE
     ${WEBVIEW_PKG}/build/native/x64
 )
 
 target_link_libraries(
-    ${APP_TARGET}
+    ${APP_NAME}
     PRIVATE
     WebView2LoaderStatic.lib
     dwmapi.lib
@@ -147,14 +148,14 @@ target_link_libraries(
 
 if(USER_INSTALL)
     add_custom_command(
-        TARGET ${APP_TARGET} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/${APP_TARGET}.exe $ENV{LocalAppData}/Airglow/${APP_TARGET}.exe
+        TARGET ${APP_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/${APP_NAME}.exe $ENV{LocalAppData}/Airglow/${APP_NAME}.exe
     )
 endif()
 
 if(SYSTEM_INSTALL)
     add_custom_command(
-        TARGET ${APP_TARGET} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/${APP_TARGET}.exe $ENV{ProgramFiles}/Airglow/${APP_TARGET}.exe
+        TARGET ${APP_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/${APP_NAME}.exe $ENV{ProgramFiles}/Airglow/${APP_NAME}.exe
     )
 endif()
