@@ -10,9 +10,10 @@ class Config
     static std::unique_ptr<Config> Create();
     void Load();
     void Save();
-    void PrintCurrent();
+
     path dataPath{};
     path configPath{};
+    path dbPath{};
     std::vector<int> position{0, 0, 800, 600};
     bool menu{false};
     bool split{false};
@@ -25,4 +26,5 @@ class Config
 
   protected:
     Config();
+    void Tests();
 };

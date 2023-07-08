@@ -10,7 +10,7 @@ std::unique_ptr<Database> Database::Create(Config* config)
 
     auto pDatabase = std::unique_ptr<Database>(new Database(pConfig));
 
-    std::string dbFile = (pConfig->dataPath / "Airglow.sqlite").string();
+    std::string dbFile = (pConfig->dbPath).string();
     const char* dbPath = dbFile.c_str();
     sqlite3* db;
     char* errMsg = 0;
@@ -34,13 +34,13 @@ std::unique_ptr<Database> Database::Create(Config* config)
         return 0;
     }
 
-    auto debExec = sqlite3_exec(db, sql.c_str(), nullptr, 0, &errMsg);
-    if (debExec != SQLITE_OK)
-    {
-        error("Database execution failed: " + string{errMsg});
-        sqlite3_free(errMsg);
-        return 0;
-    }
+    // auto debExec = sqlite3_exec(db, sql.c_str(), nullptr, 0, &errMsg);
+    // if (debExec != SQLITE_OK)
+    // {
+    //     error("Database execution failed: " + string{errMsg});
+    //     sqlite3_free(errMsg);
+    //     return 0;
+    // }
 
     sqlite3_close(db);
 

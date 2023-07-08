@@ -53,9 +53,9 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
                             {
                                 settings_controller->put_Bounds(MenuBounds(hwnd));
                                 settings_wv->Navigate(L"about:blank");
-#ifdef _DEBUG
-                                settings_wv->Navigate(L"https://localhost:8000/");
-#endif
+                                // #ifdef _DEBUG
+                                //                                 settings_wv->Navigate(L"https://localhost:8000/");
+                                // #endif
 
                                 auto script = GetMenuScript();
                                 settings_wv->ExecuteScript(script.c_str(), nullptr);
@@ -109,13 +109,13 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
                                                 if (message.compare(0, 8, L"mainUrl ") == 0)
                                                 {
                                                     wprintln(message.substr(8));
-                                                    pConfig->mainUrl = ToString(message.substr(8));
+                                                    pConfig->mainUrl = to_string(message.substr(8));
                                                 }
 
                                                 if (message.compare(0, 8, L"sideUrl ") == 0)
                                                 {
                                                     wprintln(message.substr(8));
-                                                    pConfig->sideUrl = ToString(message.substr(8));
+                                                    pConfig->sideUrl = to_string(message.substr(8));
                                                 }
 
                                                 Messages(hwnd, message);
@@ -353,7 +353,7 @@ wstring WebView::GetScriptFile(path appData)
         if (!std::filesystem::is_empty(file))
         {
             buffer << f.rdbuf();
-            script = ToWide(buffer.str());
+            script = to_wide(buffer.str());
         }
         f.close();
     }

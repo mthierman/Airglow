@@ -1,20 +1,21 @@
 #pragma once
 
 #include "Config.hxx"
-#include "WebView.hxx"
-
-static unsigned long long gdiplusToken;
-static Gdiplus::GdiplusStartupInput gdiplusStartupInput;
 
 class MainWindow
 {
   public:
     static std::unique_ptr<MainWindow> Create(HINSTANCE, int, Config*);
     static Config* pConfig;
-    HWND m_hwnd;
-    static void Show(HWND, int);
+    static void Show(HWND);
     static void Fullscreen(HWND);
     static void Topmost(HWND);
+    static bool CheckSystemDarkMode();
+    static bool SetDarkTitle();
+    static bool SetDarkMode(HWND);
+    static bool SetMica(HWND);
+    static bool Cloak(HWND);
+    static bool Uncloak(HWND);
     static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
 
     int _OnActivate(HWND, WPARAM);
@@ -38,14 +39,9 @@ class MainWindow
     int _OnWindowPosChanged(HWND);
     int _OnWindowPosChanging(HWND);
 
-  private:
-    bool CheckSystemDarkMode();
-    bool SetDarkTitle();
-    bool SetDarkMode(HWND);
-    bool SetMica(HWND);
-    static bool Cloak(HWND);
-    static bool Uncloak(HWND);
+    HWND hwnd;
 
+  private:
     enum PreferredAppMode
     {
         Default,

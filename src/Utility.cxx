@@ -2,6 +2,102 @@
 
 namespace Utility
 {
+wstring to_wide(string in)
+{
+    int size = MultiByteToWideChar(CP_UTF8, 0, in.c_str(), in.size(), nullptr, 0);
+    wstring out;
+    out.resize(size);
+    MultiByteToWideChar(CP_UTF8, 0, in.c_str(), in.size(), out.data(), size);
+
+    return out;
+}
+
+string to_string(wstring in)
+{
+    int size = WideCharToMultiByte(CP_UTF8, 0, in.c_str(), in.size(), nullptr, 0, nullptr, nullptr);
+    string out;
+    out.resize(size);
+    WideCharToMultiByte(CP_UTF8, 0, in.c_str(), in.size(), out.data(), size, nullptr, nullptr);
+
+    return out;
+}
+
+string bool_to_string(bool in) { return in ? string("true") : string("false"); }
+
+wstring bool_to_wide(bool in) { return in ? wstring(L"true") : wstring(L"false"); }
+
+void print(string in) { OutputDebugStringW(to_wide(in).c_str()); }
+
+void println(string in)
+{
+    OutputDebugStringW(to_wide(in).c_str());
+    OutputDebugStringW(L"\n");
+}
+
+void wprint(wstring in) { OutputDebugStringW(in.c_str()); }
+
+void wprintln(wstring in)
+{
+    OutputDebugStringW(in.c_str());
+    OutputDebugStringW(L"\n");
+}
+
+void msgbox(string in)
+{
+    MessageBoxW(nullptr, to_wide(in).c_str(), wstring(L"Airglow").c_str(), 0);
+};
+
+void msgboxw(wstring in) { MessageBoxW(nullptr, in.c_str(), wstring(L"Airglow").c_str(), 0); };
+
+void error(string in)
+{
+    wstring error = to_wide(in + ". Error: " + std::to_string(GetLastError()));
+    MessageBoxW(nullptr, error.c_str(), wstring(L"Airglow").c_str(), 0);
+};
+
+void errorw(wstring in)
+{
+    wstring error = in + L". Error: " + std::to_wstring(GetLastError());
+    MessageBoxW(nullptr, error.c_str(), wstring(L"Airglow").c_str(), 0);
+};
+
+path DataPath()
+{
+    path dataPath{};
+    wstring outBuffer{};
+    PWSTR buffer{};
+
+    if (SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &buffer) != S_OK)
+    {
+        CoTaskMemFree(buffer);
+        return dataPath;
+    }
+
+    dataPath = wstring(buffer) + path::preferred_separator + L"Airglow";
+
+    CoTaskMemFree(buffer);
+
+    if (!std::filesystem::exists(dataPath))
+        std::filesystem::create_directory(dataPath);
+
+    return dataPath;
+}
+
+path ConfigPath()
+{
+    auto dataPath = DataPath();
+    path configPath = (dataPath.wstring() + path::preferred_separator + L"Config.json");
+
+    return configPath;
+}
+
+path DbPath()
+{
+    auto dataPath = DataPath();
+    path dbPath = (dataPath.wstring() + path::preferred_separator + L"Database.sqlite");
+
+    return dbPath;
+}
 
 std::pair<wstring, wstring> CommandLine()
 {
@@ -58,65 +154,6 @@ RECT BoundsToRect(std::vector<int> bounds)
     return rect;
 }
 
-void print(string in) { OutputDebugStringW(ToWide(in).c_str()); }
-
-void println(string in)
-{
-    OutputDebugStringW(ToWide(in).c_str());
-    OutputDebugStringW(L"\n");
-}
-
-void wprint(wstring in) { OutputDebugStringW(in.c_str()); }
-
-void wprintln(wstring in)
-{
-    OutputDebugStringW(in.c_str());
-    OutputDebugStringW(L"\n");
-}
-
-void msgbox(string in)
-{
-    MessageBoxW(nullptr, ToWide(in).c_str(), wstring(L"Airglow").c_str(), 0);
-};
-
-void msgboxw(wstring in) { MessageBoxW(nullptr, in.c_str(), wstring(L"Airglow").c_str(), 0); };
-
-void error(string in)
-{
-    wstring error = ToWide(in + ". Error: " + std::to_string(GetLastError()));
-    MessageBoxW(nullptr, error.c_str(), wstring(L"Airglow").c_str(), 0);
-};
-
-void errorw(wstring in)
-{
-    wstring error = in + L". Error: " + std::to_wstring(GetLastError());
-    MessageBoxW(nullptr, error.c_str(), wstring(L"Airglow").c_str(), 0);
-};
-
-wstring ToWide(string in)
-{
-    int size = MultiByteToWideChar(CP_UTF8, 0, in.c_str(), in.size(), nullptr, 0);
-    wstring out;
-    out.resize(size);
-    MultiByteToWideChar(CP_UTF8, 0, in.c_str(), in.size(), out.data(), size);
-
-    return out;
-}
-
-string ToString(wstring in)
-{
-    int size = WideCharToMultiByte(CP_UTF8, 0, in.c_str(), in.size(), nullptr, 0, nullptr, nullptr);
-    string out;
-    out.resize(size);
-    WideCharToMultiByte(CP_UTF8, 0, in.c_str(), in.size(), out.data(), size, nullptr, nullptr);
-
-    return out;
-}
-
-string BoolToString(bool input) { return input ? string("true") : string("false"); }
-
-wstring BoolToWide(bool input) { return input ? wstring(L"true") : wstring(L"false"); }
-
 void Tests(HWND hwnd)
 {
     auto toggleTest = Toggle(false);
@@ -146,35 +183,5 @@ void Tests(HWND hwnd)
 
     auto acp = GetACP();
     wprint(std::to_wstring(acp));
-}
-
-path DataPath()
-{
-    path dataPath;
-    wstring outBuffer;
-    PWSTR buffer;
-
-    if (SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &buffer) != S_OK)
-    {
-        CoTaskMemFree(buffer);
-        return dataPath;
-    }
-
-    dataPath = wstring(buffer) + path::preferred_separator + L"Airglow";
-
-    CoTaskMemFree(buffer);
-
-    if (!std::filesystem::exists(dataPath))
-        std::filesystem::create_directory(dataPath);
-
-    return dataPath;
-}
-
-path ConfigPath()
-{
-    auto dataPath = DataPath();
-    path configPath = (dataPath.wstring() + path::preferred_separator + L"Config.json");
-
-    return configPath;
 }
 } // namespace Utility

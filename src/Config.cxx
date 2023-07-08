@@ -7,6 +7,7 @@ std::unique_ptr<Config> Config::Create()
     auto pConfig{std::unique_ptr<Config>(new Config())};
     pConfig->dataPath = DataPath();
     pConfig->configPath = ConfigPath();
+    pConfig->dbPath = DbPath();
     pConfig->Load();
 
     return pConfig;
@@ -54,16 +55,16 @@ void Config::Save()
     f.close();
 }
 
-void Config::PrintCurrent()
+void Config::Tests()
 {
     println(mainUrl);
     println(sideUrl);
-    println(BoolToString(fullscreen));
-    println(BoolToString(maximized));
-    println(BoolToString(menu));
-    println(BoolToString(split));
-    println(BoolToString(swapped));
-    println(BoolToString(topmost));
+    println(bool_to_string(fullscreen));
+    println(bool_to_string(maximized));
+    println(bool_to_string(menu));
+    println(bool_to_string(split));
+    println(bool_to_string(swapped));
+    println(bool_to_string(topmost));
     println(std::to_string(position[0]));
     println(std::to_string(position[1]));
     println(std::to_string(position[2]));

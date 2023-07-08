@@ -1,4 +1,5 @@
 #include "MainWindow.hxx"
+#include "WebView.hxx"
 
 Config* MainWindow::pConfig{nullptr};
 
@@ -34,101 +35,23 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Con
 
     auto pMainWindow{std::unique_ptr<MainWindow>(new MainWindow(hinstance, ncs, pConfig))};
 
-    if (!CreateWindowExW(0, className.c_str(), appName.c_str(), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT,
-                         CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, hinstance,
-                         pMainWindow.get()))
+    pMainWindow->hwnd = CreateWindowExW(0, className.c_str(), appName.c_str(), WS_OVERLAPPEDWINDOW,
+                                        CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+                                        nullptr, nullptr, hinstance, pMainWindow.get());
+
+    if (!pMainWindow->hwnd)
         return nullptr;
 
     return pMainWindow;
 }
 
-bool MainWindow::CheckSystemDarkMode()
-{
-    using namespace winrt::Windows::UI;
-    using namespace winrt::Windows::UI::ViewManagement;
-
-    UISettings settings = UISettings();
-    Color fg = settings.GetColorValue(UIColorType::Foreground);
-
-    return (((5 * fg.G) + (2 * fg.R) + fg.B) > (8 * 128));
-}
-
-bool MainWindow::SetDarkTitle()
-{
-    using fnSetPreferredAppMode = PreferredAppMode(WINAPI*)(PreferredAppMode appMode);
-
-    auto uxtheme{LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32)};
-
-    if (!uxtheme)
-        return false;
-
-    auto ord135{GetProcAddress(uxtheme, PCSTR MAKEINTRESOURCEW(135))};
-
-    if (!ord135)
-        return false;
-
-    auto SetPreferredAppMode{reinterpret_cast<fnSetPreferredAppMode>(ord135)};
-    SetPreferredAppMode(PreferredAppMode::AllowDark);
-    FreeLibrary(uxtheme);
-
-    return true;
-}
-
-bool MainWindow::SetDarkMode(HWND hwnd)
-{
-    auto dark{TRUE};
-    auto light{FALSE};
-
-    if (!CheckSystemDarkMode())
-    {
-        DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &light, sizeof(light));
-
-        return false;
-    }
-
-    DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dark, sizeof(dark));
-
-    return true;
-}
-
-bool MainWindow::SetMica(HWND hwnd)
-{
-    MARGINS m{0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
-    auto backdrop = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
-
-    if (FAILED(DwmExtendFrameIntoClientArea(hwnd, &m)))
-        return false;
-
-    if (FAILED(
-            DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop, sizeof(&backdrop))))
-        return false;
-
-    return true;
-}
-
-bool MainWindow::Cloak(HWND hwnd)
-{
-    auto cloak = TRUE;
-
-    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloak, sizeof(cloak))))
-        return false;
-
-    return true;
-}
-
-bool MainWindow::Uncloak(HWND hwnd)
-{
-    auto uncloak = FALSE;
-
-    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &uncloak, sizeof(uncloak))))
-        return false;
-
-    return true;
-}
-
-void MainWindow::Show(HWND hwnd, int ncs)
+void MainWindow::Show(HWND hwnd)
 {
     Cloak(hwnd);
+
+    SetDarkTitle();
+    SetDarkMode(hwnd);
+    SetMica(hwnd);
 
     if (!pConfig->fullscreen & !pConfig->maximized)
     {
@@ -215,8 +138,91 @@ void MainWindow::Topmost(HWND hwnd)
     }
 }
 
-template <class T, class U, HWND(U::*m_hwnd)>
-T* InstanceFromWndProc(HWND hwnd, UINT msg, LPARAM lparam)
+bool MainWindow::CheckSystemDarkMode()
+{
+    using namespace winrt::Windows::UI;
+    using namespace winrt::Windows::UI::ViewManagement;
+
+    UISettings settings = UISettings();
+    Color fg = settings.GetColorValue(UIColorType::Foreground);
+
+    return (((5 * fg.G) + (2 * fg.R) + fg.B) > (8 * 128));
+}
+
+bool MainWindow::SetDarkTitle()
+{
+    using fnSetPreferredAppMode = PreferredAppMode(WINAPI*)(PreferredAppMode appMode);
+
+    auto uxtheme{LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32)};
+
+    if (!uxtheme)
+        return false;
+
+    auto ord135{GetProcAddress(uxtheme, PCSTR MAKEINTRESOURCEW(135))};
+
+    if (!ord135)
+        return false;
+
+    auto SetPreferredAppMode{reinterpret_cast<fnSetPreferredAppMode>(ord135)};
+    SetPreferredAppMode(PreferredAppMode::AllowDark);
+    FreeLibrary(uxtheme);
+
+    return true;
+}
+
+bool MainWindow::SetDarkMode(HWND hwnd)
+{
+    auto dark{TRUE};
+    auto light{FALSE};
+
+    if (!CheckSystemDarkMode())
+    {
+        DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &light, sizeof(light));
+
+        return false;
+    }
+
+    DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dark, sizeof(dark));
+
+    return true;
+}
+
+bool MainWindow::SetMica(HWND hwnd)
+{
+    MARGINS m{0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
+    auto backdrop = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
+
+    if (FAILED(DwmExtendFrameIntoClientArea(hwnd, &m)))
+        return false;
+
+    if (FAILED(
+            DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop, sizeof(&backdrop))))
+        return false;
+
+    return true;
+}
+
+bool MainWindow::Cloak(HWND hwnd)
+{
+    auto cloak = TRUE;
+
+    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloak, sizeof(cloak))))
+        return false;
+
+    return true;
+}
+
+bool MainWindow::Uncloak(HWND hwnd)
+{
+    auto uncloak = FALSE;
+
+    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &uncloak, sizeof(uncloak))))
+        return false;
+
+    return true;
+}
+
+template <class T> T* InstanceFromWndProc(HWND hwnd, UINT msg, LPARAM lparam)
 {
     T* pInstance;
 
@@ -225,7 +231,6 @@ T* InstanceFromWndProc(HWND hwnd, UINT msg, LPARAM lparam)
         LPCREATESTRUCTW pCreateStruct = reinterpret_cast<LPCREATESTRUCTW>(lparam);
         pInstance = reinterpret_cast<T*>(pCreateStruct->lpCreateParams);
         SetWindowLongPtrW(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pInstance));
-        pInstance->*m_hwnd = hwnd;
     }
 
     else
@@ -236,8 +241,7 @@ T* InstanceFromWndProc(HWND hwnd, UINT msg, LPARAM lparam)
 
 __int64 __stdcall MainWindow::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-    MainWindow* pMainWindow =
-        InstanceFromWndProc<MainWindow, MainWindow, &MainWindow::m_hwnd>(hwnd, msg, lparam);
+    MainWindow* pMainWindow = InstanceFromWndProc<MainWindow>(hwnd, msg, lparam);
 
     if (pMainWindow)
     {
@@ -312,8 +316,6 @@ int MainWindow::_OnClose(HWND hwnd)
 #ifdef _DEBUG
     println("WM_CLOSE");
 #endif
-    Gdiplus::GdiplusShutdown(gdiplusToken);
-    pConfig->Save();
     DestroyWindow(hwnd);
 
     return 0;
@@ -333,13 +335,6 @@ int MainWindow::_OnCreate(HWND hwnd)
 #ifdef _DEBUG
     println("WM_CREATE");
 #endif
-    if (Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL) != Gdiplus::Status::Ok)
-        error("GDI+ initialization failed");
-    SetEnvironmentVariableW(wstring(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR").c_str(),
-                            wstring(L"0").c_str());
-    SetDarkTitle();
-    SetDarkMode(hwnd);
-    SetMica(hwnd);
 
     return 0;
 }
