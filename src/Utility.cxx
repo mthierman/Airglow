@@ -43,14 +43,15 @@ std::pair<wstring, wstring> CommandLine()
 
 bool Toggle(bool b) { return b ? false : true; }
 
-position RectToBounds(RECT rect)
+std::vector<int> RectToBounds(RECT rect)
 {
-    position bounds = {rect.left, rect.top, (rect.right - rect.left), (rect.bottom - rect.top)};
+    std::vector<int> bounds = {rect.left, rect.top, (rect.right - rect.left),
+                               (rect.bottom - rect.top)};
 
     return bounds;
 }
 
-RECT BoundsToRect(position bounds)
+RECT BoundsToRect(std::vector<int> bounds)
 {
     RECT rect = {bounds[0], bounds[1], (bounds[0] + bounds[2]), (bounds[1] + bounds[3])};
 
@@ -169,10 +170,11 @@ path DataPath()
     return dataPath;
 }
 
-path SettingsPath(path dataPath)
+path ConfigPath()
 {
-    path settingsPath = (dataPath.wstring() + path::preferred_separator + L"Config.json");
+    auto dataPath = DataPath();
+    path configPath = (dataPath.wstring() + path::preferred_separator + L"Config.json");
 
-    return settingsPath;
+    return configPath;
 }
 } // namespace Utility

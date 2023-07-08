@@ -10,24 +10,18 @@ class Config
     static std::unique_ptr<Config> Create();
     void Load();
     void Save();
-    json Get();
-    void Tests();
-
-    path pathData;
-    path pathSettings;
-
-    position vectorPosition{0, 0, 800, 600};
-    bool boolMenu{false};
-    bool boolSplit{false};
-    bool boolSwapped{false};
-    bool boolMaximized{true};
-    bool boolFullscreen{false};
-    bool boolTopmost{false};
-    string stringMain{"https://www.google.com/"};
-    string stringSide{"https://www.google.com/"};
-
-  private:
-    ofstream streamSettingsPath;
+    void PrintCurrent();
+    path dataPath{};
+    path configPath{};
+    std::vector<int> position{0, 0, 800, 600};
+    bool menu{false};
+    bool split{false};
+    bool swapped{false};
+    bool maximized{true};
+    bool fullscreen{false};
+    bool topmost{false};
+    string mainUrl{"https://www.google.com/"};
+    string sideUrl{"https://www.google.com/"};
 
   protected:
     Config();

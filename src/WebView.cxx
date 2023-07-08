@@ -8,10 +8,10 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
 {
     pConfig = config;
 
-    auto pWebView = std::unique_ptr<WebView>(new WebView(hwnd, config));
+    auto pWebView{std::unique_ptr<WebView>(new WebView(hwnd, pConfig))};
 
     CreateCoreWebView2EnvironmentWithOptions(
-        nullptr, pConfig->pathData.c_str(), nullptr,
+        nullptr, pConfig->dataPath.c_str(), nullptr,
         Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
             [hwnd](HRESULT result, ICoreWebView2Environment* env) -> HRESULT
             {
@@ -109,16 +109,16 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
                                                 if (message.compare(0, 8, L"mainUrl ") == 0)
                                                 {
                                                     wprintln(message.substr(8));
-                                                    pConfig->stringMain =
-                                                        ToString(message.substr(8));
+                                                    pConfig->mainUrl = ToString(message.substr(8));
                                                 }
 
                                                 if (message.compare(0, 8, L"sideUrl ") == 0)
                                                 {
                                                     wprintln(message.substr(8));
-                                                    pConfig->stringSide =
-                                                        ToString(message.substr(8));
+                                                    pConfig->sideUrl = ToString(message.substr(8));
                                                 }
+
+                                                Messages(hwnd, message);
 
                                                 pConfig->Save();
                                             }
@@ -216,8 +216,7 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
                                             -> HRESULT
                                         {
                                             wil::unique_cotaskmem_string message;
-                                            auto tryMsg = args->TryGetWebMessageAsString(&message);
-                                            if (tryMsg == S_OK)
+                                            if (SUCCEEDED(args->TryGetWebMessageAsString(&message)))
                                             {
                                                 auto msg = wstring(message.get());
                                                 Messages(hwnd, msg);
@@ -317,8 +316,7 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
                                             -> HRESULT
                                         {
                                             wil::unique_cotaskmem_string message;
-                                            auto tryMsg = args->TryGetWebMessageAsString(&message);
-                                            if (tryMsg == S_OK)
+                                            if (SUCCEEDED(args->TryGetWebMessageAsString(&message)))
                                             {
                                                 auto msg = wstring(message.get());
                                                 Messages(hwnd, msg);
@@ -344,30 +342,28 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
 
 wstring WebView::GetScriptFile(path appData)
 {
-    stringstream buffer;
-    wstring script;
+    stringstream buffer{};
+    wstring script{};
 
     path file = (appData.wstring() + path::preferred_separator + L"Airglow.js");
 
-    if (!std::filesystem::exists(file))
-
-        if (std::filesystem::exists(file))
+    if (!std::filesystem::exists(file) && std::filesystem::exists(file))
+    {
+        ifstream f(file);
+        if (!std::filesystem::is_empty(file))
         {
-            ifstream f(file);
-            if (!std::filesystem::is_empty(file))
-            {
-                buffer << f.rdbuf();
-                script = ToWide(buffer.str());
-            }
-            f.close();
+            buffer << f.rdbuf();
+            script = ToWide(buffer.str());
         }
+        f.close();
+    }
 
     return script;
 }
 
 wstring WebView::GetScript()
 {
-    wstring script = LR"(
+    wstring script{LR"(
         document.onreadystatechange = () => {
             if (document.readyState === "interactive") {
                 let scheme = document.createElement("meta");
@@ -389,14 +385,14 @@ wstring WebView::GetScript()
                 };
             }
         };
-    )";
+    )"};
 
     return script;
 }
 
 wstring WebView::GetMenuScript()
 {
-    wstring script = LR"(
+    wstring script{LR"(
         document.onreadystatechange = () => {
             if (document.readyState === "interactive") {
                 let scheme = document.createElement("meta");
@@ -421,32 +417,27 @@ wstring WebView::GetMenuScript()
                 };
             }
         };
-    )";
+    )"};
 
     return script;
 }
 
 void WebView::Messages(HWND hwnd, wstring message)
 {
-    wstring splitKey = wstring(L"F1");
-    wstring swapKey = wstring(L"F2");
-    wstring hideMenuKey = wstring(L"F4");
-    wstring maximizeKey = wstring(L"F6");
-    wstring fullscreenKey = wstring(L"F11");
-    wstring onTopKey = wstring(L"F9");
-    wstring closeKey = wstring(L"close");
-
-    if (message == L"save")
-    {
-        println("Saving...");
-    }
+    wstring splitKey{L"F1"};
+    wstring swapKey{L"F2"};
+    wstring hideMenuKey{L"F4"};
+    wstring maximizeKey{L"F6"};
+    wstring fullscreenKey{L"F11"};
+    wstring onTopKey{L"F9"};
+    wstring closeKey{L"close"};
 
     if (message == splitKey)
     {
 #ifdef _DEBUG
         println("F1 (WebView)");
 #endif
-        pConfig->boolSplit = Toggle(pConfig->boolSplit);
+        pConfig->split = Toggle(pConfig->split);
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
         WebView::SetWindowTitle(hwnd);
@@ -459,7 +450,7 @@ void WebView::Messages(HWND hwnd, wstring message)
 #ifdef _DEBUG
         println("F2 (WebView)");
 #endif
-        pConfig->boolSwapped = Toggle(pConfig->boolSwapped);
+        pConfig->swapped = Toggle(pConfig->swapped);
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
         WebView::SetWindowTitle(hwnd);
@@ -472,7 +463,7 @@ void WebView::Messages(HWND hwnd, wstring message)
 #ifdef _DEBUG
         println("F4 (WebView)");
 #endif
-        pConfig->boolMenu = Toggle(pConfig->boolMenu);
+        pConfig->menu = Toggle(pConfig->menu);
         WebView::UpdateBounds(hwnd);
         WebView::UpdateFocus();
         WebView::SetWindowTitle(hwnd);
@@ -485,16 +476,15 @@ void WebView::Messages(HWND hwnd, wstring message)
 #ifdef _DEBUG
         println("F6 (WebView)");
 #endif
-
-        if (!pConfig->boolFullscreen)
+        if (!pConfig->fullscreen)
         {
-            WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
+            WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
             GetWindowPlacement(hwnd, &wp);
             if (wp.showCmd == 3)
             {
                 ShowWindow(hwnd, SW_SHOWNORMAL);
-                SetWindowPos(hwnd, nullptr, pConfig->vectorPosition[0], pConfig->vectorPosition[1],
-                             pConfig->vectorPosition[2], pConfig->vectorPosition[3], 0);
+                SetWindowPos(hwnd, nullptr, pConfig->position[0], pConfig->position[1],
+                             pConfig->position[2], pConfig->position[3], 0);
             }
 
             else
@@ -507,7 +497,7 @@ void WebView::Messages(HWND hwnd, wstring message)
 #ifdef _DEBUG
         println("F11 (WebView)");
 #endif
-        pConfig->boolFullscreen = Toggle(pConfig->boolFullscreen);
+        pConfig->fullscreen = Toggle(pConfig->fullscreen);
         MainWindow::Fullscreen(hwnd);
         WebView::UpdateBounds(hwnd);
         pConfig->Save();
@@ -518,7 +508,7 @@ void WebView::Messages(HWND hwnd, wstring message)
 #ifdef _DEBUG
         println("F9 (WebView)");
 #endif
-        pConfig->boolTopmost = Toggle(pConfig->boolTopmost);
+        pConfig->topmost = Toggle(pConfig->topmost);
         MainWindow::Topmost(hwnd);
         WebView::SetWindowTitle(hwnd);
         pConfig->Save();
@@ -526,6 +516,9 @@ void WebView::Messages(HWND hwnd, wstring message)
 
     if (message == closeKey)
     {
+#ifdef _DEBUG
+        println("Ctrl+W (WebView)");
+#endif
         PostMessageW(hwnd, WM_CLOSE, 0, 0);
     }
 }
@@ -546,17 +539,17 @@ void WebView::UpdateFocus()
 {
     if (pConfig)
     {
-        if (pConfig->boolMenu)
+        if (pConfig->menu)
             if (settings_controller)
                 settings_controller->MoveFocus(
                     COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 
-        if (!pConfig->boolSwapped & !pConfig->boolMenu)
+        if (!pConfig->swapped & !pConfig->menu)
             if (main_controller)
                 main_controller->MoveFocus(
                     COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 
-        if (pConfig->boolSwapped & !pConfig->boolMenu)
+        if (pConfig->swapped & !pConfig->menu)
             if (side_controller)
                 side_controller->MoveFocus(
                     COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
@@ -565,20 +558,19 @@ void WebView::UpdateFocus()
 
 RECT WebView::FullBounds(HWND hwnd)
 {
-    RECT bounds = {0, 0, 0, 0};
+    RECT bounds{0, 0, 0, 0};
     GetClientRect(hwnd, &bounds);
-    auto panel = bounds;
 
-    return panel;
+    return bounds;
 }
 
 RECT WebView::MenuBounds(HWND hwnd)
 {
-    RECT bounds = {0, 0, 0, 0};
-    RECT panel = {0, 0, 0, 0};
+    RECT panel{0, 0, 0, 0};
+    RECT bounds{0, 0, 0, 0};
     GetClientRect(hwnd, &bounds);
 
-    if (pConfig->boolMenu)
+    if (pConfig->menu)
     {
         panel = {
             bounds.left,
@@ -593,20 +585,20 @@ RECT WebView::MenuBounds(HWND hwnd)
 
 RECT WebView::MainBounds(HWND window)
 {
-    RECT bounds = {0, 0, 0, 0};
-    RECT panel = {0, 0, 0, 0};
+    RECT panel{0, 0, 0, 0};
+    RECT bounds{0, 0, 0, 0};
     GetClientRect(window, &bounds);
 
-    if (pConfig->boolMenu)
+    if (pConfig->menu)
         return panel;
 
-    if (!pConfig->boolSplit & !pConfig->boolSwapped)
+    if (!pConfig->split & !pConfig->swapped)
         panel = bounds;
 
-    if (!pConfig->boolSplit & pConfig->boolSwapped)
+    if (!pConfig->split & pConfig->swapped)
         return panel;
 
-    if (pConfig->boolSplit & !pConfig->boolSwapped)
+    if (pConfig->split & !pConfig->swapped)
     {
         panel = {
             bounds.left,
@@ -616,7 +608,7 @@ RECT WebView::MainBounds(HWND window)
         };
     }
 
-    if (pConfig->boolSplit & pConfig->boolSwapped)
+    if (pConfig->split & pConfig->swapped)
     {
         panel = {
             bounds.right / 2,
@@ -631,20 +623,20 @@ RECT WebView::MainBounds(HWND window)
 
 RECT WebView::SideBounds(HWND window)
 {
-    RECT bounds = {0, 0, 0, 0};
-    RECT panel = {0, 0, 0, 0};
+    RECT panel{0, 0, 0, 0};
+    RECT bounds{0, 0, 0, 0};
     GetClientRect(window, &bounds);
 
-    if (pConfig->boolMenu)
+    if (pConfig->menu)
         return panel;
 
-    if (!pConfig->boolSplit & !pConfig->boolSwapped)
+    if (!pConfig->split & !pConfig->swapped)
         return panel;
 
-    if (!pConfig->boolSplit & pConfig->boolSwapped)
+    if (!pConfig->split & pConfig->swapped)
         panel = bounds;
 
-    if (pConfig->boolSplit & !pConfig->boolSwapped)
+    if (pConfig->split & !pConfig->swapped)
     {
         panel = {
             bounds.right / 2,
@@ -654,7 +646,7 @@ RECT WebView::SideBounds(HWND window)
         };
     }
 
-    if (pConfig->boolSplit & pConfig->boolSwapped)
+    if (pConfig->split & pConfig->swapped)
     {
         panel = {
             bounds.left,
@@ -669,48 +661,48 @@ RECT WebView::SideBounds(HWND window)
 
 void WebView::SetWindowTitle(HWND hwnd)
 {
-    if (settings_wv && pConfig->boolMenu)
+    if (settings_wv && pConfig->menu)
     {
-        wil::unique_cotaskmem_string s;
+        wil::unique_cotaskmem_string s{};
         settings_wv->get_DocumentTitle(&s);
         auto title = s.get();
 
-        if (!pConfig->boolTopmost)
-            SetWindowTextW(hwnd, title);
+        if (!pConfig->topmost)
+            SetWindowTextW(hwnd, s.get());
 
-        if (pConfig->boolTopmost)
+        if (pConfig->topmost)
         {
             wstring add = title + wstring(L" [On Top]");
             SetWindowTextW(hwnd, add.c_str());
         }
     }
 
-    if (main_wv && !pConfig->boolMenu && !pConfig->boolSwapped)
+    if (main_wv && !pConfig->menu && !pConfig->swapped)
     {
-        wil::unique_cotaskmem_string s;
+        wil::unique_cotaskmem_string s{};
         main_wv->get_DocumentTitle(&s);
         auto title = s.get();
 
-        if (!pConfig->boolTopmost)
+        if (!pConfig->topmost)
             SetWindowTextW(hwnd, title);
 
-        if (pConfig->boolTopmost)
+        if (pConfig->topmost)
         {
             wstring add = title + wstring(L" [On Top]");
             SetWindowTextW(hwnd, add.c_str());
         }
     }
 
-    if (side_wv && !pConfig->boolMenu && pConfig->boolSwapped)
+    if (side_wv && !pConfig->menu && pConfig->swapped)
     {
-        wil::unique_cotaskmem_string s;
+        wil::unique_cotaskmem_string s{};
         side_wv->get_DocumentTitle(&s);
         auto title = s.get();
 
-        if (!pConfig->boolTopmost)
+        if (!pConfig->topmost)
             SetWindowTextW(hwnd, title);
 
-        if (pConfig->boolTopmost)
+        if (pConfig->topmost)
         {
             wstring add = title + wstring(L" [On Top]");
             SetWindowTextW(hwnd, add.c_str());
@@ -720,7 +712,7 @@ void WebView::SetWindowTitle(HWND hwnd)
 
 void WebView::SetWindowIcon(HWND hwnd)
 {
-    if (settings_wv && pConfig->boolMenu)
+    if (settings_wv && pConfig->menu)
     {
 #ifdef _DEBUG
         LPWSTR faviconUri;
@@ -748,7 +740,7 @@ void WebView::SetWindowIcon(HWND hwnd)
                                     .Get());
     }
 
-    if (main_wv && !pConfig->boolSwapped && !pConfig->boolMenu)
+    if (main_wv && !pConfig->swapped && !pConfig->menu)
     {
 
 #ifdef _DEBUG
@@ -777,7 +769,7 @@ void WebView::SetWindowIcon(HWND hwnd)
                                 .Get());
     }
 
-    if (side_wv && pConfig->boolSwapped && !pConfig->boolMenu)
+    if (side_wv && pConfig->swapped && !pConfig->menu)
     {
 #ifdef _DEBUG
         LPWSTR faviconUri;

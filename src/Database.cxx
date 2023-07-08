@@ -8,11 +8,12 @@ std::unique_ptr<Database> Database::Create(Config* config)
 {
     pConfig = config;
 
-    std::string dbFile = (pConfig->pathData / "Airglow.sqlite").string();
-
     auto pDatabase = std::unique_ptr<Database>(new Database(pConfig));
 
+    std::string dbFile = (pConfig->dataPath / "Airglow.sqlite").string();
+    const char* dbPath = dbFile.c_str();
     sqlite3* db;
+    char* errMsg = 0;
     std::string sql = "CREATE TABLE CONFIG("
                       "X INT NOT NULL,"
                       "Y INT NOT NULL,"
@@ -25,8 +26,6 @@ std::unique_ptr<Database> Database::Create(Config* config)
                       "TOPMOST INT NOT NULL,"
                       "MAIN TEXT NOT NULL,"
                       "SIDE TEXT NOT NULL);";
-    char* messageError;
-    const char* dbPath = dbFile.c_str();
 
     auto dbOpen = sqlite3_open(dbPath, &db);
     if (dbOpen != SQLITE_OK)
@@ -35,14 +34,14 @@ std::unique_ptr<Database> Database::Create(Config* config)
         return 0;
     }
 
-    auto debExec = sqlite3_exec(db, sql.c_str(), nullptr, 0, &messageError);
-    if (!messageError)
+    auto debExec = sqlite3_exec(db, sql.c_str(), nullptr, 0, &errMsg);
+    if (debExec != SQLITE_OK)
     {
-        error("Database execution failed: " + string(messageError));
+        error("Database execution failed: " + string{errMsg});
+        sqlite3_free(errMsg);
         return 0;
     }
 
-    sqlite3_free(messageError);
     sqlite3_close(db);
 
     return pDatabase;

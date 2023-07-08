@@ -7,14 +7,13 @@ using wstring = std::wstring;
 using ofstream = std::ofstream;
 using ifstream = std::ifstream;
 using stringstream = std::stringstream;
-using position = std::vector<int>;
 
 namespace Utility
 {
 std::pair<wstring, wstring> CommandLine();
 bool Toggle(bool);
-position RectToBounds(RECT);
-RECT BoundsToRect(position);
+std::vector<int> RectToBounds(RECT);
+RECT BoundsToRect(std::vector<int>);
 void print(string);
 void println(string);
 void wprint(wstring);
@@ -29,5 +28,5 @@ string BoolToString(bool);
 wstring BoolToWide(bool);
 void Tests(HWND);
 path DataPath();
-path SettingsPath(path appData);
+path ConfigPath();
 }; // namespace Utility

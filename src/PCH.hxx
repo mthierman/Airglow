@@ -13,12 +13,14 @@
 
 #include <WebView2.h>
 
-#include <wil/com.h>
 #include <wil/cppwinrt.h>
+#include <wil/com.h>
+#include <wil/result.h>
 
 #include <wrl.h>
-#include <winrt/Windows.Foundation.h>
-#include <winrt/Windows.UI.ViewManagement.h>
+
+#include <winrt/windows.foundation.h>
+#include <winrt/windows.ui.viewmanagement.h>
 
 #include <nlohmann/json.hpp>
 

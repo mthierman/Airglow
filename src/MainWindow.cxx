@@ -8,20 +8,20 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Con
 {
     pConfig = config;
 
-    wstring className(L"airglow");
-    wstring menuName(L"airglowmenu");
-    wstring programIcon(L"PROGRAM_ICON");
-    wstring appName(L"Airglow");
+    wstring className{L"airglow"};
+    wstring menuName{L"airglowmenu"};
+    wstring programIcon{L"PROGRAM_ICON"};
+    wstring appName{L"Airglow"};
 
-    WNDCLASSEXW wcex = {};
+    WNDCLASSEXW wcex{};
     wcex.cbSize = sizeof(WNDCLASSEX);
-    wcex.hInstance = hinstance;
-    wcex.lpfnWndProc = MainWindow::_WndProc;
     wcex.lpszClassName = className.c_str();
     wcex.lpszMenuName = menuName.c_str();
+    wcex.lpfnWndProc = MainWindow::_WndProc;
     wcex.style = CS_HREDRAW | CS_VREDRAW;
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
+    wcex.hInstance = hinstance;
     wcex.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
     wcex.hCursor = (HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED);
     wcex.hIcon = (HICON)LoadImageW(hinstance, programIcon.c_str(), IMAGE_ICON, 0, 0,
@@ -32,7 +32,7 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Con
     if (!RegisterClassExW(&wcex))
         return nullptr;
 
-    auto pMainWindow = std::unique_ptr<MainWindow>(new MainWindow(hinstance, ncs, pConfig));
+    auto pMainWindow{std::unique_ptr<MainWindow>(new MainWindow(hinstance, ncs, pConfig))};
 
     if (!CreateWindowExW(0, className.c_str(), appName.c_str(), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT,
                          CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, hinstance,
@@ -44,31 +44,31 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Con
 
 bool MainWindow::CheckSystemDarkMode()
 {
-    winrt::Windows::UI::ViewManagement::UISettings settingsCheck =
-        winrt::Windows::UI::ViewManagement::UISettings();
-    winrt::Windows::UI::Color fgCheck =
-        settingsCheck.GetColorValue(winrt::Windows::UI::ViewManagement::UIColorType::Foreground);
+    using namespace winrt::Windows::UI;
+    using namespace winrt::Windows::UI::ViewManagement;
 
-    return (((5 * fgCheck.G) + (2 * fgCheck.R) + fgCheck.B) > (8 * 128));
+    UISettings settings = UISettings();
+    Color fg = settings.GetColorValue(UIColorType::Foreground);
+
+    return (((5 * fg.G) + (2 * fg.R) + fg.B) > (8 * 128));
 }
 
 bool MainWindow::SetDarkTitle()
 {
     using fnSetPreferredAppMode = PreferredAppMode(WINAPI*)(PreferredAppMode appMode);
 
-    auto uxtheme = LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
+    auto uxtheme{LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32)};
 
     if (!uxtheme)
         return false;
 
-    auto ord135 = GetProcAddress(uxtheme, PCSTR MAKEINTRESOURCEW(135));
+    auto ord135{GetProcAddress(uxtheme, PCSTR MAKEINTRESOURCEW(135))};
 
-    if (ord135)
-    {
-        auto SetPreferredAppMode = reinterpret_cast<fnSetPreferredAppMode>(ord135);
-        SetPreferredAppMode(PreferredAppMode::AllowDark);
-    }
+    if (!ord135)
+        return false;
 
+    auto SetPreferredAppMode{reinterpret_cast<fnSetPreferredAppMode>(ord135)};
+    SetPreferredAppMode(PreferredAppMode::AllowDark);
     FreeLibrary(uxtheme);
 
     return true;
@@ -76,30 +76,28 @@ bool MainWindow::SetDarkTitle()
 
 bool MainWindow::SetDarkMode(HWND hwnd)
 {
-    auto dark = CheckSystemDarkMode();
-    auto dwmtrue = TRUE;
-    auto dwmfalse = FALSE;
+    auto dark{TRUE};
+    auto light{FALSE};
 
-    if (!dark)
+    if (!CheckSystemDarkMode())
     {
-        DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmfalse, sizeof(dwmfalse));
+        DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &light, sizeof(light));
 
         return false;
     }
 
-    DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dwmtrue, sizeof(dwmtrue));
+    DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dark, sizeof(dark));
 
     return true;
 }
 
 bool MainWindow::SetMica(HWND hwnd)
 {
-    MARGINS m = {0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
+    MARGINS m{0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
+    auto backdrop = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
 
     if (FAILED(DwmExtendFrameIntoClientArea(hwnd, &m)))
         return false;
-
-    HRESULT backdrop = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
 
     if (FAILED(
             DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop, sizeof(&backdrop))))
@@ -110,10 +108,9 @@ bool MainWindow::SetMica(HWND hwnd)
 
 bool MainWindow::Cloak(HWND hwnd)
 {
-    auto cloakOn = TRUE;
-    auto cloakOff = FALSE;
+    auto cloak = TRUE;
 
-    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOn, sizeof(cloakOn))))
+    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloak, sizeof(cloak))))
         return false;
 
     return true;
@@ -121,10 +118,9 @@ bool MainWindow::Cloak(HWND hwnd)
 
 bool MainWindow::Uncloak(HWND hwnd)
 {
-    auto cloakOn = TRUE;
-    auto cloakOff = FALSE;
+    auto uncloak = FALSE;
 
-    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloakOff, sizeof(cloakOff))))
+    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &uncloak, sizeof(uncloak))))
         return false;
 
     return true;
@@ -134,33 +130,33 @@ void MainWindow::Show(HWND hwnd, int ncs)
 {
     Cloak(hwnd);
 
-    if (!pConfig->boolFullscreen & !pConfig->boolMaximized)
+    if (!pConfig->fullscreen & !pConfig->maximized)
     {
-        SetWindowPos(hwnd, nullptr, pConfig->vectorPosition[0], pConfig->vectorPosition[1],
-                     pConfig->vectorPosition[2], pConfig->vectorPosition[3], 0);
+        SetWindowPos(hwnd, nullptr, pConfig->position[0], pConfig->position[1],
+                     pConfig->position[2], pConfig->position[3], 0);
         ShowWindow(hwnd, SW_SHOWNORMAL);
     }
 
-    if (!pConfig->boolFullscreen & pConfig->boolMaximized)
+    if (!pConfig->fullscreen & pConfig->maximized)
         ShowWindow(hwnd, SW_MAXIMIZE);
 
-    if (pConfig->boolFullscreen)
+    if (pConfig->fullscreen)
     {
-        SetWindowPos(hwnd, nullptr, pConfig->vectorPosition[0], pConfig->vectorPosition[1],
-                     pConfig->vectorPosition[2], pConfig->vectorPosition[3], 0);
+        SetWindowPos(hwnd, nullptr, pConfig->position[0], pConfig->position[1],
+                     pConfig->position[2], pConfig->position[3], 0);
         ShowWindow(hwnd, SW_SHOWNORMAL);
         Fullscreen(hwnd);
     }
 
-    if (pConfig->boolTopmost)
+    if (pConfig->topmost)
     {
         Topmost(hwnd);
     }
 
     else
     {
-        SetWindowPos(hwnd, nullptr, pConfig->vectorPosition[0], pConfig->vectorPosition[1],
-                     pConfig->vectorPosition[2], pConfig->vectorPosition[3], 0);
+        SetWindowPos(hwnd, nullptr, pConfig->position[0], pConfig->position[1],
+                     pConfig->position[2], pConfig->position[3], 0);
         ShowWindow(hwnd, SW_SHOWDEFAULT);
     }
 
@@ -169,9 +165,8 @@ void MainWindow::Show(HWND hwnd, int ncs)
 
 void MainWindow::Fullscreen(HWND hwnd)
 {
-    Cloak(hwnd);
-
     static RECT position;
+
     auto style = GetWindowLongPtrW(hwnd, GWL_STYLE);
     if (style & WS_OVERLAPPEDWINDOW)
     {
@@ -195,20 +190,19 @@ void MainWindow::Fullscreen(HWND hwnd)
         SetWindowPos(hwnd, nullptr, position.left, position.top, (position.right - position.left),
                      (position.bottom - position.top), 0);
     }
-
-    Uncloak(hwnd);
 }
 
 void MainWindow::Topmost(HWND hwnd)
 {
-    FLASHWINFO fwi;
+    FLASHWINFO fwi{};
     fwi.cbSize = sizeof(FLASHWINFO);
     fwi.hwnd = hwnd;
     fwi.dwFlags = FLASHW_CAPTION;
     fwi.uCount = 1;
     fwi.dwTimeout = 100;
-    auto top = GetWindowLongPtrW(hwnd, GWL_EXSTYLE);
-    if (top & WS_EX_TOPMOST)
+
+    auto style = GetWindowLongPtrW(hwnd, GWL_EXSTYLE);
+    if (style & WS_EX_TOPMOST)
     {
         SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         FlashWindowEx(&fwi);
@@ -295,6 +289,36 @@ __int64 __stdcall MainWindow::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARA
     return DefWindowProc(hwnd, msg, wparam, lparam);
 }
 
+int MainWindow::_OnActivate(HWND hwnd, WPARAM wparam)
+{
+#ifdef _DEBUG
+    println("WM_ACTIVATE");
+#endif
+
+    return 0;
+}
+
+int MainWindow::_OnChar(HWND hwnd, WPARAM wparam)
+{
+#ifdef _DEBUG
+    println("WM_CHAR");
+#endif
+
+    return 0;
+}
+
+int MainWindow::_OnClose(HWND hwnd)
+{
+#ifdef _DEBUG
+    println("WM_CLOSE");
+#endif
+    Gdiplus::GdiplusShutdown(gdiplusToken);
+    pConfig->Save();
+    DestroyWindow(hwnd);
+
+    return 0;
+}
+
 int MainWindow::_OnCommand()
 {
 #ifdef _DEBUG
@@ -309,39 +333,13 @@ int MainWindow::_OnCreate(HWND hwnd)
 #ifdef _DEBUG
     println("WM_CREATE");
 #endif
-    auto gdiStartup = Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
-
-    if (gdiStartup != Gdiplus::Status::Ok)
+    if (Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL) != Gdiplus::Status::Ok)
         error("GDI+ initialization failed");
-
     SetEnvironmentVariableW(wstring(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR").c_str(),
                             wstring(L"0").c_str());
-
     SetDarkTitle();
     SetDarkMode(hwnd);
     SetMica(hwnd);
-
-    return 0;
-}
-
-int MainWindow::_OnActivate(HWND hwnd, WPARAM wparam)
-{
-#ifdef _DEBUG
-    println("WM_ACTIVATE");
-#endif
-
-    return 0;
-}
-
-int MainWindow::_OnClose(HWND hwnd)
-{
-#ifdef _DEBUG
-    println("WM_CLOSE");
-#endif
-
-    pConfig->Save();
-    Gdiplus::GdiplusShutdown(gdiplusToken);
-    DestroyWindow(hwnd);
 
     return 0;
 }
@@ -351,7 +349,6 @@ int MainWindow::_OnDestroy()
 #ifdef _DEBUG
     println("WM_DESTROY");
 #endif
-
     PostQuitMessage(0);
 
     return 0;
@@ -361,67 +358,6 @@ int MainWindow::_OnDpiChanged()
 {
 #ifdef _DEBUG
     println("WM_DPICHANGED");
-#endif
-
-    return 0;
-}
-
-int MainWindow::_OnGetMinMaxInfo(HWND hwnd, LPARAM lparam)
-{
-#ifdef _DEBUG
-    println("WM_GETMINMAXINFO");
-#endif
-
-    WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
-    GetWindowPlacement(hwnd, &wp);
-    if (wp.showCmd != 3)
-    {
-        pConfig->boolMaximized = false;
-        pConfig->Save();
-    }
-
-    LPMINMAXINFO minmax = (LPMINMAXINFO)lparam;
-    minmax->ptMinTrackSize.x = 300;
-    minmax->ptMinTrackSize.y = 300;
-
-    return 0;
-}
-
-int MainWindow::_OnPaint(HWND hwnd)
-{
-#ifdef _DEBUG
-    println("WM_PAINT");
-#endif
-
-    PAINTSTRUCT ps;
-    HDC hdc = BeginPaint(hwnd, &ps);
-    RECT bounds;
-    GetClientRect(hwnd, &bounds);
-    FillRect(hdc, &bounds, (HBRUSH)GetStockObject(BLACK_BRUSH));
-    EndPaint(hwnd, &ps);
-
-    return 0;
-}
-
-int MainWindow::_OnSize(HWND hwnd, WPARAM wparam)
-{
-#ifdef _DEBUG
-    println("WM_SIZE");
-#endif
-
-    if (wparam == 2)
-    {
-        pConfig->boolMaximized = true;
-        pConfig->Save();
-    }
-
-    return 0;
-}
-
-int MainWindow::_OnSizing(HWND hwnd)
-{
-#ifdef _DEBUG
-    println("WM_SIZING");
 #endif
 
     return 0;
@@ -441,17 +377,133 @@ int MainWindow::_OnExitSizeMove(HWND hwnd)
 #ifdef _DEBUG
     println("WM_EXITSIZEMOVE");
 #endif
-
-    WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
+    WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
     GetWindowPlacement(hwnd, &wp);
-    if (!pConfig->boolFullscreen & (wp.showCmd != 3))
+    if (!pConfig->fullscreen & (wp.showCmd != 3))
     {
-        RECT rect;
+        RECT rect{0, 0, 0, 0};
         GetWindowRect(hwnd, &rect);
-        pConfig->vectorPosition = RectToBounds(rect);
+        pConfig->position = RectToBounds(rect);
     }
 
     pConfig->Save();
+
+    return 0;
+}
+
+int MainWindow::_OnGetMinMaxInfo(HWND hwnd, LPARAM lparam)
+{
+#ifdef _DEBUG
+    println("WM_GETMINMAXINFO");
+#endif
+    WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
+    GetWindowPlacement(hwnd, &wp);
+    if (wp.showCmd != 3)
+    {
+        pConfig->maximized = false;
+        pConfig->Save();
+    }
+
+    LPMINMAXINFO minmax = (LPMINMAXINFO)lparam;
+    minmax->ptMinTrackSize.x = 300;
+    minmax->ptMinTrackSize.y = 300;
+
+    return 0;
+}
+
+int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
+{
+    if (wparam == VK_F1)
+    {
+#ifdef _DEBUG
+        println("F1");
+#endif
+        pConfig->split = Toggle(pConfig->split);
+        WebView::UpdateBounds(hwnd);
+        WebView::UpdateFocus();
+        WebView::SetWindowTitle(hwnd);
+        WebView::SetWindowIcon(hwnd);
+        pConfig->Save();
+    }
+
+    if (wparam == VK_F2)
+    {
+#ifdef _DEBUG
+        println("F2");
+#endif
+        pConfig->swapped = Toggle(pConfig->swapped);
+        WebView::UpdateBounds(hwnd);
+        WebView::UpdateFocus();
+        WebView::SetWindowTitle(hwnd);
+        WebView::SetWindowIcon(hwnd);
+        pConfig->Save();
+    }
+
+    if (wparam == VK_F4)
+    {
+#ifdef _DEBUG
+        println("F4");
+#endif
+        pConfig->menu = Toggle(pConfig->menu);
+        WebView::UpdateBounds(hwnd);
+        WebView::UpdateFocus();
+        WebView::SetWindowTitle(hwnd);
+        WebView::SetWindowIcon(hwnd);
+        pConfig->Save();
+    }
+
+    if (wparam == VK_F6)
+    {
+#ifdef _DEBUG
+        println("F6");
+#endif
+        if (!pConfig->fullscreen)
+        {
+            WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
+            GetWindowPlacement(hwnd, &wp);
+            if (wp.showCmd == 3)
+            {
+                ShowWindow(hwnd, SW_SHOWNORMAL);
+                SetWindowPos(hwnd, nullptr, pConfig->position[0], pConfig->position[1],
+                             pConfig->position[2], pConfig->position[3], 0);
+            }
+
+            else
+                ShowWindow(hwnd, SW_MAXIMIZE);
+        }
+    }
+
+    if (wparam == VK_F11)
+    {
+#ifdef _DEBUG
+        println("F11");
+#endif
+        pConfig->fullscreen = Toggle(pConfig->fullscreen);
+        MainWindow::Fullscreen(hwnd);
+        WebView::UpdateBounds(hwnd);
+        pConfig->Save();
+    }
+
+    if (wparam == VK_F9)
+    {
+#ifdef _DEBUG
+        println("F9");
+#endif
+        pConfig->topmost = Toggle(pConfig->topmost);
+        MainWindow::Topmost(hwnd);
+        WebView::SetWindowTitle(hwnd);
+        pConfig->Save();
+    }
+
+    if (wparam == 0x57)
+    {
+#ifdef _DEBUG
+        println("Ctrl+W");
+#endif
+        auto state = GetKeyState(VK_CONTROL);
+        if (state & 0x8000)
+            PostMessageW(hwnd, WM_CLOSE, 0, 0);
+    }
 
     return 0;
 }
@@ -474,22 +526,17 @@ int MainWindow::_OnMoving(HWND hwnd)
     return 0;
 }
 
-int MainWindow::_OnWindowPosChanging(HWND hwnd)
+int MainWindow::_OnPaint(HWND hwnd)
 {
 #ifdef _DEBUG
-    println("WM_WINDOWPOSCHANGING");
+    println("WM_PAINT");
 #endif
-
-    return 0;
-}
-
-int MainWindow::_OnWindowPosChanged(HWND hwnd)
-{
-#ifdef _DEBUG
-    println("WM_WINDOWPOSCHANGED");
-#endif
-
-    WebView::UpdateBounds(hwnd);
+    PAINTSTRUCT ps{};
+    RECT bounds{};
+    HDC hdc = BeginPaint(hwnd, &ps);
+    GetClientRect(hwnd, &bounds);
+    FillRect(hdc, &bounds, (HBRUSH)GetStockObject(BLACK_BRUSH));
+    EndPaint(hwnd, &ps);
 
     return 0;
 }
@@ -499,7 +546,6 @@ int MainWindow::_OnSetFocus(HWND hwnd)
 #ifdef _DEBUG
     println("WM_SETFOCUS");
 #endif
-
     WebView::UpdateFocus();
 
     return 0;
@@ -510,117 +556,49 @@ int MainWindow::_OnSettingChange(HWND hwnd)
 #ifdef _DEBUG
     println("WM_SETTINGCHANGE");
 #endif
-
     InvalidateRect(hwnd, nullptr, true);
     SetDarkMode(hwnd);
 
     return 0;
 }
 
-int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam)
+int MainWindow::_OnSize(HWND hwnd, WPARAM wparam)
 {
-    if (wparam == VK_F1)
-    {
 #ifdef _DEBUG
-        println("F1");
+    println("WM_SIZE");
 #endif
-
-        pConfig->boolSplit = Toggle(pConfig->boolSplit);
-        WebView::UpdateBounds(hwnd);
-        WebView::UpdateFocus();
-        WebView::SetWindowTitle(hwnd);
-        WebView::SetWindowIcon(hwnd);
+    if (wparam == 2)
+    {
+        pConfig->maximized = true;
         pConfig->Save();
-    }
-
-    if (wparam == VK_F2)
-    {
-#ifdef _DEBUG
-        println("F2");
-#endif
-
-        pConfig->boolSwapped = Toggle(pConfig->boolSwapped);
-        WebView::UpdateBounds(hwnd);
-        WebView::UpdateFocus();
-        WebView::SetWindowTitle(hwnd);
-        WebView::SetWindowIcon(hwnd);
-        pConfig->Save();
-    }
-
-    if (wparam == VK_F4)
-    {
-#ifdef _DEBUG
-        println("F4");
-#endif
-
-        pConfig->boolMenu = Toggle(pConfig->boolMenu);
-        WebView::UpdateBounds(hwnd);
-        WebView::UpdateFocus();
-        WebView::SetWindowTitle(hwnd);
-        WebView::SetWindowIcon(hwnd);
-        pConfig->Save();
-    }
-
-    if (wparam == VK_F6)
-    {
-#ifdef _DEBUG
-        println("F6");
-#endif
-
-        if (!pConfig->boolFullscreen)
-        {
-            WINDOWPLACEMENT wp = {sizeof(WINDOWPLACEMENT)};
-            GetWindowPlacement(hwnd, &wp);
-            if (wp.showCmd == 3)
-            {
-                ShowWindow(hwnd, SW_SHOWNORMAL);
-                SetWindowPos(hwnd, nullptr, pConfig->vectorPosition[0], pConfig->vectorPosition[1],
-                             pConfig->vectorPosition[2], pConfig->vectorPosition[3], 0);
-            }
-
-            else
-                ShowWindow(hwnd, SW_MAXIMIZE);
-        }
-    }
-
-    if (wparam == VK_F11)
-    {
-#ifdef _DEBUG
-        println("F11");
-#endif
-
-        pConfig->boolFullscreen = Toggle(pConfig->boolFullscreen);
-        MainWindow::Fullscreen(hwnd);
-        WebView::UpdateBounds(hwnd);
-        pConfig->Save();
-    }
-
-    if (wparam == VK_F9)
-    {
-#ifdef _DEBUG
-        println("F9");
-#endif
-
-        pConfig->boolTopmost = Toggle(pConfig->boolTopmost);
-        MainWindow::Topmost(hwnd);
-        WebView::SetWindowTitle(hwnd);
-        pConfig->Save();
-    }
-
-    if (wparam == 0x57)
-    {
-        auto state = GetKeyState(VK_CONTROL);
-        if (state & 0x8000)
-            PostMessageW(hwnd, WM_CLOSE, 0, 0);
     }
 
     return 0;
 }
 
-int MainWindow::_OnChar(HWND hwnd, WPARAM wparam)
+int MainWindow::_OnSizing(HWND hwnd)
 {
 #ifdef _DEBUG
-    println("WM_CHAR");
+    println("WM_SIZING");
+#endif
+
+    return 0;
+}
+
+int MainWindow::_OnWindowPosChanged(HWND hwnd)
+{
+#ifdef _DEBUG
+    println("WM_WINDOWPOSCHANGED");
+#endif
+    WebView::UpdateBounds(hwnd);
+
+    return 0;
+}
+
+int MainWindow::_OnWindowPosChanging(HWND hwnd)
+{
+#ifdef _DEBUG
+    println("WM_WINDOWPOSCHANGING");
 #endif
 
     return 0;
