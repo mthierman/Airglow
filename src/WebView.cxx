@@ -91,11 +91,27 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
                                                ICoreWebView2WebMessageReceivedEventArgs* args)
                                             -> HRESULT
                                         {
-                                            wil::unique_cotaskmem_string message;
-                                            args->TryGetWebMessageAsString(&message);
-                                            auto msg = wstring(message.get());
-                                            Messages(hwnd, msg);
-                                            webview->PostWebMessageAsString(message.get());
+                                            wil::unique_cotaskmem_string uri;
+                                            args->get_Source(&uri);
+                                            wstring sourceUri = uri.get();
+                                            wstring verifyUri = L"https://localhost:8000/";
+
+                                            if (sourceUri != verifyUri)
+                                                return S_OK;
+
+                                            wil::unique_cotaskmem_string messageRaw;
+                                            auto tryMessage =
+                                                args->TryGetWebMessageAsString(&messageRaw);
+                                            if (tryMessage == S_OK)
+                                            {
+                                                auto message = wstring(messageRaw.get());
+
+                                                if (message.compare(0, 8, L"mainUrl ") == 0)
+                                                    wprintln(message.substr(8));
+                                                if (message.compare(0, 8, L"sideUrl ") == 0)
+                                                    wprintln(message.substr(8));
+                                            }
+
                                             return S_OK;
                                         })
                                         .Get(),
@@ -189,10 +205,14 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
                                             -> HRESULT
                                         {
                                             wil::unique_cotaskmem_string message;
-                                            args->TryGetWebMessageAsString(&message);
-                                            auto msg = wstring(message.get());
-                                            Messages(hwnd, msg);
-                                            webview->PostWebMessageAsString(message.get());
+                                            auto tryMsg = args->TryGetWebMessageAsString(&message);
+                                            if (tryMsg == S_OK)
+                                            {
+                                                auto msg = wstring(message.get());
+                                                Messages(hwnd, msg);
+                                                webview->PostWebMessageAsString(message.get());
+                                            }
+
                                             return S_OK;
                                         })
                                         .Get(),
@@ -286,10 +306,14 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
                                             -> HRESULT
                                         {
                                             wil::unique_cotaskmem_string message;
-                                            args->TryGetWebMessageAsString(&message);
-                                            auto msg = wstring(message.get());
-                                            Messages(hwnd, msg);
-                                            webview->PostWebMessageAsString(message.get());
+                                            auto tryMsg = args->TryGetWebMessageAsString(&message);
+                                            if (tryMsg == S_OK)
+                                            {
+                                                auto msg = wstring(message.get());
+                                                Messages(hwnd, msg);
+                                                webview->PostWebMessageAsString(message.get());
+                                            }
+
                                             return S_OK;
                                         })
                                         .Get(),
@@ -401,9 +425,9 @@ void WebView::Messages(HWND hwnd, wstring message)
     wstring onTopKey = wstring(L"F9");
     wstring closeKey = wstring(L"close");
 
-    if (message == L"TEST")
+    if (message == L"save")
     {
-        println("TEST");
+        println("Saving...");
     }
 
     if (message == splitKey)
