@@ -30,8 +30,6 @@ class WebView
     static RECT SideBounds(HWND);
     static void SetWindowTitle(HWND);
     static void SetWindowIcon(HWND);
-
-  private:
     static wstring GetScriptFile(path);
     static wstring GetScript();
     static wstring GetMenuScript();

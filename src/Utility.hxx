@@ -22,17 +22,12 @@ void msgbox(string);
 void msgboxw(wstring);
 void error(string in);
 void errorw(wstring in);
-
 path DataPath();
 path ConfigPath();
 path DbPath();
-
 std::pair<wstring, wstring> CommandLine();
-
 bool Toggle(bool);
-
 std::vector<int> RectToBounds(RECT);
 RECT BoundsToRect(std::vector<int>);
-
 void Tests(HWND);
 }; // namespace Utility
