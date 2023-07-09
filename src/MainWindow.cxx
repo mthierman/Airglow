@@ -378,7 +378,7 @@ int MainWindow::_OnExitSizeMove()
     {
         RECT rect{0, 0, 0, 0};
         GetWindowRect(hwnd, &rect);
-        pConfig->position = RectToBounds(rect);
+        pConfig->position = rect_to_bounds(rect);
     }
 
     pConfig->Save();
@@ -413,7 +413,7 @@ int MainWindow::_OnKeyDown(WPARAM wparam)
 #ifdef _DEBUG
         println("F1");
 #endif
-        pConfig->split = Toggle(pConfig->split);
+        pConfig->split = bool_toggle(pConfig->split);
         WebView::UpdateBounds();
         WebView::UpdateFocus();
         WebView::SetWindowTitle();
@@ -426,7 +426,7 @@ int MainWindow::_OnKeyDown(WPARAM wparam)
 #ifdef _DEBUG
         println("F2");
 #endif
-        pConfig->swapped = Toggle(pConfig->swapped);
+        pConfig->swapped = bool_toggle(pConfig->swapped);
         WebView::UpdateBounds();
         WebView::UpdateFocus();
         WebView::SetWindowTitle();
@@ -439,7 +439,7 @@ int MainWindow::_OnKeyDown(WPARAM wparam)
 #ifdef _DEBUG
         println("F4");
 #endif
-        pConfig->menu = Toggle(pConfig->menu);
+        pConfig->menu = bool_toggle(pConfig->menu);
         WebView::UpdateBounds();
         WebView::UpdateFocus();
         WebView::SetWindowTitle();
@@ -473,7 +473,7 @@ int MainWindow::_OnKeyDown(WPARAM wparam)
 #ifdef _DEBUG
         println("F11");
 #endif
-        pConfig->fullscreen = Toggle(pConfig->fullscreen);
+        pConfig->fullscreen = bool_toggle(pConfig->fullscreen);
         MainWindow::Fullscreen();
         WebView::UpdateBounds();
         pConfig->Save();
@@ -484,7 +484,7 @@ int MainWindow::_OnKeyDown(WPARAM wparam)
 #ifdef _DEBUG
         println("F9");
 #endif
-        pConfig->topmost = Toggle(pConfig->topmost);
+        pConfig->topmost = bool_toggle(pConfig->topmost);
         MainWindow::Topmost();
         WebView::SetWindowTitle();
         pConfig->Save();

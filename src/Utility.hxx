@@ -10,10 +10,11 @@ using stringstream = std::stringstream;
 
 namespace util
 {
-wstring to_wide(string);
 string to_string(wstring);
+wstring to_wide(string);
 string bool_to_string(bool);
 wstring bool_to_wide(bool);
+bool bool_toggle(bool);
 void print(string);
 void println(string);
 void wprint(wstring);
@@ -22,9 +23,9 @@ void msgbox(string);
 void msgboxw(wstring);
 void error(string in);
 void errorw(wstring in);
-std::pair<wstring, wstring> CommandLine();
-bool Toggle(bool);
-std::vector<int> RectToBounds(RECT);
-RECT BoundsToRect(std::vector<int>);
+void dberror(string in);
+std::vector<int> rect_to_bounds(RECT);
+RECT bounds_to_rect(std::vector<int>);
+
 void Tests(HWND);
 }; // namespace util

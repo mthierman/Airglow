@@ -347,6 +347,44 @@ std::unique_ptr<WebView> WebView::Create(MainWindow* mainWindow, Config* config)
     return pWebView;
 }
 
+std::pair<wstring, wstring> WebView::CommandLine()
+{
+    std::pair<wstring, wstring> commands;
+
+    auto cmd = GetCommandLineW();
+    int number;
+
+    auto args = CommandLineToArgvW(cmd, &number);
+
+    if (number == 2)
+    {
+        commands.first = args[1];
+        commands.second = args[1];
+    }
+
+    if (number == 3)
+    {
+        commands.first = args[1];
+        commands.second = args[2];
+    }
+
+    LocalFree(args);
+
+    if (!commands.first.empty())
+    {
+        if (!commands.first.starts_with(L"http") || !commands.first.starts_with(L"https"))
+            commands.first = L"https://" + commands.first;
+    }
+
+    if (!commands.second.empty())
+    {
+        if (!commands.second.starts_with(L"http") || !commands.second.starts_with(L"https"))
+            commands.second = L"https://" + commands.second;
+    }
+
+    return commands;
+}
+
 wstring WebView::GetScriptFile()
 {
     auto appData = pConfig->dataPath;
@@ -449,7 +487,7 @@ void WebView::Messages(wstring message)
 #ifdef _DEBUG
         println("F1 (WebView)");
 #endif
-        pConfig->split = Toggle(pConfig->split);
+        pConfig->split = bool_toggle(pConfig->split);
         WebView::UpdateBounds();
         WebView::UpdateFocus();
         WebView::SetWindowTitle();
@@ -462,7 +500,7 @@ void WebView::Messages(wstring message)
 #ifdef _DEBUG
         println("F2 (WebView)");
 #endif
-        pConfig->swapped = Toggle(pConfig->swapped);
+        pConfig->swapped = bool_toggle(pConfig->swapped);
         WebView::UpdateBounds();
         WebView::UpdateFocus();
         WebView::SetWindowTitle();
@@ -475,7 +513,7 @@ void WebView::Messages(wstring message)
 #ifdef _DEBUG
         println("F4 (WebView)");
 #endif
-        pConfig->menu = Toggle(pConfig->menu);
+        pConfig->menu = bool_toggle(pConfig->menu);
         WebView::UpdateBounds();
         WebView::UpdateFocus();
         WebView::SetWindowTitle();
@@ -509,7 +547,7 @@ void WebView::Messages(wstring message)
 #ifdef _DEBUG
         println("F11 (WebView)");
 #endif
-        pConfig->fullscreen = Toggle(pConfig->fullscreen);
+        pConfig->fullscreen = bool_toggle(pConfig->fullscreen);
         pMainWindow->Fullscreen();
         WebView::UpdateBounds();
         pConfig->Save();
@@ -520,7 +558,7 @@ void WebView::Messages(wstring message)
 #ifdef _DEBUG
         println("F9 (WebView)");
 #endif
-        pConfig->topmost = Toggle(pConfig->topmost);
+        pConfig->topmost = bool_toggle(pConfig->topmost);
         pMainWindow->Topmost();
         WebView::SetWindowTitle();
         pConfig->Save();

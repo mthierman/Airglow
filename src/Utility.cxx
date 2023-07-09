@@ -2,16 +2,6 @@
 
 namespace util
 {
-wstring to_wide(string in)
-{
-    int size = MultiByteToWideChar(CP_UTF8, 0, in.c_str(), in.size(), nullptr, 0);
-    wstring out;
-    out.resize(size);
-    MultiByteToWideChar(CP_UTF8, 0, in.c_str(), in.size(), out.data(), size);
-
-    return out;
-}
-
 string to_string(wstring in)
 {
     int size = WideCharToMultiByte(CP_UTF8, 0, in.c_str(), in.size(), nullptr, 0, nullptr, nullptr);
@@ -22,9 +12,21 @@ string to_string(wstring in)
     return out;
 }
 
+wstring to_wide(string in)
+{
+    int size = MultiByteToWideChar(CP_UTF8, 0, in.c_str(), in.size(), nullptr, 0);
+    wstring out;
+    out.resize(size);
+    MultiByteToWideChar(CP_UTF8, 0, in.c_str(), in.size(), out.data(), size);
+
+    return out;
+}
+
 string bool_to_string(bool in) { return in ? string("true") : string("false"); }
 
 wstring bool_to_wide(bool in) { return in ? wstring(L"true") : wstring(L"false"); }
+
+bool bool_toggle(bool b) { return b ? false : true; }
 
 void print(string in) { OutputDebugStringW(to_wide(in).c_str()); }
 
@@ -61,47 +63,12 @@ void errorw(wstring in)
     MessageBoxW(nullptr, error.c_str(), wstring(L"Airglow").c_str(), 0);
 };
 
-std::pair<wstring, wstring> CommandLine()
+void dberror(string in)
 {
-    std::pair<wstring, wstring> commands;
+    MessageBoxW(nullptr, to_wide(in).c_str(), wstring(L"Airglow").c_str(), 0);
+};
 
-    auto cmd = GetCommandLineW();
-    int number;
-
-    auto args = CommandLineToArgvW(cmd, &number);
-
-    if (number == 2)
-    {
-        commands.first = args[1];
-        commands.second = args[1];
-    }
-
-    if (number == 3)
-    {
-        commands.first = args[1];
-        commands.second = args[2];
-    }
-
-    LocalFree(args);
-
-    if (!commands.first.empty())
-    {
-        if (!commands.first.starts_with(L"http") || !commands.first.starts_with(L"https"))
-            commands.first = L"https://" + commands.first;
-    }
-
-    if (!commands.second.empty())
-    {
-        if (!commands.second.starts_with(L"http") || !commands.second.starts_with(L"https"))
-            commands.second = L"https://" + commands.second;
-    }
-
-    return commands;
-}
-
-bool Toggle(bool b) { return b ? false : true; }
-
-std::vector<int> RectToBounds(RECT rect)
+std::vector<int> rect_to_bounds(RECT rect)
 {
     std::vector<int> bounds = {rect.left, rect.top, (rect.right - rect.left),
                                (rect.bottom - rect.top)};
@@ -109,7 +76,7 @@ std::vector<int> RectToBounds(RECT rect)
     return bounds;
 }
 
-RECT BoundsToRect(std::vector<int> bounds)
+RECT bounds_to_rect(std::vector<int> bounds)
 {
     RECT rect = {bounds[0], bounds[1], (bounds[0] + bounds[2]), (bounds[1] + bounds[3])};
 
@@ -118,7 +85,7 @@ RECT BoundsToRect(std::vector<int> bounds)
 
 void Tests(HWND hwnd)
 {
-    auto toggleTest = Toggle(false);
+    auto toggleTest = bool_toggle(false);
     if (toggleTest != false)
         println("Toggle(): TEST FAILED");
 

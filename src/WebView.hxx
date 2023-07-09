@@ -22,6 +22,7 @@ class WebView
     static std::unique_ptr<WebView> Create(MainWindow*, Config*);
     static MainWindow* pMainWindow;
     static Config* pConfig;
+    static std::pair<wstring, wstring> CommandLine();
     static void Messages(wstring);
     static void UpdateBounds();
     static void UpdateFocus();
