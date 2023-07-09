@@ -30,8 +30,28 @@ class Config
     static std::unique_ptr<Config> Create();
     void Save();
 
-    Paths paths{};
-    Settings settings{};
+    struct Paths
+    {
+        path data{};
+        path config{};
+        path db{};
+    };
+
+    struct Settings
+    {
+        std::vector<int> position{0, 0, 800, 600};
+        bool menu{false};
+        bool split{false};
+        bool swapped{false};
+        bool maximized{true};
+        bool fullscreen{false};
+        bool topmost{false};
+        string mainUrl{"https://www.google.com/"};
+        string sideUrl{"https://www.google.com/"};
+    };
+
+    Config::Paths paths{};
+    Config::Settings settings{};
     HWND hwnd{};
 
   private:

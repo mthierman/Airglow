@@ -1,5 +1,20 @@
 #include "WebView.hxx"
 
+static wil::com_ptr<ICoreWebView2Controller> settings_controller;
+static wil::com_ptr<ICoreWebView2> settings_core;
+static wil::com_ptr<ICoreWebView2_19> settings_wv;
+static wil::com_ptr<ICoreWebView2Settings> settings_settings;
+
+static wil::com_ptr<ICoreWebView2Controller> main_controller;
+static wil::com_ptr<ICoreWebView2> main_core;
+static wil::com_ptr<ICoreWebView2_19> main_wv;
+static wil::com_ptr<ICoreWebView2Settings> main_settings;
+
+static wil::com_ptr<ICoreWebView2Controller> side_controller;
+static wil::com_ptr<ICoreWebView2> side_core;
+static wil::com_ptr<ICoreWebView2_19> side_wv;
+static wil::com_ptr<ICoreWebView2Settings> side_settings;
+
 Config* WebView::pConfig{nullptr};
 
 WebView::WebView(Config* config) {}
@@ -104,9 +119,8 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                                       return S_OK;
 
                                                   wil::unique_cotaskmem_string messageRaw;
-                                                  auto tryMessage =
-                                                      args->TryGetWebMessageAsString(&messageRaw);
-                                                  if (tryMessage == S_OK)
+                                                  if (SUCCEEDED(args->TryGetWebMessageAsString(
+                                                          &messageRaw)))
                                                   {
                                                       auto message = wstring(messageRaw.get());
 
@@ -221,12 +235,12 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                            ICoreWebView2WebMessageReceivedEventArgs* args)
                                             -> HRESULT
                                         {
-                                            wil::unique_cotaskmem_string message;
-                                            if (SUCCEEDED(args->TryGetWebMessageAsString(&message)))
+                                            wil::unique_cotaskmem_string messageRaw;
+                                            if (SUCCEEDED(
+                                                    args->TryGetWebMessageAsString(&messageRaw)))
                                             {
-                                                auto msg = wstring(message.get());
-                                                Messages(msg);
-                                                webview->PostWebMessageAsString(message.get());
+                                                auto message = wstring(messageRaw.get());
+                                                Messages(message);
                                             }
 
                                             return S_OK;
@@ -285,7 +299,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                     side_wv->Navigate(args.second.c_str());
                                 }
                                 else
-                                    side_wv->Navigate(L"https://www.google.com/");
+                                    side_wv->Navigate(to_wide(pConfig->settings.sideUrl).c_str());
 
                                 auto script = GetScript();
                                 side_wv->ExecuteScript(script.c_str(), nullptr);
@@ -321,12 +335,12 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                            ICoreWebView2WebMessageReceivedEventArgs* args)
                                             -> HRESULT
                                         {
-                                            wil::unique_cotaskmem_string message;
-                                            if (SUCCEEDED(args->TryGetWebMessageAsString(&message)))
+                                            wil::unique_cotaskmem_string messageRaw;
+                                            if (SUCCEEDED(
+                                                    args->TryGetWebMessageAsString(&messageRaw)))
                                             {
-                                                auto msg = wstring(message.get());
-                                                Messages(msg);
-                                                webview->PostWebMessageAsString(message.get());
+                                                auto message = wstring(messageRaw.get());
+                                                Messages(message);
                                             }
 
                                             return S_OK;

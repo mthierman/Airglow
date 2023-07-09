@@ -2,7 +2,6 @@
 #include "Config.hxx"
 #include "Database.hxx"
 #include "MainWindow.hxx"
-#include "WebView.hxx"
 
 int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
 {
@@ -37,13 +36,6 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
         error("Window creation failed");
         return 0;
     }
-
-    // auto pWebView{WebView::Create(config.get())};
-    // if (!pWebView)
-    // {
-    //     error("WebView2 creation failed");
-    //     return 0;
-    // }
 
     MSG msg{};
     while (GetMessageW(&msg, nullptr, 0, 0))
