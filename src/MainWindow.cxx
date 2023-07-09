@@ -45,13 +45,13 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Con
     return pMainWindow;
 }
 
-void MainWindow::Show(HWND hwnd)
+void MainWindow::Show()
 {
-    Cloak(hwnd);
+    Cloak();
 
     SetDarkTitle();
-    SetDarkMode(hwnd);
-    SetMica(hwnd);
+    SetDarkMode();
+    SetMica();
 
     if (!pConfig->fullscreen & !pConfig->maximized)
     {
@@ -83,7 +83,7 @@ void MainWindow::Show(HWND hwnd)
         ShowWindow(hwnd, SW_SHOWDEFAULT);
     }
 
-    Uncloak(hwnd);
+    Uncloak();
 }
 
 void MainWindow::Fullscreen(HWND hwnd)
@@ -170,7 +170,7 @@ bool MainWindow::SetDarkTitle()
     return true;
 }
 
-bool MainWindow::SetDarkMode(HWND hwnd)
+bool MainWindow::SetDarkMode()
 {
     auto dark{TRUE};
     auto light{FALSE};
@@ -187,7 +187,7 @@ bool MainWindow::SetDarkMode(HWND hwnd)
     return true;
 }
 
-bool MainWindow::SetMica(HWND hwnd)
+bool MainWindow::SetMica()
 {
     MARGINS m{0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
     auto backdrop = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
@@ -202,7 +202,7 @@ bool MainWindow::SetMica(HWND hwnd)
     return true;
 }
 
-bool MainWindow::Cloak(HWND hwnd)
+bool MainWindow::Cloak()
 {
     auto cloak = TRUE;
 
@@ -212,7 +212,7 @@ bool MainWindow::Cloak(HWND hwnd)
     return true;
 }
 
-bool MainWindow::Uncloak(HWND hwnd)
+bool MainWindow::Uncloak()
 {
     auto uncloak = FALSE;
 
@@ -553,7 +553,7 @@ int MainWindow::_OnSettingChange(HWND hwnd)
     println("WM_SETTINGCHANGE");
 #endif
     InvalidateRect(hwnd, nullptr, true);
-    SetDarkMode(hwnd);
+    SetDarkMode();
 
     return 0;
 }

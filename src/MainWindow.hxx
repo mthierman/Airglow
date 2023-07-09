@@ -7,15 +7,15 @@ class MainWindow
   public:
     static std::unique_ptr<MainWindow> Create(HINSTANCE, int, Config*);
     static Config* pConfig;
-    static void Show(HWND);
+    void Show();
     static void Fullscreen(HWND);
     static void Topmost(HWND);
-    static bool CheckSystemDarkMode();
-    static bool SetDarkTitle();
-    static bool SetDarkMode(HWND);
-    static bool SetMica(HWND);
-    static bool Cloak(HWND);
-    static bool Uncloak(HWND);
+    bool CheckSystemDarkMode();
+    bool SetDarkTitle();
+    bool SetDarkMode();
+    bool SetMica();
+    bool Cloak();
+    bool Uncloak();
     static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
 
     int _OnActivate(HWND, WPARAM);
