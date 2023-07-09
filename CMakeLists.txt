@@ -10,17 +10,16 @@ option(SYSTEM_INSTALL OFF)
 file(READ ${CMAKE_SOURCE_DIR}/Airglow.json PROJECT_JSON)
 string(JSON APP_NAME GET ${PROJECT_JSON} "name")
 string(JSON APP_VERSION GET ${PROJECT_JSON} "version")
+string(JSON WEBVIEW GET ${PROJECT_JSON} "webview")
+string(JSON WEBVIEW_VER GET ${PROJECT_JSON} "webview_ver")
+string(JSON WIL GET ${PROJECT_JSON} "wil")
+string(JSON WIL_VER GET ${PROJECT_JSON} "wil_ver")
 
 project(
     ${APP_NAME}
     VERSION ${APP_VERSION}
     LANGUAGES C CXX ASM
 )
-
-set(WEBVIEW "Microsoft.Web.WebView2")
-set(WEBVIEW_VER "1.0.1823.32")
-set(WIL "Microsoft.Windows.ImplementationLibrary")
-set(WIL_VER "1.0.230629.1")
 
 math(EXPR BITNESS "${CMAKE_SIZEOF_VOID_P} * 8" OUTPUT_FORMAT DECIMAL)
 
@@ -75,8 +74,8 @@ else()
     file(TO_CMAKE_PATH ${curl_SOURCE_DIR} CURL_PKG)
 endif()
 
-message(STATUS "WebView2: ${WEBVIEW_PKG}")
-message(STATUS "Windows Implementation Library: ${WIL_PKG}")
+message(STATUS "${WEBVIEW} v${WEBVIEW_VER}: ${WEBVIEW_PKG}")
+message(STATUS "${WIL} v${WIL_VER}: ${WIL_PKG}")
 message(STATUS "choc: ${CHOC_PKG}")
 message(STATUS "nlohmann/json: ${JSON_PKG}")
 message(STATUS "SQLite3: ${SQLITE_PKG}")
