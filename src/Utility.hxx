@@ -26,6 +26,4 @@ void errorw(wstring in);
 void dberror(string in);
 std::vector<int> rect_to_bounds(RECT);
 RECT bounds_to_rect(std::vector<int>);
-
-void Tests(HWND);
 }; // namespace util
