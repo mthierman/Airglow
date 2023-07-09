@@ -148,12 +148,12 @@ void MainWindow::Show()
                      pConfig->settings.position[1], pConfig->settings.position[2],
                      pConfig->settings.position[3], 0);
         ShowWindow(pConfig->hwnd, SW_SHOWNORMAL);
-        Fullscreen();
+        pWebView->Fullscreen();
     }
 
     if (pConfig->settings.topmost)
     {
-        Topmost();
+        pWebView->Topmost();
     }
 
     else
@@ -165,58 +165,6 @@ void MainWindow::Show()
     }
 
     Uncloak();
-}
-
-void MainWindow::Fullscreen()
-{
-    static RECT position;
-
-    auto style = GetWindowLongPtrW(pConfig->hwnd, GWL_STYLE);
-    if (style & WS_OVERLAPPEDWINDOW)
-    {
-        MONITORINFO mi = {sizeof(mi)};
-        GetWindowRect(pConfig->hwnd, &position);
-        if (GetMonitorInfoW(MonitorFromWindow(pConfig->hwnd, MONITOR_DEFAULTTONEAREST), &mi))
-        {
-            SetWindowLongPtrW(pConfig->hwnd, GWL_STYLE, style & ~WS_OVERLAPPEDWINDOW);
-            SetWindowPos(pConfig->hwnd, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top,
-                         mi.rcMonitor.right - mi.rcMonitor.left,
-                         mi.rcMonitor.bottom - mi.rcMonitor.top,
-                         SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
-        }
-    }
-
-    else
-    {
-        SetWindowLongPtrW(pConfig->hwnd, GWL_STYLE, style | WS_OVERLAPPEDWINDOW);
-        SetWindowPos(pConfig->hwnd, nullptr, 0, 0, 0, 0,
-                     SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
-        SetWindowPos(pConfig->hwnd, nullptr, position.left, position.top,
-                     (position.right - position.left), (position.bottom - position.top), 0);
-    }
-}
-
-void MainWindow::Topmost()
-{
-    FLASHWINFO fwi{};
-    fwi.cbSize = sizeof(FLASHWINFO);
-    fwi.hwnd = pConfig->hwnd;
-    fwi.dwFlags = FLASHW_CAPTION;
-    fwi.uCount = 1;
-    fwi.dwTimeout = 100;
-
-    auto style = GetWindowLongPtrW(pConfig->hwnd, GWL_EXSTYLE);
-    if (style & WS_EX_TOPMOST)
-    {
-        SetWindowPos(pConfig->hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-        FlashWindowEx(&fwi);
-    }
-
-    else
-    {
-        SetWindowPos(pConfig->hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-        FlashWindowEx(&fwi);
-    }
 }
 
 bool MainWindow::CheckSystemDarkMode()
@@ -486,7 +434,7 @@ int MainWindow::_OnKeyDown(WPARAM wparam, LPARAM lparam)
         println("F11");
 #endif
         pConfig->settings.fullscreen = bool_toggle(pConfig->settings.fullscreen);
-        Fullscreen();
+        pWebView->Fullscreen();
         pWebView->UpdateBounds();
         pConfig->Save();
     }
@@ -497,7 +445,7 @@ int MainWindow::_OnKeyDown(WPARAM wparam, LPARAM lparam)
         println("F9");
 #endif
         pConfig->settings.topmost = bool_toggle(pConfig->settings.topmost);
-        Topmost();
+        pWebView->Topmost();
         pWebView->SetWindowTitle();
         pConfig->Save();
     }

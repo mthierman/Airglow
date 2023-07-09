@@ -544,7 +544,7 @@ void WebView::Messages(wstring message)
         println("F11 (WebView)");
 #endif
         pConfig->settings.fullscreen = bool_toggle(pConfig->settings.fullscreen);
-        // pMainWindow->Fullscreen();
+        Fullscreen();
         WebView::UpdateBounds();
         pConfig->Save();
     }
@@ -555,7 +555,7 @@ void WebView::Messages(wstring message)
         println("F9 (WebView)");
 #endif
         pConfig->settings.topmost = bool_toggle(pConfig->settings.topmost);
-        // pMainWindow->Topmost();
+        Topmost();
         WebView::SetWindowTitle();
         pConfig->Save();
     }
@@ -709,6 +709,58 @@ RECT WebView::SideBounds()
     }
 
     return bounds;
+}
+
+void WebView::Fullscreen()
+{
+    static RECT position;
+
+    auto style = GetWindowLongPtrW(pConfig->hwnd, GWL_STYLE);
+    if (style & WS_OVERLAPPEDWINDOW)
+    {
+        MONITORINFO mi = {sizeof(mi)};
+        GetWindowRect(pConfig->hwnd, &position);
+        if (GetMonitorInfoW(MonitorFromWindow(pConfig->hwnd, MONITOR_DEFAULTTONEAREST), &mi))
+        {
+            SetWindowLongPtrW(pConfig->hwnd, GWL_STYLE, style & ~WS_OVERLAPPEDWINDOW);
+            SetWindowPos(pConfig->hwnd, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top,
+                         mi.rcMonitor.right - mi.rcMonitor.left,
+                         mi.rcMonitor.bottom - mi.rcMonitor.top,
+                         SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
+        }
+    }
+
+    else
+    {
+        SetWindowLongPtrW(pConfig->hwnd, GWL_STYLE, style | WS_OVERLAPPEDWINDOW);
+        SetWindowPos(pConfig->hwnd, nullptr, 0, 0, 0, 0,
+                     SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
+        SetWindowPos(pConfig->hwnd, nullptr, position.left, position.top,
+                     (position.right - position.left), (position.bottom - position.top), 0);
+    }
+}
+
+void WebView::Topmost()
+{
+    FLASHWINFO fwi{};
+    fwi.cbSize = sizeof(FLASHWINFO);
+    fwi.hwnd = pConfig->hwnd;
+    fwi.dwFlags = FLASHW_CAPTION;
+    fwi.uCount = 1;
+    fwi.dwTimeout = 100;
+
+    auto style = GetWindowLongPtrW(pConfig->hwnd, GWL_EXSTYLE);
+    if (style & WS_EX_TOPMOST)
+    {
+        SetWindowPos(pConfig->hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        FlashWindowEx(&fwi);
+    }
+
+    else
+    {
+        SetWindowPos(pConfig->hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        FlashWindowEx(&fwi);
+    }
 }
 
 void WebView::SetWindowTitle()

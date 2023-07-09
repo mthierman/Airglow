@@ -11,8 +11,6 @@ class MainWindow
   private:
     static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
     void Show();
-    void Fullscreen();
-    void Topmost();
     bool CheckSystemDarkMode();
     bool SetDarkTitle();
     bool SetDarkMode();
