@@ -118,7 +118,6 @@ __int64 __stdcall MainWindow::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARA
 
 void MainWindow::Show()
 {
-    HWND hwnd = pConfig->hwnd;
     Cloak();
     SetDarkTitle();
     SetDarkMode();
@@ -126,19 +125,21 @@ void MainWindow::Show()
 
     if (!pConfig->settings.fullscreen & !pConfig->settings.maximized)
     {
-        SetWindowPos(hwnd, nullptr, pConfig->settings.position[0], pConfig->settings.position[1],
-                     pConfig->settings.position[2], pConfig->settings.position[3], 0);
-        ShowWindow(hwnd, SW_SHOWNORMAL);
+        SetWindowPos(pConfig->hwnd, nullptr, pConfig->settings.position[0],
+                     pConfig->settings.position[1], pConfig->settings.position[2],
+                     pConfig->settings.position[3], 0);
+        ShowWindow(pConfig->hwnd, SW_SHOWNORMAL);
     }
 
     if (!pConfig->settings.fullscreen & pConfig->settings.maximized)
-        ShowWindow(hwnd, SW_MAXIMIZE);
+        ShowWindow(pConfig->hwnd, SW_MAXIMIZE);
 
     if (pConfig->settings.fullscreen)
     {
-        SetWindowPos(hwnd, nullptr, pConfig->settings.position[0], pConfig->settings.position[1],
-                     pConfig->settings.position[2], pConfig->settings.position[3], 0);
-        ShowWindow(hwnd, SW_SHOWNORMAL);
+        SetWindowPos(pConfig->hwnd, nullptr, pConfig->settings.position[0],
+                     pConfig->settings.position[1], pConfig->settings.position[2],
+                     pConfig->settings.position[3], 0);
+        ShowWindow(pConfig->hwnd, SW_SHOWNORMAL);
         Fullscreen();
     }
 
@@ -149,9 +150,10 @@ void MainWindow::Show()
 
     else
     {
-        SetWindowPos(hwnd, nullptr, pConfig->settings.position[0], pConfig->settings.position[1],
-                     pConfig->settings.position[2], pConfig->settings.position[3], 0);
-        ShowWindow(hwnd, SW_SHOWDEFAULT);
+        SetWindowPos(pConfig->hwnd, nullptr, pConfig->settings.position[0],
+                     pConfig->settings.position[1], pConfig->settings.position[2],
+                     pConfig->settings.position[3], 0);
+        ShowWindow(pConfig->hwnd, SW_SHOWDEFAULT);
     }
 
     Uncloak();
@@ -159,18 +161,17 @@ void MainWindow::Show()
 
 void MainWindow::Fullscreen()
 {
-    HWND hwnd = pConfig->hwnd;
     static RECT position;
 
-    auto style = GetWindowLongPtrW(hwnd, GWL_STYLE);
+    auto style = GetWindowLongPtrW(pConfig->hwnd, GWL_STYLE);
     if (style & WS_OVERLAPPEDWINDOW)
     {
         MONITORINFO mi = {sizeof(mi)};
-        GetWindowRect(hwnd, &position);
-        if (GetMonitorInfoW(MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST), &mi))
+        GetWindowRect(pConfig->hwnd, &position);
+        if (GetMonitorInfoW(MonitorFromWindow(pConfig->hwnd, MONITOR_DEFAULTTONEAREST), &mi))
         {
-            SetWindowLongPtrW(hwnd, GWL_STYLE, style & ~WS_OVERLAPPEDWINDOW);
-            SetWindowPos(hwnd, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top,
+            SetWindowLongPtrW(pConfig->hwnd, GWL_STYLE, style & ~WS_OVERLAPPEDWINDOW);
+            SetWindowPos(pConfig->hwnd, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top,
                          mi.rcMonitor.right - mi.rcMonitor.left,
                          mi.rcMonitor.bottom - mi.rcMonitor.top,
                          SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
@@ -179,34 +180,33 @@ void MainWindow::Fullscreen()
 
     else
     {
-        SetWindowLongPtrW(hwnd, GWL_STYLE, style | WS_OVERLAPPEDWINDOW);
-        SetWindowPos(hwnd, nullptr, 0, 0, 0, 0,
+        SetWindowLongPtrW(pConfig->hwnd, GWL_STYLE, style | WS_OVERLAPPEDWINDOW);
+        SetWindowPos(pConfig->hwnd, nullptr, 0, 0, 0, 0,
                      SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
-        SetWindowPos(hwnd, nullptr, position.left, position.top, (position.right - position.left),
-                     (position.bottom - position.top), 0);
+        SetWindowPos(pConfig->hwnd, nullptr, position.left, position.top,
+                     (position.right - position.left), (position.bottom - position.top), 0);
     }
 }
 
 void MainWindow::Topmost()
 {
-    HWND hwnd = pConfig->hwnd;
     FLASHWINFO fwi{};
     fwi.cbSize = sizeof(FLASHWINFO);
-    fwi.hwnd = hwnd;
+    fwi.hwnd = pConfig->hwnd;
     fwi.dwFlags = FLASHW_CAPTION;
     fwi.uCount = 1;
     fwi.dwTimeout = 100;
 
-    auto style = GetWindowLongPtrW(hwnd, GWL_EXSTYLE);
+    auto style = GetWindowLongPtrW(pConfig->hwnd, GWL_EXSTYLE);
     if (style & WS_EX_TOPMOST)
     {
-        SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        SetWindowPos(pConfig->hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         FlashWindowEx(&fwi);
     }
 
     else
     {
-        SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        SetWindowPos(pConfig->hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         FlashWindowEx(&fwi);
     }
 }
@@ -245,33 +245,31 @@ bool MainWindow::SetDarkTitle()
 
 bool MainWindow::SetDarkMode()
 {
-    HWND hwnd = pConfig->hwnd;
     auto dark{TRUE};
     auto light{FALSE};
 
     if (!CheckSystemDarkMode())
     {
-        DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &light, sizeof(light));
+        DwmSetWindowAttribute(pConfig->hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &light, sizeof(light));
 
         return false;
     }
 
-    DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dark, sizeof(dark));
+    DwmSetWindowAttribute(pConfig->hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dark, sizeof(dark));
 
     return true;
 }
 
 bool MainWindow::SetMica()
 {
-    HWND hwnd = pConfig->hwnd;
     MARGINS m{0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
     auto backdrop = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
 
-    if (FAILED(DwmExtendFrameIntoClientArea(hwnd, &m)))
+    if (FAILED(DwmExtendFrameIntoClientArea(pConfig->hwnd, &m)))
         return false;
 
-    if (FAILED(
-            DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop, sizeof(&backdrop))))
+    if (FAILED(DwmSetWindowAttribute(pConfig->hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop,
+                                     sizeof(&backdrop))))
         return false;
 
     return true;
@@ -279,10 +277,9 @@ bool MainWindow::SetMica()
 
 bool MainWindow::Cloak()
 {
-    HWND hwnd = pConfig->hwnd;
     auto cloak = TRUE;
 
-    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloak, sizeof(cloak))))
+    if (FAILED(DwmSetWindowAttribute(pConfig->hwnd, DWMWA_CLOAK, &cloak, sizeof(cloak))))
         return false;
 
     return true;
@@ -290,10 +287,9 @@ bool MainWindow::Cloak()
 
 bool MainWindow::Uncloak()
 {
-    HWND hwnd = pConfig->hwnd;
     auto uncloak = FALSE;
 
-    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &uncloak, sizeof(uncloak))))
+    if (FAILED(DwmSetWindowAttribute(pConfig->hwnd, DWMWA_CLOAK, &uncloak, sizeof(uncloak))))
         return false;
 
     return true;
@@ -379,13 +375,12 @@ int MainWindow::_OnExitSizeMove()
 #ifdef _DEBUG
     println("WM_EXITSIZEMOVE");
 #endif
-    HWND hwnd = pConfig->hwnd;
     WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
-    GetWindowPlacement(hwnd, &wp);
+    GetWindowPlacement(pConfig->hwnd, &wp);
     if (!pConfig->settings.fullscreen & (wp.showCmd != 3))
     {
         RECT rect{0, 0, 0, 0};
-        GetWindowRect(hwnd, &rect);
+        GetWindowRect(pConfig->hwnd, &rect);
         pConfig->settings.position = rect_to_bounds(rect);
     }
 
@@ -399,9 +394,8 @@ int MainWindow::_OnGetMinMaxInfo(LPARAM lparam)
 #ifdef _DEBUG
     println("WM_GETMINMAXINFO");
 #endif
-    HWND hwnd = pConfig->hwnd;
     WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
-    GetWindowPlacement(hwnd, &wp);
+    GetWindowPlacement(pConfig->hwnd, &wp);
     if (wp.showCmd != 3)
     {
         pConfig->settings.maximized = false;
@@ -463,19 +457,18 @@ int MainWindow::_OnKeyDown(WPARAM wparam)
 #endif
         if (!pConfig->settings.fullscreen)
         {
-            HWND hwnd = pConfig->hwnd;
             WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
-            GetWindowPlacement(hwnd, &wp);
+            GetWindowPlacement(pConfig->hwnd, &wp);
             if (wp.showCmd == 3)
             {
-                ShowWindow(hwnd, SW_SHOWNORMAL);
-                SetWindowPos(hwnd, nullptr, pConfig->settings.position[0],
+                ShowWindow(pConfig->hwnd, SW_SHOWNORMAL);
+                SetWindowPos(pConfig->hwnd, nullptr, pConfig->settings.position[0],
                              pConfig->settings.position[1], pConfig->settings.position[2],
                              pConfig->settings.position[3], 0);
             }
 
             else
-                ShowWindow(hwnd, SW_MAXIMIZE);
+                ShowWindow(pConfig->hwnd, SW_MAXIMIZE);
         }
     }
 
@@ -506,10 +499,9 @@ int MainWindow::_OnKeyDown(WPARAM wparam)
 #ifdef _DEBUG
         println("Ctrl+W");
 #endif
-        HWND hwnd = pConfig->hwnd;
         auto state = GetKeyState(VK_CONTROL);
         if (state & 0x8000)
-            PostMessageW(hwnd, WM_CLOSE, 0, 0);
+            PostMessageW(pConfig->hwnd, WM_CLOSE, 0, 0);
     }
 
     return 0;
@@ -538,13 +530,12 @@ int MainWindow::_OnPaint()
 #ifdef _DEBUG
     println("WM_PAINT");
 #endif
-    HWND hwnd = pConfig->hwnd;
     PAINTSTRUCT ps{};
     RECT bounds{};
-    HDC hdc = BeginPaint(hwnd, &ps);
-    GetClientRect(hwnd, &bounds);
+    HDC hdc = BeginPaint(pConfig->hwnd, &ps);
+    GetClientRect(pConfig->hwnd, &bounds);
     FillRect(hdc, &bounds, (HBRUSH)GetStockObject(BLACK_BRUSH));
-    EndPaint(hwnd, &ps);
+    EndPaint(pConfig->hwnd, &ps);
 
     return 0;
 }
