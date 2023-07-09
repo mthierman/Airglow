@@ -34,7 +34,7 @@ std::unique_ptr<Database> Database::Create(Config* config)
         return 0;
     }
 
-    // auto debExec = sqlite3_exec(db, sql.c_str(), nullptr, 0, &errMsg);
+    auto debExec = sqlite3_exec(db, sql.c_str(), nullptr, 0, &errMsg);
     // if (debExec != SQLITE_OK)
     // {
     //     error("Database execution failed: " + string{errMsg});

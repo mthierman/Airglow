@@ -298,6 +298,7 @@ int MainWindow::_OnActivate(HWND hwnd, WPARAM wparam)
 #ifdef _DEBUG
     println("WM_ACTIVATE");
 #endif
+    pConfig->Save();
 
     return 0;
 }

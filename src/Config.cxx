@@ -15,44 +15,65 @@ std::unique_ptr<Config> Config::Create()
 
 void Config::Load()
 {
-    json config{};
-
+#ifdef _DEBUG
+    println("Config::Load()");
+#endif
     if (std::filesystem::exists(configPath) && !std::filesystem::is_empty(configPath))
     {
-        ifstream f(configPath);
-        config = json::parse(f, nullptr, true, true);
+        try
+        {
+            json config{};
+            ifstream f(configPath);
+            config = json::parse(f, nullptr, false, true);
+            f.close();
 
-        position = config["position"].get<std::vector<int>>();
-        menu = config["menu"].get<bool>();
-        split = config["split"].get<bool>();
-        swapped = config["swapped"].get<bool>();
-        maximized = config["maximized"].get<bool>();
-        fullscreen = config["fullscreen"].get<bool>();
-        topmost = config["topmost"].get<bool>();
-        mainUrl = config["mainUrl"].get<string>();
-        sideUrl = config["sideUrl"].get<string>();
-
-        f.close();
+            position = config["position"].get<std::vector<int>>();
+            menu = config["menu"].get<bool>();
+            split = config["split"].get<bool>();
+            swapped = config["swapped"].get<bool>();
+            maximized = config["maximized"].get<bool>();
+            fullscreen = config["fullscreen"].get<bool>();
+            topmost = config["topmost"].get<bool>();
+            mainUrl = config["mainUrl"].get<string>();
+            sideUrl = config["sideUrl"].get<string>();
+        }
+        catch (const std::exception& e)
+        {
+#ifdef _DEBUG
+            println(e.what());
+#endif
+        }
     }
 }
 
 void Config::Save()
 {
-    json config{};
+#ifdef _DEBUG
+    println("Config::Save()");
+#endif
+    try
+    {
+        json config{};
+        config["position"] = position;
+        config["menu"] = menu;
+        config["split"] = split;
+        config["swapped"] = swapped;
+        config["maximized"] = maximized;
+        config["fullscreen"] = fullscreen;
+        config["topmost"] = topmost;
+        config["mainUrl"] = mainUrl;
+        config["sideUrl"] = sideUrl;
 
-    config["position"] = position;
-    config["menu"] = menu;
-    config["split"] = split;
-    config["swapped"] = swapped;
-    config["maximized"] = maximized;
-    config["fullscreen"] = fullscreen;
-    config["topmost"] = topmost;
-    config["mainUrl"] = mainUrl;
-    config["sideUrl"] = sideUrl;
-
-    ofstream f(configPath);
-    f << std::setw(4) << config << std::endl;
-    f.close();
+        ofstream f(configPath);
+        f << std::setw(4) << config << "\n";
+        f.close();
+    }
+    catch (const std::exception& e)
+    {
+#ifdef _DEBUG
+        println(e.what());
+#endif
+    }
 }
 
 void Config::Tests()
