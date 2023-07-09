@@ -30,8 +30,8 @@ class Config
     static std::unique_ptr<Config> Create();
     void Save();
 
-    Paths paths;
-    Settings settings;
+    Paths paths{};
+    Settings settings{};
     HWND hwnd{};
 
   private:

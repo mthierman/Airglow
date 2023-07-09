@@ -4,15 +4,15 @@ Config::Config() {}
 
 std::unique_ptr<Config> Config::Create()
 {
-    auto pConfig{std::unique_ptr<Config>(new Config())};
+    auto config{std::unique_ptr<Config>(new Config())};
 
-    pConfig->Load();
+    config->Load();
 
-    if (!std::filesystem::exists(pConfig->paths.data) ||
-        !std::filesystem::exists(pConfig->paths.config))
+    if (!std::filesystem::exists(config->paths.data) ||
+        !std::filesystem::exists(config->paths.config))
         return nullptr;
 
-    return pConfig;
+    return config;
 }
 
 void Config::Save()

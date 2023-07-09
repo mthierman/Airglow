@@ -6,13 +6,14 @@ WebView::WebView(Config* config) {}
 
 std::unique_ptr<WebView> WebView::Create(Config* config)
 {
-    pConfig = config;
-    HWND hwnd = pConfig->hwnd;
+    auto webView{std::unique_ptr<WebView>(new WebView(config))};
 
-    auto pWebView{std::unique_ptr<WebView>(new WebView(pConfig))};
+    webView->pConfig = config;
+
+    HWND hwnd = webView->pConfig->hwnd;
 
     CreateCoreWebView2EnvironmentWithOptions(
-        nullptr, pConfig->paths.data.c_str(), nullptr,
+        nullptr, config->paths.data.c_str(), nullptr,
         Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
             [hwnd](HRESULT result, ICoreWebView2Environment* env) -> HRESULT
             {
@@ -342,7 +343,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
             })
             .Get());
 
-    return pWebView;
+    return webView;
 }
 
 std::pair<wstring, wstring> WebView::CommandLine()

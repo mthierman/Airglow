@@ -12,37 +12,38 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
     static unsigned long long gdiplusToken;
     static Gdiplus::GdiplusStartupInput gdiplusStartupInput;
     if (Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL) != Gdiplus::Status::Ok)
+    {
         error("GDI+ initialization failed");
+        return 0;
+    }
 
-    auto pConfig{Config::Create()};
-    if (!pConfig)
+    auto config{Config::Create()};
+    if (!config)
     {
         error("Configuration failed");
         return 0;
     }
 
-    auto pDatabase{Database::Create(pConfig.get())};
-    if (!pDatabase)
+    auto database{Database::Create(config.get())};
+    if (!database)
     {
         error("Database creation failed");
         return 0;
     }
 
-    auto pMainWindow{MainWindow::Create(hinstance, ncs, pConfig.get())};
-    if (!pMainWindow)
+    auto mainWindow{MainWindow::Create(hinstance, ncs, config.get())};
+    if (!mainWindow)
     {
         error("Window creation failed");
         return 0;
     }
 
-    pMainWindow->Show();
-
-    auto pWebView{WebView::Create(pConfig.get())};
-    if (!pWebView)
-    {
-        error("WebView2 creation failed");
-        return 0;
-    }
+    // auto pWebView{WebView::Create(config.get())};
+    // if (!pWebView)
+    // {
+    //     error("WebView2 creation failed");
+    //     return 0;
+    // }
 
     MSG msg{};
     while (GetMessageW(&msg, nullptr, 0, 0))
@@ -53,7 +54,7 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
 
     Gdiplus::GdiplusShutdown(gdiplusToken);
 
-    pConfig->Save();
+    config->Save();
 
     return 0;
 }
