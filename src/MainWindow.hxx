@@ -6,38 +6,38 @@ class MainWindow
 {
   public:
     static std::unique_ptr<MainWindow> Create(HINSTANCE, int, Config*);
+    static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
     static Config* pConfig;
     void Show();
-    static void Fullscreen(HWND);
-    static void Topmost(HWND);
+    void Fullscreen();
+    void Topmost();
     bool CheckSystemDarkMode();
     bool SetDarkTitle();
     bool SetDarkMode();
     bool SetMica();
     bool Cloak();
     bool Uncloak();
-    static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
 
-    int _OnActivate(HWND, WPARAM);
-    int _OnChar(HWND, WPARAM);
-    int _OnClose(HWND);
+    int _OnActivate(WPARAM);
+    int _OnChar(WPARAM);
+    int _OnClose();
     int _OnCommand();
-    int _OnCreate(HWND);
+    int _OnCreate();
     int _OnDestroy();
     int _OnDpiChanged();
-    int _OnEnterSizeMove(HWND);
-    int _OnExitSizeMove(HWND);
-    int _OnGetMinMaxInfo(HWND, LPARAM);
-    int _OnKeyDown(HWND, WPARAM);
-    int _OnMove(HWND);
-    int _OnMoving(HWND);
-    int _OnPaint(HWND);
-    int _OnSetFocus(HWND);
-    int _OnSettingChange(HWND);
-    int _OnSize(HWND, WPARAM);
-    int _OnSizing(HWND);
-    int _OnWindowPosChanged(HWND);
-    int _OnWindowPosChanging(HWND);
+    int _OnEnterSizeMove();
+    int _OnExitSizeMove();
+    int _OnGetMinMaxInfo(LPARAM);
+    int _OnKeyDown(WPARAM);
+    int _OnMove();
+    int _OnMoving();
+    int _OnPaint();
+    int _OnSetFocus();
+    int _OnSettingChange();
+    int _OnSize(WPARAM);
+    int _OnSizing();
+    int _OnWindowPosChanged();
+    int _OnWindowPosChanging();
 
     HWND hwnd;
 

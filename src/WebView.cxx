@@ -1,14 +1,18 @@
 #include "WebView.hxx"
 
+MainWindow* WebView::pMainWindow{nullptr};
 Config* WebView::pConfig{nullptr};
 
-WebView::WebView(HWND hwnd, Config* config) {}
+WebView::WebView(MainWindow* mainWindow, Config* config) {}
 
-std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
+std::unique_ptr<WebView> WebView::Create(MainWindow* mainWindow, Config* config)
 {
+    pMainWindow = mainWindow;
     pConfig = config;
 
-    auto pWebView{std::unique_ptr<WebView>(new WebView(hwnd, pConfig))};
+    auto pWebView{std::unique_ptr<WebView>(new WebView(pMainWindow, pConfig))};
+
+    HWND hwnd = pMainWindow->hwnd;
 
     CreateCoreWebView2EnvironmentWithOptions(
         nullptr, pConfig->dataPath.c_str(), nullptr,
@@ -51,7 +55,7 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
 
                             if (settings_wv)
                             {
-                                settings_controller->put_Bounds(MenuBounds(hwnd));
+                                settings_controller->put_Bounds(MenuBounds());
                                 settings_wv->Navigate(L"about:blank");
 #ifdef _DEBUG
                                 settings_wv->Navigate(L"https://localhost:8000/");
@@ -67,7 +71,7 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
                                         ICoreWebView2DocumentTitleChangedEventHandler>(
                                         [hwnd](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                         {
-                                            SetWindowTitle(hwnd);
+                                            SetWindowTitle();
                                             return S_OK;
                                         })
                                         .Get(),
@@ -78,7 +82,7 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
                                         ICoreWebView2FaviconChangedEventHandler>(
                                         [hwnd](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                         {
-                                            SetWindowIcon(hwnd);
+                                            SetWindowIcon();
                                             return S_OK;
                                         })
                                         .Get(),
@@ -121,7 +125,7 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
                                                     pConfig->sideUrl = to_string(message.substr(8));
                                                 }
 
-                                                Messages(hwnd, message);
+                                                Messages(message);
 
                                                 pConfig->Save();
                                             }
@@ -173,7 +177,7 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
                             if (main_wv)
                             {
 
-                                main_controller->put_Bounds(MainBounds(hwnd));
+                                main_controller->put_Bounds(MainBounds());
 
                                 auto args = CommandLine();
 
@@ -194,7 +198,7 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
                                         ICoreWebView2DocumentTitleChangedEventHandler>(
                                         [hwnd](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                         {
-                                            SetWindowTitle(hwnd);
+                                            SetWindowTitle();
                                             return S_OK;
                                         })
                                         .Get(),
@@ -205,7 +209,7 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
                                         ICoreWebView2FaviconChangedEventHandler>(
                                         [hwnd](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                         {
-                                            SetWindowIcon(hwnd);
+                                            SetWindowIcon();
                                             return S_OK;
                                         })
                                         .Get(),
@@ -222,7 +226,7 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
                                             if (SUCCEEDED(args->TryGetWebMessageAsString(&message)))
                                             {
                                                 auto msg = wstring(message.get());
-                                                Messages(hwnd, msg);
+                                                Messages(msg);
                                                 webview->PostWebMessageAsString(message.get());
                                             }
 
@@ -273,7 +277,7 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
                             if (side_wv)
                             {
 
-                                side_controller->put_Bounds(SideBounds(hwnd));
+                                side_controller->put_Bounds(SideBounds());
 
                                 auto args = CommandLine();
 
@@ -294,7 +298,7 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
                                         ICoreWebView2DocumentTitleChangedEventHandler>(
                                         [hwnd](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                         {
-                                            SetWindowTitle(hwnd);
+                                            SetWindowTitle();
                                             return S_OK;
                                         })
                                         .Get(),
@@ -305,7 +309,7 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
                                         ICoreWebView2FaviconChangedEventHandler>(
                                         [hwnd](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                         {
-                                            SetWindowIcon(hwnd);
+                                            SetWindowIcon();
                                             return S_OK;
                                         })
                                         .Get(),
@@ -322,7 +326,7 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
                                             if (SUCCEEDED(args->TryGetWebMessageAsString(&message)))
                                             {
                                                 auto msg = wstring(message.get());
-                                                Messages(hwnd, msg);
+                                                Messages(msg);
                                                 webview->PostWebMessageAsString(message.get());
                                             }
 
@@ -343,14 +347,15 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
     return pWebView;
 }
 
-wstring WebView::GetScriptFile(path appData)
+wstring WebView::GetScriptFile()
 {
+    auto appData = DataPath();
     stringstream buffer{};
     wstring script{};
 
     path file = (appData.wstring() + path::preferred_separator + L"Airglow.js");
 
-    if (!std::filesystem::exists(file) && std::filesystem::exists(file))
+    if (std::filesystem::exists(file))
     {
         ifstream f(file);
         if (!std::filesystem::is_empty(file))
@@ -425,8 +430,12 @@ wstring WebView::GetMenuScript()
     return script;
 }
 
-void WebView::Messages(HWND hwnd, wstring message)
+void WebView::Messages(wstring message)
 {
+    if (!pMainWindow)
+        return;
+
+    HWND hwnd = pMainWindow->hwnd;
     wstring splitKey{L"F1"};
     wstring swapKey{L"F2"};
     wstring hideMenuKey{L"F4"};
@@ -441,10 +450,10 @@ void WebView::Messages(HWND hwnd, wstring message)
         println("F1 (WebView)");
 #endif
         pConfig->split = Toggle(pConfig->split);
-        WebView::UpdateBounds(hwnd);
+        WebView::UpdateBounds();
         WebView::UpdateFocus();
-        WebView::SetWindowTitle(hwnd);
-        WebView::SetWindowIcon(hwnd);
+        WebView::SetWindowTitle();
+        WebView::SetWindowIcon();
         pConfig->Save();
     }
 
@@ -454,10 +463,10 @@ void WebView::Messages(HWND hwnd, wstring message)
         println("F2 (WebView)");
 #endif
         pConfig->swapped = Toggle(pConfig->swapped);
-        WebView::UpdateBounds(hwnd);
+        WebView::UpdateBounds();
         WebView::UpdateFocus();
-        WebView::SetWindowTitle(hwnd);
-        WebView::SetWindowIcon(hwnd);
+        WebView::SetWindowTitle();
+        WebView::SetWindowIcon();
         pConfig->Save();
     }
 
@@ -467,10 +476,10 @@ void WebView::Messages(HWND hwnd, wstring message)
         println("F4 (WebView)");
 #endif
         pConfig->menu = Toggle(pConfig->menu);
-        WebView::UpdateBounds(hwnd);
+        WebView::UpdateBounds();
         WebView::UpdateFocus();
-        WebView::SetWindowTitle(hwnd);
-        WebView::SetWindowIcon(hwnd);
+        WebView::SetWindowTitle();
+        WebView::SetWindowIcon();
         pConfig->Save();
     }
 
@@ -501,8 +510,8 @@ void WebView::Messages(HWND hwnd, wstring message)
         println("F11 (WebView)");
 #endif
         pConfig->fullscreen = Toggle(pConfig->fullscreen);
-        MainWindow::Fullscreen(hwnd);
-        WebView::UpdateBounds(hwnd);
+        pMainWindow->Fullscreen();
+        WebView::UpdateBounds();
         pConfig->Save();
     }
 
@@ -512,8 +521,8 @@ void WebView::Messages(HWND hwnd, wstring message)
         println("F9 (WebView)");
 #endif
         pConfig->topmost = Toggle(pConfig->topmost);
-        MainWindow::Topmost(hwnd);
-        WebView::SetWindowTitle(hwnd);
+        pMainWindow->Topmost();
+        WebView::SetWindowTitle();
         pConfig->Save();
     }
 
@@ -526,56 +535,56 @@ void WebView::Messages(HWND hwnd, wstring message)
     }
 }
 
-void WebView::UpdateBounds(HWND hwnd)
+void WebView::UpdateBounds()
 {
-    if (settings_controller)
-        settings_controller->put_Bounds(MenuBounds(hwnd));
+    if (!pMainWindow || !settings_controller || !main_controller || !side_controller)
+        return;
 
-    if (main_controller)
-        main_controller->put_Bounds(MainBounds(hwnd));
-
-    if (side_controller)
-        side_controller->put_Bounds(SideBounds(hwnd));
+    settings_controller->put_Bounds(MenuBounds());
+    main_controller->put_Bounds(MainBounds());
+    side_controller->put_Bounds(SideBounds());
 }
 
 void WebView::UpdateFocus()
 {
-    if (pConfig)
-    {
-        if (pConfig->menu)
-            if (settings_controller)
-                settings_controller->MoveFocus(
-                    COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+    if (!pConfig || !settings_controller || !main_controller || !side_controller)
+        return;
 
-        if (!pConfig->swapped & !pConfig->menu)
-            if (main_controller)
-                main_controller->MoveFocus(
-                    COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+    if (pConfig->menu)
+        settings_controller->MoveFocus(
+            COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 
-        if (pConfig->swapped & !pConfig->menu)
-            if (side_controller)
-                side_controller->MoveFocus(
-                    COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-    }
+    if (!pConfig->swapped & !pConfig->menu)
+        main_controller->MoveFocus(
+            COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+
+    if (pConfig->swapped & !pConfig->menu)
+        side_controller->MoveFocus(
+            COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 }
 
-RECT WebView::FullBounds(HWND hwnd)
+RECT WebView::FullBounds()
 {
     RECT bounds{0, 0, 0, 0};
-    GetClientRect(hwnd, &bounds);
+
+    if (!pMainWindow)
+        return bounds;
+
+    GetClientRect(pMainWindow->hwnd, &bounds);
 
     return bounds;
 }
 
-RECT WebView::MenuBounds(HWND hwnd)
+RECT WebView::MenuBounds()
 {
-    RECT panel{0, 0, 0, 0};
     RECT bounds{0, 0, 0, 0};
-    GetClientRect(hwnd, &bounds);
 
-    if (pConfig->menu)
+    if (!pMainWindow || !pConfig || !pConfig->menu)
+        return bounds;
+
+    if (GetClientRect(pMainWindow->hwnd, &bounds))
     {
-        panel = {
+        return RECT{
             bounds.left,
             bounds.top,
             bounds.right,
@@ -583,139 +592,143 @@ RECT WebView::MenuBounds(HWND hwnd)
         };
     }
 
-    return panel;
+    return bounds;
 }
 
-RECT WebView::MainBounds(HWND window)
+RECT WebView::MainBounds()
 {
-    RECT panel{0, 0, 0, 0};
     RECT bounds{0, 0, 0, 0};
-    GetClientRect(window, &bounds);
+
+    if (!pMainWindow || !pConfig || pConfig->menu || (!pConfig->split && pConfig->swapped))
+        return bounds;
+
+    if (GetClientRect(pMainWindow->hwnd, &bounds))
+    {
+        if (!pConfig->split && !pConfig->swapped)
+            return bounds;
+
+        if (pConfig->split & !pConfig->swapped)
+        {
+            return RECT{
+                bounds.left,
+                bounds.top,
+                bounds.right / 2,
+                bounds.bottom,
+            };
+        }
+
+        if (pConfig->split & pConfig->swapped)
+        {
+            return RECT{
+                bounds.right / 2,
+                bounds.top,
+                bounds.right,
+                bounds.bottom,
+            };
+        }
+    }
+
+    return bounds;
+}
+
+RECT WebView::SideBounds()
+{
+    RECT bounds{0, 0, 0, 0};
+
+    if (!pMainWindow || !pConfig || pConfig->menu || (!pConfig->split && !pConfig->swapped))
+        return bounds;
+
+    if (GetClientRect(pMainWindow->hwnd, &bounds))
+    {
+        if (!pConfig->split & pConfig->swapped)
+            return bounds;
+
+        if (pConfig->split & !pConfig->swapped)
+        {
+            return RECT{
+                bounds.right / 2,
+                bounds.top,
+                bounds.right,
+                bounds.bottom,
+            };
+        }
+
+        if (pConfig->split & pConfig->swapped)
+        {
+            return RECT{
+                bounds.left,
+                bounds.top,
+                bounds.right / 2,
+                bounds.bottom,
+            };
+        }
+    }
+
+    return bounds;
+}
+
+void WebView::SetWindowTitle()
+{
+    if (!pMainWindow || !pConfig || !settings_wv || !main_wv || !side_wv)
+        return;
 
     if (pConfig->menu)
-        return panel;
-
-    if (!pConfig->split & !pConfig->swapped)
-        panel = bounds;
-
-    if (!pConfig->split & pConfig->swapped)
-        return panel;
-
-    if (pConfig->split & !pConfig->swapped)
-    {
-        panel = {
-            bounds.left,
-            bounds.top,
-            bounds.right / 2,
-            bounds.bottom,
-        };
-    }
-
-    if (pConfig->split & pConfig->swapped)
-    {
-        panel = {
-            bounds.right / 2,
-            bounds.top,
-            bounds.right,
-            bounds.bottom,
-        };
-    }
-
-    return panel;
-}
-
-RECT WebView::SideBounds(HWND window)
-{
-    RECT panel{0, 0, 0, 0};
-    RECT bounds{0, 0, 0, 0};
-    GetClientRect(window, &bounds);
-
-    if (pConfig->menu)
-        return panel;
-
-    if (!pConfig->split & !pConfig->swapped)
-        return panel;
-
-    if (!pConfig->split & pConfig->swapped)
-        panel = bounds;
-
-    if (pConfig->split & !pConfig->swapped)
-    {
-        panel = {
-            bounds.right / 2,
-            bounds.top,
-            bounds.right,
-            bounds.bottom,
-        };
-    }
-
-    if (pConfig->split & pConfig->swapped)
-    {
-        panel = {
-            bounds.left,
-            bounds.top,
-            bounds.right / 2,
-            bounds.bottom,
-        };
-    }
-
-    return panel;
-}
-
-void WebView::SetWindowTitle(HWND hwnd)
-{
-    if (settings_wv && pConfig->menu)
     {
         wil::unique_cotaskmem_string s{};
         settings_wv->get_DocumentTitle(&s);
         auto title = s.get();
 
         if (!pConfig->topmost)
-            SetWindowTextW(hwnd, s.get());
+            SetWindowTextW(pMainWindow->hwnd, s.get());
 
         if (pConfig->topmost)
         {
             wstring add = title + wstring(L" [On Top]");
-            SetWindowTextW(hwnd, add.c_str());
+            SetWindowTextW(pMainWindow->hwnd, add.c_str());
         }
     }
 
-    if (main_wv && !pConfig->menu && !pConfig->swapped)
+    if (!pConfig->menu && !pConfig->swapped)
     {
         wil::unique_cotaskmem_string s{};
         main_wv->get_DocumentTitle(&s);
         auto title = s.get();
 
         if (!pConfig->topmost)
-            SetWindowTextW(hwnd, title);
+            SetWindowTextW(pMainWindow->hwnd, title);
 
         if (pConfig->topmost)
         {
             wstring add = title + wstring(L" [On Top]");
-            SetWindowTextW(hwnd, add.c_str());
+            SetWindowTextW(pMainWindow->hwnd, add.c_str());
         }
     }
 
-    if (side_wv && !pConfig->menu && pConfig->swapped)
+    if (!pConfig->menu && pConfig->swapped)
     {
         wil::unique_cotaskmem_string s{};
         side_wv->get_DocumentTitle(&s);
         auto title = s.get();
 
         if (!pConfig->topmost)
-            SetWindowTextW(hwnd, title);
+            SetWindowTextW(pMainWindow->hwnd, title);
 
         if (pConfig->topmost)
         {
             wstring add = title + wstring(L" [On Top]");
-            SetWindowTextW(hwnd, add.c_str());
+            SetWindowTextW(pMainWindow->hwnd, add.c_str());
         }
     }
 }
 
-void WebView::SetWindowIcon(HWND hwnd)
+void WebView::SetWindowIcon()
 {
-    if (settings_wv && pConfig->menu)
+    if (!pMainWindow || !pConfig || !settings_wv || !main_wv || !side_wv)
+        return;
+
+    HWND hwnd = pMainWindow->hwnd;
+
+    if (pConfig->menu)
     {
 #ifdef _DEBUG
         LPWSTR faviconUri;
@@ -743,7 +756,7 @@ void WebView::SetWindowIcon(HWND hwnd)
                                     .Get());
     }
 
-    if (main_wv && !pConfig->swapped && !pConfig->menu)
+    if (!pConfig->swapped && !pConfig->menu)
     {
 
 #ifdef _DEBUG
@@ -772,7 +785,7 @@ void WebView::SetWindowIcon(HWND hwnd)
                                 .Get());
     }
 
-    if (side_wv && pConfig->swapped && !pConfig->menu)
+    if (pConfig->swapped && !pConfig->menu)
     {
 #ifdef _DEBUG
         LPWSTR faviconUri;

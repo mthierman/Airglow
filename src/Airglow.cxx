@@ -37,7 +37,7 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
 
     pMainWindow->Show();
 
-    auto pWebView{WebView::Create(pMainWindow->hwnd, pConfig.get())};
+    auto pWebView{WebView::Create(pMainWindow.get(), pConfig.get())};
     if (!pWebView)
     {
         error("WebView2 creation failed");
