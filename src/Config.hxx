@@ -28,6 +28,8 @@ class Config
     string mainUrl{"https://www.google.com/"};
     string sideUrl{"https://www.google.com/"};
 
+    HWND hwnd{};
+
   protected:
     Config();
     void Tests();

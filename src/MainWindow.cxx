@@ -39,7 +39,9 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Con
                                         CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
                                         nullptr, nullptr, hinstance, pMainWindow.get());
 
-    if (!pMainWindow->hwnd)
+    pConfig->hwnd = pMainWindow->hwnd;
+
+    if (!pMainWindow->hwnd || !pConfig->hwnd)
         return nullptr;
 
     return pMainWindow;

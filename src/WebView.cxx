@@ -1,18 +1,15 @@
 #include "WebView.hxx"
 
-MainWindow* WebView::pMainWindow{nullptr};
 Config* WebView::pConfig{nullptr};
 
-WebView::WebView(MainWindow* mainWindow, Config* config) {}
+WebView::WebView(Config* config) {}
 
-std::unique_ptr<WebView> WebView::Create(MainWindow* mainWindow, Config* config)
+std::unique_ptr<WebView> WebView::Create(Config* config)
 {
-    pMainWindow = mainWindow;
     pConfig = config;
+    HWND hwnd = pConfig->hwnd;
 
-    auto pWebView{std::unique_ptr<WebView>(new WebView(pMainWindow, pConfig))};
-
-    HWND hwnd = pMainWindow->hwnd;
+    auto pWebView{std::unique_ptr<WebView>(new WebView(pConfig))};
 
     CreateCoreWebView2EnvironmentWithOptions(
         nullptr, pConfig->dataPath.c_str(), nullptr,
@@ -24,7 +21,7 @@ std::unique_ptr<WebView> WebView::Create(MainWindow* mainWindow, Config* config)
                     hwnd,
                     Microsoft::WRL::Callback<
                         ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                        [hwnd](HRESULT result, ICoreWebView2Controller* controller) -> HRESULT
+                        [](HRESULT result, ICoreWebView2Controller* controller) -> HRESULT
                         {
                             EventRegistrationToken msgToken;
                             EventRegistrationToken faviconChangedToken;
@@ -69,7 +66,7 @@ std::unique_ptr<WebView> WebView::Create(MainWindow* mainWindow, Config* config)
                                 settings_wv->add_DocumentTitleChanged(
                                     Microsoft::WRL::Callback<
                                         ICoreWebView2DocumentTitleChangedEventHandler>(
-                                        [hwnd](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                        [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                         {
                                             SetWindowTitle();
                                             return S_OK;
@@ -80,7 +77,7 @@ std::unique_ptr<WebView> WebView::Create(MainWindow* mainWindow, Config* config)
                                 settings_wv->add_FaviconChanged(
                                     Microsoft::WRL::Callback<
                                         ICoreWebView2FaviconChangedEventHandler>(
-                                        [hwnd](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                        [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                         {
                                             SetWindowIcon();
                                             return S_OK;
@@ -91,8 +88,8 @@ std::unique_ptr<WebView> WebView::Create(MainWindow* mainWindow, Config* config)
                                 settings_wv->add_WebMessageReceived(
                                     Microsoft::WRL::Callback<
                                         ICoreWebView2WebMessageReceivedEventHandler>(
-                                        [hwnd](ICoreWebView2* webview,
-                                               ICoreWebView2WebMessageReceivedEventArgs* args)
+                                        [](ICoreWebView2* webview,
+                                           ICoreWebView2WebMessageReceivedEventArgs* args)
                                             -> HRESULT
                                         {
                                             wil::unique_cotaskmem_string uri;
@@ -145,7 +142,7 @@ std::unique_ptr<WebView> WebView::Create(MainWindow* mainWindow, Config* config)
                     hwnd,
                     Microsoft::WRL::Callback<
                         ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                        [hwnd](HRESULT result, ICoreWebView2Controller* controller) -> HRESULT
+                        [](HRESULT result, ICoreWebView2Controller* controller) -> HRESULT
                         {
                             EventRegistrationToken msgToken;
                             EventRegistrationToken faviconChangedToken;
@@ -196,7 +193,7 @@ std::unique_ptr<WebView> WebView::Create(MainWindow* mainWindow, Config* config)
                                 main_wv->add_DocumentTitleChanged(
                                     Microsoft::WRL::Callback<
                                         ICoreWebView2DocumentTitleChangedEventHandler>(
-                                        [hwnd](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                        [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                         {
                                             SetWindowTitle();
                                             return S_OK;
@@ -207,7 +204,7 @@ std::unique_ptr<WebView> WebView::Create(MainWindow* mainWindow, Config* config)
                                 main_wv->add_FaviconChanged(
                                     Microsoft::WRL::Callback<
                                         ICoreWebView2FaviconChangedEventHandler>(
-                                        [hwnd](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                        [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                         {
                                             SetWindowIcon();
                                             return S_OK;
@@ -218,8 +215,8 @@ std::unique_ptr<WebView> WebView::Create(MainWindow* mainWindow, Config* config)
                                 main_wv->add_WebMessageReceived(
                                     Microsoft::WRL::Callback<
                                         ICoreWebView2WebMessageReceivedEventHandler>(
-                                        [hwnd](ICoreWebView2* webview,
-                                               ICoreWebView2WebMessageReceivedEventArgs* args)
+                                        [](ICoreWebView2* webview,
+                                           ICoreWebView2WebMessageReceivedEventArgs* args)
                                             -> HRESULT
                                         {
                                             wil::unique_cotaskmem_string message;
@@ -245,7 +242,7 @@ std::unique_ptr<WebView> WebView::Create(MainWindow* mainWindow, Config* config)
                     hwnd,
                     Microsoft::WRL::Callback<
                         ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                        [hwnd](HRESULT result, ICoreWebView2Controller* controller) -> HRESULT
+                        [](HRESULT result, ICoreWebView2Controller* controller) -> HRESULT
                         {
                             EventRegistrationToken msgToken;
                             EventRegistrationToken faviconChangedToken;
@@ -296,7 +293,7 @@ std::unique_ptr<WebView> WebView::Create(MainWindow* mainWindow, Config* config)
                                 side_wv->add_DocumentTitleChanged(
                                     Microsoft::WRL::Callback<
                                         ICoreWebView2DocumentTitleChangedEventHandler>(
-                                        [hwnd](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                        [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                         {
                                             SetWindowTitle();
                                             return S_OK;
@@ -307,7 +304,7 @@ std::unique_ptr<WebView> WebView::Create(MainWindow* mainWindow, Config* config)
                                 side_wv->add_FaviconChanged(
                                     Microsoft::WRL::Callback<
                                         ICoreWebView2FaviconChangedEventHandler>(
-                                        [hwnd](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                        [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                         {
                                             SetWindowIcon();
                                             return S_OK;
@@ -318,8 +315,8 @@ std::unique_ptr<WebView> WebView::Create(MainWindow* mainWindow, Config* config)
                                 side_wv->add_WebMessageReceived(
                                     Microsoft::WRL::Callback<
                                         ICoreWebView2WebMessageReceivedEventHandler>(
-                                        [hwnd](ICoreWebView2* webview,
-                                               ICoreWebView2WebMessageReceivedEventArgs* args)
+                                        [](ICoreWebView2* webview,
+                                           ICoreWebView2WebMessageReceivedEventArgs* args)
                                             -> HRESULT
                                         {
                                             wil::unique_cotaskmem_string message;
@@ -470,10 +467,7 @@ wstring WebView::GetMenuScript()
 
 void WebView::Messages(wstring message)
 {
-    if (!pMainWindow)
-        return;
-
-    HWND hwnd = pMainWindow->hwnd;
+    HWND hwnd = pConfig->hwnd;
     wstring splitKey{L"F1"};
     wstring swapKey{L"F2"};
     wstring hideMenuKey{L"F4"};
@@ -548,7 +542,7 @@ void WebView::Messages(wstring message)
         println("F11 (WebView)");
 #endif
         pConfig->fullscreen = bool_toggle(pConfig->fullscreen);
-        pMainWindow->Fullscreen();
+        // pMainWindow->Fullscreen();
         WebView::UpdateBounds();
         pConfig->Save();
     }
@@ -559,7 +553,7 @@ void WebView::Messages(wstring message)
         println("F9 (WebView)");
 #endif
         pConfig->topmost = bool_toggle(pConfig->topmost);
-        pMainWindow->Topmost();
+        // pMainWindow->Topmost();
         WebView::SetWindowTitle();
         pConfig->Save();
     }
@@ -575,7 +569,7 @@ void WebView::Messages(wstring message)
 
 void WebView::UpdateBounds()
 {
-    if (!pMainWindow || !settings_controller || !main_controller || !side_controller)
+    if (!settings_controller || !main_controller || !side_controller)
         return;
 
     settings_controller->put_Bounds(MenuBounds());
@@ -605,10 +599,12 @@ RECT WebView::FullBounds()
 {
     RECT bounds{0, 0, 0, 0};
 
-    if (!pMainWindow)
+    if (!pConfig)
         return bounds;
 
-    GetClientRect(pMainWindow->hwnd, &bounds);
+    HWND hwnd = pConfig->hwnd;
+
+    GetClientRect(hwnd, &bounds);
 
     return bounds;
 }
@@ -617,10 +613,12 @@ RECT WebView::MenuBounds()
 {
     RECT bounds{0, 0, 0, 0};
 
-    if (!pMainWindow || !pConfig || !pConfig->menu)
+    if (!pConfig || !pConfig->menu)
         return bounds;
 
-    if (GetClientRect(pMainWindow->hwnd, &bounds))
+    HWND hwnd = pConfig->hwnd;
+
+    if (GetClientRect(hwnd, &bounds))
     {
         return RECT{
             bounds.left,
@@ -637,10 +635,12 @@ RECT WebView::MainBounds()
 {
     RECT bounds{0, 0, 0, 0};
 
-    if (!pMainWindow || !pConfig || pConfig->menu || (!pConfig->split && pConfig->swapped))
+    if (!pConfig || pConfig->menu || (!pConfig->split && pConfig->swapped))
         return bounds;
 
-    if (GetClientRect(pMainWindow->hwnd, &bounds))
+    HWND hwnd = pConfig->hwnd;
+
+    if (GetClientRect(hwnd, &bounds))
     {
         if (!pConfig->split && !pConfig->swapped)
             return bounds;
@@ -673,10 +673,12 @@ RECT WebView::SideBounds()
 {
     RECT bounds{0, 0, 0, 0};
 
-    if (!pMainWindow || !pConfig || pConfig->menu || (!pConfig->split && !pConfig->swapped))
+    if (!pConfig || pConfig->menu || (!pConfig->split && !pConfig->swapped))
         return bounds;
 
-    if (GetClientRect(pMainWindow->hwnd, &bounds))
+    HWND hwnd = pConfig->hwnd;
+
+    if (GetClientRect(hwnd, &bounds))
     {
         if (!pConfig->split & pConfig->swapped)
             return bounds;
@@ -707,8 +709,10 @@ RECT WebView::SideBounds()
 
 void WebView::SetWindowTitle()
 {
-    if (!pMainWindow || !pConfig || !settings_wv || !main_wv || !side_wv)
+    if (!pConfig || !settings_wv || !main_wv || !side_wv)
         return;
+
+    HWND hwnd = pConfig->hwnd;
 
     if (pConfig->menu)
     {
@@ -717,12 +721,12 @@ void WebView::SetWindowTitle()
         auto title = s.get();
 
         if (!pConfig->topmost)
-            SetWindowTextW(pMainWindow->hwnd, s.get());
+            SetWindowTextW(hwnd, s.get());
 
         if (pConfig->topmost)
         {
             wstring add = title + wstring(L" [On Top]");
-            SetWindowTextW(pMainWindow->hwnd, add.c_str());
+            SetWindowTextW(hwnd, add.c_str());
         }
     }
 
@@ -733,12 +737,12 @@ void WebView::SetWindowTitle()
         auto title = s.get();
 
         if (!pConfig->topmost)
-            SetWindowTextW(pMainWindow->hwnd, title);
+            SetWindowTextW(hwnd, title);
 
         if (pConfig->topmost)
         {
             wstring add = title + wstring(L" [On Top]");
-            SetWindowTextW(pMainWindow->hwnd, add.c_str());
+            SetWindowTextW(hwnd, add.c_str());
         }
     }
 
@@ -749,22 +753,22 @@ void WebView::SetWindowTitle()
         auto title = s.get();
 
         if (!pConfig->topmost)
-            SetWindowTextW(pMainWindow->hwnd, title);
+            SetWindowTextW(hwnd, title);
 
         if (pConfig->topmost)
         {
             wstring add = title + wstring(L" [On Top]");
-            SetWindowTextW(pMainWindow->hwnd, add.c_str());
+            SetWindowTextW(hwnd, add.c_str());
         }
     }
 }
 
 void WebView::SetWindowIcon()
 {
-    if (!pMainWindow || !pConfig || !settings_wv || !main_wv || !side_wv)
+    if (!pConfig || !settings_wv || !main_wv || !side_wv)
         return;
 
-    HWND hwnd = pMainWindow->hwnd;
+    HWND hwnd = pConfig->hwnd;
 
     if (pConfig->menu)
     {
