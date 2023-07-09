@@ -10,7 +10,7 @@ std::unique_ptr<Database> Database::Create(Config* config)
 
     auto pDatabase = std::unique_ptr<Database>(new Database(pConfig));
 
-    std::string dbFile = (pConfig->dbPath).string();
+    std::string dbFile = (pConfig->paths.db).string();
     const char* dbPath = dbFile.c_str();
     sqlite3* db;
     char* errMsg = 0;
@@ -31,15 +31,21 @@ std::unique_ptr<Database> Database::Create(Config* config)
     if (dbOpen != SQLITE_OK)
     {
         dberror("Database opening failed");
-        return 0;
+        return nullptr;
     }
 
-    auto debExec = sqlite3_exec(db, sql.c_str(), nullptr, 0, &errMsg);
-    if (debExec != SQLITE_OK)
+    if (!std::filesystem::exists(pConfig->paths.db))
     {
-        dberror("Database execution failed: " + string{errMsg});
-        sqlite3_free(errMsg);
+        auto debExec = sqlite3_exec(db, sql.c_str(), nullptr, 0, &errMsg);
+        if (debExec != SQLITE_OK)
+        {
+            dberror(errMsg);
+            sqlite3_free(errMsg);
+        }
     }
+
+    if (!std::filesystem::exists(pConfig->paths.db))
+        return nullptr;
 
     sqlite3_close(db);
 

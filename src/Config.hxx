@@ -4,21 +4,15 @@
 
 using namespace util;
 
-class Config
+struct Paths
 {
-  public:
-    static std::unique_ptr<Config> Create();
-    void Load();
-    void Save();
-    path DataPath();
-    path ConfigPath();
-    path DbPath();
-    void Tests();
+    path data{};
+    path config{};
+    path db{};
+};
 
-    path dataPath{};
-    path configPath{};
-    path dbPath{};
-
+struct Settings
+{
     std::vector<int> position{0, 0, 800, 600};
     bool menu{false};
     bool split{false};
@@ -28,8 +22,24 @@ class Config
     bool topmost{false};
     string mainUrl{"https://www.google.com/"};
     string sideUrl{"https://www.google.com/"};
+};
 
+class Config
+{
+  public:
+    static std::unique_ptr<Config> Create();
+    void Save();
+
+    Paths paths;
+    Settings settings;
     HWND hwnd{};
+
+  private:
+    void Load();
+    path DataPath();
+    path ConfigPath();
+    path DbPath();
+    void Tests();
 
   protected:
     Config();

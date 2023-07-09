@@ -124,33 +124,33 @@ void MainWindow::Show()
     SetDarkMode();
     SetMica();
 
-    if (!pConfig->fullscreen & !pConfig->maximized)
+    if (!pConfig->settings.fullscreen & !pConfig->settings.maximized)
     {
-        SetWindowPos(hwnd, nullptr, pConfig->position[0], pConfig->position[1],
-                     pConfig->position[2], pConfig->position[3], 0);
+        SetWindowPos(hwnd, nullptr, pConfig->settings.position[0], pConfig->settings.position[1],
+                     pConfig->settings.position[2], pConfig->settings.position[3], 0);
         ShowWindow(hwnd, SW_SHOWNORMAL);
     }
 
-    if (!pConfig->fullscreen & pConfig->maximized)
+    if (!pConfig->settings.fullscreen & pConfig->settings.maximized)
         ShowWindow(hwnd, SW_MAXIMIZE);
 
-    if (pConfig->fullscreen)
+    if (pConfig->settings.fullscreen)
     {
-        SetWindowPos(hwnd, nullptr, pConfig->position[0], pConfig->position[1],
-                     pConfig->position[2], pConfig->position[3], 0);
+        SetWindowPos(hwnd, nullptr, pConfig->settings.position[0], pConfig->settings.position[1],
+                     pConfig->settings.position[2], pConfig->settings.position[3], 0);
         ShowWindow(hwnd, SW_SHOWNORMAL);
         Fullscreen();
     }
 
-    if (pConfig->topmost)
+    if (pConfig->settings.topmost)
     {
         Topmost();
     }
 
     else
     {
-        SetWindowPos(hwnd, nullptr, pConfig->position[0], pConfig->position[1],
-                     pConfig->position[2], pConfig->position[3], 0);
+        SetWindowPos(hwnd, nullptr, pConfig->settings.position[0], pConfig->settings.position[1],
+                     pConfig->settings.position[2], pConfig->settings.position[3], 0);
         ShowWindow(hwnd, SW_SHOWDEFAULT);
     }
 
@@ -382,11 +382,11 @@ int MainWindow::_OnExitSizeMove()
     HWND hwnd = pConfig->hwnd;
     WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
     GetWindowPlacement(hwnd, &wp);
-    if (!pConfig->fullscreen & (wp.showCmd != 3))
+    if (!pConfig->settings.fullscreen & (wp.showCmd != 3))
     {
         RECT rect{0, 0, 0, 0};
         GetWindowRect(hwnd, &rect);
-        pConfig->position = rect_to_bounds(rect);
+        pConfig->settings.position = rect_to_bounds(rect);
     }
 
     pConfig->Save();
@@ -404,7 +404,7 @@ int MainWindow::_OnGetMinMaxInfo(LPARAM lparam)
     GetWindowPlacement(hwnd, &wp);
     if (wp.showCmd != 3)
     {
-        pConfig->maximized = false;
+        pConfig->settings.maximized = false;
         pConfig->Save();
     }
 
@@ -422,7 +422,7 @@ int MainWindow::_OnKeyDown(WPARAM wparam)
 #ifdef _DEBUG
         println("F1");
 #endif
-        pConfig->split = bool_toggle(pConfig->split);
+        pConfig->settings.split = bool_toggle(pConfig->settings.split);
         WebView::UpdateBounds();
         WebView::UpdateFocus();
         WebView::SetWindowTitle();
@@ -435,7 +435,7 @@ int MainWindow::_OnKeyDown(WPARAM wparam)
 #ifdef _DEBUG
         println("F2");
 #endif
-        pConfig->swapped = bool_toggle(pConfig->swapped);
+        pConfig->settings.swapped = bool_toggle(pConfig->settings.swapped);
         WebView::UpdateBounds();
         WebView::UpdateFocus();
         WebView::SetWindowTitle();
@@ -448,7 +448,7 @@ int MainWindow::_OnKeyDown(WPARAM wparam)
 #ifdef _DEBUG
         println("F4");
 #endif
-        pConfig->menu = bool_toggle(pConfig->menu);
+        pConfig->settings.menu = bool_toggle(pConfig->settings.menu);
         WebView::UpdateBounds();
         WebView::UpdateFocus();
         WebView::SetWindowTitle();
@@ -461,7 +461,7 @@ int MainWindow::_OnKeyDown(WPARAM wparam)
 #ifdef _DEBUG
         println("F6");
 #endif
-        if (!pConfig->fullscreen)
+        if (!pConfig->settings.fullscreen)
         {
             HWND hwnd = pConfig->hwnd;
             WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
@@ -469,8 +469,9 @@ int MainWindow::_OnKeyDown(WPARAM wparam)
             if (wp.showCmd == 3)
             {
                 ShowWindow(hwnd, SW_SHOWNORMAL);
-                SetWindowPos(hwnd, nullptr, pConfig->position[0], pConfig->position[1],
-                             pConfig->position[2], pConfig->position[3], 0);
+                SetWindowPos(hwnd, nullptr, pConfig->settings.position[0],
+                             pConfig->settings.position[1], pConfig->settings.position[2],
+                             pConfig->settings.position[3], 0);
             }
 
             else
@@ -483,7 +484,7 @@ int MainWindow::_OnKeyDown(WPARAM wparam)
 #ifdef _DEBUG
         println("F11");
 #endif
-        pConfig->fullscreen = bool_toggle(pConfig->fullscreen);
+        pConfig->settings.fullscreen = bool_toggle(pConfig->settings.fullscreen);
         MainWindow::Fullscreen();
         WebView::UpdateBounds();
         pConfig->Save();
@@ -494,7 +495,7 @@ int MainWindow::_OnKeyDown(WPARAM wparam)
 #ifdef _DEBUG
         println("F9");
 #endif
-        pConfig->topmost = bool_toggle(pConfig->topmost);
+        pConfig->settings.topmost = bool_toggle(pConfig->settings.topmost);
         MainWindow::Topmost();
         WebView::SetWindowTitle();
         pConfig->Save();
@@ -576,7 +577,7 @@ int MainWindow::_OnSize(WPARAM wparam)
 #endif
     if (wparam == 2)
     {
-        pConfig->maximized = true;
+        pConfig->settings.maximized = true;
         pConfig->Save();
     }
 

@@ -6,66 +6,32 @@ std::unique_ptr<Config> Config::Create()
 {
     auto pConfig{std::unique_ptr<Config>(new Config())};
 
-    pConfig->dataPath = pConfig->DataPath();
-    pConfig->configPath = pConfig->ConfigPath();
-    pConfig->dbPath = pConfig->DbPath();
-
     pConfig->Load();
 
-    if (!std::filesystem::exists(pConfig->dataPath) ||
-        !std::filesystem::exists(pConfig->configPath))
+    if (!std::filesystem::exists(pConfig->paths.data) ||
+        !std::filesystem::exists(pConfig->paths.config))
         return nullptr;
 
     return pConfig;
-}
-
-void Config::Load()
-{
-    if (std::filesystem::exists(configPath) && !std::filesystem::is_empty(configPath))
-    {
-        try
-        {
-            json config{};
-            ifstream f(configPath);
-            config = json::parse(f, nullptr, false, true);
-            f.close();
-
-            position = config["position"].get<std::vector<int>>();
-            menu = config["menu"].get<bool>();
-            split = config["split"].get<bool>();
-            swapped = config["swapped"].get<bool>();
-            maximized = config["maximized"].get<bool>();
-            fullscreen = config["fullscreen"].get<bool>();
-            topmost = config["topmost"].get<bool>();
-            mainUrl = config["mainUrl"].get<string>();
-            sideUrl = config["sideUrl"].get<string>();
-        }
-        catch (const std::exception& e)
-        {
-#ifdef _DEBUG
-            println(e.what());
-#endif
-        }
-    }
 }
 
 void Config::Save()
 {
     try
     {
-        json config{};
-        config["position"] = position;
-        config["menu"] = menu;
-        config["split"] = split;
-        config["swapped"] = swapped;
-        config["maximized"] = maximized;
-        config["fullscreen"] = fullscreen;
-        config["topmost"] = topmost;
-        config["mainUrl"] = mainUrl;
-        config["sideUrl"] = sideUrl;
+        json j{};
+        j["position"] = settings.position;
+        j["menu"] = settings.menu;
+        j["split"] = settings.split;
+        j["swapped"] = settings.swapped;
+        j["maximized"] = settings.maximized;
+        j["fullscreen"] = settings.fullscreen;
+        j["topmost"] = settings.topmost;
+        j["mainUrl"] = settings.mainUrl;
+        j["sideUrl"] = settings.sideUrl;
 
-        ofstream f(configPath);
-        f << std::setw(4) << config << "\n";
+        ofstream f(paths.config);
+        f << std::setw(4) << j << "\n";
         f.close();
     }
     catch (const std::exception& e)
@@ -73,6 +39,40 @@ void Config::Save()
 #ifdef _DEBUG
         println(e.what());
 #endif
+    }
+}
+
+void Config::Load()
+{
+    paths.data = DataPath();
+    paths.config = ConfigPath();
+    paths.db = DbPath();
+
+    if (std::filesystem::exists(paths.config) && !std::filesystem::is_empty(paths.config))
+    {
+        try
+        {
+            json j{};
+            ifstream f(paths.config);
+            j = json::parse(f, nullptr, false, true);
+            f.close();
+
+            settings.position = j["position"].get<std::vector<int>>();
+            settings.menu = j["menu"].get<bool>();
+            settings.split = j["split"].get<bool>();
+            settings.swapped = j["swapped"].get<bool>();
+            settings.maximized = j["maximized"].get<bool>();
+            settings.fullscreen = j["fullscreen"].get<bool>();
+            settings.topmost = j["topmost"].get<bool>();
+            settings.mainUrl = j["mainUrl"].get<string>();
+            settings.sideUrl = j["sideUrl"].get<string>();
+        }
+        catch (const std::exception& e)
+        {
+#ifdef _DEBUG
+            println(e.what());
+#endif
+        }
     }
 }
 
@@ -95,26 +95,32 @@ path Config::DataPath()
 
 path Config::ConfigPath()
 {
-    return (dataPath.wstring() + path::preferred_separator + L"Config.json");
+    if (!std::filesystem::exists(paths.data))
+        return path{};
+
+    return (paths.data.wstring() + path::preferred_separator + L"Config.json");
 }
 
 path Config::DbPath()
 {
-    return (dataPath.wstring() + path::preferred_separator + L"Database.sqlite");
+    if (!std::filesystem::exists(paths.data))
+        return path{};
+
+    return (paths.data.wstring() + path::preferred_separator + L"Database.sqlite");
 }
 
 void Config::Tests()
 {
-    println(mainUrl);
-    println(sideUrl);
-    println(bool_to_string(fullscreen));
-    println(bool_to_string(maximized));
-    println(bool_to_string(menu));
-    println(bool_to_string(split));
-    println(bool_to_string(swapped));
-    println(bool_to_string(topmost));
-    println(std::to_string(position[0]));
-    println(std::to_string(position[1]));
-    println(std::to_string(position[2]));
-    println(std::to_string(position[3]));
+    println(settings.mainUrl);
+    println(settings.sideUrl);
+    println(bool_to_string(settings.fullscreen));
+    println(bool_to_string(settings.maximized));
+    println(bool_to_string(settings.menu));
+    println(bool_to_string(settings.split));
+    println(bool_to_string(settings.swapped));
+    println(bool_to_string(settings.topmost));
+    println(std::to_string(settings.position[0]));
+    println(std::to_string(settings.position[1]));
+    println(std::to_string(settings.position[2]));
+    println(std::to_string(settings.position[3]));
 }
