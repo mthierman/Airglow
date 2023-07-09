@@ -4,11 +4,20 @@ Config::Config() {}
 
 std::unique_ptr<Config> Config::Create()
 {
+#ifdef _DEBUG
+    println("Config::Create()");
+#endif
     auto pConfig{std::unique_ptr<Config>(new Config())};
-    pConfig->dataPath = DataPath();
-    pConfig->configPath = ConfigPath();
-    pConfig->dbPath = DbPath();
+
+    pConfig->dataPath = pConfig->DataPath();
+    pConfig->configPath = pConfig->ConfigPath();
+    pConfig->dbPath = pConfig->DbPath();
+
     pConfig->Load();
+
+    if (!std::filesystem::exists(pConfig->dataPath) ||
+        !std::filesystem::exists(pConfig->configPath))
+        return nullptr;
 
     return pConfig;
 }
@@ -74,6 +83,33 @@ void Config::Save()
         println(e.what());
 #endif
     }
+}
+
+path Config::DataPath()
+{
+    PWSTR buffer{};
+
+    if (FAILED(SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &buffer)))
+        return path{};
+
+    path path = wstring(buffer) + path::preferred_separator + L"Airglow";
+
+    CoTaskMemFree(buffer);
+
+    if (!std::filesystem::exists(path))
+        std::filesystem::create_directory(path);
+
+    return path;
+}
+
+path Config::ConfigPath()
+{
+    return (dataPath.wstring() + path::preferred_separator + L"Config.json");
+}
+
+path Config::DbPath()
+{
+    return (dataPath.wstring() + path::preferred_separator + L"Database.sqlite");
 }
 
 void Config::Tests()

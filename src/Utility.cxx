@@ -1,6 +1,6 @@
 #include "Utility.hxx"
 
-namespace Utility
+namespace util
 {
 wstring to_wide(string in)
 {
@@ -60,44 +60,6 @@ void errorw(wstring in)
     wstring error = in + L". Error: " + std::to_wstring(GetLastError());
     MessageBoxW(nullptr, error.c_str(), wstring(L"Airglow").c_str(), 0);
 };
-
-path DataPath()
-{
-    path dataPath{};
-    wstring outBuffer{};
-    PWSTR buffer{};
-
-    if (SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &buffer) != S_OK)
-    {
-        CoTaskMemFree(buffer);
-        return dataPath;
-    }
-
-    dataPath = wstring(buffer) + path::preferred_separator + L"Airglow";
-
-    CoTaskMemFree(buffer);
-
-    if (!std::filesystem::exists(dataPath))
-        std::filesystem::create_directory(dataPath);
-
-    return dataPath;
-}
-
-path ConfigPath()
-{
-    auto dataPath = DataPath();
-    path configPath = (dataPath.wstring() + path::preferred_separator + L"Config.json");
-
-    return configPath;
-}
-
-path DbPath()
-{
-    auto dataPath = DataPath();
-    path dbPath = (dataPath.wstring() + path::preferred_separator + L"Database.sqlite");
-
-    return dbPath;
-}
 
 std::pair<wstring, wstring> CommandLine()
 {
@@ -184,4 +146,4 @@ void Tests(HWND hwnd)
     auto acp = GetACP();
     wprint(std::to_wstring(acp));
 }
-} // namespace Utility
+} // namespace util

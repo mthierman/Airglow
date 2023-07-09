@@ -349,7 +349,7 @@ std::unique_ptr<WebView> WebView::Create(MainWindow* mainWindow, Config* config)
 
 wstring WebView::GetScriptFile()
 {
-    auto appData = DataPath();
+    auto appData = pConfig->dataPath;
     stringstream buffer{};
     wstring script{};
 

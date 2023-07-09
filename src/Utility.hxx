@@ -8,7 +8,7 @@ using ofstream = std::ofstream;
 using ifstream = std::ifstream;
 using stringstream = std::stringstream;
 
-namespace Utility
+namespace util
 {
 wstring to_wide(string);
 string to_string(wstring);
@@ -22,12 +22,9 @@ void msgbox(string);
 void msgboxw(wstring);
 void error(string in);
 void errorw(wstring in);
-path DataPath();
-path ConfigPath();
-path DbPath();
 std::pair<wstring, wstring> CommandLine();
 bool Toggle(bool);
 std::vector<int> RectToBounds(RECT);
 RECT BoundsToRect(std::vector<int>);
 void Tests(HWND);
-}; // namespace Utility
+}; // namespace util

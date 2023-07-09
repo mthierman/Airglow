@@ -2,18 +2,22 @@
 
 #include "Utility.hxx"
 
-using namespace Utility;
+using namespace util;
 
 class Config
 {
   public:
     static std::unique_ptr<Config> Create();
-    void Load();
     void Save();
+    void Load();
+    path DataPath();
+    path ConfigPath();
+    path DbPath();
 
     path dataPath{};
     path configPath{};
     path dbPath{};
+
     std::vector<int> position{0, 0, 800, 600};
     bool menu{false};
     bool split{false};
