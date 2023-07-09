@@ -36,16 +36,16 @@ jobs:
 
           $name = (Get-Content Airglow.json | ConvertFrom-Json).name
           $version = (Get-Content Airglow.json | ConvertFrom-Json).version
-          $changes = git --no-pager log -5 --oneline --no-decorate
+          $notes = git --no-pager log -5 --oneline --no-decorate
 
           if ("${{ github.ref_name }}" -eq "main") {
             $title = "$name $version"
             gh release delete $version -y
-            gh release create $version $exe $zip --notes-file $changes -t $title
+            gh release create $version $exe $zip -n $notes -t $title
           }
 
           if ("${{ github.ref_name }}" -eq "dev") {
             $title = "$name Nightly"
             gh release delete nightly -y
-            gh release create nightly $exe $zip --notes-file $changes -t $title --prerelease
+            gh release create nightly $exe $zip -n $notes -t $title -p
           }
