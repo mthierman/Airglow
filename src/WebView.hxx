@@ -34,8 +34,6 @@ class WebView
     static wstring GetScript();
     static wstring GetMenuScript();
 
-    // static HWND hwnd;
-
   protected:
     WebView(Config*);
 };

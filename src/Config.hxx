@@ -8,11 +8,12 @@ class Config
 {
   public:
     static std::unique_ptr<Config> Create();
-    void Save();
     void Load();
+    void Save();
     path DataPath();
     path ConfigPath();
     path DbPath();
+    void Tests();
 
     path dataPath{};
     path configPath{};
@@ -32,5 +33,4 @@ class Config
 
   protected:
     Config();
-    void Tests();
 };

@@ -4,9 +4,6 @@ Config::Config() {}
 
 std::unique_ptr<Config> Config::Create()
 {
-#ifdef _DEBUG
-    println("Config::Create()");
-#endif
     auto pConfig{std::unique_ptr<Config>(new Config())};
 
     pConfig->dataPath = pConfig->DataPath();
@@ -24,9 +21,6 @@ std::unique_ptr<Config> Config::Create()
 
 void Config::Load()
 {
-#ifdef _DEBUG
-    println("Config::Load()");
-#endif
     if (std::filesystem::exists(configPath) && !std::filesystem::is_empty(configPath))
     {
         try
@@ -57,9 +51,6 @@ void Config::Load()
 
 void Config::Save()
 {
-#ifdef _DEBUG
-    println("Config::Save()");
-#endif
     try
     {
         json config{};

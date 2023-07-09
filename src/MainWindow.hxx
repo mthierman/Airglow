@@ -39,8 +39,6 @@ class MainWindow
     int _OnWindowPosChanged();
     int _OnWindowPosChanging();
 
-    HWND hwnd{};
-
   private:
     enum PreferredAppMode
     {

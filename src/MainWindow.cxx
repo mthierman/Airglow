@@ -35,13 +35,11 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Con
 
     auto pMainWindow{std::unique_ptr<MainWindow>(new MainWindow(hinstance, ncs, pConfig))};
 
-    pMainWindow->hwnd = CreateWindowExW(0, className.c_str(), appName.c_str(), WS_OVERLAPPEDWINDOW,
-                                        CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
-                                        nullptr, nullptr, hinstance, pMainWindow.get());
+    pConfig->hwnd = CreateWindowExW(0, className.c_str(), appName.c_str(), WS_OVERLAPPEDWINDOW,
+                                    CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+                                    nullptr, nullptr, hinstance, pMainWindow.get());
 
-    pConfig->hwnd = pMainWindow->hwnd;
-
-    if (!pMainWindow->hwnd || !pConfig->hwnd)
+    if (!pConfig->hwnd)
         return nullptr;
 
     return pMainWindow;
@@ -120,6 +118,7 @@ __int64 __stdcall MainWindow::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARA
 
 void MainWindow::Show()
 {
+    HWND hwnd = pConfig->hwnd;
     Cloak();
     SetDarkTitle();
     SetDarkMode();
@@ -160,6 +159,7 @@ void MainWindow::Show()
 
 void MainWindow::Fullscreen()
 {
+    HWND hwnd = pConfig->hwnd;
     static RECT position;
 
     auto style = GetWindowLongPtrW(hwnd, GWL_STYLE);
@@ -189,6 +189,7 @@ void MainWindow::Fullscreen()
 
 void MainWindow::Topmost()
 {
+    HWND hwnd = pConfig->hwnd;
     FLASHWINFO fwi{};
     fwi.cbSize = sizeof(FLASHWINFO);
     fwi.hwnd = hwnd;
@@ -244,6 +245,7 @@ bool MainWindow::SetDarkTitle()
 
 bool MainWindow::SetDarkMode()
 {
+    HWND hwnd = pConfig->hwnd;
     auto dark{TRUE};
     auto light{FALSE};
 
@@ -261,6 +263,7 @@ bool MainWindow::SetDarkMode()
 
 bool MainWindow::SetMica()
 {
+    HWND hwnd = pConfig->hwnd;
     MARGINS m{0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
     auto backdrop = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
 
@@ -276,6 +279,7 @@ bool MainWindow::SetMica()
 
 bool MainWindow::Cloak()
 {
+    HWND hwnd = pConfig->hwnd;
     auto cloak = TRUE;
 
     if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloak, sizeof(cloak))))
@@ -286,6 +290,7 @@ bool MainWindow::Cloak()
 
 bool MainWindow::Uncloak()
 {
+    HWND hwnd = pConfig->hwnd;
     auto uncloak = FALSE;
 
     if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &uncloak, sizeof(uncloak))))
@@ -318,7 +323,7 @@ int MainWindow::_OnClose()
 #ifdef _DEBUG
     println("WM_CLOSE");
 #endif
-    DestroyWindow(hwnd);
+    DestroyWindow(pConfig->hwnd);
 
     return 0;
 }
@@ -374,6 +379,7 @@ int MainWindow::_OnExitSizeMove()
 #ifdef _DEBUG
     println("WM_EXITSIZEMOVE");
 #endif
+    HWND hwnd = pConfig->hwnd;
     WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
     GetWindowPlacement(hwnd, &wp);
     if (!pConfig->fullscreen & (wp.showCmd != 3))
@@ -393,6 +399,7 @@ int MainWindow::_OnGetMinMaxInfo(LPARAM lparam)
 #ifdef _DEBUG
     println("WM_GETMINMAXINFO");
 #endif
+    HWND hwnd = pConfig->hwnd;
     WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
     GetWindowPlacement(hwnd, &wp);
     if (wp.showCmd != 3)
@@ -456,6 +463,7 @@ int MainWindow::_OnKeyDown(WPARAM wparam)
 #endif
         if (!pConfig->fullscreen)
         {
+            HWND hwnd = pConfig->hwnd;
             WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
             GetWindowPlacement(hwnd, &wp);
             if (wp.showCmd == 3)
@@ -497,6 +505,7 @@ int MainWindow::_OnKeyDown(WPARAM wparam)
 #ifdef _DEBUG
         println("Ctrl+W");
 #endif
+        HWND hwnd = pConfig->hwnd;
         auto state = GetKeyState(VK_CONTROL);
         if (state & 0x8000)
             PostMessageW(hwnd, WM_CLOSE, 0, 0);
@@ -528,6 +537,7 @@ int MainWindow::_OnPaint()
 #ifdef _DEBUG
     println("WM_PAINT");
 #endif
+    HWND hwnd = pConfig->hwnd;
     PAINTSTRUCT ps{};
     RECT bounds{};
     HDC hdc = BeginPaint(hwnd, &ps);
@@ -553,7 +563,7 @@ int MainWindow::_OnSettingChange()
 #ifdef _DEBUG
     println("WM_SETTINGCHANGE");
 #endif
-    InvalidateRect(hwnd, nullptr, true);
+    InvalidateRect(pConfig->hwnd, nullptr, true);
     SetDarkMode();
 
     return 0;
