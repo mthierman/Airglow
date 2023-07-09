@@ -48,6 +48,9 @@ void Config::Load()
     paths.config = ConfigPath();
     paths.db = DbPath();
 
+    if (!std::filesystem::exists(paths.config))
+        Save();
+
     if (std::filesystem::exists(paths.config) && !std::filesystem::is_empty(paths.config))
     {
         try
