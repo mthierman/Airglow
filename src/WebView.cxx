@@ -53,9 +53,9 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
                             {
                                 settings_controller->put_Bounds(MenuBounds(hwnd));
                                 settings_wv->Navigate(L"about:blank");
-                                // #ifdef _DEBUG
-                                //                                 settings_wv->Navigate(L"https://localhost:8000/");
-                                // #endif
+#ifdef _DEBUG
+                                settings_wv->Navigate(L"https://localhost:8000/");
+#endif
 
                                 auto script = GetMenuScript();
                                 settings_wv->ExecuteScript(script.c_str(), nullptr);
@@ -94,7 +94,10 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
                                             wil::unique_cotaskmem_string uri;
                                             args->get_Source(&uri);
                                             wstring sourceUri = uri.get();
-                                            wstring verifyUri = L"https://localhost:8000/";
+                                            wstring verifyUri = L"about:blank";
+#ifdef _DEBUG
+                                            verifyUri = L"https://localhost:8000/";
+#endif
 
                                             if (sourceUri != verifyUri)
                                                 return S_OK;
@@ -179,7 +182,7 @@ std::unique_ptr<WebView> WebView::Create(HWND hwnd, Config* config)
                                     main_wv->Navigate(args.first.c_str());
                                 }
                                 else
-                                    main_wv->Navigate(L"https://www.google.com/");
+                                    main_wv->Navigate(to_wide(pConfig->mainUrl).c_str());
 
                                 auto script = GetScript();
                                 main_wv->ExecuteScript(script.c_str(), nullptr);
