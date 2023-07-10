@@ -31,6 +31,7 @@ class MainWindow
     int _OnMove(WPARAM, LPARAM);
     int _OnMoving(WPARAM, LPARAM);
     int _OnPaint(WPARAM, LPARAM);
+    int _OnSetIcon(WPARAM, LPARAM);
     int _OnSetFocus(WPARAM, LPARAM);
     int _OnSettingChange(WPARAM, LPARAM);
     int _OnSize(WPARAM, LPARAM);

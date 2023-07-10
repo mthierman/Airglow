@@ -53,6 +53,7 @@ class Config
     Config::Paths paths{};
     Config::Settings settings{};
     HWND hwnd{};
+    HICON hIcon{};
 
   private:
     void Load();

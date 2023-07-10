@@ -835,8 +835,15 @@ void WebView::SetWindowTitle()
 
 void WebView::SetWindowIcon()
 {
+
     if (!pConfig || !settings_wv || !main_wv || !side_wv)
         return;
+
+    // wstring programIcon{L"PROGRAM_ICON"};
+    // auto hIcon = (HICON)LoadImageW(pConfig->hinstance, L"PROGRAM_ICON", IMAGE_ICON, 0, 0,
+    //                                LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
+    // auto hIconSm = (HICON)LoadImageW(pConfig->hinstance, programIcon.c_str(), IMAGE_ICON, 0, 0,
+    //                                  LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
 
     HWND hwnd = pConfig->hwnd;
 

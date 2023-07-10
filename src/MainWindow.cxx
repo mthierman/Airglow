@@ -13,6 +13,11 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Con
     wstring programIcon{L"PROGRAM_ICON"};
     wstring appName{L"Airglow"};
 
+    auto hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
+    auto hCursor = (HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED);
+    auto hIcon = (HICON)LoadImageW(hinstance, programIcon.c_str(), IMAGE_ICON, 0, 0,
+                                   LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
+
     WNDCLASSEXW wcex{};
     wcex.cbSize = sizeof(WNDCLASSEX);
     wcex.lpszClassName = className.c_str();
@@ -22,12 +27,10 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Con
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
     wcex.hInstance = hinstance;
-    wcex.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
-    wcex.hCursor = (HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED);
-    wcex.hIcon = (HICON)LoadImageW(hinstance, programIcon.c_str(), IMAGE_ICON, 0, 0,
-                                   LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
-    wcex.hIconSm = (HICON)LoadImageW(hinstance, programIcon.c_str(), IMAGE_ICON, 0, 0,
-                                     LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
+    wcex.hbrBackground = hbrBackground;
+    wcex.hCursor = hCursor;
+    wcex.hIcon = hIcon;
+    wcex.hIconSm = hIcon;
 
     if (!RegisterClassExW(&wcex))
         return nullptr;
@@ -35,6 +38,8 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Con
     mainWindow->pConfig->hwnd = CreateWindowExW(
         0, className.c_str(), appName.c_str(), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
         CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, hinstance, mainWindow.get());
+
+    mainWindow->pConfig->hIcon = hIcon;
 
     if (!mainWindow->pConfig->hwnd)
         return nullptr;
@@ -94,6 +99,8 @@ __int64 __stdcall MainWindow::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARA
             return pMainWindow->_OnGetMinMaxInfo(wparam, lparam);
         case WM_PAINT:
             return pMainWindow->_OnPaint(wparam, lparam);
+        case WM_SETICON:
+            return pMainWindow->_OnSetIcon(wparam, lparam);
         case WM_SIZE:
             return pMainWindow->_OnSize(wparam, lparam);
         case WM_SIZING:
@@ -492,6 +499,17 @@ int MainWindow::_OnPaint(WPARAM wparam, LPARAM lparam)
     GetClientRect(pConfig->hwnd, &bounds);
     FillRect(hdc, &bounds, (HBRUSH)GetStockObject(BLACK_BRUSH));
     EndPaint(pConfig->hwnd, &ps);
+
+    return 0;
+}
+
+int MainWindow::_OnSetIcon(WPARAM wparam, LPARAM lparam)
+{
+#ifdef _DEBUG
+    println("WM_SETICON");
+#endif
+    SetClassLongPtrW(pConfig->hwnd, GCLP_HICONSM, lparam);
+    SetClassLongPtrW(pConfig->hwnd, GCLP_HICON, (LONG_PTR)pConfig->hIcon);
 
     return 0;
 }
