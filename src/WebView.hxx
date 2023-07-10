@@ -14,6 +14,7 @@ class WebView
     static void Topmost();
 
   private:
+    static Config* pConfig;
     static std::pair<wstring, wstring> CommandLine();
     static void Messages(wstring);
     static RECT FullBounds();
@@ -23,7 +24,6 @@ class WebView
     static wstring GetScriptFile();
     static wstring GetScript();
     static wstring GetMenuScript();
-    static Config* pConfig;
 
   protected:
     WebView(Config*);

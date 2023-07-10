@@ -1,5 +1,8 @@
 #include "MainWindow.hxx"
 
+Config* MainWindow::pConfig{nullptr};
+WebView* MainWindow::pWebView{nullptr};
+
 MainWindow::MainWindow(HINSTANCE hinstance, int ncs, Config* config) {}
 
 std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Config* config)

@@ -8,7 +8,7 @@ class Database
     static std::unique_ptr<Database> Create(Config*);
 
   private:
-    Config* pConfig{nullptr};
+    static Config* pConfig;
 
   protected:
     Database(Config*);

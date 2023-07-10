@@ -9,6 +9,8 @@ class MainWindow
     static std::unique_ptr<MainWindow> Create(HINSTANCE, int, Config*);
 
   private:
+    static Config* pConfig;
+    static WebView* pWebView;
     static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
     void Show();
     bool CheckSystemDarkMode();
@@ -38,8 +40,7 @@ class MainWindow
     int _OnSizing(WPARAM, LPARAM);
     int _OnWindowPosChanged(WPARAM, LPARAM);
     int _OnWindowPosChanging(WPARAM, LPARAM);
-    Config* pConfig{nullptr};
-    WebView* pWebView{nullptr};
+
     enum PreferredAppMode
     {
         Default,
