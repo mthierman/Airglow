@@ -10,22 +10,22 @@ std::unique_ptr<Database> Database::Create(Config* config)
 
     database->pConfig = config;
 
-    std::string dbFile = (database->pConfig->paths.db).string();
-    const char* dbPath = dbFile.c_str();
-    sqlite3* db;
-    char* errMsg = 0;
-    std::string sql = "CREATE TABLE CONFIG("
-                      "X INT NOT NULL,"
-                      "Y INT NOT NULL,"
-                      "WIDTH INT NOT NULL,"
-                      "HEIGHT INT NOT NULL,"
-                      "MENU INT NOT NULL,"
-                      "SPLIT INT NOT NULL,"
-                      "MAXIMIZED INT NOT NULL,"
-                      "FULLSCREEN INT NOT NULL,"
-                      "TOPMOST INT NOT NULL,"
-                      "MAIN TEXT NOT NULL,"
-                      "SIDE TEXT NOT NULL);";
+    auto dbFile{(database->pConfig->paths.db).string()};
+    auto dbPath{dbFile.c_str()};
+    sqlite3* db{nullptr};
+    char* errMsg{0};
+    string sql{"CREATE TABLE CONFIG("
+               "X INT NOT NULL,"
+               "Y INT NOT NULL,"
+               "WIDTH INT NOT NULL,"
+               "HEIGHT INT NOT NULL,"
+               "MENU INT NOT NULL,"
+               "SPLIT INT NOT NULL,"
+               "MAXIMIZED INT NOT NULL,"
+               "FULLSCREEN INT NOT NULL,"
+               "TOPMOST INT NOT NULL,"
+               "MAIN TEXT NOT NULL,"
+               "SIDE TEXT NOT NULL);"};
 
     auto dbOpen = sqlite3_open(dbPath, &db);
     if (dbOpen != SQLITE_OK)

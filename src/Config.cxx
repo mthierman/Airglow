@@ -86,7 +86,7 @@ path Config::DataPath()
     if (FAILED(SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &buffer)))
         return path{};
 
-    path path = wstring(buffer) + path::preferred_separator + L"Airglow";
+    path path = wstring(buffer) + path::preferred_separator + to_wide("Airglow");
 
     CoTaskMemFree(buffer);
 
@@ -101,7 +101,7 @@ path Config::ConfigPath()
     if (!std::filesystem::exists(paths.data))
         return path{};
 
-    return (paths.data.wstring() + path::preferred_separator + L"Config.json");
+    return (paths.data.wstring() + path::preferred_separator + to_wide("Config.json"));
 }
 
 path Config::DbPath()
@@ -109,7 +109,7 @@ path Config::DbPath()
     if (!std::filesystem::exists(paths.data))
         return path{};
 
-    return (paths.data.wstring() + path::preferred_separator + L"Database.sqlite");
+    return (paths.data.wstring() + path::preferred_separator + to_wide("Database.sqlite"));
 }
 
 void Config::Tests()

@@ -34,9 +34,9 @@ class WebView
   public:
     static std::unique_ptr<WebView> Create(Config*);
     static wstring MainNavigation();
-    static void MainMessages(ICoreWebView2WebMessageReceivedEventArgs*);
     static wstring SideNavigation();
     static wstring SettingsNavigation();
+    static void MainMessages(ICoreWebView2WebMessageReceivedEventArgs*);
     static void SettingsMessages(ICoreWebView2WebMessageReceivedEventArgs*);
     static void UpdateBounds();
     static void UpdateFocus();

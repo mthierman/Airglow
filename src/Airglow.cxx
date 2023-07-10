@@ -5,8 +5,8 @@
 
 int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
 {
-    SetEnvironmentVariableW(wstring(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR").c_str(),
-                            wstring(L"0").c_str());
+    SetEnvironmentVariableW(to_wide("WEBVIEW2_DEFAULT_BACKGROUND_COLOR").c_str(),
+                            to_wide("0").c_str());
 
     static unsigned long long gdiplusToken;
     static Gdiplus::GdiplusStartupInput gdiplusStartupInput;
