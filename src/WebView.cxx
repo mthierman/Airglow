@@ -12,143 +12,109 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
 
     webView->pConfig = config;
 
-    HWND hwnd = webView->pConfig->hwnd;
-
     CreateCoreWebView2EnvironmentWithOptions(
         nullptr, pConfig->paths.data.c_str(), nullptr,
         Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
-            [hwnd](HRESULT result, ICoreWebView2Environment* env) -> HRESULT
+            [&](HRESULT result, ICoreWebView2Environment* e) -> HRESULT
             {
                 // SETTINGS WEBVIEW
-                env->CreateCoreWebView2Controller(
-                    hwnd, Microsoft::WRL::Callback<
-                              ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                              [](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
-                              {
-                                  using namespace Browsers::Settings;
-                                  EventRegistrationToken msgToken;
-                                  EventRegistrationToken faviconChangedToken;
-                                  EventRegistrationToken documentTitleChangedToken;
-
-                                  if (c)
-                                  {
-                                      controller = c;
-                                      controller->get_CoreWebView2(&core);
-                                  }
-
-                                  if (core)
-                                      browser = core.try_query<ICoreWebView2_19>();
-
-                                  if (browser)
-                                      browser->get_Settings(&settings);
-
-                                  if (settings)
-                                  {
-                                      settings->put_AreDefaultContextMenusEnabled(false);
-                                      settings->put_AreDefaultScriptDialogsEnabled(true);
-                                      settings->put_AreDevToolsEnabled(true);
-                                      settings->put_AreHostObjectsAllowed(true);
-                                      settings->put_IsBuiltInErrorPageEnabled(true);
-                                      settings->put_IsScriptEnabled(true);
-                                      settings->put_IsStatusBarEnabled(false);
-                                      settings->put_IsWebMessageEnabled(true);
-                                      settings->put_IsZoomControlEnabled(false);
-                                  }
-
-                                  if (browser)
-                                  {
-                                      controller->put_Bounds(MenuBounds());
-                                      browser->Navigate(L"about:blank");
-#ifdef _DEBUG
-                                      browser->Navigate(L"https://localhost:8000/");
-#endif
-                                      auto script = GetMenuScript();
-                                      browser->ExecuteScript(script.c_str(), nullptr);
-                                      browser->AddScriptToExecuteOnDocumentCreated(script.c_str(),
-                                                                                   nullptr);
-
-                                      browser->add_DocumentTitleChanged(
-                                          Microsoft::WRL::Callback<
-                                              ICoreWebView2DocumentTitleChangedEventHandler>(
-                                              [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
-                                              {
-                                                  SetWindowTitle();
-                                                  return S_OK;
-                                              })
-                                              .Get(),
-                                          &documentTitleChangedToken);
-
-                                      browser->add_FaviconChanged(
-                                          Microsoft::WRL::Callback<
-                                              ICoreWebView2FaviconChangedEventHandler>(
-                                              [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
-                                              {
-                                                  SetWindowIcon();
-                                                  return S_OK;
-                                              })
-                                              .Get(),
-                                          &faviconChangedToken);
-
-                                      browser->add_WebMessageReceived(
-                                          Microsoft::WRL::Callback<
-                                              ICoreWebView2WebMessageReceivedEventHandler>(
-                                              [](ICoreWebView2* webview,
-                                                 ICoreWebView2WebMessageReceivedEventArgs* args)
-                                                  -> HRESULT
-                                              {
-                                                  wil::unique_cotaskmem_string uri;
-                                                  args->get_Source(&uri);
-                                                  wstring sourceUri = uri.get();
-                                                  wstring verifyUri = L"about:blank";
-#ifdef _DEBUG
-                                                  verifyUri = L"https://localhost:8000/";
-#endif
-                                                  if (sourceUri != verifyUri)
-                                                      return S_OK;
-
-                                                  wil::unique_cotaskmem_string messageRaw;
-                                                  if (SUCCEEDED(args->TryGetWebMessageAsString(
-                                                          &messageRaw)))
-                                                  {
-                                                      auto message = wstring(messageRaw.get());
-
-                                                      if (message.compare(0, 8, L"mainUrl ") == 0)
-                                                      {
-                                                          wprintln(message.substr(8));
-                                                          pConfig->settings.mainUrl =
-                                                              to_string(message.substr(8));
-                                                      }
-
-                                                      if (message.compare(0, 8, L"sideUrl ") == 0)
-                                                      {
-                                                          wprintln(message.substr(8));
-                                                          pConfig->settings.sideUrl =
-                                                              to_string(message.substr(8));
-                                                      }
-
-                                                      Messages(message);
-
-                                                      pConfig->Save();
-                                                  }
-
-                                                  return S_OK;
-                                              })
-                                              .Get(),
-                                          &msgToken);
-                                  }
-
-                                  return S_OK;
-                              })
-                              .Get());
-
-                // MAIN WEBVIEW
-                env->CreateCoreWebView2Controller(
-                    hwnd,
+                e->CreateCoreWebView2Controller(
+                    pConfig->hwnd,
                     Microsoft::WRL::Callback<
                         ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                        [](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
+                        [&](HRESULT result, ICoreWebView2Controller* c) -> HRESULT
+                        {
+                            using namespace Browsers::Settings;
+
+                            EventRegistrationToken msgToken;
+                            EventRegistrationToken faviconChangedToken;
+                            EventRegistrationToken documentTitleChangedToken;
+
+                            if (c)
+                            {
+                                controller = c;
+                                controller->get_CoreWebView2(&core);
+                            }
+
+                            if (core)
+                                browser = core.try_query<ICoreWebView2_19>();
+
+                            if (browser)
+                                browser->get_Settings(&settings);
+
+                            if (settings)
+                            {
+                                settings->put_AreDefaultContextMenusEnabled(false);
+                                settings->put_AreDefaultScriptDialogsEnabled(true);
+                                settings->put_AreDevToolsEnabled(true);
+                                settings->put_AreHostObjectsAllowed(true);
+                                settings->put_IsBuiltInErrorPageEnabled(true);
+                                settings->put_IsScriptEnabled(true);
+                                settings->put_IsStatusBarEnabled(false);
+                                settings->put_IsWebMessageEnabled(true);
+                                settings->put_IsZoomControlEnabled(false);
+                            }
+
+                            if (browser)
+                            {
+                                controller->put_Bounds(MenuBounds());
+                                browser->Navigate(SettingsNavigation().c_str());
+                                browser->ExecuteScript(GetMenuScript().c_str(), nullptr);
+                                browser->AddScriptToExecuteOnDocumentCreated(
+                                    GetMenuScript().c_str(), nullptr);
+
+                                browser->add_DocumentTitleChanged(
+                                    Microsoft::WRL::Callback<
+                                        ICoreWebView2DocumentTitleChangedEventHandler>(
+                                        [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                        {
+                                            SetWindowTitle();
+
+                                            return S_OK;
+                                        })
+                                        .Get(),
+                                    &documentTitleChangedToken);
+
+                                browser->add_FaviconChanged(
+                                    Microsoft::WRL::Callback<
+                                        ICoreWebView2FaviconChangedEventHandler>(
+                                        [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                        {
+                                            SetWindowIcon();
+
+                                            return S_OK;
+                                        })
+                                        .Get(),
+                                    &faviconChangedToken);
+
+                                browser->add_WebMessageReceived(
+                                    Microsoft::WRL::Callback<
+                                        ICoreWebView2WebMessageReceivedEventHandler>(
+                                        [&](ICoreWebView2* sender,
+                                            ICoreWebView2WebMessageReceivedEventArgs* args)
+                                            -> HRESULT
+                                        {
+                                            SettingsMessages(args);
+
+                                            return S_OK;
+                                        })
+                                        .Get(),
+                                    &msgToken);
+                            }
+
+                            return S_OK;
+                        })
+                        .Get());
+
+                // MAIN WEBVIEW
+                e->CreateCoreWebView2Controller(
+                    pConfig->hwnd,
+                    Microsoft::WRL::Callback<
+                        ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+                        [&](HRESULT result, ICoreWebView2Controller* c) -> HRESULT
                         {
                             using namespace Browsers::Main;
+
                             EventRegistrationToken msgToken;
                             EventRegistrationToken faviconChangedToken;
                             EventRegistrationToken documentTitleChangedToken;
@@ -181,15 +147,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                             if (browser)
                             {
                                 controller->put_Bounds(MainBounds());
-
-                                auto args = CommandLine();
-
-                                if (!args.first.empty())
-                                {
-                                    browser->Navigate(args.first.c_str());
-                                }
-                                else
-                                    browser->Navigate(to_wide(pConfig->settings.mainUrl).c_str());
+                                browser->Navigate(MainNavigation().c_str());
 
                                 auto script = GetScript();
                                 browser->ExecuteScript(script.c_str(), nullptr);
@@ -199,7 +157,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                 browser->add_DocumentTitleChanged(
                                     Microsoft::WRL::Callback<
                                         ICoreWebView2DocumentTitleChangedEventHandler>(
-                                        [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                        [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                         {
                                             SetWindowTitle();
                                             return S_OK;
@@ -210,7 +168,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                 browser->add_FaviconChanged(
                                     Microsoft::WRL::Callback<
                                         ICoreWebView2FaviconChangedEventHandler>(
-                                        [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                        [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                         {
                                             SetWindowIcon();
                                             return S_OK;
@@ -221,17 +179,11 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                 browser->add_WebMessageReceived(
                                     Microsoft::WRL::Callback<
                                         ICoreWebView2WebMessageReceivedEventHandler>(
-                                        [](ICoreWebView2* webview,
-                                           ICoreWebView2WebMessageReceivedEventArgs* args)
+                                        [&](ICoreWebView2* webview,
+                                            ICoreWebView2WebMessageReceivedEventArgs* args)
                                             -> HRESULT
                                         {
-                                            wil::unique_cotaskmem_string messageRaw;
-                                            if (SUCCEEDED(
-                                                    args->TryGetWebMessageAsString(&messageRaw)))
-                                            {
-                                                auto message = wstring(messageRaw.get());
-                                                Messages(message);
-                                            }
+                                            MainMessages(args);
 
                                             return S_OK;
                                         })
@@ -244,13 +196,14 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                         .Get());
 
                 // SIDE WEBVIEW
-                env->CreateCoreWebView2Controller(
-                    hwnd,
+                e->CreateCoreWebView2Controller(
+                    pConfig->hwnd,
                     Microsoft::WRL::Callback<
                         ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                        [](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
+                        [&](HRESULT result, ICoreWebView2Controller* c) -> HRESULT
                         {
                             using namespace Browsers::Side;
+
                             EventRegistrationToken msgToken;
                             EventRegistrationToken faviconChangedToken;
                             EventRegistrationToken documentTitleChangedToken;
@@ -283,15 +236,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                             if (browser)
                             {
                                 controller->put_Bounds(SideBounds());
-
-                                auto args = CommandLine();
-
-                                if (!args.second.empty())
-                                {
-                                    browser->Navigate(args.second.c_str());
-                                }
-                                else
-                                    browser->Navigate(to_wide(pConfig->settings.sideUrl).c_str());
+                                browser->Navigate(SideNavigation().c_str());
 
                                 auto script = GetScript();
                                 browser->ExecuteScript(script.c_str(), nullptr);
@@ -301,7 +246,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                 browser->add_DocumentTitleChanged(
                                     Microsoft::WRL::Callback<
                                         ICoreWebView2DocumentTitleChangedEventHandler>(
-                                        [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                        [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                         {
                                             SetWindowTitle();
                                             return S_OK;
@@ -312,7 +257,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                 browser->add_FaviconChanged(
                                     Microsoft::WRL::Callback<
                                         ICoreWebView2FaviconChangedEventHandler>(
-                                        [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                        [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                         {
                                             SetWindowIcon();
                                             return S_OK;
@@ -323,17 +268,11 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                 browser->add_WebMessageReceived(
                                     Microsoft::WRL::Callback<
                                         ICoreWebView2WebMessageReceivedEventHandler>(
-                                        [](ICoreWebView2* webview,
-                                           ICoreWebView2WebMessageReceivedEventArgs* args)
+                                        [&](ICoreWebView2* webview,
+                                            ICoreWebView2WebMessageReceivedEventArgs* args)
                                             -> HRESULT
                                         {
-                                            wil::unique_cotaskmem_string messageRaw;
-                                            if (SUCCEEDED(
-                                                    args->TryGetWebMessageAsString(&messageRaw)))
-                                            {
-                                                auto message = wstring(messageRaw.get());
-                                                Messages(message);
-                                            }
+                                            MainMessages(args);
 
                                             return S_OK;
                                         })
@@ -350,6 +289,84 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
             .Get());
 
     return webView;
+}
+
+wstring WebView::MainNavigation()
+{
+    auto args = CommandLine();
+
+    if (!args.first.empty())
+    {
+        return args.first;
+    }
+
+    return to_wide(pConfig->settings.mainUrl);
+}
+
+void WebView::MainMessages(ICoreWebView2WebMessageReceivedEventArgs* args)
+{
+    wil::unique_cotaskmem_string messageRaw;
+    if (SUCCEEDED(args->TryGetWebMessageAsString(&messageRaw)))
+    {
+        auto message = wstring(messageRaw.get());
+        Messages(message);
+    }
+}
+
+wstring WebView::SideNavigation()
+{
+    auto args = CommandLine();
+
+    if (!args.second.empty())
+    {
+        return args.second;
+    }
+
+    return to_wide(pConfig->settings.sideUrl);
+}
+
+wstring WebView::SettingsNavigation()
+{
+#ifdef _DEBUG
+    return L"https://localhost:8000/";
+#endif
+
+    return L"about:blank";
+}
+
+void WebView::SettingsMessages(ICoreWebView2WebMessageReceivedEventArgs* args)
+{
+    wil::unique_cotaskmem_string uri;
+    args->get_Source(&uri);
+    wstring sourceUri = uri.get();
+    wstring verifyUri = L"about:blank";
+#ifdef _DEBUG
+    verifyUri = L"https://localhost:8000/";
+#endif
+    if (sourceUri != verifyUri)
+        return;
+
+    wil::unique_cotaskmem_string messageRaw;
+    if (SUCCEEDED(args->TryGetWebMessageAsString(&messageRaw)))
+    {
+        auto message = wstring(messageRaw.get());
+
+        if (message.compare(0, 8, L"mainUrl ") == 0)
+        {
+            wprintln(message.substr(8));
+            pConfig->settings.mainUrl = to_string(message.substr(8));
+        }
+
+        if (message.compare(0, 8, L"sideUrl ") == 0)
+        {
+            wprintln(message.substr(8));
+            pConfig->settings.sideUrl = to_string(message.substr(8));
+        }
+
+        Messages(message);
+
+        pConfig->Save();
+    }
 }
 
 std::pair<wstring, wstring> WebView::CommandLine()
