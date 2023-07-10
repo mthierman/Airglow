@@ -786,18 +786,19 @@ void WebView::SetWindowTitle()
 
     if (pConfig->settings.menu)
     {
-        wil::unique_cotaskmem_string s{};
-        settings_wv->get_DocumentTitle(&s);
-        auto title = s.get();
+        SetWindowTextW(hwnd, L"Settings");
+        // wil::unique_cotaskmem_string s{};
+        // settings_wv->get_DocumentTitle(&s);
+        // auto title = s.get();
 
-        if (!pConfig->settings.topmost)
-            SetWindowTextW(hwnd, s.get());
+        // if (!pConfig->settings.topmost)
+        //     SetWindowTextW(hwnd, s.get());
 
-        if (pConfig->settings.topmost)
-        {
-            wstring add = title + wstring(L" [On Top]");
-            SetWindowTextW(hwnd, add.c_str());
-        }
+        // if (pConfig->settings.topmost)
+        // {
+        //     wstring add = title + wstring(L" [On Top]");
+        //     SetWindowTextW(hwnd, add.c_str());
+        // }
     }
 
     if (!pConfig->settings.menu && !pConfig->settings.swapped)
@@ -855,24 +856,27 @@ void WebView::SetWindowIcon()
         wprintln(wstring(faviconUri));
 #endif
 
-        settings_wv->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
-                                Microsoft::WRL::Callback<ICoreWebView2GetFaviconCompletedHandler>(
-                                    [hwnd](HRESULT result, IStream* iconStream) -> HRESULT
-                                    {
-                                        if (iconStream)
-                                        {
-                                            Gdiplus::Bitmap iconBitmap(iconStream);
-                                            wil::unique_hicon icon;
-                                            if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
-                                            {
-                                                auto favicon = std::move(icon);
-                                                SendMessageW(hwnd, WM_SETICON, ICON_BIG,
-                                                             (LPARAM)favicon.get());
-                                            }
-                                        }
-                                        return S_OK;
-                                    })
-                                    .Get());
+        SendMessageW(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)pConfig->hIcon);
+
+        // settings_wv->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
+        //                         Microsoft::WRL::Callback<ICoreWebView2GetFaviconCompletedHandler>(
+        //                             [hwnd](HRESULT result, IStream* iconStream) -> HRESULT
+        //                             {
+        //                                 if (iconStream)
+        //                                 {
+        //                                     Gdiplus::Bitmap iconBitmap(iconStream);
+        //                                     wil::unique_hicon icon;
+        //                                     if (iconBitmap.GetHICON(&icon) ==
+        //                                     Gdiplus::Status::Ok)
+        //                                     {
+        //                                         auto favicon = std::move(icon);
+        //                                         SendMessageW(hwnd, WM_SETICON, ICON_BIG,
+        //                                                      (LPARAM)favicon.get());
+        //                                     }
+        //                                 }
+        //                                 return S_OK;
+        //                             })
+        //                             .Get());
     }
 
     if (!pConfig->settings.swapped && !pConfig->settings.menu)
@@ -895,7 +899,7 @@ void WebView::SetWindowIcon()
                                         if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
                                         {
                                             auto favicon = std::move(icon);
-                                            SendMessageW(hwnd, WM_SETICON, ICON_BIG,
+                                            SendMessageW(hwnd, WM_SETICON, ICON_SMALL,
                                                          (LPARAM)favicon.get());
                                         }
                                     }
@@ -923,7 +927,7 @@ void WebView::SetWindowIcon()
                                         if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
                                         {
                                             auto favicon = std::move(icon);
-                                            SendMessageW(hwnd, WM_SETICON, ICON_BIG,
+                                            SendMessageW(hwnd, WM_SETICON, ICON_SMALL,
                                                          (LPARAM)favicon.get());
                                         }
                                     }
