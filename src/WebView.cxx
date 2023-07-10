@@ -1,20 +1,5 @@
 #include "WebView.hxx"
 
-static wil::com_ptr<ICoreWebView2Controller> settings_controller;
-static wil::com_ptr<ICoreWebView2> settings_core;
-static wil::com_ptr<ICoreWebView2_19> settings_wv;
-static wil::com_ptr<ICoreWebView2Settings> settings_settings;
-
-static wil::com_ptr<ICoreWebView2Controller> main_controller;
-static wil::com_ptr<ICoreWebView2> main_core;
-static wil::com_ptr<ICoreWebView2_19> main_wv;
-static wil::com_ptr<ICoreWebView2Settings> main_settings;
-
-static wil::com_ptr<ICoreWebView2Controller> side_controller;
-static wil::com_ptr<ICoreWebView2> side_core;
-static wil::com_ptr<ICoreWebView2_19> side_wv;
-static wil::com_ptr<ICoreWebView2Settings> side_settings;
-
 Config* WebView::pConfig{nullptr};
 
 WebView::WebView(Config* config) {}
@@ -28,7 +13,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
     HWND hwnd = webView->pConfig->hwnd;
 
     CreateCoreWebView2EnvironmentWithOptions(
-        nullptr, config->paths.data.c_str(), nullptr,
+        nullptr, pConfig->paths.data.c_str(), nullptr,
         Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
             [hwnd](HRESULT result, ICoreWebView2Environment* env) -> HRESULT
             {
@@ -50,8 +35,10 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
 
                                   if (settings_core)
                                       settings_wv = settings_core.try_query<ICoreWebView2_19>();
+
                                   if (settings_wv)
                                       settings_wv->get_Settings(&settings_settings);
+
                                   if (settings_settings)
                                   {
                                       settings_settings->put_AreDefaultContextMenusEnabled(false);
@@ -72,7 +59,6 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
 #ifdef _DEBUG
                                       settings_wv->Navigate(L"https://localhost:8000/");
 #endif
-
                                       auto script = GetMenuScript();
                                       settings_wv->ExecuteScript(script.c_str(), nullptr);
                                       settings_wv->AddScriptToExecuteOnDocumentCreated(
@@ -114,7 +100,6 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
 #ifdef _DEBUG
                                                   verifyUri = L"https://localhost:8000/";
 #endif
-
                                                   if (sourceUri != verifyUri)
                                                       return S_OK;
 
@@ -172,8 +157,10 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
 
                             if (main_core)
                                 main_wv = main_core.try_query<ICoreWebView2_19>();
+
                             if (main_wv)
                                 main_wv->get_Settings(&main_settings);
+
                             if (main_settings)
                             {
                                 main_settings->put_AreDefaultContextMenusEnabled(true);
@@ -272,8 +259,10 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
 
                             if (side_core)
                                 side_wv = side_core.try_query<ICoreWebView2_19>();
+
                             if (side_wv)
                                 side_wv->get_Settings(&side_settings);
+                                
                             if (side_settings)
                             {
                                 side_settings->put_AreDefaultContextMenusEnabled(true);
