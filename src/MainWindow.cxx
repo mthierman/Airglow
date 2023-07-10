@@ -17,6 +17,7 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Con
     auto hCursor = (HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED);
     auto hIcon = (HICON)LoadImageW(hinstance, programIcon.c_str(), IMAGE_ICON, 0, 0,
                                    LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
+    mainWindow->pConfig->hIcon = hIcon;
 
     WNDCLASSEXW wcex{};
     wcex.cbSize = sizeof(WNDCLASSEX);
@@ -38,8 +39,6 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Con
     mainWindow->pConfig->hwnd = CreateWindowExW(
         0, className.c_str(), appName.c_str(), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
         CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, hinstance, mainWindow.get());
-
-    mainWindow->pConfig->hIcon = hIcon;
 
     if (!mainWindow->pConfig->hwnd)
         return nullptr;
