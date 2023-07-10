@@ -1,5 +1,7 @@
 #include "WebView.hxx"
 
+// using namespace Browsers;
+
 Config* WebView::pConfig{nullptr};
 
 WebView::WebView(Config* config) {}
@@ -21,50 +23,51 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                 env->CreateCoreWebView2Controller(
                     hwnd, Microsoft::WRL::Callback<
                               ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                              [](HRESULT result, ICoreWebView2Controller* controller) -> HRESULT
+                              [](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
                               {
+                                  using namespace Browsers::Settings;
                                   EventRegistrationToken msgToken;
                                   EventRegistrationToken faviconChangedToken;
                                   EventRegistrationToken documentTitleChangedToken;
 
-                                  if (controller)
+                                  if (c)
                                   {
-                                      settings_controller = controller;
-                                      settings_controller->get_CoreWebView2(&settings_core);
+                                      controller = c;
+                                      controller->get_CoreWebView2(&core);
                                   }
 
-                                  if (settings_core)
-                                      settings_wv = settings_core.try_query<ICoreWebView2_19>();
+                                  if (core)
+                                      browser = core.try_query<ICoreWebView2_19>();
 
-                                  if (settings_wv)
-                                      settings_wv->get_Settings(&settings_settings);
+                                  if (browser)
+                                      browser->get_Settings(&settings);
 
-                                  if (settings_settings)
+                                  if (settings)
                                   {
-                                      settings_settings->put_AreDefaultContextMenusEnabled(false);
-                                      settings_settings->put_AreDefaultScriptDialogsEnabled(true);
-                                      settings_settings->put_AreDevToolsEnabled(true);
-                                      settings_settings->put_AreHostObjectsAllowed(true);
-                                      settings_settings->put_IsBuiltInErrorPageEnabled(true);
-                                      settings_settings->put_IsScriptEnabled(true);
-                                      settings_settings->put_IsStatusBarEnabled(false);
-                                      settings_settings->put_IsWebMessageEnabled(true);
-                                      settings_settings->put_IsZoomControlEnabled(false);
+                                      settings->put_AreDefaultContextMenusEnabled(false);
+                                      settings->put_AreDefaultScriptDialogsEnabled(true);
+                                      settings->put_AreDevToolsEnabled(true);
+                                      settings->put_AreHostObjectsAllowed(true);
+                                      settings->put_IsBuiltInErrorPageEnabled(true);
+                                      settings->put_IsScriptEnabled(true);
+                                      settings->put_IsStatusBarEnabled(false);
+                                      settings->put_IsWebMessageEnabled(true);
+                                      settings->put_IsZoomControlEnabled(false);
                                   }
 
-                                  if (settings_wv)
+                                  if (browser)
                                   {
-                                      settings_controller->put_Bounds(MenuBounds());
-                                      settings_wv->Navigate(L"about:blank");
+                                      controller->put_Bounds(MenuBounds());
+                                      browser->Navigate(L"about:blank");
 #ifdef _DEBUG
-                                      settings_wv->Navigate(L"https://localhost:8000/");
+                                      browser->Navigate(L"https://localhost:8000/");
 #endif
                                       auto script = GetMenuScript();
-                                      settings_wv->ExecuteScript(script.c_str(), nullptr);
-                                      settings_wv->AddScriptToExecuteOnDocumentCreated(
-                                          script.c_str(), nullptr);
+                                      browser->ExecuteScript(script.c_str(), nullptr);
+                                      browser->AddScriptToExecuteOnDocumentCreated(script.c_str(),
+                                                                                   nullptr);
 
-                                      settings_wv->add_DocumentTitleChanged(
+                                      browser->add_DocumentTitleChanged(
                                           Microsoft::WRL::Callback<
                                               ICoreWebView2DocumentTitleChangedEventHandler>(
                                               [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
@@ -75,7 +78,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                               .Get(),
                                           &documentTitleChangedToken);
 
-                                      settings_wv->add_FaviconChanged(
+                                      browser->add_FaviconChanged(
                                           Microsoft::WRL::Callback<
                                               ICoreWebView2FaviconChangedEventHandler>(
                                               [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
@@ -86,7 +89,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                               .Get(),
                                           &faviconChangedToken);
 
-                                      settings_wv->add_WebMessageReceived(
+                                      browser->add_WebMessageReceived(
                                           Microsoft::WRL::Callback<
                                               ICoreWebView2WebMessageReceivedEventHandler>(
                                               [](ICoreWebView2* webview,
@@ -143,57 +146,57 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                     hwnd,
                     Microsoft::WRL::Callback<
                         ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                        [](HRESULT result, ICoreWebView2Controller* controller) -> HRESULT
+                        [](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
                         {
+                            using namespace Browsers::Main;
                             EventRegistrationToken msgToken;
                             EventRegistrationToken faviconChangedToken;
                             EventRegistrationToken documentTitleChangedToken;
 
-                            if (controller)
+                            if (c)
                             {
-                                main_controller = controller;
-                                main_controller->get_CoreWebView2(&main_core);
+                                controller = c;
+                                controller->get_CoreWebView2(&core);
                             }
 
-                            if (main_core)
-                                main_wv = main_core.try_query<ICoreWebView2_19>();
+                            if (core)
+                                browser = core.try_query<ICoreWebView2_19>();
 
-                            if (main_wv)
-                                main_wv->get_Settings(&main_settings);
+                            if (browser)
+                                browser->get_Settings(&settings);
 
-                            if (main_settings)
+                            if (settings)
                             {
-                                main_settings->put_AreDefaultContextMenusEnabled(true);
-                                main_settings->put_AreDefaultScriptDialogsEnabled(true);
-                                main_settings->put_AreDevToolsEnabled(true);
-                                main_settings->put_AreHostObjectsAllowed(true);
-                                main_settings->put_IsBuiltInErrorPageEnabled(true);
-                                main_settings->put_IsScriptEnabled(true);
-                                main_settings->put_IsStatusBarEnabled(true);
-                                main_settings->put_IsWebMessageEnabled(true);
-                                main_settings->put_IsZoomControlEnabled(true);
+                                settings->put_AreDefaultContextMenusEnabled(false);
+                                settings->put_AreDefaultScriptDialogsEnabled(true);
+                                settings->put_AreDevToolsEnabled(true);
+                                settings->put_AreHostObjectsAllowed(true);
+                                settings->put_IsBuiltInErrorPageEnabled(true);
+                                settings->put_IsScriptEnabled(true);
+                                settings->put_IsStatusBarEnabled(false);
+                                settings->put_IsWebMessageEnabled(true);
+                                settings->put_IsZoomControlEnabled(false);
                             }
 
-                            if (main_wv)
+                            if (browser)
                             {
-
-                                main_controller->put_Bounds(MainBounds());
+                                controller->put_Bounds(MainBounds());
 
                                 auto args = CommandLine();
 
                                 if (!args.first.empty())
                                 {
-                                    main_wv->Navigate(args.first.c_str());
+                                    browser->Navigate(args.first.c_str());
                                 }
                                 else
-                                    main_wv->Navigate(to_wide(pConfig->settings.mainUrl).c_str());
+                                    browser->Navigate(to_wide(pConfig->settings.mainUrl).c_str());
 
                                 auto script = GetScript();
-                                main_wv->ExecuteScript(script.c_str(), nullptr);
-                                main_wv->AddScriptToExecuteOnDocumentCreated(script.c_str(),
+                                browser->ExecuteScript(script.c_str(), nullptr);
+                                browser->AddScriptToExecuteOnDocumentCreated(script.c_str(),
                                                                              nullptr);
 
-                                main_wv->add_DocumentTitleChanged(
+                                browser->add_DocumentTitleChanged(
                                     Microsoft::WRL::Callback<
                                         ICoreWebView2DocumentTitleChangedEventHandler>(
                                         [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
@@ -204,7 +207,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                         .Get(),
                                     &documentTitleChangedToken);
 
-                                main_wv->add_FaviconChanged(
+                                browser->add_FaviconChanged(
                                     Microsoft::WRL::Callback<
                                         ICoreWebView2FaviconChangedEventHandler>(
                                         [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
@@ -215,7 +218,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                         .Get(),
                                     &faviconChangedToken);
 
-                                main_wv->add_WebMessageReceived(
+                                browser->add_WebMessageReceived(
                                     Microsoft::WRL::Callback<
                                         ICoreWebView2WebMessageReceivedEventHandler>(
                                         [](ICoreWebView2* webview,
@@ -245,57 +248,57 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                     hwnd,
                     Microsoft::WRL::Callback<
                         ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                        [](HRESULT result, ICoreWebView2Controller* controller) -> HRESULT
+                        [](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
                         {
+                            using namespace Browsers::Side;
                             EventRegistrationToken msgToken;
                             EventRegistrationToken faviconChangedToken;
                             EventRegistrationToken documentTitleChangedToken;
 
-                            if (controller)
+                            if (c)
                             {
-                                side_controller = controller;
-                                side_controller->get_CoreWebView2(&side_core);
+                                controller = c;
+                                controller->get_CoreWebView2(&core);
                             }
 
-                            if (side_core)
-                                side_wv = side_core.try_query<ICoreWebView2_19>();
+                            if (core)
+                                browser = core.try_query<ICoreWebView2_19>();
 
-                            if (side_wv)
-                                side_wv->get_Settings(&side_settings);
-                                
-                            if (side_settings)
+                            if (browser)
+                                browser->get_Settings(&settings);
+
+                            if (settings)
                             {
-                                side_settings->put_AreDefaultContextMenusEnabled(true);
-                                side_settings->put_AreDefaultScriptDialogsEnabled(true);
-                                side_settings->put_AreDevToolsEnabled(true);
-                                side_settings->put_AreHostObjectsAllowed(true);
-                                side_settings->put_IsBuiltInErrorPageEnabled(true);
-                                side_settings->put_IsScriptEnabled(true);
-                                side_settings->put_IsStatusBarEnabled(true);
-                                side_settings->put_IsWebMessageEnabled(true);
-                                side_settings->put_IsZoomControlEnabled(true);
+                                settings->put_AreDefaultContextMenusEnabled(false);
+                                settings->put_AreDefaultScriptDialogsEnabled(true);
+                                settings->put_AreDevToolsEnabled(true);
+                                settings->put_AreHostObjectsAllowed(true);
+                                settings->put_IsBuiltInErrorPageEnabled(true);
+                                settings->put_IsScriptEnabled(true);
+                                settings->put_IsStatusBarEnabled(false);
+                                settings->put_IsWebMessageEnabled(true);
+                                settings->put_IsZoomControlEnabled(false);
                             }
 
-                            if (side_wv)
+                            if (browser)
                             {
-
-                                side_controller->put_Bounds(SideBounds());
+                                controller->put_Bounds(SideBounds());
 
                                 auto args = CommandLine();
 
                                 if (!args.second.empty())
                                 {
-                                    side_wv->Navigate(args.second.c_str());
+                                    browser->Navigate(args.second.c_str());
                                 }
                                 else
-                                    side_wv->Navigate(to_wide(pConfig->settings.sideUrl).c_str());
+                                    browser->Navigate(to_wide(pConfig->settings.sideUrl).c_str());
 
                                 auto script = GetScript();
-                                side_wv->ExecuteScript(script.c_str(), nullptr);
-                                side_wv->AddScriptToExecuteOnDocumentCreated(script.c_str(),
+                                browser->ExecuteScript(script.c_str(), nullptr);
+                                browser->AddScriptToExecuteOnDocumentCreated(script.c_str(),
                                                                              nullptr);
 
-                                side_wv->add_DocumentTitleChanged(
+                                browser->add_DocumentTitleChanged(
                                     Microsoft::WRL::Callback<
                                         ICoreWebView2DocumentTitleChangedEventHandler>(
                                         [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
@@ -306,7 +309,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                         .Get(),
                                     &documentTitleChangedToken);
 
-                                side_wv->add_FaviconChanged(
+                                browser->add_FaviconChanged(
                                     Microsoft::WRL::Callback<
                                         ICoreWebView2FaviconChangedEventHandler>(
                                         [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
@@ -317,7 +320,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                         .Get(),
                                     &faviconChangedToken);
 
-                                side_wv->add_WebMessageReceived(
+                                browser->add_WebMessageReceived(
                                     Microsoft::WRL::Callback<
                                         ICoreWebView2WebMessageReceivedEventHandler>(
                                         [](ICoreWebView2* webview,
@@ -574,29 +577,31 @@ void WebView::Messages(wstring message)
 
 void WebView::UpdateBounds()
 {
-    if (!settings_controller || !main_controller || !side_controller)
+    if (!Browsers::Settings::controller || !Browsers::Main::controller ||
+        !Browsers::Side::controller)
         return;
 
-    settings_controller->put_Bounds(MenuBounds());
-    main_controller->put_Bounds(MainBounds());
-    side_controller->put_Bounds(SideBounds());
+    Browsers::Settings::controller->put_Bounds(MenuBounds());
+    Browsers::Main::controller->put_Bounds(MainBounds());
+    Browsers::Side::controller->put_Bounds(SideBounds());
 }
 
 void WebView::UpdateFocus()
 {
-    if (!pConfig || !settings_controller || !main_controller || !side_controller)
+    if (!pConfig || !Browsers::Settings::controller || !Browsers::Main::controller ||
+        !Browsers::Side::controller)
         return;
 
     if (pConfig->settings.menu)
-        settings_controller->MoveFocus(
+        Browsers::Settings::controller->MoveFocus(
             COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 
     if (!pConfig->settings.swapped & !pConfig->settings.menu)
-        main_controller->MoveFocus(
+        Browsers::Main::controller->MoveFocus(
             COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 
     if (pConfig->settings.swapped & !pConfig->settings.menu)
-        side_controller->MoveFocus(
+        Browsers::Side::controller->MoveFocus(
             COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 }
 
@@ -768,7 +773,8 @@ void WebView::Topmost()
 
 void WebView::SetWindowTitle()
 {
-    if (!pConfig || !settings_wv || !main_wv || !side_wv)
+    if (!pConfig || !Browsers::Settings::controller || !Browsers::Main::controller ||
+        !Browsers::Side::controller)
         return;
 
     HWND hwnd = pConfig->hwnd;
@@ -793,7 +799,7 @@ void WebView::SetWindowTitle()
     if (!pConfig->settings.menu && !pConfig->settings.swapped)
     {
         wil::unique_cotaskmem_string s{};
-        main_wv->get_DocumentTitle(&s);
+        Browsers::Main::browser->get_DocumentTitle(&s);
         auto title = s.get();
 
         if (!pConfig->settings.topmost)
@@ -809,7 +815,7 @@ void WebView::SetWindowTitle()
     if (!pConfig->settings.menu && pConfig->settings.swapped)
     {
         wil::unique_cotaskmem_string s{};
-        side_wv->get_DocumentTitle(&s);
+        Browsers::Side::browser->get_DocumentTitle(&s);
         auto title = s.get();
 
         if (!pConfig->settings.topmost)
@@ -826,7 +832,8 @@ void WebView::SetWindowTitle()
 void WebView::SetWindowIcon()
 {
 
-    if (!pConfig || !settings_wv || !main_wv || !side_wv)
+    if (!pConfig || !Browsers::Settings::controller || !Browsers::Main::controller ||
+        !Browsers::Side::controller)
         return;
 
     // wstring programIcon{L"PROGRAM_ICON"};
@@ -841,7 +848,7 @@ void WebView::SetWindowIcon()
     {
 #ifdef _DEBUG
         LPWSTR faviconUri;
-        settings_wv->get_FaviconUri(&faviconUri);
+        Browsers::Settings::browser->get_FaviconUri(&faviconUri);
         wprintln(wstring(faviconUri));
 #endif
 
@@ -873,55 +880,55 @@ void WebView::SetWindowIcon()
 
 #ifdef _DEBUG
         LPWSTR faviconUri;
-        main_wv->get_FaviconUri(&faviconUri);
+        Browsers::Main::browser->get_FaviconUri(&faviconUri);
         wprintln(wstring(faviconUri));
 #endif
 
-        main_wv->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
-                            Microsoft::WRL::Callback<ICoreWebView2GetFaviconCompletedHandler>(
-                                [hwnd](HRESULT result, IStream* iconStream) -> HRESULT
-                                {
-                                    if (iconStream)
-                                    {
-                                        Gdiplus::Bitmap iconBitmap(iconStream);
-                                        wil::unique_hicon icon;
-                                        if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
-                                        {
-                                            auto favicon = std::move(icon);
-                                            SendMessageW(hwnd, WM_SETICON, ICON_SMALL,
-                                                         (LPARAM)favicon.get());
-                                        }
-                                    }
-                                    return S_OK;
-                                })
-                                .Get());
+        Browsers::Main::browser->GetFavicon(
+            COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
+            Microsoft::WRL::Callback<ICoreWebView2GetFaviconCompletedHandler>(
+                [hwnd](HRESULT result, IStream* iconStream) -> HRESULT
+                {
+                    if (iconStream)
+                    {
+                        Gdiplus::Bitmap iconBitmap(iconStream);
+                        wil::unique_hicon icon;
+                        if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
+                        {
+                            auto favicon = std::move(icon);
+                            SendMessageW(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)favicon.get());
+                        }
+                    }
+                    return S_OK;
+                })
+                .Get());
     }
 
     if (pConfig->settings.swapped && !pConfig->settings.menu)
     {
 #ifdef _DEBUG
         LPWSTR faviconUri;
-        side_wv->get_FaviconUri(&faviconUri);
+        Browsers::Side::browser->get_FaviconUri(&faviconUri);
         wprintln(wstring(faviconUri));
 #endif
 
-        side_wv->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
-                            Microsoft::WRL::Callback<ICoreWebView2GetFaviconCompletedHandler>(
-                                [hwnd](HRESULT result, IStream* iconStream) -> HRESULT
-                                {
-                                    if (iconStream)
-                                    {
-                                        Gdiplus::Bitmap iconBitmap(iconStream);
-                                        wil::unique_hicon icon;
-                                        if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
-                                        {
-                                            auto favicon = std::move(icon);
-                                            SendMessageW(hwnd, WM_SETICON, ICON_SMALL,
-                                                         (LPARAM)favicon.get());
-                                        }
-                                    }
-                                    return S_OK;
-                                })
-                                .Get());
+        Browsers::Side::browser->GetFavicon(
+            COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
+            Microsoft::WRL::Callback<ICoreWebView2GetFaviconCompletedHandler>(
+                [hwnd](HRESULT result, IStream* iconStream) -> HRESULT
+                {
+                    if (iconStream)
+                    {
+                        Gdiplus::Bitmap iconBitmap(iconStream);
+                        wil::unique_hicon icon;
+                        if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
+                        {
+                            auto favicon = std::move(icon);
+                            SendMessageW(hwnd, WM_SETICON, ICON_SMALL, (LPARAM)favicon.get());
+                        }
+                    }
+                    return S_OK;
+                })
+                .Get());
     }
 }
