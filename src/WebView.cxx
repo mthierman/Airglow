@@ -24,9 +24,9 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                         {
                             using namespace Browsers::Settings;
 
-                            EventRegistrationToken msgToken;
-                            EventRegistrationToken faviconChangedToken;
-                            EventRegistrationToken documentTitleChangedToken;
+                            EventRegistrationToken tokenTitle;
+                            EventRegistrationToken tokenFavicon;
+                            EventRegistrationToken tokenMsg;
 
                             if (c)
                             {
@@ -71,7 +71,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                             return S_OK;
                                         })
                                         .Get(),
-                                    &documentTitleChangedToken);
+                                    &tokenTitle);
 
                                 browser->add_FaviconChanged(
                                     Microsoft::WRL::Callback<
@@ -83,7 +83,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                             return S_OK;
                                         })
                                         .Get(),
-                                    &faviconChangedToken);
+                                    &tokenFavicon);
 
                                 browser->add_WebMessageReceived(
                                     Microsoft::WRL::Callback<
@@ -92,12 +92,13 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                             ICoreWebView2WebMessageReceivedEventArgs* args)
                                             -> HRESULT
                                         {
-                                            SettingsMessages(args);
+                                            if (VerifySettingsUrl(args))
+                                                SettingsMessages(args);
 
                                             return S_OK;
                                         })
                                         .Get(),
-                                    &msgToken);
+                                    &tokenMsg);
                             }
 
                             return S_OK;
@@ -113,9 +114,9 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                         {
                             using namespace Browsers::Main;
 
-                            EventRegistrationToken msgToken;
-                            EventRegistrationToken faviconChangedToken;
-                            EventRegistrationToken documentTitleChangedToken;
+                            EventRegistrationToken tokenTitle;
+                            EventRegistrationToken tokenFavicon;
+                            EventRegistrationToken tokenMsg;
 
                             if (c)
                             {
@@ -162,7 +163,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                             return S_OK;
                                         })
                                         .Get(),
-                                    &documentTitleChangedToken);
+                                    &tokenTitle);
 
                                 browser->add_FaviconChanged(
                                     Microsoft::WRL::Callback<
@@ -174,7 +175,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                             return S_OK;
                                         })
                                         .Get(),
-                                    &faviconChangedToken);
+                                    &tokenFavicon);
 
                                 browser->add_WebMessageReceived(
                                     Microsoft::WRL::Callback<
@@ -188,7 +189,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                             return S_OK;
                                         })
                                         .Get(),
-                                    &msgToken);
+                                    &tokenMsg);
                             }
 
                             return S_OK;
@@ -204,9 +205,9 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                         {
                             using namespace Browsers::Side;
 
-                            EventRegistrationToken msgToken;
-                            EventRegistrationToken faviconChangedToken;
-                            EventRegistrationToken documentTitleChangedToken;
+                            EventRegistrationToken tokenTitle;
+                            EventRegistrationToken tokenFavicon;
+                            EventRegistrationToken tokenMsg;
 
                             if (c)
                             {
@@ -253,7 +254,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                             return S_OK;
                                         })
                                         .Get(),
-                                    &documentTitleChangedToken);
+                                    &tokenTitle);
 
                                 browser->add_FaviconChanged(
                                     Microsoft::WRL::Callback<
@@ -265,7 +266,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                             return S_OK;
                                         })
                                         .Get(),
-                                    &faviconChangedToken);
+                                    &tokenFavicon);
 
                                 browser->add_WebMessageReceived(
                                     Microsoft::WRL::Callback<
@@ -279,7 +280,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                             return S_OK;
                                         })
                                         .Get(),
-                                    &msgToken);
+                                    &tokenMsg);
                             }
 
                             return S_OK;
@@ -434,7 +435,7 @@ void WebView::MainMessages(ICoreWebView2WebMessageReceivedEventArgs* args)
     }
 }
 
-void WebView::SettingsMessages(ICoreWebView2WebMessageReceivedEventArgs* args)
+bool WebView::VerifySettingsUrl(ICoreWebView2WebMessageReceivedEventArgs* args)
 {
     wil::unique_cotaskmem_string uri;
     args->get_Source(&uri);
@@ -444,8 +445,13 @@ void WebView::SettingsMessages(ICoreWebView2WebMessageReceivedEventArgs* args)
     verifyUri = L"https://localhost:8000/";
 #endif
     if (sourceUri != verifyUri)
-        return;
+        return false;
 
+    return true;
+}
+
+void WebView::SettingsMessages(ICoreWebView2WebMessageReceivedEventArgs* args)
+{
     wil::unique_cotaskmem_string messageRaw;
     if (SUCCEEDED(args->TryGetWebMessageAsString(&messageRaw)))
     {

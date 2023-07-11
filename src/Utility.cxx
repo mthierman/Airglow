@@ -70,16 +70,12 @@ void dberror(string in)
 
 std::vector<int> rect_to_bounds(RECT rect)
 {
-    std::vector<int> bounds = {rect.left, rect.top, (rect.right - rect.left),
-                               (rect.bottom - rect.top)};
-
-    return bounds;
+    return std::vector<int>{rect.left, rect.top, (rect.right - rect.left),
+                            (rect.bottom - rect.top)};
 }
 
 RECT bounds_to_rect(std::vector<int> bounds)
 {
-    RECT rect = {bounds[0], bounds[1], (bounds[0] + bounds[2]), (bounds[1] + bounds[3])};
-
-    return rect;
+    return RECT{bounds[0], bounds[1], (bounds[0] + bounds[2]), (bounds[1] + bounds[3])};
 }
 } // namespace util

@@ -36,6 +36,7 @@ class WebView
     static wstring MainNavigation();
     static wstring SideNavigation();
     static wstring SettingsNavigation();
+    static bool VerifySettingsUrl(ICoreWebView2WebMessageReceivedEventArgs* args);
     static void MainMessages(ICoreWebView2WebMessageReceivedEventArgs*);
     static void SettingsMessages(ICoreWebView2WebMessageReceivedEventArgs*);
     static void UpdateBounds();
