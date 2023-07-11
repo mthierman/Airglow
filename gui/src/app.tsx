@@ -11,7 +11,7 @@ export default function App() {
     }
 
     return (
-        <form id="settings" method="post" onSubmit={handleForm}>
+        <form autoComplete="off" id="settings" method="post" onSubmit={handleForm}>
             <div id="url">
                 <label>
                     Main URL

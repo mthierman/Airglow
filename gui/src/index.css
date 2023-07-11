@@ -11,16 +11,19 @@
         @apply grid min-h-full p-4;
     }
     #settings {
-        @apply grid h-full gap-2 border-2 border-yellow-400;
+        @apply grid h-full gap-6;
     }
     #url {
-        @apply grid gap-2 self-start;
+        @apply grid gap-4 self-start;
     }
     label {
-        @apply grid gap-2 whitespace-nowrap border-2 border-blue-400;
+        @apply grid gap-2 whitespace-nowrap;
     }
     input {
-        @apply grid min-w-0 self-start rounded p-2;
+        @apply min-w-0 self-start rounded bg-black px-1 leading-relaxed shadow-md shadow-black;
+    }
+    input:-internal-autofill-selected {
+        @apply bg-red-400;
     }
     button {
         @apply self-end rounded border-2 border-neutral-400 hover:border-blue-400;
