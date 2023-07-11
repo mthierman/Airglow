@@ -148,21 +148,21 @@ void MainWindow::Show()
 
     if (!pConfig->settings.fullscreen & !pConfig->settings.maximized)
     {
-        SetWindowPos(pConfig->hwnd, nullptr, pConfig->settings.position[0],
+        SetWindowPos(this->hwnd, nullptr, pConfig->settings.position[0],
                      pConfig->settings.position[1], pConfig->settings.position[2],
                      pConfig->settings.position[3], 0);
-        ShowWindow(pConfig->hwnd, SW_SHOWNORMAL);
+        ShowWindow(this->hwnd, SW_SHOWNORMAL);
     }
 
     if (!pConfig->settings.fullscreen & pConfig->settings.maximized)
-        ShowWindow(pConfig->hwnd, SW_MAXIMIZE);
+        ShowWindow(this->hwnd, SW_MAXIMIZE);
 
     if (pConfig->settings.fullscreen)
     {
-        SetWindowPos(pConfig->hwnd, nullptr, pConfig->settings.position[0],
+        SetWindowPos(this->hwnd, nullptr, pConfig->settings.position[0],
                      pConfig->settings.position[1], pConfig->settings.position[2],
                      pConfig->settings.position[3], 0);
-        ShowWindow(pConfig->hwnd, SW_SHOWNORMAL);
+        ShowWindow(this->hwnd, SW_SHOWNORMAL);
         pWebView->Fullscreen();
     }
 
@@ -173,10 +173,10 @@ void MainWindow::Show()
 
     else
     {
-        SetWindowPos(pConfig->hwnd, nullptr, pConfig->settings.position[0],
+        SetWindowPos(this->hwnd, nullptr, pConfig->settings.position[0],
                      pConfig->settings.position[1], pConfig->settings.position[2],
                      pConfig->settings.position[3], 0);
-        ShowWindow(pConfig->hwnd, SW_SHOWDEFAULT);
+        ShowWindow(this->hwnd, SW_SHOWDEFAULT);
     }
 
     Uncloak();
@@ -221,12 +221,12 @@ bool MainWindow::SetDarkMode()
 
     if (!CheckSystemDarkMode())
     {
-        DwmSetWindowAttribute(pConfig->hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &light, sizeof(light));
+        DwmSetWindowAttribute(this->hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &light, sizeof(light));
 
         return false;
     }
 
-    DwmSetWindowAttribute(pConfig->hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dark, sizeof(dark));
+    DwmSetWindowAttribute(this->hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dark, sizeof(dark));
 
     return true;
 }
@@ -236,10 +236,10 @@ bool MainWindow::SetMica()
     MARGINS m{0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
     auto backdrop = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
 
-    if (FAILED(DwmExtendFrameIntoClientArea(pConfig->hwnd, &m)))
+    if (FAILED(DwmExtendFrameIntoClientArea(this->hwnd, &m)))
         return false;
 
-    if (FAILED(DwmSetWindowAttribute(pConfig->hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop,
+    if (FAILED(DwmSetWindowAttribute(this->hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop,
                                      sizeof(&backdrop))))
         return false;
 
@@ -250,7 +250,7 @@ bool MainWindow::Cloak()
 {
     auto cloak{TRUE};
 
-    if (FAILED(DwmSetWindowAttribute(pConfig->hwnd, DWMWA_CLOAK, &cloak, sizeof(cloak))))
+    if (FAILED(DwmSetWindowAttribute(this->hwnd, DWMWA_CLOAK, &cloak, sizeof(cloak))))
         return false;
 
     return true;
@@ -260,7 +260,7 @@ bool MainWindow::Uncloak()
 {
     auto uncloak{FALSE};
 
-    if (FAILED(DwmSetWindowAttribute(pConfig->hwnd, DWMWA_CLOAK, &uncloak, sizeof(uncloak))))
+    if (FAILED(DwmSetWindowAttribute(this->hwnd, DWMWA_CLOAK, &uncloak, sizeof(uncloak))))
         return false;
 
     return true;
