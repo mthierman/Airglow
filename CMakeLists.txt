@@ -145,10 +145,16 @@ target_link_libraries(
     sqlite
 )
 
+add_custom_command(
+    TARGET ${APP_NAME} POST_BUILD
+    COMMAND cd ${CMAKE_SOURCE_DIR}/gui && pnpm run build
+)
+
 if(USER_INSTALL)
     add_custom_command(
         TARGET ${APP_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/${APP_NAME}.exe $ENV{LocalAppData}/Airglow/${APP_NAME}.exe
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/gui/dist/ $ENV{LocalAppData}/Airglow/gui/
     )
 endif()
 
@@ -156,5 +162,6 @@ if(SYSTEM_INSTALL)
     add_custom_command(
         TARGET ${APP_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/${APP_NAME}.exe $ENV{ProgramFiles}/Airglow/${APP_NAME}.exe
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/gui/dist/ $ENV{LocalAppData}/Airglow/gui/
     )
 endif()
