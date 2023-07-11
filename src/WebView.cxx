@@ -6,20 +6,20 @@ WebView::WebView(Config* config) {}
 
 std::unique_ptr<WebView> WebView::Create(Config* config)
 {
+    using namespace Microsoft::WRL;
     auto webView{std::unique_ptr<WebView>(new WebView(config))};
 
     webView->pConfig = config;
 
     CreateCoreWebView2EnvironmentWithOptions(
         nullptr, pConfig->paths.data.c_str(), nullptr,
-        Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
+        Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
             [&](HRESULT result, ICoreWebView2Environment* e) -> HRESULT
             {
                 // SETTINGS WEBVIEW
                 e->CreateCoreWebView2Controller(
                     pConfig->hwnd,
-                    Microsoft::WRL::Callback<
-                        ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+                    Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
                         [&](HRESULT result, ICoreWebView2Controller* c) -> HRESULT
                         {
                             using namespace Browsers::Settings;
@@ -62,8 +62,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                     GetMenuScript().c_str(), nullptr);
 
                                 browser->add_DocumentTitleChanged(
-                                    Microsoft::WRL::Callback<
-                                        ICoreWebView2DocumentTitleChangedEventHandler>(
+                                    Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
                                         [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                         {
                                             SetWindowTitle();
@@ -74,8 +73,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                     &tokenTitle);
 
                                 browser->add_FaviconChanged(
-                                    Microsoft::WRL::Callback<
-                                        ICoreWebView2FaviconChangedEventHandler>(
+                                    Callback<ICoreWebView2FaviconChangedEventHandler>(
                                         [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                         {
                                             SetWindowIcon();
@@ -86,8 +84,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                     &tokenFavicon);
 
                                 browser->add_WebMessageReceived(
-                                    Microsoft::WRL::Callback<
-                                        ICoreWebView2WebMessageReceivedEventHandler>(
+                                    Callback<ICoreWebView2WebMessageReceivedEventHandler>(
                                         [&](ICoreWebView2* sender,
                                             ICoreWebView2WebMessageReceivedEventArgs* args)
                                             -> HRESULT
@@ -108,8 +105,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                 // MAIN WEBVIEW
                 e->CreateCoreWebView2Controller(
                     pConfig->hwnd,
-                    Microsoft::WRL::Callback<
-                        ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+                    Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
                         [&](HRESULT result, ICoreWebView2Controller* c) -> HRESULT
                         {
                             using namespace Browsers::Main;
@@ -154,8 +150,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                                                              nullptr);
 
                                 browser->add_DocumentTitleChanged(
-                                    Microsoft::WRL::Callback<
-                                        ICoreWebView2DocumentTitleChangedEventHandler>(
+                                    Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
                                         [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                         {
                                             SetWindowTitle();
@@ -166,8 +161,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                     &tokenTitle);
 
                                 browser->add_FaviconChanged(
-                                    Microsoft::WRL::Callback<
-                                        ICoreWebView2FaviconChangedEventHandler>(
+                                    Callback<ICoreWebView2FaviconChangedEventHandler>(
                                         [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                         {
                                             SetWindowIcon();
@@ -178,8 +172,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                     &tokenFavicon);
 
                                 browser->add_WebMessageReceived(
-                                    Microsoft::WRL::Callback<
-                                        ICoreWebView2WebMessageReceivedEventHandler>(
+                                    Callback<ICoreWebView2WebMessageReceivedEventHandler>(
                                         [&](ICoreWebView2* webview,
                                             ICoreWebView2WebMessageReceivedEventArgs* args)
                                             -> HRESULT
@@ -199,8 +192,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                 // SIDE WEBVIEW
                 e->CreateCoreWebView2Controller(
                     pConfig->hwnd,
-                    Microsoft::WRL::Callback<
-                        ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+                    Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
                         [&](HRESULT result, ICoreWebView2Controller* c) -> HRESULT
                         {
                             using namespace Browsers::Side;
@@ -245,8 +237,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                                                              nullptr);
 
                                 browser->add_DocumentTitleChanged(
-                                    Microsoft::WRL::Callback<
-                                        ICoreWebView2DocumentTitleChangedEventHandler>(
+                                    Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
                                         [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                         {
                                             SetWindowTitle();
@@ -257,8 +248,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                     &tokenTitle);
 
                                 browser->add_FaviconChanged(
-                                    Microsoft::WRL::Callback<
-                                        ICoreWebView2FaviconChangedEventHandler>(
+                                    Callback<ICoreWebView2FaviconChangedEventHandler>(
                                         [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                         {
                                             SetWindowIcon();
@@ -269,8 +259,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                     &tokenFavicon);
 
                                 browser->add_WebMessageReceived(
-                                    Microsoft::WRL::Callback<
-                                        ICoreWebView2WebMessageReceivedEventHandler>(
+                                    Callback<ICoreWebView2WebMessageReceivedEventHandler>(
                                         [&](ICoreWebView2* webview,
                                             ICoreWebView2WebMessageReceivedEventArgs* args)
                                             -> HRESULT
