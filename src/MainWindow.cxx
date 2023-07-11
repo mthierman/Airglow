@@ -457,6 +457,9 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
         pConfig->settings.fullscreen = bool_toggle(pConfig->settings.fullscreen);
         pWebView->Fullscreen();
         pWebView->UpdateBounds();
+        pWebView->UpdateFocus();
+        pWebView->SetWindowTitle();
+        pWebView->SetWindowIcon();
         pConfig->Save();
     }
 
