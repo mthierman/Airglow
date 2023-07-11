@@ -11,15 +11,15 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Con
 
     mainWindow->pConfig = config;
 
-    wstring className{L"airglow"};
-    wstring menuName{L"airglowmenu"};
-    wstring programIcon{L"PROGRAM_ICON"};
-    wstring appName{L"Airglow"};
+    auto className{to_wide("airglow")};
+    auto menuName{to_wide("airglowmenu")};
+    auto programIcon{to_wide("PROGRAM_ICON")};
+    auto appName{to_wide("Airglow")};
+    auto hbrBackground{(HBRUSH)GetStockObject(BLACK_BRUSH)};
+    auto hCursor{(HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED)};
+    auto hIcon{(HICON)LoadImageW(hinstance, programIcon.c_str(), IMAGE_ICON, 0, 0,
+                                 LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED)};
 
-    auto hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
-    auto hCursor = (HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED);
-    auto hIcon = (HICON)LoadImageW(hinstance, programIcon.c_str(), IMAGE_ICON, 0, 0,
-                                   LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED);
     mainWindow->pConfig->hIcon = hIcon;
 
     WNDCLASSEXW wcex{};
@@ -86,47 +86,47 @@ __int64 __stdcall MainWindow::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARA
         switch (msg)
         {
         case WM_COMMAND:
-            return pMainWindow->_OnCommand(wparam, lparam);
+            return pMainWindow->_OnCommand(hwnd, wparam, lparam);
         case WM_CREATE:
-            return pMainWindow->_OnCreate(wparam, lparam);
+            return pMainWindow->_OnCreate(hwnd, wparam, lparam);
         case WM_ACTIVATE:
-            return pMainWindow->_OnActivate(wparam, lparam);
+            return pMainWindow->_OnActivate(hwnd, wparam, lparam);
         case WM_CLOSE:
-            return pMainWindow->_OnClose(wparam, lparam);
+            return pMainWindow->_OnClose(hwnd, wparam, lparam);
         case WM_DESTROY:
-            return pMainWindow->_OnDestroy(wparam, lparam);
+            return pMainWindow->_OnDestroy(hwnd, wparam, lparam);
         case WM_DPICHANGED:
-            return pMainWindow->_OnDpiChanged(wparam, lparam);
+            return pMainWindow->_OnDpiChanged(hwnd, wparam, lparam);
         case WM_GETMINMAXINFO:
-            return pMainWindow->_OnGetMinMaxInfo(wparam, lparam);
+            return pMainWindow->_OnGetMinMaxInfo(hwnd, wparam, lparam);
         case WM_PAINT:
-            return pMainWindow->_OnPaint(wparam, lparam);
+            return pMainWindow->_OnPaint(hwnd, wparam, lparam);
         case WM_SETICON:
-            return pMainWindow->_OnSetIcon(wparam, lparam);
+            return pMainWindow->_OnSetIcon(hwnd, wparam, lparam);
         case WM_SIZE:
-            return pMainWindow->_OnSize(wparam, lparam);
+            return pMainWindow->_OnSize(hwnd, wparam, lparam);
         case WM_SIZING:
-            return pMainWindow->_OnSizing(wparam, lparam);
+            return pMainWindow->_OnSizing(hwnd, wparam, lparam);
         case WM_ENTERSIZEMOVE:
-            return pMainWindow->_OnEnterSizeMove(wparam, lparam);
+            return pMainWindow->_OnEnterSizeMove(hwnd, wparam, lparam);
         case WM_EXITSIZEMOVE:
-            return pMainWindow->_OnExitSizeMove(wparam, lparam);
+            return pMainWindow->_OnExitSizeMove(hwnd, wparam, lparam);
         case WM_MOVE:
-            return pMainWindow->_OnMove(wparam, lparam);
+            return pMainWindow->_OnMove(hwnd, wparam, lparam);
         case WM_MOVING:
-            return pMainWindow->_OnMoving(wparam, lparam);
+            return pMainWindow->_OnMoving(hwnd, wparam, lparam);
         case WM_WINDOWPOSCHANGING:
-            return pMainWindow->_OnWindowPosChanging(wparam, lparam);
+            return pMainWindow->_OnWindowPosChanging(hwnd, wparam, lparam);
         case WM_WINDOWPOSCHANGED:
-            return pMainWindow->_OnWindowPosChanged(wparam, lparam);
+            return pMainWindow->_OnWindowPosChanged(hwnd, wparam, lparam);
         case WM_SETFOCUS:
-            return pMainWindow->_OnSetFocus(wparam, lparam);
+            return pMainWindow->_OnSetFocus(hwnd, wparam, lparam);
         case WM_SETTINGCHANGE:
-            return pMainWindow->_OnSettingChange(wparam, lparam);
+            return pMainWindow->_OnSettingChange(hwnd, wparam, lparam);
         case WM_KEYDOWN:
-            return pMainWindow->_OnKeyDown(wparam, lparam);
+            return pMainWindow->_OnKeyDown(hwnd, wparam, lparam);
         case WM_CHAR:
-            return pMainWindow->_OnChar(wparam, lparam);
+            return pMainWindow->_OnChar(hwnd, wparam, lparam);
         }
     }
 
@@ -136,6 +136,7 @@ __int64 __stdcall MainWindow::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARA
 void MainWindow::Show()
 {
     Cloak();
+
     SetDarkTitle();
     SetDarkMode();
     SetMica();
@@ -181,8 +182,8 @@ bool MainWindow::CheckSystemDarkMode()
     using namespace winrt::Windows::UI;
     using namespace winrt::Windows::UI::ViewManagement;
 
-    UISettings settings = UISettings();
-    Color fg = settings.GetColorValue(UIColorType::Foreground);
+    UISettings settings{UISettings()};
+    Color fg{settings.GetColorValue(UIColorType::Foreground)};
 
     return (((5 * fg.G) + (2 * fg.R) + fg.B) > (8 * 128));
 }
@@ -242,7 +243,7 @@ bool MainWindow::SetMica()
 
 bool MainWindow::Cloak()
 {
-    auto cloak = TRUE;
+    auto cloak{TRUE};
 
     if (FAILED(DwmSetWindowAttribute(pConfig->hwnd, DWMWA_CLOAK, &cloak, sizeof(cloak))))
         return false;
@@ -252,7 +253,7 @@ bool MainWindow::Cloak()
 
 bool MainWindow::Uncloak()
 {
-    auto uncloak = FALSE;
+    auto uncloak{FALSE};
 
     if (FAILED(DwmSetWindowAttribute(pConfig->hwnd, DWMWA_CLOAK, &uncloak, sizeof(uncloak))))
         return false;
@@ -260,7 +261,7 @@ bool MainWindow::Uncloak()
     return true;
 }
 
-int MainWindow::_OnActivate(WPARAM wparam, LPARAM lparam)
+int MainWindow::_OnActivate(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
 #ifdef _DEBUG
     println("WM_ACTIVATE");
@@ -270,7 +271,7 @@ int MainWindow::_OnActivate(WPARAM wparam, LPARAM lparam)
     return 0;
 }
 
-int MainWindow::_OnChar(WPARAM wparam, LPARAM lparam)
+int MainWindow::_OnChar(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
 #ifdef _DEBUG
     println("WM_CHAR");
@@ -279,17 +280,17 @@ int MainWindow::_OnChar(WPARAM wparam, LPARAM lparam)
     return 0;
 }
 
-int MainWindow::_OnClose(WPARAM wparam, LPARAM lparam)
+int MainWindow::_OnClose(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
 #ifdef _DEBUG
     println("WM_CLOSE");
 #endif
-    DestroyWindow(pConfig->hwnd);
+    DestroyWindow(hwnd);
 
     return 0;
 }
 
-int MainWindow::_OnCommand(WPARAM wparam, LPARAM lparam)
+int MainWindow::_OnCommand(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
 #ifdef _DEBUG
     println("WM_COMMAND");
@@ -298,7 +299,7 @@ int MainWindow::_OnCommand(WPARAM wparam, LPARAM lparam)
     return 0;
 }
 
-int MainWindow::_OnCreate(WPARAM wparam, LPARAM lparam)
+int MainWindow::_OnCreate(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
 #ifdef _DEBUG
     println("WM_CREATE");
@@ -307,7 +308,7 @@ int MainWindow::_OnCreate(WPARAM wparam, LPARAM lparam)
     return 0;
 }
 
-int MainWindow::_OnDestroy(WPARAM wparam, LPARAM lparam)
+int MainWindow::_OnDestroy(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
 #ifdef _DEBUG
     println("WM_DESTROY");
@@ -317,7 +318,7 @@ int MainWindow::_OnDestroy(WPARAM wparam, LPARAM lparam)
     return 0;
 }
 
-int MainWindow::_OnDpiChanged(WPARAM wparam, LPARAM lparam)
+int MainWindow::_OnDpiChanged(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
 #ifdef _DEBUG
     println("WM_DPICHANGED");
@@ -326,7 +327,7 @@ int MainWindow::_OnDpiChanged(WPARAM wparam, LPARAM lparam)
     return 0;
 }
 
-int MainWindow::_OnEnterSizeMove(WPARAM wparam, LPARAM lparam)
+int MainWindow::_OnEnterSizeMove(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
 #ifdef _DEBUG
     println("WM_ENTERSIZEMOVE");
@@ -335,17 +336,17 @@ int MainWindow::_OnEnterSizeMove(WPARAM wparam, LPARAM lparam)
     return 0;
 }
 
-int MainWindow::_OnExitSizeMove(WPARAM wparam, LPARAM lparam)
+int MainWindow::_OnExitSizeMove(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
 #ifdef _DEBUG
     println("WM_EXITSIZEMOVE");
 #endif
     WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
-    GetWindowPlacement(pConfig->hwnd, &wp);
+    GetWindowPlacement(hwnd, &wp);
     if (!pConfig->settings.fullscreen & (wp.showCmd != 3))
     {
         RECT rect{0, 0, 0, 0};
-        GetWindowRect(pConfig->hwnd, &rect);
+        GetWindowRect(hwnd, &rect);
         pConfig->settings.position = rect_to_bounds(rect);
     }
 
@@ -354,13 +355,13 @@ int MainWindow::_OnExitSizeMove(WPARAM wparam, LPARAM lparam)
     return 0;
 }
 
-int MainWindow::_OnGetMinMaxInfo(WPARAM wparam, LPARAM lparam)
+int MainWindow::_OnGetMinMaxInfo(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
 #ifdef _DEBUG
     println("WM_GETMINMAXINFO");
 #endif
     WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
-    GetWindowPlacement(pConfig->hwnd, &wp);
+    GetWindowPlacement(hwnd, &wp);
     if (wp.showCmd != 3)
     {
         pConfig->settings.maximized = false;
@@ -374,7 +375,7 @@ int MainWindow::_OnGetMinMaxInfo(WPARAM wparam, LPARAM lparam)
     return 0;
 }
 
-int MainWindow::_OnKeyDown(WPARAM wparam, LPARAM lparam)
+int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
     if (wparam == VK_F1)
     {
@@ -423,17 +424,17 @@ int MainWindow::_OnKeyDown(WPARAM wparam, LPARAM lparam)
         if (!pConfig->settings.fullscreen)
         {
             WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
-            GetWindowPlacement(pConfig->hwnd, &wp);
+            GetWindowPlacement(hwnd, &wp);
             if (wp.showCmd == 3)
             {
-                ShowWindow(pConfig->hwnd, SW_SHOWNORMAL);
-                SetWindowPos(pConfig->hwnd, nullptr, pConfig->settings.position[0],
+                ShowWindow(hwnd, SW_SHOWNORMAL);
+                SetWindowPos(hwnd, nullptr, pConfig->settings.position[0],
                              pConfig->settings.position[1], pConfig->settings.position[2],
                              pConfig->settings.position[3], 0);
             }
 
             else
-                ShowWindow(pConfig->hwnd, SW_MAXIMIZE);
+                ShowWindow(hwnd, SW_MAXIMIZE);
         }
     }
 
@@ -466,13 +467,13 @@ int MainWindow::_OnKeyDown(WPARAM wparam, LPARAM lparam)
 #endif
         auto state = GetKeyState(VK_CONTROL);
         if (state & 0x8000)
-            PostMessageW(pConfig->hwnd, WM_CLOSE, 0, 0);
+            PostMessageW(hwnd, WM_CLOSE, 0, 0);
     }
 
     return 0;
 }
 
-int MainWindow::_OnMove(WPARAM wparam, LPARAM lparam)
+int MainWindow::_OnMove(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
 #ifdef _DEBUG
     println("WM_MOVE");
@@ -481,7 +482,7 @@ int MainWindow::_OnMove(WPARAM wparam, LPARAM lparam)
     return 0;
 }
 
-int MainWindow::_OnMoving(WPARAM wparam, LPARAM lparam)
+int MainWindow::_OnMoving(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
 #ifdef _DEBUG
     println("WM_MOVING");
@@ -490,33 +491,33 @@ int MainWindow::_OnMoving(WPARAM wparam, LPARAM lparam)
     return 0;
 }
 
-int MainWindow::_OnPaint(WPARAM wparam, LPARAM lparam)
+int MainWindow::_OnPaint(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
 #ifdef _DEBUG
     println("WM_PAINT");
 #endif
     PAINTSTRUCT ps{};
     RECT bounds{};
-    HDC hdc = BeginPaint(pConfig->hwnd, &ps);
-    GetClientRect(pConfig->hwnd, &bounds);
+    HDC hdc = BeginPaint(hwnd, &ps);
+    GetClientRect(hwnd, &bounds);
     FillRect(hdc, &bounds, (HBRUSH)GetStockObject(BLACK_BRUSH));
-    EndPaint(pConfig->hwnd, &ps);
+    EndPaint(hwnd, &ps);
 
     return 0;
 }
 
-int MainWindow::_OnSetIcon(WPARAM wparam, LPARAM lparam)
+int MainWindow::_OnSetIcon(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
 #ifdef _DEBUG
     println("WM_SETICON");
 #endif
-    SetClassLongPtrW(pConfig->hwnd, GCLP_HICONSM, lparam);
-    SetClassLongPtrW(pConfig->hwnd, GCLP_HICON, (LONG_PTR)pConfig->hIcon);
+    SetClassLongPtrW(hwnd, GCLP_HICONSM, lparam);
+    SetClassLongPtrW(hwnd, GCLP_HICON, (LONG_PTR)pConfig->hIcon);
 
     return 0;
 }
 
-int MainWindow::_OnSetFocus(WPARAM wparam, LPARAM lparam)
+int MainWindow::_OnSetFocus(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
 #ifdef _DEBUG
     println("WM_SETFOCUS");
@@ -527,18 +528,18 @@ int MainWindow::_OnSetFocus(WPARAM wparam, LPARAM lparam)
     return 0;
 }
 
-int MainWindow::_OnSettingChange(WPARAM wparam, LPARAM lparam)
+int MainWindow::_OnSettingChange(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
 #ifdef _DEBUG
     println("WM_SETTINGCHANGE");
 #endif
-    InvalidateRect(pConfig->hwnd, nullptr, true);
+    InvalidateRect(hwnd, nullptr, true);
     SetDarkMode();
 
     return 0;
 }
 
-int MainWindow::_OnSize(WPARAM wparam, LPARAM lparam)
+int MainWindow::_OnSize(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
 #ifdef _DEBUG
     println("WM_SIZE");
@@ -552,7 +553,7 @@ int MainWindow::_OnSize(WPARAM wparam, LPARAM lparam)
     return 0;
 }
 
-int MainWindow::_OnSizing(WPARAM wparam, LPARAM lparam)
+int MainWindow::_OnSizing(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
 #ifdef _DEBUG
     println("WM_SIZING");
@@ -561,7 +562,7 @@ int MainWindow::_OnSizing(WPARAM wparam, LPARAM lparam)
     return 0;
 }
 
-int MainWindow::_OnWindowPosChanged(WPARAM wparam, LPARAM lparam)
+int MainWindow::_OnWindowPosChanged(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
 #ifdef _DEBUG
     println("WM_WINDOWPOSCHANGED");
@@ -571,7 +572,7 @@ int MainWindow::_OnWindowPosChanged(WPARAM wparam, LPARAM lparam)
     return 0;
 }
 
-int MainWindow::_OnWindowPosChanging(WPARAM wparam, LPARAM lparam)
+int MainWindow::_OnWindowPosChanging(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
 #ifdef _DEBUG
     println("WM_WINDOWPOSCHANGING");

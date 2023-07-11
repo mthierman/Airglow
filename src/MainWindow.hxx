@@ -19,27 +19,27 @@ class MainWindow
     bool SetMica();
     bool Cloak();
     bool Uncloak();
-    int _OnActivate(WPARAM, LPARAM);
-    int _OnChar(WPARAM, LPARAM);
-    int _OnClose(WPARAM, LPARAM);
-    int _OnCommand(WPARAM, LPARAM);
-    int _OnCreate(WPARAM, LPARAM);
-    int _OnDestroy(WPARAM, LPARAM);
-    int _OnDpiChanged(WPARAM, LPARAM);
-    int _OnEnterSizeMove(WPARAM, LPARAM);
-    int _OnExitSizeMove(WPARAM, LPARAM);
-    int _OnGetMinMaxInfo(WPARAM, LPARAM);
-    int _OnKeyDown(WPARAM, LPARAM);
-    int _OnMove(WPARAM, LPARAM);
-    int _OnMoving(WPARAM, LPARAM);
-    int _OnPaint(WPARAM, LPARAM);
-    int _OnSetIcon(WPARAM, LPARAM);
-    int _OnSetFocus(WPARAM, LPARAM);
-    int _OnSettingChange(WPARAM, LPARAM);
-    int _OnSize(WPARAM, LPARAM);
-    int _OnSizing(WPARAM, LPARAM);
-    int _OnWindowPosChanged(WPARAM, LPARAM);
-    int _OnWindowPosChanging(WPARAM, LPARAM);
+    int _OnActivate(HWND, WPARAM, LPARAM);
+    int _OnChar(HWND, WPARAM, LPARAM);
+    int _OnClose(HWND, WPARAM, LPARAM);
+    int _OnCommand(HWND, WPARAM, LPARAM);
+    int _OnCreate(HWND, WPARAM, LPARAM);
+    int _OnDestroy(HWND, WPARAM, LPARAM);
+    int _OnDpiChanged(HWND, WPARAM, LPARAM);
+    int _OnEnterSizeMove(HWND, WPARAM, LPARAM);
+    int _OnExitSizeMove(HWND, WPARAM, LPARAM);
+    int _OnGetMinMaxInfo(HWND, WPARAM, LPARAM);
+    int _OnKeyDown(HWND, WPARAM, LPARAM);
+    int _OnMove(HWND, WPARAM, LPARAM);
+    int _OnMoving(HWND, WPARAM, LPARAM);
+    int _OnPaint(HWND, WPARAM, LPARAM);
+    int _OnSetIcon(HWND, WPARAM, LPARAM);
+    int _OnSetFocus(HWND, WPARAM, LPARAM);
+    int _OnSettingChange(HWND, WPARAM, LPARAM);
+    int _OnSize(HWND, WPARAM, LPARAM);
+    int _OnSizing(HWND, WPARAM, LPARAM);
+    int _OnWindowPosChanged(HWND, WPARAM, LPARAM);
+    int _OnWindowPosChanging(HWND, WPARAM, LPARAM);
 
     enum PreferredAppMode
     {
