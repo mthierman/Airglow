@@ -536,8 +536,10 @@ bool WebView::VerifySettingsUrl(ICoreWebView2WebMessageReceivedEventArgs* args)
     wstring sourceUri = uri.get();
     wstring verifyUri = L"about:blank";
 #ifdef _DEBUG
-    // verifyUri = L"https://localhost:8000/";
-    verifyUri = L"http://localhost:8000/";
+    // verifyUri = L"http://localhost:8000/";
+    verifyUri = L"https://localhost:8000/";
+
+    // verifyUri = L"https://airglow/index.html";
 #endif
     if (sourceUri != verifyUri)
         return false;
@@ -548,8 +550,13 @@ bool WebView::VerifySettingsUrl(ICoreWebView2WebMessageReceivedEventArgs* args)
 wstring WebView::SettingsNavigation()
 {
 #ifdef _DEBUG
-    // return L"https://localhost:8000/";
-    return L"http://localhost:8000/";
+    // return L"http://localhost:8000/";
+    return L"https://localhost:8000/";
+
+    // Browsers::Settings::browser->SetVirtualHostNameToFolderMapping(
+    //     L"airglow", pConfig->paths.gui.wstring().c_str(),
+    //     COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
+    // return L"https://airglow/index.html";
 
 #endif
 

@@ -47,6 +47,7 @@ void Config::Load()
     paths.data = DataPath();
     paths.config = ConfigPath();
     paths.db = DbPath();
+    paths.gui = GuiPath();
 
     if (!std::filesystem::exists(paths.config))
         Save();
@@ -110,6 +111,14 @@ path Config::DbPath()
         return path{};
 
     return (paths.data.wstring() + path::preferred_separator + to_wide("Database.sqlite"));
+}
+
+path Config::GuiPath()
+{
+    if (!std::filesystem::exists(paths.data))
+        return path{};
+
+    return (paths.data.wstring() + path::preferred_separator + to_wide("gui"));
 }
 
 void Config::Tests()

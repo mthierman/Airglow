@@ -27,6 +27,7 @@ class Config
         path data{};
         path config{};
         path db{};
+        path gui{};
     };
 
     Paths paths{};
@@ -40,6 +41,7 @@ class Config
     path DataPath();
     path ConfigPath();
     path DbPath();
+    path GuiPath();
     void Tests();
 
   protected:

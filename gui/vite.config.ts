@@ -10,17 +10,17 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
             plugins: [react()],
             server: {
                 port: 8000,
-                // https: {
-                //     pfx: cert,
-                //     passphrase: passphrase,
-                // },
+                https: {
+                    pfx: cert,
+                    passphrase: passphrase,
+                },
             },
             preview: {
                 port: 8000,
-                // https: {
-                //     pfx: cert,
-                //     passphrase: passphrase,
-                // },
+                https: {
+                    pfx: cert,
+                    passphrase: passphrase,
+                },
             },
         };
     } else {
