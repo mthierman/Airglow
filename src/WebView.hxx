@@ -40,9 +40,6 @@ class WebView
     static wstring SettingsNavigation();
     static bool VerifySettingsUrl(ICoreWebView2WebMessageReceivedEventArgs* args);
     static void Messages(ICoreWebView2WebMessageReceivedEventArgs*);
-    // static void MainMessages(ICoreWebView2WebMessageReceivedEventArgs*);
-    // static void SettingsMessages(ICoreWebView2WebMessageReceivedEventArgs*);
-    // static void Messages(wstring);
     static void UpdateBounds();
     static void UpdateFocus();
     static void SetWindowTitle();
