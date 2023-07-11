@@ -127,13 +127,13 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
 
                             if (settings)
                             {
-                                settings->put_AreDefaultContextMenusEnabled(false);
+                                settings->put_AreDefaultContextMenusEnabled(true);
                                 settings->put_AreDefaultScriptDialogsEnabled(true);
                                 settings->put_AreDevToolsEnabled(true);
                                 settings->put_AreHostObjectsAllowed(true);
                                 settings->put_IsBuiltInErrorPageEnabled(true);
                                 settings->put_IsScriptEnabled(true);
-                                settings->put_IsStatusBarEnabled(false);
+                                settings->put_IsStatusBarEnabled(true);
                                 settings->put_IsWebMessageEnabled(true);
                                 settings->put_IsZoomControlEnabled(false);
                             }
@@ -214,13 +214,13 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
 
                             if (settings)
                             {
-                                settings->put_AreDefaultContextMenusEnabled(false);
+                                settings->put_AreDefaultContextMenusEnabled(true);
                                 settings->put_AreDefaultScriptDialogsEnabled(true);
                                 settings->put_AreDevToolsEnabled(true);
                                 settings->put_AreHostObjectsAllowed(true);
                                 settings->put_IsBuiltInErrorPageEnabled(true);
                                 settings->put_IsScriptEnabled(true);
-                                settings->put_IsStatusBarEnabled(false);
+                                settings->put_IsStatusBarEnabled(true);
                                 settings->put_IsWebMessageEnabled(true);
                                 settings->put_IsZoomControlEnabled(false);
                             }
