@@ -120,10 +120,10 @@ __int64 __stdcall MainWindow::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARA
             return pMainWindow->_OnMove(hwnd, wparam, lparam);
         case WM_MOVING:
             return pMainWindow->_OnMoving(hwnd, wparam, lparam);
-        case WM_WINDOWPOSCHANGING:
-            return pMainWindow->_OnWindowPosChanging(hwnd, wparam, lparam);
-        case WM_WINDOWPOSCHANGED:
-            return pMainWindow->_OnWindowPosChanged(hwnd, wparam, lparam);
+        // case WM_WINDOWPOSCHANGING:
+        //     return pMainWindow->_OnWindowPosChanging(hwnd, wparam, lparam);
+        // case WM_WINDOWPOSCHANGED:
+        //     return pMainWindow->_OnWindowPosChanged(hwnd, wparam, lparam);
         case WM_SETFOCUS:
             return pMainWindow->_OnSetFocus(hwnd, wparam, lparam);
         case WM_SETTINGCHANGE:
@@ -140,49 +140,53 @@ __int64 __stdcall MainWindow::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARA
 
 void MainWindow::Show()
 {
-    Cloak();
+    // Cloak();
 
     SetDarkTitle();
     SetDarkMode();
     SetMica();
 
-    if (!pConfig->settings.fullscreen & !pConfig->settings.maximized)
-    {
-        SetWindowPos(hwnd, nullptr, pConfig->settings.position[0], pConfig->settings.position[1],
-                     pConfig->settings.position[2], pConfig->settings.position[3], 0);
-        ShowWindow(hwnd, SW_SHOWNORMAL);
-    }
+    SetWindowPos(hwnd, nullptr, pConfig->settings.position[0], pConfig->settings.position[1],
+                 pConfig->settings.position[2], pConfig->settings.position[3], 0);
+    ShowWindow(hwnd, SW_SHOWDEFAULT);
+    // ShowWindow(hwnd, SW_MAXIMIZE);
+
+    // SetWindowPos(hwnd, nullptr, pConfig->settings.position[0], pConfig->settings.position[1],
+    //              pConfig->settings.position[2], pConfig->settings.position[3], 0);
+    // ShowWindow(hwnd, SW_SHOWNORMAL);
+
+    // if (!pConfig->settings.fullscreen & !pConfig->settings.maximized)
+    // {
+    //     SetWindowPos(hwnd, nullptr, pConfig->settings.position[0], pConfig->settings.position[1],
+    //                  pConfig->settings.position[2], pConfig->settings.position[3], 0);
+    //     ShowWindow(hwnd, SW_SHOWNORMAL);
+    // }
 
     if (!pConfig->settings.fullscreen & pConfig->settings.maximized)
         ShowWindow(hwnd, SW_MAXIMIZE);
 
     if (pConfig->settings.fullscreen)
     {
-        SetWindowPos(hwnd, nullptr, pConfig->settings.position[0], pConfig->settings.position[1],
-                     pConfig->settings.position[2], pConfig->settings.position[3], 0);
-        ShowWindow(hwnd, SW_SHOWNORMAL);
         Fullscreen();
     }
 
-    if (pConfig->settings.topmost)
-    {
-        Topmost();
-    }
+    // if (pConfig->settings.topmost)
+    // {
+    //     Topmost();
+    // }
 
-    else
-    {
-        SetWindowPos(hwnd, nullptr, pConfig->settings.position[0], pConfig->settings.position[1],
-                     pConfig->settings.position[2], pConfig->settings.position[3], 0);
-        ShowWindow(hwnd, SW_SHOWDEFAULT);
-    }
+    // else
+    // {
+    //     SetWindowPos(hwnd, nullptr, pConfig->settings.position[0], pConfig->settings.position[1],
+    //                  pConfig->settings.position[2], pConfig->settings.position[3], 0);
+    //     ShowWindow(hwnd, SW_SHOWDEFAULT);
+    // }
 
-    Uncloak();
+    // Uncloak();
 }
 
 void MainWindow::Fullscreen()
 {
-    Cloak();
-
     static RECT position;
 
     auto style = GetWindowLongPtrW(hwnd, GWL_STYLE);
@@ -208,8 +212,6 @@ void MainWindow::Fullscreen()
         SetWindowPos(hwnd, nullptr, position.left, position.top, (position.right - position.left),
                      (position.bottom - position.top), 0);
     }
-
-    Uncloak();
 }
 
 void MainWindow::Topmost()
@@ -418,9 +420,6 @@ int MainWindow::_OnExitSizeMove(HWND hwnd, WPARAM wparam, LPARAM lparam)
 #ifdef _DEBUG
     println("WM_EXITSIZEMOVE");
 #endif
-    if (!pConfig)
-        return 0;
-
     WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
     GetWindowPlacement(hwnd, &wp);
     if (!pConfig->settings.fullscreen & (wp.showCmd != 3))
@@ -440,16 +439,13 @@ int MainWindow::_OnGetMinMaxInfo(HWND hwnd, WPARAM wparam, LPARAM lparam)
 #ifdef _DEBUG
     println("WM_GETMINMAXINFO");
 #endif
-    if (!pConfig)
-        return 0;
-
-    WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
-    GetWindowPlacement(hwnd, &wp);
-    if (wp.showCmd != 3)
-    {
-        pConfig->settings.maximized = false;
-        pConfig->Save();
-    }
+    // WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
+    // GetWindowPlacement(hwnd, &wp);
+    // if (wp.showCmd != 3)
+    // {
+    //     pConfig->settings.maximized = false;
+    //     pConfig->Save();
+    // }
 
     LPMINMAXINFO minmax = (LPMINMAXINFO)lparam;
     minmax->ptMinTrackSize.x = 300;
@@ -586,9 +582,6 @@ int MainWindow::_OnSetIcon(HWND hwnd, WPARAM wparam, LPARAM lparam)
 #ifdef _DEBUG
     println("WM_SETICON");
 #endif
-    if (!pConfig)
-        return 0;
-
     SetClassLongPtrW(hwnd, GCLP_HICONSM, lparam);
     SetClassLongPtrW(hwnd, GCLP_HICON, (LONG_PTR)pConfig->hIcon);
 
@@ -600,8 +593,10 @@ int MainWindow::_OnSetFocus(HWND hwnd, WPARAM wparam, LPARAM lparam)
 #ifdef _DEBUG
     println("WM_SETFOCUS");
 #endif
-    if (pWebView)
-        pWebView->UpdateFocus();
+    if (!pWebView)
+        return 0;
+
+    pWebView->UpdateFocus();
 
     return 0;
 }
@@ -622,14 +617,20 @@ int MainWindow::_OnSize(HWND hwnd, WPARAM wparam, LPARAM lparam)
 #ifdef _DEBUG
     println("WM_SIZE");
 #endif
-    if (!pConfig)
-        return 0;
+    if (wparam != 2)
+        pConfig->settings.maximized = false;
 
     if (wparam == 2)
     {
         pConfig->settings.maximized = true;
-        pConfig->Save();
     }
+
+    pConfig->Save();
+
+    if (!pWebView)
+        return 0;
+
+    pWebView->UpdateBounds();
 
     return 0;
 }
@@ -648,10 +649,6 @@ int MainWindow::_OnWindowPosChanged(HWND hwnd, WPARAM wparam, LPARAM lparam)
 #ifdef _DEBUG
     println("WM_WINDOWPOSCHANGED");
 #endif
-    if (!pWebView)
-        return 0;
-
-    pWebView->UpdateBounds();
 
     return 0;
 }

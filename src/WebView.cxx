@@ -6,6 +6,9 @@ WebView::WebView(Config* config) {}
 
 std::unique_ptr<WebView> WebView::Create(Config* config)
 {
+    if (!config)
+        return nullptr;
+
     auto webView{std::unique_ptr<WebView>(new WebView(config))};
 
     webView->pConfig = config;
@@ -15,6 +18,9 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
         Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
             [&](HRESULT result, ICoreWebView2Environment* e) -> HRESULT
             {
+                if (!e)
+                    return E_POINTER;
+
                 // SETTINGS WEBVIEW
                 e->CreateCoreWebView2Controller(
                     pConfig->hwnd,
@@ -27,77 +33,76 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                             EventRegistrationToken tokenFavicon;
                             EventRegistrationToken tokenMsg;
 
-                            if (c)
-                            {
-                                controller = c;
-                                controller->get_CoreWebView2(&core);
-                            }
+                            if (!c)
+                                return E_POINTER;
 
-                            if (core)
-                                browser = core.try_query<ICoreWebView2_19>();
+                            controller = c;
+                            controller->get_CoreWebView2(&core);
 
-                            if (browser)
-                                browser->get_Settings(&settings);
+                            if (!core)
+                                return E_POINTER;
 
-                            if (settings)
-                            {
-                                settings->put_AreDefaultContextMenusEnabled(false);
-                                settings->put_AreDefaultScriptDialogsEnabled(true);
-                                settings->put_AreDevToolsEnabled(true);
-                                settings->put_AreHostObjectsAllowed(true);
-                                settings->put_IsBuiltInErrorPageEnabled(true);
-                                settings->put_IsScriptEnabled(true);
-                                settings->put_IsStatusBarEnabled(false);
-                                settings->put_IsWebMessageEnabled(true);
-                                settings->put_IsZoomControlEnabled(false);
-                            }
+                            browser = core.try_query<ICoreWebView2_19>();
 
-                            if (browser)
-                            {
-                                controller->put_Bounds(webView->MenuBounds());
+                            if (!browser)
+                                return E_POINTER;
 
-                                browser->Navigate(webView->SettingsNavigation().c_str());
+                            browser->get_Settings(&settings);
 
-                                browser->ExecuteScript(webView->GetMenuScript().c_str(), nullptr);
-                                browser->AddScriptToExecuteOnDocumentCreated(
-                                    webView->GetMenuScript().c_str(), nullptr);
+                            if (!settings)
+                                return E_POINTER;
 
-                                browser->add_DocumentTitleChanged(
-                                    Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
-                                        [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
-                                        {
-                                            webView->SetWindowTitle();
+                            settings->put_AreDefaultContextMenusEnabled(false);
+                            settings->put_AreDefaultScriptDialogsEnabled(true);
+                            settings->put_AreDevToolsEnabled(true);
+                            settings->put_AreHostObjectsAllowed(true);
+                            settings->put_IsBuiltInErrorPageEnabled(true);
+                            settings->put_IsScriptEnabled(true);
+                            settings->put_IsStatusBarEnabled(false);
+                            settings->put_IsWebMessageEnabled(true);
+                            settings->put_IsZoomControlEnabled(false);
 
-                                            return S_OK;
-                                        })
-                                        .Get(),
-                                    &tokenTitle);
+                            controller->put_Bounds(webView->MenuBounds());
 
-                                browser->add_FaviconChanged(
-                                    Callback<ICoreWebView2FaviconChangedEventHandler>(
-                                        [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
-                                        {
-                                            webView->SetWindowIcon();
+                            browser->Navigate(webView->SettingsNavigation().c_str());
 
-                                            return S_OK;
-                                        })
-                                        .Get(),
-                                    &tokenFavicon);
+                            browser->AddScriptToExecuteOnDocumentCreated(
+                                webView->GetMenuScript().c_str(), nullptr);
 
-                                browser->add_WebMessageReceived(
-                                    Callback<ICoreWebView2WebMessageReceivedEventHandler>(
-                                        [&](ICoreWebView2* sender,
-                                            ICoreWebView2WebMessageReceivedEventArgs* args)
-                                            -> HRESULT
-                                        {
-                                            if (webView->VerifySettingsUrl(args))
-                                                webView->Messages(args);
+                            browser->add_DocumentTitleChanged(
+                                Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
+                                    [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                    {
+                                        webView->SetWindowTitle();
 
-                                            return S_OK;
-                                        })
-                                        .Get(),
-                                    &tokenMsg);
-                            }
+                                        return S_OK;
+                                    })
+                                    .Get(),
+                                &tokenTitle);
+
+                            browser->add_FaviconChanged(
+                                Callback<ICoreWebView2FaviconChangedEventHandler>(
+                                    [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                    {
+                                        webView->SetWindowIcon();
+
+                                        return S_OK;
+                                    })
+                                    .Get(),
+                                &tokenFavicon);
+
+                            browser->add_WebMessageReceived(
+                                Callback<ICoreWebView2WebMessageReceivedEventHandler>(
+                                    [&](ICoreWebView2* sender,
+                                        ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT
+                                    {
+                                        if (webView->VerifySettingsUrl(args))
+                                            webView->Messages(args);
+
+                                        return S_OK;
+                                    })
+                                    .Get(),
+                                &tokenMsg);
 
                             return S_OK;
                         })
@@ -115,76 +120,76 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                             EventRegistrationToken tokenFavicon;
                             EventRegistrationToken tokenMsg;
 
-                            if (c)
-                            {
-                                controller = c;
-                                controller->get_CoreWebView2(&core);
-                            }
+                            if (!c)
+                                return E_POINTER;
 
-                            if (core)
-                                browser = core.try_query<ICoreWebView2_19>();
+                            controller = c;
+                            controller->get_CoreWebView2(&core);
 
-                            if (browser)
-                                browser->get_Settings(&settings);
+                            if (!core)
+                                return E_POINTER;
 
-                            if (settings)
-                            {
-                                settings->put_AreDefaultContextMenusEnabled(true);
-                                settings->put_AreDefaultScriptDialogsEnabled(true);
-                                settings->put_AreDevToolsEnabled(true);
-                                settings->put_AreHostObjectsAllowed(true);
-                                settings->put_IsBuiltInErrorPageEnabled(true);
-                                settings->put_IsScriptEnabled(true);
-                                settings->put_IsStatusBarEnabled(true);
-                                settings->put_IsWebMessageEnabled(true);
-                                settings->put_IsZoomControlEnabled(false);
-                            }
+                            browser = core.try_query<ICoreWebView2_19>();
 
-                            if (browser)
-                            {
-                                controller->put_Bounds(webView->MainBounds());
+                            if (!browser)
+                                return E_POINTER;
 
-                                browser->Navigate(webView->MainNavigation().c_str());
+                            browser->get_Settings(&settings);
 
-                                browser->ExecuteScript(webView->GetScript().c_str(), nullptr);
-                                browser->AddScriptToExecuteOnDocumentCreated(
-                                    webView->GetScript().c_str(), nullptr);
+                            if (!settings)
+                                return E_POINTER;
 
-                                browser->add_DocumentTitleChanged(
-                                    Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
-                                        [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
-                                        {
-                                            webView->SetWindowTitle();
+                            settings->put_AreDefaultContextMenusEnabled(true);
+                            settings->put_AreDefaultScriptDialogsEnabled(true);
+                            settings->put_AreDevToolsEnabled(true);
+                            settings->put_AreHostObjectsAllowed(true);
+                            settings->put_IsBuiltInErrorPageEnabled(true);
+                            settings->put_IsScriptEnabled(true);
+                            settings->put_IsStatusBarEnabled(true);
+                            settings->put_IsWebMessageEnabled(true);
+                            settings->put_IsZoomControlEnabled(false);
 
-                                            return S_OK;
-                                        })
-                                        .Get(),
-                                    &tokenTitle);
+                            controller->put_Bounds(webView->MainBounds());
 
-                                browser->add_FaviconChanged(
-                                    Callback<ICoreWebView2FaviconChangedEventHandler>(
-                                        [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
-                                        {
-                                            webView->SetWindowIcon();
+                            browser->Navigate(webView->MainNavigation().c_str());
 
-                                            return S_OK;
-                                        })
-                                        .Get(),
-                                    &tokenFavicon);
+                            // browser->ExecuteScript(webView->GetScript().c_str(), nullptr);
+                            browser->AddScriptToExecuteOnDocumentCreated(
+                                webView->GetScript().c_str(), nullptr);
 
-                                browser->add_WebMessageReceived(
-                                    Callback<ICoreWebView2WebMessageReceivedEventHandler>(
-                                        [&](ICoreWebView2* webview,
-                                            ICoreWebView2WebMessageReceivedEventArgs* args)
-                                            -> HRESULT
-                                        {
-                                            webView->Messages(args);
+                            browser->add_DocumentTitleChanged(
+                                Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
+                                    [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                    {
+                                        webView->SetWindowTitle();
 
-                                            return S_OK;
-                                        })
-                                        .Get(),
-                                    &tokenMsg);
-                            }
+                                        return S_OK;
+                                    })
+                                    .Get(),
+                                &tokenTitle);
+
+                            browser->add_FaviconChanged(
+                                Callback<ICoreWebView2FaviconChangedEventHandler>(
+                                    [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                    {
+                                        webView->SetWindowIcon();
+
+                                        return S_OK;
+                                    })
+                                    .Get(),
+                                &tokenFavicon);
+
+                            browser->add_WebMessageReceived(
+                                Callback<ICoreWebView2WebMessageReceivedEventHandler>(
+                                    [&](ICoreWebView2* webview,
+                                        ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT
+                                    {
+                                        webView->Messages(args);
+
+                                        return S_OK;
+                                    })
+                                    .Get(),
+                                &tokenMsg);
 
                             return S_OK;
                         })
@@ -202,76 +207,76 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                             EventRegistrationToken tokenFavicon;
                             EventRegistrationToken tokenMsg;
 
-                            if (c)
-                            {
-                                controller = c;
-                                controller->get_CoreWebView2(&core);
-                            }
+                            if (!c)
+                                return E_POINTER;
 
-                            if (core)
-                                browser = core.try_query<ICoreWebView2_19>();
+                            controller = c;
+                            controller->get_CoreWebView2(&core);
 
-                            if (browser)
-                                browser->get_Settings(&settings);
+                            if (!core)
+                                return E_POINTER;
 
-                            if (settings)
-                            {
-                                settings->put_AreDefaultContextMenusEnabled(true);
-                                settings->put_AreDefaultScriptDialogsEnabled(true);
-                                settings->put_AreDevToolsEnabled(true);
-                                settings->put_AreHostObjectsAllowed(true);
-                                settings->put_IsBuiltInErrorPageEnabled(true);
-                                settings->put_IsScriptEnabled(true);
-                                settings->put_IsStatusBarEnabled(true);
-                                settings->put_IsWebMessageEnabled(true);
-                                settings->put_IsZoomControlEnabled(false);
-                            }
+                            browser = core.try_query<ICoreWebView2_19>();
 
-                            if (browser)
-                            {
-                                controller->put_Bounds(webView->SideBounds());
+                            if (!browser)
+                                return E_POINTER;
 
-                                browser->Navigate(webView->SideNavigation().c_str());
+                            browser->get_Settings(&settings);
 
-                                browser->ExecuteScript(webView->GetScript().c_str(), nullptr);
-                                browser->AddScriptToExecuteOnDocumentCreated(
-                                    webView->GetScript().c_str(), nullptr);
+                            if (!settings)
+                                return E_POINTER;
 
-                                browser->add_DocumentTitleChanged(
-                                    Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
-                                        [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
-                                        {
-                                            webView->SetWindowTitle();
+                            settings->put_AreDefaultContextMenusEnabled(true);
+                            settings->put_AreDefaultScriptDialogsEnabled(true);
+                            settings->put_AreDevToolsEnabled(true);
+                            settings->put_AreHostObjectsAllowed(true);
+                            settings->put_IsBuiltInErrorPageEnabled(true);
+                            settings->put_IsScriptEnabled(true);
+                            settings->put_IsStatusBarEnabled(true);
+                            settings->put_IsWebMessageEnabled(true);
+                            settings->put_IsZoomControlEnabled(false);
 
-                                            return S_OK;
-                                        })
-                                        .Get(),
-                                    &tokenTitle);
+                            controller->put_Bounds(webView->SideBounds());
 
-                                browser->add_FaviconChanged(
-                                    Callback<ICoreWebView2FaviconChangedEventHandler>(
-                                        [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
-                                        {
-                                            webView->SetWindowIcon();
+                            browser->Navigate(webView->SideNavigation().c_str());
 
-                                            return S_OK;
-                                        })
-                                        .Get(),
-                                    &tokenFavicon);
+                            // browser->ExecuteScript(webView->GetScript().c_str(), nullptr);
+                            browser->AddScriptToExecuteOnDocumentCreated(
+                                webView->GetScript().c_str(), nullptr);
 
-                                browser->add_WebMessageReceived(
-                                    Callback<ICoreWebView2WebMessageReceivedEventHandler>(
-                                        [&](ICoreWebView2* webview,
-                                            ICoreWebView2WebMessageReceivedEventArgs* args)
-                                            -> HRESULT
-                                        {
-                                            webView->Messages(args);
+                            browser->add_DocumentTitleChanged(
+                                Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
+                                    [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                    {
+                                        webView->SetWindowTitle();
 
-                                            return S_OK;
-                                        })
-                                        .Get(),
-                                    &tokenMsg);
-                            }
+                                        return S_OK;
+                                    })
+                                    .Get(),
+                                &tokenTitle);
+
+                            browser->add_FaviconChanged(
+                                Callback<ICoreWebView2FaviconChangedEventHandler>(
+                                    [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                    {
+                                        webView->SetWindowIcon();
+
+                                        return S_OK;
+                                    })
+                                    .Get(),
+                                &tokenFavicon);
+
+                            browser->add_WebMessageReceived(
+                                Callback<ICoreWebView2WebMessageReceivedEventHandler>(
+                                    [&](ICoreWebView2* webview,
+                                        ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT
+                                    {
+                                        webView->Messages(args);
+
+                                        return S_OK;
+                                    })
+                                    .Get(),
+                                &tokenMsg);
 
                             return S_OK;
                         })
@@ -775,16 +780,6 @@ wstring WebView::GetMenuScript()
 {
     return wstring{LR"(
         document.onreadystatechange = () => {
-            if (document.readyState === "interactive") {
-                let scheme = document.createElement("meta");
-                scheme.setAttribute("name", "color-scheme");
-                scheme.setAttribute("content", "light dark");
-                document.getElementsByTagName("head")[0].appendChild(scheme);
-                document.documentElement.style.setProperty(
-                    "color-scheme",
-                    "light dark"
-                );
-            }
             if (document.readyState === "complete") {
                 onkeydown = (e) => {
                     if (e.key === "F3") {

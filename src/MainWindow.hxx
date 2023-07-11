@@ -7,6 +7,9 @@ class MainWindow
 {
   public:
     static std::unique_ptr<MainWindow> Create(HINSTANCE, int, Config*);
+    HBRUSH hbrBackground{};
+    HWND hwnd{};
+    HICON hIcon{};
 
   private:
     static Config* pConfig;
@@ -43,10 +46,6 @@ class MainWindow
     int _OnSizing(HWND, WPARAM, LPARAM);
     int _OnWindowPosChanged(HWND, WPARAM, LPARAM);
     int _OnWindowPosChanging(HWND, WPARAM, LPARAM);
-
-    HBRUSH hbrBackground{};
-    HWND hwnd{};
-    HICON hIcon{};
 
     enum PreferredAppMode
     {
