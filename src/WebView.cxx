@@ -417,7 +417,7 @@ void WebView::Messages(ICoreWebView2WebMessageReceivedEventArgs* args)
 #ifdef _DEBUG
             println("Ctrl+W (WebView)");
 #endif
-            PostMessageW(pConfig->hwnd, WM_CLOSE, 0, 0);
+            SendMessageW(pConfig->hwnd, WM_KEYDOWN, 0x57, 0);
         }
     }
 }
