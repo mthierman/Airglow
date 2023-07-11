@@ -13,6 +13,9 @@ class MainWindow
     static WebView* pWebView;
     static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
     void Show();
+    void Fullscreen();
+    void Topmost();
+    void Maximize();
     bool CheckSystemDarkMode();
     bool SetDarkTitle();
     bool SetDarkMode();

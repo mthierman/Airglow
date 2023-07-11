@@ -163,12 +163,12 @@ void MainWindow::Show()
                      pConfig->settings.position[1], pConfig->settings.position[2],
                      pConfig->settings.position[3], 0);
         ShowWindow(this->hwnd, SW_SHOWNORMAL);
-        pWebView->Fullscreen();
+        Fullscreen();
     }
 
     if (pConfig->settings.topmost)
     {
-        pWebView->Topmost();
+        Topmost();
     }
 
     else
@@ -180,6 +180,81 @@ void MainWindow::Show()
     }
 
     Uncloak();
+}
+
+void MainWindow::Fullscreen()
+{
+    Cloak();
+
+    static RECT position;
+
+    auto style = GetWindowLongPtrW(this->hwnd, GWL_STYLE);
+    if (style & WS_OVERLAPPEDWINDOW)
+    {
+        MONITORINFO mi = {sizeof(mi)};
+        GetWindowRect(this->hwnd, &position);
+        if (GetMonitorInfoW(MonitorFromWindow(this->hwnd, MONITOR_DEFAULTTONEAREST), &mi))
+        {
+            SetWindowLongPtrW(this->hwnd, GWL_STYLE, style & ~WS_OVERLAPPEDWINDOW);
+            SetWindowPos(this->hwnd, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top,
+                         mi.rcMonitor.right - mi.rcMonitor.left,
+                         mi.rcMonitor.bottom - mi.rcMonitor.top,
+                         SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
+        }
+    }
+
+    else
+    {
+        SetWindowLongPtrW(this->hwnd, GWL_STYLE, style | WS_OVERLAPPEDWINDOW);
+        SetWindowPos(this->hwnd, nullptr, 0, 0, 0, 0,
+                     SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
+        SetWindowPos(this->hwnd, nullptr, position.left, position.top,
+                     (position.right - position.left), (position.bottom - position.top), 0);
+    }
+
+    Uncloak();
+}
+
+void MainWindow::Topmost()
+{
+    FLASHWINFO fwi{};
+    fwi.cbSize = sizeof(FLASHWINFO);
+    fwi.hwnd = this->hwnd;
+    fwi.dwFlags = FLASHW_CAPTION;
+    fwi.uCount = 1;
+    fwi.dwTimeout = 100;
+
+    auto style = GetWindowLongPtrW(this->hwnd, GWL_EXSTYLE);
+    if (style & WS_EX_TOPMOST)
+    {
+        SetWindowPos(this->hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        FlashWindowEx(&fwi);
+    }
+
+    else
+    {
+        SetWindowPos(this->hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        FlashWindowEx(&fwi);
+    }
+}
+
+void MainWindow::Maximize()
+{
+    if (!pConfig->settings.fullscreen)
+    {
+        WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
+        GetWindowPlacement(hwnd, &wp);
+        if (wp.showCmd == 3)
+        {
+            ShowWindow(hwnd, SW_SHOWNORMAL);
+            SetWindowPos(hwnd, nullptr, pConfig->settings.position[0],
+                         pConfig->settings.position[1], pConfig->settings.position[2],
+                         pConfig->settings.position[3], 0);
+        }
+
+        else
+            ShowWindow(hwnd, SW_MAXIMIZE);
+    }
 }
 
 bool MainWindow::CheckSystemDarkMode()
@@ -432,21 +507,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
 #ifdef _DEBUG
         println("F6");
 #endif
-        if (!pConfig->settings.fullscreen)
-        {
-            WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
-            GetWindowPlacement(hwnd, &wp);
-            if (wp.showCmd == 3)
-            {
-                ShowWindow(hwnd, SW_SHOWNORMAL);
-                SetWindowPos(hwnd, nullptr, pConfig->settings.position[0],
-                             pConfig->settings.position[1], pConfig->settings.position[2],
-                             pConfig->settings.position[3], 0);
-            }
-
-            else
-                ShowWindow(hwnd, SW_MAXIMIZE);
-        }
+        Maximize();
     }
 
     if (wparam == VK_F11)
@@ -455,7 +516,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
         println("F11");
 #endif
         pConfig->settings.fullscreen = bool_toggle(pConfig->settings.fullscreen);
-        pWebView->Fullscreen();
+        Fullscreen();
         pWebView->UpdateBounds();
         pWebView->UpdateFocus();
         pWebView->SetWindowTitle();
@@ -469,7 +530,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
         println("F9");
 #endif
         pConfig->settings.topmost = bool_toggle(pConfig->settings.topmost);
-        pWebView->Topmost();
+        Topmost();
         pWebView->UpdateBounds();
         pWebView->UpdateFocus();
         pWebView->SetWindowTitle();

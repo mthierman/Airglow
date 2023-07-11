@@ -44,8 +44,6 @@ class WebView
     static void UpdateFocus();
     static void SetWindowTitle();
     static void SetWindowIcon();
-    static void Fullscreen();
-    static void Topmost();
 
   private:
     static Config* pConfig;
