@@ -143,7 +143,7 @@ __int64 __stdcall MainWindow::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARA
 
 void MainWindow::Show()
 {
-    // Cloak();
+    Cloak();
 
     SetDarkTitle();
     SetDarkMode();
@@ -151,41 +151,29 @@ void MainWindow::Show()
 
     SetWindowPos(hwnd, nullptr, pConfig->settings.position[0], pConfig->settings.position[1],
                  pConfig->settings.position[2], pConfig->settings.position[3], 0);
-    ShowWindow(hwnd, SW_SHOWDEFAULT);
-    // ShowWindow(hwnd, SW_MAXIMIZE);
 
-    // SetWindowPos(hwnd, nullptr, pConfig->settings.position[0], pConfig->settings.position[1],
-    //              pConfig->settings.position[2], pConfig->settings.position[3], 0);
-    // ShowWindow(hwnd, SW_SHOWNORMAL);
+    if (!pConfig->settings.maximized)
+    {
 
-    // if (!pConfig->settings.fullscreen & !pConfig->settings.maximized)
-    // {
-    //     SetWindowPos(hwnd, nullptr, pConfig->settings.position[0], pConfig->settings.position[1],
-    //                  pConfig->settings.position[2], pConfig->settings.position[3], 0);
-    //     ShowWindow(hwnd, SW_SHOWNORMAL);
-    // }
+        ShowWindow(hwnd, SW_SHOWDEFAULT);
+    }
 
-    if (!pConfig->settings.fullscreen & pConfig->settings.maximized)
+    if (pConfig->settings.maximized)
+    {
         ShowWindow(hwnd, SW_MAXIMIZE);
+    }
+
+    if (pConfig->settings.topmost)
+    {
+        Topmost();
+    }
 
     if (pConfig->settings.fullscreen)
     {
         Fullscreen();
     }
 
-    // if (pConfig->settings.topmost)
-    // {
-    //     Topmost();
-    // }
-
-    // else
-    // {
-    //     SetWindowPos(hwnd, nullptr, pConfig->settings.position[0], pConfig->settings.position[1],
-    //                  pConfig->settings.position[2], pConfig->settings.position[3], 0);
-    //     ShowWindow(hwnd, SW_SHOWDEFAULT);
-    // }
-
-    // Uncloak();
+    Uncloak();
 }
 
 void MainWindow::Fullscreen()
