@@ -12,11 +12,11 @@ class Config
 
     struct Settings
     {
-        std::vector<int> position{0, 0, 800, 600};
+        std::vector<int> position{0, 0, 0, 0};
         bool menu{false};
         bool split{false};
         bool swapped{false};
-        bool maximized{true};
+        bool maximized{false};
         bool fullscreen{false};
         bool topmost{false};
         string mainUrl{"https://www.google.com/"};

@@ -149,8 +149,12 @@ void MainWindow::Show()
     SetDarkMode();
     SetMica();
 
-    SetWindowPos(hwnd, nullptr, pConfig->settings.position[0], pConfig->settings.position[1],
-                 pConfig->settings.position[2], pConfig->settings.position[3], 0);
+    if (pConfig->settings.position[0] != 0 && pConfig->settings.position[1] != 0 &&
+        pConfig->settings.position[2] != 0 && pConfig->settings.position[3] != 0)
+    {
+        SetWindowPos(hwnd, nullptr, pConfig->settings.position[0], pConfig->settings.position[1],
+                     pConfig->settings.position[2], pConfig->settings.position[3], 0);
+    }
 
     if (!pConfig->settings.maximized)
     {
@@ -244,6 +248,18 @@ void MainWindow::Maximize()
 
         else
             ShowWindow(hwnd, SW_MAXIMIZE);
+    }
+}
+
+void MainWindow::SavePosition()
+{
+    WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
+    GetWindowPlacement(hwnd, &wp);
+    if (!pConfig->settings.fullscreen & (wp.showCmd != 3))
+    {
+        RECT rect{0, 0, 0, 0};
+        GetWindowRect(hwnd, &rect);
+        pConfig->settings.position = rect_to_bounds(rect);
     }
 }
 
@@ -411,14 +427,7 @@ int MainWindow::_OnExitSizeMove(HWND hwnd, WPARAM wparam, LPARAM lparam)
 #ifdef _DEBUG
     println("WM_EXITSIZEMOVE");
 #endif
-    WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
-    GetWindowPlacement(hwnd, &wp);
-    if (!pConfig->settings.fullscreen & (wp.showCmd != 3))
-    {
-        RECT rect{0, 0, 0, 0};
-        GetWindowRect(hwnd, &rect);
-        pConfig->settings.position = rect_to_bounds(rect);
-    }
+    SavePosition();
 
     pConfig->Save();
 
@@ -430,6 +439,10 @@ int MainWindow::_OnGetMinMaxInfo(HWND hwnd, WPARAM wparam, LPARAM lparam)
 #ifdef _DEBUG
     println("WM_GETMINMAXINFO");
 #endif
+    SavePosition();
+
+    pConfig->Save();
+
     LPMINMAXINFO minmax = (LPMINMAXINFO)lparam;
     minmax->ptMinTrackSize.x = 300;
     minmax->ptMinTrackSize.y = 300;

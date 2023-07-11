@@ -19,6 +19,7 @@ class MainWindow
     void Fullscreen();
     void Topmost();
     void Maximize();
+    void SavePosition();
     bool CheckSystemDarkMode();
     bool SetDarkTitle();
     bool SetDarkMode();
