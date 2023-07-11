@@ -2,6 +2,8 @@
 
 #include "Config.hxx"
 
+using namespace Microsoft::WRL;
+
 namespace Browsers
 {
 namespace Main
