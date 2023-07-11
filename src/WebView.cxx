@@ -400,8 +400,8 @@ void WebView::SetWindowIcon()
                         if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
                         {
                             auto favicon = std::move(icon);
-                            SendMessageW(pConfig->hwnd, WM_SETICON, ICON_SMALL,
-                                         (LPARAM)favicon.get());
+                            SetClassLongPtrW(pConfig->hwnd, GCLP_HICONSM, (LONG_PTR)favicon.get());
+                            SetClassLongPtrW(pConfig->hwnd, GCLP_HICON, (LONG_PTR)pConfig->hIcon);
                         }
                     }
                     return S_OK;
@@ -429,8 +429,8 @@ void WebView::SetWindowIcon()
                         if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
                         {
                             auto favicon = std::move(icon);
-                            SendMessageW(pConfig->hwnd, WM_SETICON, ICON_SMALL,
-                                         (LPARAM)favicon.get());
+                            SetClassLongPtrW(pConfig->hwnd, GCLP_HICONSM, (LONG_PTR)favicon.get());
+                            SetClassLongPtrW(pConfig->hwnd, GCLP_HICON, (LONG_PTR)pConfig->hIcon);
                         }
                     }
                     return S_OK;
@@ -457,8 +457,8 @@ void WebView::SetWindowIcon()
                         if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
                         {
                             auto favicon = std::move(icon);
-                            SendMessageW(pConfig->hwnd, WM_SETICON, ICON_SMALL,
-                                         (LPARAM)favicon.get());
+                            SetClassLongPtrW(pConfig->hwnd, GCLP_HICONSM, (LONG_PTR)favicon.get());
+                            SetClassLongPtrW(pConfig->hwnd, GCLP_HICON, (LONG_PTR)pConfig->hIcon);
                         }
                     }
                     return S_OK;

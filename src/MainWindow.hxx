@@ -41,6 +41,7 @@ class MainWindow
     int _OnPaint(HWND, WPARAM, LPARAM);
     int _OnSetIcon(HWND, WPARAM, LPARAM);
     int _OnSetFocus(HWND, WPARAM, LPARAM);
+    int _OnSetText(HWND, WPARAM, LPARAM);
     int _OnSettingChange(HWND, WPARAM, LPARAM);
     int _OnSize(HWND, WPARAM, LPARAM);
     int _OnSizing(HWND, WPARAM, LPARAM);

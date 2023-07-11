@@ -38,6 +38,7 @@ class WebView
     void UpdateBounds();
     void UpdateFocus();
     void SetWindowTitle();
+    HICON GetFavicon();
     void SetWindowIcon();
 
   private:

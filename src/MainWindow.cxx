@@ -90,48 +90,51 @@ __int64 __stdcall MainWindow::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARA
     {
         switch (msg)
         {
+
+        case WM_ACTIVATE:
+            return pMainWindow->_OnActivate(hwnd, wparam, lparam);
+        case WM_CHAR:
+            return pMainWindow->_OnChar(hwnd, wparam, lparam);
+        case WM_CLOSE:
+            return pMainWindow->_OnClose(hwnd, wparam, lparam);
         case WM_COMMAND:
             return pMainWindow->_OnCommand(hwnd, wparam, lparam);
         case WM_CREATE:
             return pMainWindow->_OnCreate(hwnd, wparam, lparam);
-        case WM_ACTIVATE:
-            return pMainWindow->_OnActivate(hwnd, wparam, lparam);
-        case WM_CLOSE:
-            return pMainWindow->_OnClose(hwnd, wparam, lparam);
         case WM_DESTROY:
             return pMainWindow->_OnDestroy(hwnd, wparam, lparam);
         case WM_DPICHANGED:
             return pMainWindow->_OnDpiChanged(hwnd, wparam, lparam);
-        case WM_GETMINMAXINFO:
-            return pMainWindow->_OnGetMinMaxInfo(hwnd, wparam, lparam);
-        case WM_PAINT:
-            return pMainWindow->_OnPaint(hwnd, wparam, lparam);
-        case WM_SETICON:
-            return pMainWindow->_OnSetIcon(hwnd, wparam, lparam);
-        case WM_SIZE:
-            return pMainWindow->_OnSize(hwnd, wparam, lparam);
-        case WM_SIZING:
-            return pMainWindow->_OnSizing(hwnd, wparam, lparam);
         case WM_ENTERSIZEMOVE:
             return pMainWindow->_OnEnterSizeMove(hwnd, wparam, lparam);
         case WM_EXITSIZEMOVE:
             return pMainWindow->_OnExitSizeMove(hwnd, wparam, lparam);
+        case WM_GETMINMAXINFO:
+            return pMainWindow->_OnGetMinMaxInfo(hwnd, wparam, lparam);
+        case WM_KEYDOWN:
+            return pMainWindow->_OnKeyDown(hwnd, wparam, lparam);
         case WM_MOVE:
             return pMainWindow->_OnMove(hwnd, wparam, lparam);
         case WM_MOVING:
             return pMainWindow->_OnMoving(hwnd, wparam, lparam);
-        // case WM_WINDOWPOSCHANGING:
-        //     return pMainWindow->_OnWindowPosChanging(hwnd, wparam, lparam);
-        // case WM_WINDOWPOSCHANGED:
-        //     return pMainWindow->_OnWindowPosChanged(hwnd, wparam, lparam);
+        case WM_PAINT:
+            return pMainWindow->_OnPaint(hwnd, wparam, lparam);
+        case WM_SETICON:
+            return pMainWindow->_OnSetIcon(hwnd, wparam, lparam);
         case WM_SETFOCUS:
             return pMainWindow->_OnSetFocus(hwnd, wparam, lparam);
+        // case WM_SETTEXT:
+        //     return pMainWindow->_OnSetText(hwnd, wparam, lparam);
         case WM_SETTINGCHANGE:
             return pMainWindow->_OnSettingChange(hwnd, wparam, lparam);
-        case WM_KEYDOWN:
-            return pMainWindow->_OnKeyDown(hwnd, wparam, lparam);
-        case WM_CHAR:
-            return pMainWindow->_OnChar(hwnd, wparam, lparam);
+        case WM_SIZE:
+            return pMainWindow->_OnSize(hwnd, wparam, lparam);
+        case WM_SIZING:
+            return pMainWindow->_OnSizing(hwnd, wparam, lparam);
+            // case WM_WINDOWPOSCHANGING:
+            //     return pMainWindow->_OnWindowPosChanging(hwnd, wparam, lparam);
+            // case WM_WINDOWPOSCHANGED:
+            //     return pMainWindow->_OnWindowPosChanged(hwnd, wparam, lparam);
         }
     }
 
@@ -199,18 +202,16 @@ void MainWindow::Fullscreen()
             SetWindowLongPtrW(hwnd, GWL_STYLE, style & ~WS_OVERLAPPEDWINDOW);
             SetWindowPos(hwnd, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top,
                          mi.rcMonitor.right - mi.rcMonitor.left,
-                         mi.rcMonitor.bottom - mi.rcMonitor.top,
-                         SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
+                         mi.rcMonitor.bottom - mi.rcMonitor.top, SWP_FRAMECHANGED);
         }
     }
 
     else
     {
         SetWindowLongPtrW(hwnd, GWL_STYLE, style | WS_OVERLAPPEDWINDOW);
-        SetWindowPos(hwnd, nullptr, 0, 0, 0, 0,
-                     SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
         SetWindowPos(hwnd, nullptr, position.left, position.top, (position.right - position.left),
-                     (position.bottom - position.top), 0);
+                     (position.bottom - position.top), SWP_FRAMECHANGED);
+        SendMessage(hwnd, WM_SETICON, 0, 0);
     }
 }
 
@@ -235,6 +236,8 @@ void MainWindow::Topmost()
         SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         FlashWindowEx(&fwi);
     }
+
+    pWebView->SetWindowTitle();
 }
 
 void MainWindow::Maximize()
@@ -439,14 +442,6 @@ int MainWindow::_OnGetMinMaxInfo(HWND hwnd, WPARAM wparam, LPARAM lparam)
 #ifdef _DEBUG
     println("WM_GETMINMAXINFO");
 #endif
-    // WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
-    // GetWindowPlacement(hwnd, &wp);
-    // if (wp.showCmd != 3)
-    // {
-    //     pConfig->settings.maximized = false;
-    //     pConfig->Save();
-    // }
-
     LPMINMAXINFO minmax = (LPMINMAXINFO)lparam;
     minmax->ptMinTrackSize.x = 300;
     minmax->ptMinTrackSize.y = 300;
@@ -509,12 +504,9 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
         println("F11");
 #endif
         pConfig->settings.fullscreen = bool_toggle(pConfig->settings.fullscreen);
-        Fullscreen();
-        pWebView->UpdateBounds();
-        pWebView->UpdateFocus();
-        pWebView->SetWindowTitle();
-        pWebView->SetWindowIcon();
         pConfig->Save();
+
+        Fullscreen();
     }
 
     if (wparam == VK_F9)
@@ -523,12 +515,9 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
         println("F9");
 #endif
         pConfig->settings.topmost = bool_toggle(pConfig->settings.topmost);
-        Topmost();
-        pWebView->UpdateBounds();
-        pWebView->UpdateFocus();
-        pWebView->SetWindowTitle();
-        pWebView->SetWindowIcon();
         pConfig->Save();
+
+        Topmost();
     }
 
     if (wparam == 0x57)
@@ -568,10 +557,7 @@ int MainWindow::_OnPaint(HWND hwnd, WPARAM wparam, LPARAM lparam)
     println("WM_PAINT");
 #endif
     PAINTSTRUCT ps{};
-    RECT bounds{};
     HDC hdc = BeginPaint(hwnd, &ps);
-    GetClientRect(hwnd, &bounds);
-    FillRect(hdc, &bounds, pConfig->hbrBackground);
     EndPaint(hwnd, &ps);
 
     return 0;
@@ -582,8 +568,7 @@ int MainWindow::_OnSetIcon(HWND hwnd, WPARAM wparam, LPARAM lparam)
 #ifdef _DEBUG
     println("WM_SETICON");
 #endif
-    SetClassLongPtrW(hwnd, GCLP_HICONSM, lparam);
-    SetClassLongPtrW(hwnd, GCLP_HICON, (LONG_PTR)pConfig->hIcon);
+    pWebView->SetWindowIcon();
 
     return 0;
 }
@@ -597,6 +582,15 @@ int MainWindow::_OnSetFocus(HWND hwnd, WPARAM wparam, LPARAM lparam)
         return 0;
 
     pWebView->UpdateFocus();
+
+    return 0;
+}
+
+int MainWindow::_OnSetText(HWND hwnd, WPARAM wparam, LPARAM lparam)
+{
+#ifdef _DEBUG
+    println("WM_SETTEXT");
+#endif
 
     return 0;
 }
