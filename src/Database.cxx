@@ -10,7 +10,7 @@ std::unique_ptr<Database> Database::Create(Config* config)
 
     database->pConfig = config;
 
-    auto dbFile{(database->pConfig->paths.db).string()};
+    auto dbFile{(pConfig->paths.db).string()};
     auto dbPath{dbFile.c_str()};
     sqlite3* db{nullptr};
     char* errMsg{0};
@@ -34,7 +34,7 @@ std::unique_ptr<Database> Database::Create(Config* config)
         return nullptr;
     }
 
-    if (!std::filesystem::exists(database->pConfig->paths.db))
+    if (!std::filesystem::exists(pConfig->paths.db))
     {
         auto debExec = sqlite3_exec(db, sql.c_str(), nullptr, 0, &errMsg);
         if (debExec != SQLITE_OK)
@@ -44,7 +44,7 @@ std::unique_ptr<Database> Database::Create(Config* config)
         }
     }
 
-    if (!std::filesystem::exists(database->pConfig->paths.db))
+    if (!std::filesystem::exists(pConfig->paths.db))
         return nullptr;
 
     sqlite3_close(db);

@@ -24,6 +24,7 @@ void msgboxw(wstring);
 void error(string in);
 void errorw(wstring in);
 void dberror(string in);
+RECT get_rect(HWND hwnd);
 std::vector<int> rect_to_bounds(RECT);
 RECT bounds_to_rect(std::vector<int>);
 }; // namespace util

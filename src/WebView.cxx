@@ -460,23 +460,20 @@ void WebView::SetWindowTitle()
         !Browsers::Side::controller)
         return;
 
-    HWND hwnd = pConfig->hwnd;
-
     if (pConfig->settings.menu)
     {
-        SetWindowTextW(hwnd, L"Settings");
-        // wil::unique_cotaskmem_string s{};
-        // settings_wv->get_DocumentTitle(&s);
-        // auto title = s.get();
+        wil::unique_cotaskmem_string s{};
+        Browsers::Settings::browser->get_DocumentTitle(&s);
+        auto title = s.get();
 
-        // if (!pConfig->settings.topmost)
-        //     SetWindowTextW(hwnd, s.get());
+        if (!pConfig->settings.topmost)
+            SetWindowTextW(pConfig->hwnd, title);
 
-        // if (pConfig->settings.topmost)
-        // {
-        //     wstring add = title + wstring(L" [On Top]");
-        //     SetWindowTextW(hwnd, add.c_str());
-        // }
+        if (pConfig->settings.topmost)
+        {
+            wstring add = title + wstring(L" [On Top]");
+            SetWindowTextW(pConfig->hwnd, add.c_str());
+        }
     }
 
     if (!pConfig->settings.menu && !pConfig->settings.swapped)
@@ -486,12 +483,12 @@ void WebView::SetWindowTitle()
         auto title = s.get();
 
         if (!pConfig->settings.topmost)
-            SetWindowTextW(hwnd, title);
+            SetWindowTextW(pConfig->hwnd, title);
 
         if (pConfig->settings.topmost)
         {
             wstring add = title + wstring(L" [On Top]");
-            SetWindowTextW(hwnd, add.c_str());
+            SetWindowTextW(pConfig->hwnd, add.c_str());
         }
     }
 
@@ -502,12 +499,12 @@ void WebView::SetWindowTitle()
         auto title = s.get();
 
         if (!pConfig->settings.topmost)
-            SetWindowTextW(hwnd, title);
+            SetWindowTextW(pConfig->hwnd, title);
 
         if (pConfig->settings.topmost)
         {
             wstring add = title + wstring(L" [On Top]");
-            SetWindowTextW(hwnd, add.c_str());
+            SetWindowTextW(pConfig->hwnd, add.c_str());
         }
     }
 }
@@ -526,28 +523,25 @@ void WebView::SetWindowIcon()
         Browsers::Settings::browser->get_FaviconUri(&faviconUri);
         wprintln(wstring(faviconUri));
 #endif
-
-        SendMessageW(pConfig->hwnd, WM_SETICON, ICON_SMALL, (LPARAM)pConfig->hIcon);
-
-        // Browsers::Settings::browser->GetFavicon(
-        //     COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
-        //     Callback<ICoreWebView2GetFaviconCompletedHandler>(
-        //         [&](HRESULT result, IStream* iconStream) -> HRESULT
-        //         {
-        //             if (iconStream)
-        //             {
-        //                 Gdiplus::Bitmap iconBitmap(iconStream);
-        //                 wil::unique_hicon icon;
-        //                 if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
-        //                 {
-        //                     auto favicon = std::move(icon);
-        //                     SendMessageW(pConfig->hwnd, WM_SETICON, ICON_BIG,
-        //                                  (LPARAM)favicon.get());
-        //                 }
-        //             }
-        //             return S_OK;
-        //         })
-        //         .Get());
+        Browsers::Settings::browser->GetFavicon(
+            COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
+            Callback<ICoreWebView2GetFaviconCompletedHandler>(
+                [&](HRESULT result, IStream* iconStream) -> HRESULT
+                {
+                    if (iconStream)
+                    {
+                        Gdiplus::Bitmap iconBitmap(iconStream);
+                        wil::unique_hicon icon;
+                        if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
+                        {
+                            auto favicon = std::move(icon);
+                            SendMessageW(pConfig->hwnd, WM_SETICON, ICON_SMALL,
+                                         (LPARAM)favicon.get());
+                        }
+                    }
+                    return S_OK;
+                })
+                .Get());
     }
 
     if (!pConfig->settings.swapped && !pConfig->settings.menu)
@@ -558,7 +552,6 @@ void WebView::SetWindowIcon()
         Browsers::Main::browser->get_FaviconUri(&faviconUri);
         wprintln(wstring(faviconUri));
 #endif
-
         Browsers::Main::browser->GetFavicon(
             COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
             Callback<ICoreWebView2GetFaviconCompletedHandler>(
@@ -587,7 +580,6 @@ void WebView::SetWindowIcon()
         Browsers::Side::browser->get_FaviconUri(&faviconUri);
         wprintln(wstring(faviconUri));
 #endif
-
         Browsers::Side::browser->GetFavicon(
             COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
             Callback<ICoreWebView2GetFaviconCompletedHandler>(
@@ -648,116 +640,78 @@ std::pair<wstring, wstring> WebView::CommandLine()
     return commands;
 }
 
-RECT WebView::FullBounds()
-{
-    RECT bounds{0, 0, 0, 0};
-
-    if (!pConfig)
-        return bounds;
-
-    HWND hwnd = pConfig->hwnd;
-
-    GetClientRect(hwnd, &bounds);
-
-    return bounds;
-}
+RECT WebView::FullBounds() { return get_rect(pConfig->hwnd); }
 
 RECT WebView::MenuBounds()
 {
-    RECT bounds{0, 0, 0, 0};
+    if (!pConfig->settings.menu)
+        return RECT{0, 0, 0, 0};
 
-    if (!pConfig || !pConfig->settings.menu)
+    return get_rect(pConfig->hwnd);
+}
+
+RECT WebView::MainBounds()
+{
+    auto bounds{get_rect(pConfig->hwnd)};
+
+    if (!pConfig->settings.split && !pConfig->settings.swapped)
         return bounds;
 
-    HWND hwnd = pConfig->hwnd;
-
-    if (GetClientRect(hwnd, &bounds))
+    if (pConfig->settings.split & !pConfig->settings.swapped)
     {
         return RECT{
             bounds.left,
+            bounds.top,
+            bounds.right / 2,
+            bounds.bottom,
+        };
+    }
+
+    if (pConfig->settings.split & pConfig->settings.swapped)
+    {
+        return RECT{
+            bounds.right / 2,
             bounds.top,
             bounds.right,
             bounds.bottom,
         };
     }
 
-    return bounds;
-}
-
-RECT WebView::MainBounds()
-{
-    RECT bounds{0, 0, 0, 0};
-
-    if (!pConfig || pConfig->settings.menu ||
-        (!pConfig->settings.split && pConfig->settings.swapped))
-        return bounds;
-
-    HWND hwnd = pConfig->hwnd;
-
-    if (GetClientRect(hwnd, &bounds))
-    {
-        if (!pConfig->settings.split && !pConfig->settings.swapped)
-            return bounds;
-
-        if (pConfig->settings.split & !pConfig->settings.swapped)
-        {
-            return RECT{
-                bounds.left,
-                bounds.top,
-                bounds.right / 2,
-                bounds.bottom,
-            };
-        }
-
-        if (pConfig->settings.split & pConfig->settings.swapped)
-        {
-            return RECT{
-                bounds.right / 2,
-                bounds.top,
-                bounds.right,
-                bounds.bottom,
-            };
-        }
-    }
+    if (pConfig->settings.menu)
+        return RECT{0, 0, 0, 0};
 
     return bounds;
 }
 
 RECT WebView::SideBounds()
 {
-    RECT bounds{0, 0, 0, 0};
+    auto bounds{get_rect(pConfig->hwnd)};
 
-    if (!pConfig || pConfig->settings.menu ||
-        (!pConfig->settings.split && !pConfig->settings.swapped))
+    if (!pConfig->settings.split & pConfig->settings.swapped)
         return bounds;
 
-    HWND hwnd = pConfig->hwnd;
-
-    if (GetClientRect(hwnd, &bounds))
+    if (pConfig->settings.split & !pConfig->settings.swapped)
     {
-        if (!pConfig->settings.split & pConfig->settings.swapped)
-            return bounds;
-
-        if (pConfig->settings.split & !pConfig->settings.swapped)
-        {
-            return RECT{
-                bounds.right / 2,
-                bounds.top,
-                bounds.right,
-                bounds.bottom,
-            };
-        }
-
-        if (pConfig->settings.split & pConfig->settings.swapped)
-        {
-            return RECT{
-                bounds.left,
-                bounds.top,
-                bounds.right / 2,
-                bounds.bottom,
-            };
-        }
+        return RECT{
+            bounds.right / 2,
+            bounds.top,
+            bounds.right,
+            bounds.bottom,
+        };
     }
+
+    if (pConfig->settings.split & pConfig->settings.swapped)
+    {
+        return RECT{
+            bounds.left,
+            bounds.top,
+            bounds.right / 2,
+            bounds.bottom,
+        };
+    }
+
+    if (pConfig->settings.menu)
+        return RECT{0, 0, 0, 0};
 
     return bounds;
 }
@@ -785,7 +739,7 @@ wstring WebView::GetScriptFile()
 
 wstring WebView::GetScript()
 {
-    wstring script{LR"(
+    return wstring{LR"(
         document.onreadystatechange = () => {
             if (document.readyState === "interactive") {
                 let scheme = document.createElement("meta");
@@ -808,13 +762,11 @@ wstring WebView::GetScript()
             }
         };
     )"};
-
-    return script;
 }
 
 wstring WebView::GetMenuScript()
 {
-    wstring script{LR"(
+    return wstring{LR"(
         document.onreadystatechange = () => {
             if (document.readyState === "interactive") {
                 let scheme = document.createElement("meta");
@@ -840,6 +792,4 @@ wstring WebView::GetMenuScript()
             }
         };
     )"};
-
-    return script;
 }

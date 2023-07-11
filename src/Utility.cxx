@@ -68,6 +68,14 @@ void dberror(string in)
     MessageBoxW(nullptr, to_wide(in).c_str(), wstring(L"Airglow").c_str(), 0);
 };
 
+RECT get_rect(HWND hwnd)
+{
+    RECT bounds{0, 0, 0, 0};
+    GetClientRect(hwnd, &bounds);
+
+    return bounds;
+}
+
 std::vector<int> rect_to_bounds(RECT rect)
 {
     return std::vector<int>{rect.left, rect.top, (rect.right - rect.left),
