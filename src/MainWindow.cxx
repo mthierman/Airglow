@@ -470,7 +470,10 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
 #endif
         pConfig->settings.topmost = bool_toggle(pConfig->settings.topmost);
         pWebView->Topmost();
+        pWebView->UpdateBounds();
+        pWebView->UpdateFocus();
         pWebView->SetWindowTitle();
+        pWebView->SetWindowIcon();
         pConfig->Save();
     }
 
