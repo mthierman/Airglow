@@ -35,26 +35,26 @@ class WebView
 {
   public:
     static std::unique_ptr<WebView> Create(Config*);
-    static wstring MainNavigation();
-    static wstring SideNavigation();
-    static wstring SettingsNavigation();
-    static bool VerifySettingsUrl(ICoreWebView2WebMessageReceivedEventArgs* args);
-    static void Messages(ICoreWebView2WebMessageReceivedEventArgs*);
-    static void UpdateBounds();
-    static void UpdateFocus();
-    static void SetWindowTitle();
-    static void SetWindowIcon();
+    wstring MainNavigation();
+    wstring SideNavigation();
+    wstring SettingsNavigation();
+    bool VerifySettingsUrl(ICoreWebView2WebMessageReceivedEventArgs* args);
+    void Messages(ICoreWebView2WebMessageReceivedEventArgs*);
+    void UpdateBounds();
+    void UpdateFocus();
+    void SetWindowTitle();
+    void SetWindowIcon();
 
   private:
     static Config* pConfig;
-    static std::pair<wstring, wstring> CommandLine();
-    static RECT FullBounds();
-    static RECT MenuBounds();
-    static RECT MainBounds();
-    static RECT SideBounds();
-    static wstring GetScriptFile();
-    static wstring GetScript();
-    static wstring GetMenuScript();
+    std::pair<wstring, wstring> CommandLine();
+    RECT FullBounds();
+    RECT MenuBounds();
+    RECT MainBounds();
+    RECT SideBounds();
+    wstring GetScriptFile();
+    wstring GetScript();
+    wstring GetMenuScript();
 
   protected:
     WebView(Config*);

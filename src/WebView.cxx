@@ -54,17 +54,19 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
 
                             if (browser)
                             {
-                                controller->put_Bounds(MenuBounds());
-                                browser->Navigate(SettingsNavigation().c_str());
-                                browser->ExecuteScript(GetMenuScript().c_str(), nullptr);
+                                controller->put_Bounds(webView->MenuBounds());
+
+                                browser->Navigate(webView->SettingsNavigation().c_str());
+
+                                browser->ExecuteScript(webView->GetMenuScript().c_str(), nullptr);
                                 browser->AddScriptToExecuteOnDocumentCreated(
-                                    GetMenuScript().c_str(), nullptr);
+                                    webView->GetMenuScript().c_str(), nullptr);
 
                                 browser->add_DocumentTitleChanged(
                                     Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
                                         [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                         {
-                                            SetWindowTitle();
+                                            webView->SetWindowTitle();
 
                                             return S_OK;
                                         })
@@ -75,7 +77,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                     Callback<ICoreWebView2FaviconChangedEventHandler>(
                                         [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                         {
-                                            SetWindowIcon();
+                                            webView->SetWindowIcon();
 
                                             return S_OK;
                                         })
@@ -88,8 +90,8 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                             ICoreWebView2WebMessageReceivedEventArgs* args)
                                             -> HRESULT
                                         {
-                                            if (VerifySettingsUrl(args))
-                                                Messages(args);
+                                            if (webView->VerifySettingsUrl(args))
+                                                webView->Messages(args);
 
                                             return S_OK;
                                         })
@@ -140,19 +142,19 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
 
                             if (browser)
                             {
-                                controller->put_Bounds(MainBounds());
-                                browser->Navigate(MainNavigation().c_str());
+                                controller->put_Bounds(webView->MainBounds());
 
-                                auto script = GetScript();
-                                browser->ExecuteScript(script.c_str(), nullptr);
-                                browser->AddScriptToExecuteOnDocumentCreated(script.c_str(),
-                                                                             nullptr);
+                                browser->Navigate(webView->MainNavigation().c_str());
+
+                                browser->ExecuteScript(webView->GetScript().c_str(), nullptr);
+                                browser->AddScriptToExecuteOnDocumentCreated(
+                                    webView->GetScript().c_str(), nullptr);
 
                                 browser->add_DocumentTitleChanged(
                                     Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
                                         [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                         {
-                                            SetWindowTitle();
+                                            webView->SetWindowTitle();
 
                                             return S_OK;
                                         })
@@ -163,7 +165,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                     Callback<ICoreWebView2FaviconChangedEventHandler>(
                                         [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                         {
-                                            SetWindowIcon();
+                                            webView->SetWindowIcon();
 
                                             return S_OK;
                                         })
@@ -176,7 +178,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                             ICoreWebView2WebMessageReceivedEventArgs* args)
                                             -> HRESULT
                                         {
-                                            Messages(args);
+                                            webView->Messages(args);
 
                                             return S_OK;
                                         })
@@ -227,19 +229,19 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
 
                             if (browser)
                             {
-                                controller->put_Bounds(SideBounds());
-                                browser->Navigate(SideNavigation().c_str());
+                                controller->put_Bounds(webView->SideBounds());
 
-                                auto script = GetScript();
-                                browser->ExecuteScript(script.c_str(), nullptr);
-                                browser->AddScriptToExecuteOnDocumentCreated(script.c_str(),
-                                                                             nullptr);
+                                browser->Navigate(webView->SideNavigation().c_str());
+
+                                browser->ExecuteScript(webView->GetScript().c_str(), nullptr);
+                                browser->AddScriptToExecuteOnDocumentCreated(
+                                    webView->GetScript().c_str(), nullptr);
 
                                 browser->add_DocumentTitleChanged(
                                     Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
                                         [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                         {
-                                            SetWindowTitle();
+                                            webView->SetWindowTitle();
 
                                             return S_OK;
                                         })
@@ -250,7 +252,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                     Callback<ICoreWebView2FaviconChangedEventHandler>(
                                         [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                         {
-                                            SetWindowIcon();
+                                            webView->SetWindowIcon();
 
                                             return S_OK;
                                         })
@@ -263,7 +265,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                             ICoreWebView2WebMessageReceivedEventArgs* args)
                                             -> HRESULT
                                         {
-                                            Messages(args);
+                                            webView->Messages(args);
 
                                             return S_OK;
                                         })
