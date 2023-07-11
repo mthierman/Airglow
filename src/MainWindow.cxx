@@ -148,21 +148,19 @@ void MainWindow::Show()
 
     if (!pConfig->settings.fullscreen & !pConfig->settings.maximized)
     {
-        SetWindowPos(this->hwnd, nullptr, pConfig->settings.position[0],
-                     pConfig->settings.position[1], pConfig->settings.position[2],
-                     pConfig->settings.position[3], 0);
-        ShowWindow(this->hwnd, SW_SHOWNORMAL);
+        SetWindowPos(hwnd, nullptr, pConfig->settings.position[0], pConfig->settings.position[1],
+                     pConfig->settings.position[2], pConfig->settings.position[3], 0);
+        ShowWindow(hwnd, SW_SHOWNORMAL);
     }
 
     if (!pConfig->settings.fullscreen & pConfig->settings.maximized)
-        ShowWindow(this->hwnd, SW_MAXIMIZE);
+        ShowWindow(hwnd, SW_MAXIMIZE);
 
     if (pConfig->settings.fullscreen)
     {
-        SetWindowPos(this->hwnd, nullptr, pConfig->settings.position[0],
-                     pConfig->settings.position[1], pConfig->settings.position[2],
-                     pConfig->settings.position[3], 0);
-        ShowWindow(this->hwnd, SW_SHOWNORMAL);
+        SetWindowPos(hwnd, nullptr, pConfig->settings.position[0], pConfig->settings.position[1],
+                     pConfig->settings.position[2], pConfig->settings.position[3], 0);
+        ShowWindow(hwnd, SW_SHOWNORMAL);
         Fullscreen();
     }
 
@@ -173,10 +171,9 @@ void MainWindow::Show()
 
     else
     {
-        SetWindowPos(this->hwnd, nullptr, pConfig->settings.position[0],
-                     pConfig->settings.position[1], pConfig->settings.position[2],
-                     pConfig->settings.position[3], 0);
-        ShowWindow(this->hwnd, SW_SHOWDEFAULT);
+        SetWindowPos(hwnd, nullptr, pConfig->settings.position[0], pConfig->settings.position[1],
+                     pConfig->settings.position[2], pConfig->settings.position[3], 0);
+        ShowWindow(hwnd, SW_SHOWDEFAULT);
     }
 
     Uncloak();
@@ -188,15 +185,15 @@ void MainWindow::Fullscreen()
 
     static RECT position;
 
-    auto style = GetWindowLongPtrW(this->hwnd, GWL_STYLE);
+    auto style = GetWindowLongPtrW(hwnd, GWL_STYLE);
     if (style & WS_OVERLAPPEDWINDOW)
     {
         MONITORINFO mi = {sizeof(mi)};
-        GetWindowRect(this->hwnd, &position);
-        if (GetMonitorInfoW(MonitorFromWindow(this->hwnd, MONITOR_DEFAULTTONEAREST), &mi))
+        GetWindowRect(hwnd, &position);
+        if (GetMonitorInfoW(MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST), &mi))
         {
-            SetWindowLongPtrW(this->hwnd, GWL_STYLE, style & ~WS_OVERLAPPEDWINDOW);
-            SetWindowPos(this->hwnd, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top,
+            SetWindowLongPtrW(hwnd, GWL_STYLE, style & ~WS_OVERLAPPEDWINDOW);
+            SetWindowPos(hwnd, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top,
                          mi.rcMonitor.right - mi.rcMonitor.left,
                          mi.rcMonitor.bottom - mi.rcMonitor.top,
                          SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
@@ -205,11 +202,11 @@ void MainWindow::Fullscreen()
 
     else
     {
-        SetWindowLongPtrW(this->hwnd, GWL_STYLE, style | WS_OVERLAPPEDWINDOW);
-        SetWindowPos(this->hwnd, nullptr, 0, 0, 0, 0,
+        SetWindowLongPtrW(hwnd, GWL_STYLE, style | WS_OVERLAPPEDWINDOW);
+        SetWindowPos(hwnd, nullptr, 0, 0, 0, 0,
                      SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
-        SetWindowPos(this->hwnd, nullptr, position.left, position.top,
-                     (position.right - position.left), (position.bottom - position.top), 0);
+        SetWindowPos(hwnd, nullptr, position.left, position.top, (position.right - position.left),
+                     (position.bottom - position.top), 0);
     }
 
     Uncloak();
@@ -219,21 +216,21 @@ void MainWindow::Topmost()
 {
     FLASHWINFO fwi{};
     fwi.cbSize = sizeof(FLASHWINFO);
-    fwi.hwnd = this->hwnd;
+    fwi.hwnd = hwnd;
     fwi.dwFlags = FLASHW_CAPTION;
     fwi.uCount = 1;
     fwi.dwTimeout = 100;
 
-    auto style = GetWindowLongPtrW(this->hwnd, GWL_EXSTYLE);
+    auto style = GetWindowLongPtrW(hwnd, GWL_EXSTYLE);
     if (style & WS_EX_TOPMOST)
     {
-        SetWindowPos(this->hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         FlashWindowEx(&fwi);
     }
 
     else
     {
-        SetWindowPos(this->hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         FlashWindowEx(&fwi);
     }
 }
@@ -296,12 +293,12 @@ bool MainWindow::SetDarkMode()
 
     if (!CheckSystemDarkMode())
     {
-        DwmSetWindowAttribute(this->hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &light, sizeof(light));
+        DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &light, sizeof(light));
 
         return false;
     }
 
-    DwmSetWindowAttribute(this->hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dark, sizeof(dark));
+    DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dark, sizeof(dark));
 
     return true;
 }
@@ -311,11 +308,11 @@ bool MainWindow::SetMica()
     MARGINS m{0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
     auto backdrop = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
 
-    if (FAILED(DwmExtendFrameIntoClientArea(this->hwnd, &m)))
+    if (FAILED(DwmExtendFrameIntoClientArea(hwnd, &m)))
         return false;
 
-    if (FAILED(DwmSetWindowAttribute(this->hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop,
-                                     sizeof(&backdrop))))
+    if (FAILED(
+            DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop, sizeof(&backdrop))))
         return false;
 
     return true;
@@ -325,7 +322,7 @@ bool MainWindow::Cloak()
 {
     auto cloak{TRUE};
 
-    if (FAILED(DwmSetWindowAttribute(this->hwnd, DWMWA_CLOAK, &cloak, sizeof(cloak))))
+    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloak, sizeof(cloak))))
         return false;
 
     return true;
@@ -335,7 +332,7 @@ bool MainWindow::Uncloak()
 {
     auto uncloak{FALSE};
 
-    if (FAILED(DwmSetWindowAttribute(this->hwnd, DWMWA_CLOAK, &uncloak, sizeof(uncloak))))
+    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &uncloak, sizeof(uncloak))))
         return false;
 
     return true;
