@@ -41,6 +41,10 @@ class MainWindow
     int _OnWindowPosChanged(HWND, WPARAM, LPARAM);
     int _OnWindowPosChanging(HWND, WPARAM, LPARAM);
 
+    HBRUSH hbrBackground{};
+    HWND hwnd{};
+    HICON hIcon{};
+
     enum PreferredAppMode
     {
         Default,

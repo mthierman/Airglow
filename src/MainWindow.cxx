@@ -20,7 +20,10 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Con
     auto hIcon{(HICON)LoadImageW(hinstance, programIcon.c_str(), IMAGE_ICON, 0, 0,
                                  LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED)};
 
-    mainWindow->pConfig->hIcon = hIcon;
+    config->hbrBackground = hbrBackground;
+    config->hIcon = hIcon;
+    mainWindow->hbrBackground = hbrBackground;
+    mainWindow->hIcon = hIcon;
 
     WNDCLASSEXW wcex{};
     wcex.cbSize = sizeof(WNDCLASSEX);
@@ -39,11 +42,13 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Con
     if (!RegisterClassExW(&wcex))
         return nullptr;
 
-    mainWindow->pConfig->hwnd = CreateWindowExW(
-        0, className.c_str(), appName.c_str(), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
-        CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, hinstance, mainWindow.get());
+    mainWindow->hwnd = CreateWindowExW(0, className.c_str(), appName.c_str(), WS_OVERLAPPEDWINDOW,
+                                       CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+                                       nullptr, nullptr, hinstance, mainWindow.get());
 
-    if (!mainWindow->pConfig->hwnd)
+    config->hwnd = mainWindow->hwnd;
+
+    if (!mainWindow->hwnd)
         return nullptr;
 
     mainWindow->Show();
@@ -341,6 +346,9 @@ int MainWindow::_OnExitSizeMove(HWND hwnd, WPARAM wparam, LPARAM lparam)
 #ifdef _DEBUG
     println("WM_EXITSIZEMOVE");
 #endif
+    if (!pConfig)
+        return 0;
+
     WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
     GetWindowPlacement(hwnd, &wp);
     if (!pConfig->settings.fullscreen & (wp.showCmd != 3))
@@ -360,6 +368,9 @@ int MainWindow::_OnGetMinMaxInfo(HWND hwnd, WPARAM wparam, LPARAM lparam)
 #ifdef _DEBUG
     println("WM_GETMINMAXINFO");
 #endif
+    if (!pConfig)
+        return 0;
+
     WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
     GetWindowPlacement(hwnd, &wp);
     if (wp.showCmd != 3)
@@ -500,7 +511,7 @@ int MainWindow::_OnPaint(HWND hwnd, WPARAM wparam, LPARAM lparam)
     RECT bounds{};
     HDC hdc = BeginPaint(hwnd, &ps);
     GetClientRect(hwnd, &bounds);
-    FillRect(hdc, &bounds, (HBRUSH)GetStockObject(BLACK_BRUSH));
+    FillRect(hdc, &bounds, pConfig->hbrBackground);
     EndPaint(hwnd, &ps);
 
     return 0;
@@ -511,6 +522,9 @@ int MainWindow::_OnSetIcon(HWND hwnd, WPARAM wparam, LPARAM lparam)
 #ifdef _DEBUG
     println("WM_SETICON");
 #endif
+    if (!pConfig)
+        return 0;
+
     SetClassLongPtrW(hwnd, GCLP_HICONSM, lparam);
     SetClassLongPtrW(hwnd, GCLP_HICON, (LONG_PTR)pConfig->hIcon);
 
@@ -544,6 +558,9 @@ int MainWindow::_OnSize(HWND hwnd, WPARAM wparam, LPARAM lparam)
 #ifdef _DEBUG
     println("WM_SIZE");
 #endif
+    if (!pConfig)
+        return 0;
+
     if (wparam == 2)
     {
         pConfig->settings.maximized = true;
@@ -567,6 +584,9 @@ int MainWindow::_OnWindowPosChanged(HWND hwnd, WPARAM wparam, LPARAM lparam)
 #ifdef _DEBUG
     println("WM_WINDOWPOSCHANGED");
 #endif
+    if (!pWebView)
+        return 0;
+
     pWebView->UpdateBounds();
 
     return 0;

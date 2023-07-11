@@ -32,6 +32,7 @@ class Config
     Paths paths{};
     Settings settings{};
     HWND hwnd{};
+    HBRUSH hbrBackground{};
     HICON hIcon{};
 
   private:

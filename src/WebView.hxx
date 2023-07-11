@@ -39,8 +39,10 @@ class WebView
     static wstring SideNavigation();
     static wstring SettingsNavigation();
     static bool VerifySettingsUrl(ICoreWebView2WebMessageReceivedEventArgs* args);
-    static void MainMessages(ICoreWebView2WebMessageReceivedEventArgs*);
-    static void SettingsMessages(ICoreWebView2WebMessageReceivedEventArgs*);
+    static void Messages(ICoreWebView2WebMessageReceivedEventArgs*);
+    // static void MainMessages(ICoreWebView2WebMessageReceivedEventArgs*);
+    // static void SettingsMessages(ICoreWebView2WebMessageReceivedEventArgs*);
+    // static void Messages(wstring);
     static void UpdateBounds();
     static void UpdateFocus();
     static void SetWindowTitle();
@@ -51,7 +53,6 @@ class WebView
   private:
     static Config* pConfig;
     static std::pair<wstring, wstring> CommandLine();
-    static void Messages(wstring);
     static RECT FullBounds();
     static RECT MenuBounds();
     static RECT MainBounds();
