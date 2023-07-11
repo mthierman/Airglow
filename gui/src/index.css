@@ -22,10 +22,7 @@
     input {
         @apply min-w-0 self-start rounded bg-black px-1 leading-relaxed shadow-md shadow-black;
     }
-    input:-internal-autofill-selected {
-        @apply bg-red-400;
-    }
-    button {
-        @apply self-end rounded border-2 border-neutral-400 hover:border-blue-400;
+    button[type="submit"] {
+        @apply bg-black self-end rounded shadow-lg shadow-black;
     }
 }
