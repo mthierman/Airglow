@@ -343,7 +343,11 @@ void WebView::Messages(ICoreWebView2WebMessageReceivedEventArgs* args)
     wil::unique_cotaskmem_string messageRaw;
     if (SUCCEEDED(args->TryGetWebMessageAsString(&messageRaw)))
     {
+        if (!pConfig)
+            return;
+
         auto message = to_string(wstring(messageRaw.get()));
+
         if (message.compare(0, 8, "mainUrl ") == 0)
         {
 #ifdef _DEBUG
@@ -365,12 +369,7 @@ void WebView::Messages(ICoreWebView2WebMessageReceivedEventArgs* args)
 #ifdef _DEBUG
             println("F1 (WebView)");
 #endif
-            pConfig->settings.split = bool_toggle(pConfig->settings.split);
-            WebView::UpdateBounds();
-            WebView::UpdateFocus();
-            WebView::SetWindowTitle();
-            WebView::SetWindowIcon();
-            pConfig->Save();
+            SendMessageW(pConfig->hwnd, WM_KEYDOWN, VK_F1, 0);
         }
 
         if (message == swapKey)
@@ -378,12 +377,7 @@ void WebView::Messages(ICoreWebView2WebMessageReceivedEventArgs* args)
 #ifdef _DEBUG
             println("F2 (WebView)");
 #endif
-            pConfig->settings.swapped = bool_toggle(pConfig->settings.swapped);
-            WebView::UpdateBounds();
-            WebView::UpdateFocus();
-            WebView::SetWindowTitle();
-            WebView::SetWindowIcon();
-            pConfig->Save();
+            SendMessageW(pConfig->hwnd, WM_KEYDOWN, VK_F2, 0);
         }
 
         if (message == hideMenuKey)
@@ -391,12 +385,7 @@ void WebView::Messages(ICoreWebView2WebMessageReceivedEventArgs* args)
 #ifdef _DEBUG
             println("F4 (WebView)");
 #endif
-            pConfig->settings.menu = bool_toggle(pConfig->settings.menu);
-            WebView::UpdateBounds();
-            WebView::UpdateFocus();
-            WebView::SetWindowTitle();
-            WebView::SetWindowIcon();
-            pConfig->Save();
+            SendMessageW(pConfig->hwnd, WM_KEYDOWN, VK_F4, 0);
         }
 
         if (message == maximizeKey)
@@ -404,21 +393,7 @@ void WebView::Messages(ICoreWebView2WebMessageReceivedEventArgs* args)
 #ifdef _DEBUG
             println("F6 (WebView)");
 #endif
-            if (!pConfig->settings.fullscreen)
-            {
-                WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
-                GetWindowPlacement(pConfig->hwnd, &wp);
-                if (wp.showCmd == 3)
-                {
-                    ShowWindow(pConfig->hwnd, SW_SHOWNORMAL);
-                    SetWindowPos(pConfig->hwnd, nullptr, pConfig->settings.position[0],
-                                 pConfig->settings.position[1], pConfig->settings.position[2],
-                                 pConfig->settings.position[3], 0);
-                }
-
-                else
-                    ShowWindow(pConfig->hwnd, SW_MAXIMIZE);
-            }
+            SendMessageW(pConfig->hwnd, WM_KEYDOWN, VK_F6, 0);
         }
 
         if (message == fullscreenKey)
@@ -426,10 +401,7 @@ void WebView::Messages(ICoreWebView2WebMessageReceivedEventArgs* args)
 #ifdef _DEBUG
             println("F11 (WebView)");
 #endif
-            pConfig->settings.fullscreen = bool_toggle(pConfig->settings.fullscreen);
-            Fullscreen();
-            WebView::UpdateBounds();
-            pConfig->Save();
+            SendMessageW(pConfig->hwnd, WM_KEYDOWN, VK_F11, 0);
         }
 
         if (message == onTopKey)
@@ -437,10 +409,7 @@ void WebView::Messages(ICoreWebView2WebMessageReceivedEventArgs* args)
 #ifdef _DEBUG
             println("F9 (WebView)");
 #endif
-            pConfig->settings.topmost = bool_toggle(pConfig->settings.topmost);
-            Topmost();
-            WebView::SetWindowTitle();
-            pConfig->Save();
+            SendMessageW(pConfig->hwnd, WM_KEYDOWN, VK_F9, 0);
         }
 
         if (message == closeKey)
