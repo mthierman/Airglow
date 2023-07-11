@@ -11,11 +11,10 @@ export default function App() {
     }
 
     return (
-        <div>
-            <form id="settings" method="post" onSubmit={handleForm}>
-                <h1>Settings</h1>
-                <div className="setting">
-                    <label>Main URL</label>
+        <form id="settings" method="post" onSubmit={handleForm}>
+            <div id="url">
+                <label>
+                    Main URL
                     <input
                         type="url"
                         name="mainUrl"
@@ -23,10 +22,10 @@ export default function App() {
                         pattern="https://.*"
                         required
                     />
-                </div>
+                </label>
 
-                <div className="setting">
-                    <label>Side URL</label>
+                <label>
+                    Side URL
                     <input
                         type="url"
                         name="sideUrl"
@@ -34,13 +33,10 @@ export default function App() {
                         pattern="https://.*"
                         required
                     />
-                </div>
-                <button
-                    className="rounded border-2 border-neutral-400 p-1 hover:border-blue-400"
-                    type="submit">
-                    💾 Save
-                </button>
-            </form>
-        </div>
+                </label>
+            </div>
+
+            <button type="submit">💾 Save</button>
+        </form>
     );
 }

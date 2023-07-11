@@ -2,28 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
-html,
-body,
-#root {
-    width: 100%;
-    height: 100%;
-    background-color: transparent;
-}
-
 @layer base {
-    h1 {
-        @apply text-2xl;
+    html,
+    body {
+        @apply h-full;
+    }
+    #root {
+        @apply grid min-h-full p-4;
     }
     #settings {
-        @apply flex flex-col gap-2 p-2;
+        @apply grid h-full gap-2 border-2 border-yellow-400;
     }
-    .setting {
-        @apply flex flex-row flex-wrap items-center gap-2;
+    #url {
+        @apply grid gap-2 self-start;
     }
     label {
-        @apply min-w-[25%] whitespace-nowrap;
+        @apply grid gap-2 whitespace-nowrap border-2 border-blue-400;
     }
     input {
-        @apply min-w-0 flex-shrink flex-grow rounded p-2;
+        @apply grid min-w-0 self-start rounded p-2;
+    }
+    button {
+        @apply self-end rounded border-2 border-neutral-400 hover:border-blue-400;
     }
 }
