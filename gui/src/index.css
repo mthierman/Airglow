@@ -5,7 +5,7 @@
 @layer base {
     html,
     body {
-        @apply h-full;
+        @apply h-full bg-transparent;
     }
     #root {
         @apply grid min-h-full p-4;
@@ -17,12 +17,12 @@
         @apply grid gap-4 self-start;
     }
     label {
-        @apply grid gap-2 whitespace-nowrap;
+        @apply grid gap-2 whitespace-nowrap text-xl leading-none;
     }
     input {
-        @apply min-w-0 self-start rounded bg-black px-1 leading-relaxed shadow-md shadow-black;
+        @apply min-w-0 self-start rounded bg-[#FFFFFF80] px-1 text-lg leading-relaxed shadow-md shadow-gray-400 dark:bg-[#00000080] dark:shadow-black;
     }
     button[type="submit"] {
-        @apply bg-black self-end rounded shadow-lg shadow-black;
+        @apply scale-100 self-end rounded bg-[#FFFFFF80] text-2xl shadow-lg shadow-gray-400 duration-100 ease-linear hover:bg-green-400 focus:scale-90 dark:bg-[#00000080] dark:shadow-black dark:hover:bg-green-800;
     }
 }

@@ -40,7 +40,7 @@ export default function App() {
                 </label>
             </div>
 
-            <button type="submit">💾 Save</button>
+            <button type="submit">Save</button>
         </form>
     );
 }

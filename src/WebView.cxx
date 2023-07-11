@@ -284,146 +284,6 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
     return webView;
 }
 
-wstring WebView::MainNavigation()
-{
-    auto args = CommandLine();
-
-    if (!args.first.empty())
-    {
-        return args.first;
-    }
-
-    return to_wide(pConfig->settings.mainUrl);
-}
-
-wstring WebView::SideNavigation()
-{
-    auto args = CommandLine();
-
-    if (!args.second.empty())
-    {
-        return args.second;
-    }
-
-    return to_wide(pConfig->settings.sideUrl);
-}
-
-wstring WebView::SettingsNavigation()
-{
-#ifdef _DEBUG
-    return L"https://localhost:8000/";
-#endif
-
-    return L"about:blank";
-}
-
-bool WebView::VerifySettingsUrl(ICoreWebView2WebMessageReceivedEventArgs* args)
-{
-    wil::unique_cotaskmem_string uri;
-    args->get_Source(&uri);
-    wstring sourceUri = uri.get();
-    wstring verifyUri = L"about:blank";
-#ifdef _DEBUG
-    verifyUri = L"https://localhost:8000/";
-#endif
-    if (sourceUri != verifyUri)
-        return false;
-
-    return true;
-}
-
-void WebView::Messages(ICoreWebView2WebMessageReceivedEventArgs* args)
-{
-    string splitKey{"F1"};
-    string swapKey{"F2"};
-    string hideMenuKey{"F4"};
-    string maximizeKey{"F6"};
-    string fullscreenKey{"F11"};
-    string onTopKey{"F9"};
-    string closeKey{"close"};
-
-    wil::unique_cotaskmem_string messageRaw;
-    if (SUCCEEDED(args->TryGetWebMessageAsString(&messageRaw)))
-    {
-        if (!pConfig)
-            return;
-
-        auto message = to_string(wstring(messageRaw.get()));
-
-        if (message.compare(0, 8, "mainUrl ") == 0)
-        {
-#ifdef _DEBUG
-            println("mainUrl (WebView)");
-#endif
-            pConfig->settings.mainUrl = message.substr(8);
-        }
-
-        if (message.compare(0, 8, "sideUrl ") == 0)
-        {
-#ifdef _DEBUG
-            println("sideUrl (WebView)");
-#endif
-            pConfig->settings.sideUrl = message.substr(8);
-        }
-
-        if (message == splitKey)
-        {
-#ifdef _DEBUG
-            println("F1 (WebView)");
-#endif
-            SendMessageW(pConfig->hwnd, WM_KEYDOWN, VK_F1, 0);
-        }
-
-        if (message == swapKey)
-        {
-#ifdef _DEBUG
-            println("F2 (WebView)");
-#endif
-            SendMessageW(pConfig->hwnd, WM_KEYDOWN, VK_F2, 0);
-        }
-
-        if (message == hideMenuKey)
-        {
-#ifdef _DEBUG
-            println("F4 (WebView)");
-#endif
-            SendMessageW(pConfig->hwnd, WM_KEYDOWN, VK_F4, 0);
-        }
-
-        if (message == maximizeKey)
-        {
-#ifdef _DEBUG
-            println("F6 (WebView)");
-#endif
-            SendMessageW(pConfig->hwnd, WM_KEYDOWN, VK_F6, 0);
-        }
-
-        if (message == fullscreenKey)
-        {
-#ifdef _DEBUG
-            println("F11 (WebView)");
-#endif
-            SendMessageW(pConfig->hwnd, WM_KEYDOWN, VK_F11, 0);
-        }
-
-        if (message == onTopKey)
-        {
-#ifdef _DEBUG
-            println("F9 (WebView)");
-#endif
-            SendMessageW(pConfig->hwnd, WM_KEYDOWN, VK_F9, 0);
-        }
-
-        if (message == closeKey)
-        {
-#ifdef _DEBUG
-            println("Ctrl+W (WebView)");
-#endif
-            SendMessageW(pConfig->hwnd, WM_KEYDOWN, 0x57, 0);
-        }
-    }
-}
-
 void WebView::UpdateBounds()
 {
     if (!Browsers::Settings::controller || !Browsers::Main::controller ||
@@ -638,6 +498,153 @@ std::pair<wstring, wstring> WebView::CommandLine()
     }
 
     return commands;
+}
+
+wstring WebView::MainNavigation()
+{
+    auto args = CommandLine();
+
+    if (!args.first.empty())
+    {
+        return args.first;
+    }
+
+    return to_wide(pConfig->settings.mainUrl);
+}
+
+wstring WebView::SideNavigation()
+{
+    auto args = CommandLine();
+
+    if (!args.second.empty())
+    {
+        return args.second;
+    }
+
+    return to_wide(pConfig->settings.sideUrl);
+}
+
+bool WebView::VerifySettingsUrl(ICoreWebView2WebMessageReceivedEventArgs* args)
+{
+    wil::unique_cotaskmem_string uri;
+    args->get_Source(&uri);
+    wstring sourceUri = uri.get();
+    wstring verifyUri = L"about:blank";
+#ifdef _DEBUG
+    // verifyUri = L"https://localhost:8000/";
+    verifyUri = L"http://localhost:8000/";
+#endif
+    if (sourceUri != verifyUri)
+        return false;
+
+    return true;
+}
+
+wstring WebView::SettingsNavigation()
+{
+#ifdef _DEBUG
+    // return L"https://localhost:8000/";
+    return L"http://localhost:8000/";
+
+#endif
+
+    return L"about:blank";
+}
+
+void WebView::Messages(ICoreWebView2WebMessageReceivedEventArgs* args)
+{
+    string splitKey{"F1"};
+    string swapKey{"F2"};
+    string hideMenuKey{"F4"};
+    string maximizeKey{"F6"};
+    string fullscreenKey{"F11"};
+    string onTopKey{"F9"};
+    string closeKey{"close"};
+
+    wil::unique_cotaskmem_string messageRaw;
+    if (SUCCEEDED(args->TryGetWebMessageAsString(&messageRaw)))
+    {
+        if (!pConfig)
+            return;
+
+        auto message = to_string(wstring(messageRaw.get()));
+
+#ifdef _DEBUG
+        println(message);
+#endif
+
+        if (message.compare(0, 8, "mainUrl ") == 0)
+        {
+#ifdef _DEBUG
+            println("mainUrl (WebView)");
+#endif
+            pConfig->settings.mainUrl = message.substr(8);
+        }
+
+        if (message.compare(0, 8, "sideUrl ") == 0)
+        {
+#ifdef _DEBUG
+            println("sideUrl (WebView)");
+#endif
+            pConfig->settings.sideUrl = message.substr(8);
+        }
+
+        if (message == splitKey)
+        {
+#ifdef _DEBUG
+            println("F1 (WebView)");
+#endif
+            SendMessageW(pConfig->hwnd, WM_KEYDOWN, VK_F1, 0);
+        }
+
+        if (message == swapKey)
+        {
+#ifdef _DEBUG
+            println("F2 (WebView)");
+#endif
+            SendMessageW(pConfig->hwnd, WM_KEYDOWN, VK_F2, 0);
+        }
+
+        if (message == hideMenuKey)
+        {
+#ifdef _DEBUG
+            println("F4 (WebView)");
+#endif
+            SendMessageW(pConfig->hwnd, WM_KEYDOWN, VK_F4, 0);
+        }
+
+        if (message == maximizeKey)
+        {
+#ifdef _DEBUG
+            println("F6 (WebView)");
+#endif
+            SendMessageW(pConfig->hwnd, WM_KEYDOWN, VK_F6, 0);
+        }
+
+        if (message == fullscreenKey)
+        {
+#ifdef _DEBUG
+            println("F11 (WebView)");
+#endif
+            SendMessageW(pConfig->hwnd, WM_KEYDOWN, VK_F11, 0);
+        }
+
+        if (message == onTopKey)
+        {
+#ifdef _DEBUG
+            println("F9 (WebView)");
+#endif
+            SendMessageW(pConfig->hwnd, WM_KEYDOWN, VK_F9, 0);
+        }
+
+        if (message == closeKey)
+        {
+#ifdef _DEBUG
+            println("Ctrl+W (WebView)");
+#endif
+            SendMessageW(pConfig->hwnd, WM_KEYDOWN, 0x57, 0);
+        }
+    }
 }
 
 RECT WebView::FullBounds() { return get_rect(pConfig->hwnd); }

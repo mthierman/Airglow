@@ -35,11 +35,6 @@ class WebView
 {
   public:
     static std::unique_ptr<WebView> Create(Config*);
-    wstring MainNavigation();
-    wstring SideNavigation();
-    wstring SettingsNavigation();
-    bool VerifySettingsUrl(ICoreWebView2WebMessageReceivedEventArgs* args);
-    void Messages(ICoreWebView2WebMessageReceivedEventArgs*);
     void UpdateBounds();
     void UpdateFocus();
     void SetWindowTitle();
@@ -48,6 +43,11 @@ class WebView
   private:
     static Config* pConfig;
     std::pair<wstring, wstring> CommandLine();
+    wstring MainNavigation();
+    wstring SideNavigation();
+    bool VerifySettingsUrl(ICoreWebView2WebMessageReceivedEventArgs* args);
+    wstring SettingsNavigation();
+    void Messages(ICoreWebView2WebMessageReceivedEventArgs*);
     RECT FullBounds();
     RECT MenuBounds();
     RECT MainBounds();
