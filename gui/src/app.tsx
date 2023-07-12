@@ -16,6 +16,10 @@ const useStyles = makeStyles({
 });
 
 export default function App() {
+    window.chrome.webview.addEventListener("message", (arg: any) => {
+        console.log(arg.data);
+    });
+
     function handleForm(e: any) {
         e.preventDefault();
         const data = new FormData(e.target);

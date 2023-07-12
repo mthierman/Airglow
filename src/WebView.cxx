@@ -31,7 +31,8 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
 
                             EventRegistrationToken tokenTitle;
                             EventRegistrationToken tokenFavicon;
-                            EventRegistrationToken tokenMsg;
+                            EventRegistrationToken tokenReceivedMsg;
+                            EventRegistrationToken tokenPostMsg;
 
                             if (!c)
                                 return E_POINTER;
@@ -73,6 +74,23 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                             browser->AddScriptToExecuteOnDocumentCreated(
                                 webView->GetScriptFile().c_str(), nullptr);
 
+                            browser->add_NavigationCompleted(
+                                Callback<ICoreWebView2NavigationCompletedEventHandler>(
+                                    [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                    {
+                                        browser->PostWebMessageAsString(
+                                            to_wide(string{"mainUrl " + pConfig->settings.mainUrl})
+                                                .c_str());
+                                        browser->PostWebMessageAsString(
+                                            to_wide(string{"sideUrl " + pConfig->settings.sideUrl})
+                                                .c_str());
+                                        // browser->PostWebMessageAsJson();
+
+                                        return S_OK;
+                                    })
+                                    .Get(),
+                                &tokenPostMsg);
+
                             browser->add_DocumentTitleChanged(
                                 Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
                                     [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
@@ -106,7 +124,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                         return S_OK;
                                     })
                                     .Get(),
-                                &tokenMsg);
+                                &tokenReceivedMsg);
 
                             return S_OK;
                         })
