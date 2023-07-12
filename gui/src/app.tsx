@@ -71,7 +71,7 @@ export default function App() {
                             type="text"
                             name="mainUrl"
                             id="mainUrl"
-                            placeholder={mainUrl}
+                            // placeholder={mainUrl}
                             contentBefore="https://"
                             pattern=".*[.].*"></Input>
                     </Label>
@@ -85,7 +85,7 @@ export default function App() {
                             type="text"
                             name="sideUrl"
                             id="sideUrl"
-                            placeholder={sideUrl}
+                            // placeholder={sideUrl}
                             contentBefore="https://"
                             pattern=".*[.].*"></Input>
                     </Label>
