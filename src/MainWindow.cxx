@@ -143,9 +143,6 @@ __int64 __stdcall MainWindow::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARA
 
 void MainWindow::Show()
 {
-#ifdef _DEBUG
-    println("MainWindow::Show()");
-#endif
     Cloak();
 
     SetDarkTitle();

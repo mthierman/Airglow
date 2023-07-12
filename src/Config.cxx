@@ -36,9 +36,7 @@ void Config::Save()
     }
     catch (const std::exception& e)
     {
-#ifdef _DEBUG
-        println(e.what());
-#endif
+        return;
     }
 }
 
@@ -73,9 +71,7 @@ void Config::Load()
         }
         catch (const std::exception& e)
         {
-#ifdef _DEBUG
-            println(e.what());
-#endif
+            return;
         }
     }
 }

@@ -383,11 +383,11 @@ void WebView::SetWindowIcon()
 
     if (pConfig->settings.menu)
     {
-#ifdef _DEBUG
-        LPWSTR faviconUri;
-        Browsers::Settings::browser->get_FaviconUri(&faviconUri);
-        wprintln(wstring(faviconUri));
-#endif
+        // #ifdef _DEBUG
+        //         LPWSTR faviconUri;
+        //         Browsers::Settings::browser->get_FaviconUri(&faviconUri);
+        //         wprintln(wstring(faviconUri));
+        // #endif
         Browsers::Settings::browser->GetFavicon(
             COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
             Callback<ICoreWebView2GetFaviconCompletedHandler>(
@@ -411,12 +411,11 @@ void WebView::SetWindowIcon()
 
     if (!pConfig->settings.swapped && !pConfig->settings.menu)
     {
-
-#ifdef _DEBUG
-        LPWSTR faviconUri;
-        Browsers::Main::browser->get_FaviconUri(&faviconUri);
-        wprintln(wstring(faviconUri));
-#endif
+        // #ifdef _DEBUG
+        //         LPWSTR faviconUri;
+        //         Browsers::Main::browser->get_FaviconUri(&faviconUri);
+        //         wprintln(wstring(faviconUri));
+        // #endif
         Browsers::Main::browser->GetFavicon(
             COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
             Callback<ICoreWebView2GetFaviconCompletedHandler>(
@@ -440,11 +439,11 @@ void WebView::SetWindowIcon()
 
     if (pConfig->settings.swapped && !pConfig->settings.menu)
     {
-#ifdef _DEBUG
-        LPWSTR faviconUri;
-        Browsers::Side::browser->get_FaviconUri(&faviconUri);
-        wprintln(wstring(faviconUri));
-#endif
+        // #ifdef _DEBUG
+        //         LPWSTR faviconUri;
+        //         Browsers::Side::browser->get_FaviconUri(&faviconUri);
+        //         wprintln(wstring(faviconUri));
+        // #endif
         Browsers::Side::browser->GetFavicon(
             COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
             Callback<ICoreWebView2GetFaviconCompletedHandler>(
