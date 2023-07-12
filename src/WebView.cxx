@@ -659,7 +659,7 @@ RECT WebView::SettingsBounds()
 
 RECT WebView::MainBounds()
 {
-    if (!pConfig->settings.split && pConfig->settings.swapped)
+    if (pConfig->settings.menu || !pConfig->settings.split && pConfig->settings.swapped)
         return RECT{0, 0, 0, 0};
 
     auto bounds{get_rect(pConfig->hwnd)};
@@ -687,15 +687,12 @@ RECT WebView::MainBounds()
         };
     }
 
-    if (pConfig->settings.menu)
-        return RECT{0, 0, 0, 0};
-
     return bounds;
 }
 
 RECT WebView::SideBounds()
 {
-    if (!pConfig->settings.split && !pConfig->settings.swapped)
+    if (pConfig->settings.menu || !pConfig->settings.split && !pConfig->settings.swapped)
         return RECT{0, 0, 0, 0};
 
     auto bounds{get_rect(pConfig->hwnd)};
@@ -722,9 +719,6 @@ RECT WebView::SideBounds()
             bounds.bottom,
         };
     }
-
-    if (pConfig->settings.menu)
-        return RECT{0, 0, 0, 0};
 
     return bounds;
 }
