@@ -1,7 +1,7 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://wixtoolset.org/schemas/v4/wxs https://raw.githubusercontent.com/wixtoolset/web/master/src/xsd4/wix.xsd">
-    <Package Name="Gooey" Manufacturer="mthierman"
+    <Package Name="Airglow" Manufacturer="mthierman"
         UpgradeCode="67120610-9552-4248-B3AD-4C4C28E0350A"
         Version="0.0.1" InstallerVersion="500">
 
@@ -13,7 +13,7 @@
 
         <Feature Id="Main">
             <Component Directory="ProgramFiles">
-                <File Source="build/Release/Gooey.exe" />
+                <File Source="build/Airglow.exe" />
             </Component>
         </Feature>
     </Package>
