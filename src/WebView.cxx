@@ -64,6 +64,10 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
 
                             controller->put_Bounds(webView->SettingsBounds());
 
+                            browser->SetVirtualHostNameToFolderMapping(
+                                L"airglow", pConfig->paths.gui.wstring().c_str(),
+                                COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
+
                             browser->Navigate(webView->SettingsNavigation().c_str());
 
                             browser->AddScriptToExecuteOnDocumentCreated(
@@ -530,17 +534,14 @@ wstring WebView::SideNavigation()
 
 bool WebView::VerifySettingsUrl(ICoreWebView2WebMessageReceivedEventArgs* args)
 {
-    wil::unique_cotaskmem_string uri;
-    args->get_Source(&uri);
-    wstring sourceUri = uri.get();
-    wstring verifyUri = L"about:blank";
+    wstring verify{L"https://airglow/index.html"};
 #ifdef _DEBUG
-    // verifyUri = L"http://localhost:8000/";
-    verifyUri = L"https://localhost:8000/";
-
-    // verifyUri = L"https://airglow/index.html";
+    verify = L"https://localhost:8000/";
 #endif
-    if (sourceUri != verifyUri)
+    wil::unique_cotaskmem_string s{};
+    args->get_Source(&s);
+    wstring source = s.get();
+    if (source != verify)
         return false;
 
     return true;
@@ -549,17 +550,9 @@ bool WebView::VerifySettingsUrl(ICoreWebView2WebMessageReceivedEventArgs* args)
 wstring WebView::SettingsNavigation()
 {
 #ifdef _DEBUG
-    // return L"http://localhost:8000/";
     return L"https://localhost:8000/";
-
-    // Browsers::Settings::browser->SetVirtualHostNameToFolderMapping(
-    //     L"airglow", pConfig->paths.gui.wstring().c_str(),
-    //     COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
-    // return L"https://airglow/index.html";
-
 #endif
-
-    return L"about:blank";
+    return L"https://airglow/index.html";
 }
 
 void WebView::Messages(ICoreWebView2WebMessageReceivedEventArgs* args)
