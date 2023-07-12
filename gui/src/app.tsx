@@ -17,30 +17,37 @@ const useStyles = makeStyles({
 });
 
 export default function App() {
-    let mainUrl;
-    let sideUrl;
-
-    // window.chrome.webview.addEventListener("message", (arg: any) => {
-    //     if (arg.data.includes("mainUrl")) {
-    //         mainUrl = arg.data.slice(8);
-    //     }
-    //     if (arg.data.includes("sideUrl")) {
-    //         sideUrl = arg.data.slice(8);
-    //     }
-    // });
-
     const styles = useStyles();
-    function handleForm(e: any) {
-        e.preventDefault();
-        const data = new FormData(e.target);
-        mainUrl = Object.fromEntries(data.entries()).mainUrl;
-        sideUrl = Object.fromEntries(data.entries()).sideUrl;
-        window.chrome.webview.postMessage(`mainUrl ${mainUrl}`);
-        window.chrome.webview.postMessage(`sideUrl ${sideUrl}`);
-    }
 
-    const [dataMainUrl, setMainUrl] = useState("");
-    const [dataSideUrl, setSideUrl] = useState("");
+    // function handleForm(e: any) {
+    //     e.preventDefault();
+    //     const data = new FormData(e.target);
+    //     let mainUrl = Object.fromEntries(data.entries()).mainUrl;
+    //     let sideUrl = Object.fromEntries(data.entries()).sideUrl;
+    //     window.chrome.webview.postMessage(`mainUrl ${mainUrl}`);
+    //     window.chrome.webview.postMessage(`sideUrl ${sideUrl}`);
+    // }
+
+    const [mainUrl, setMainUrl] = useState("");
+    const [sideUrl, setSideUrl] = useState("");
+
+    const handleForm = (e: any) => {
+        e.preventDefault();
+        const rawData = new FormData(e.target);
+        const data = Object.fromEntries(rawData.entries());
+        if (data.mainUrl.toString() != "") {
+            setMainUrl(data.mainUrl.toString());
+            window.chrome.webview.postMessage(
+                `mainUrl ${data.mainUrl.toString()}`,
+            );
+        }
+        if (data.sideUrl.toString() != "") {
+            setSideUrl(data.sideUrl.toString());
+            window.chrome.webview.postMessage(
+                `sideUrl ${data.sideUrl.toString()}`,
+            );
+        }
+    };
 
     useEffect(() => {
         const getData = async () => {
@@ -53,7 +60,6 @@ export default function App() {
                 console.error("error", error);
             }
         };
-
         getData();
     }, []);
 
@@ -68,27 +74,29 @@ export default function App() {
                     <Label>
                         <h1>
                             <span className="select-none">🏠 </span>
-                            {dataMainUrl}
+                            {mainUrl}
                         </h1>
                         <Input
+                            id="mainUrl"
                             type="url"
                             name="mainUrl"
-                            placeholder={dataMainUrl}
-                            pattern="https://.*"
-                            required></Input>
+                            placeholder={mainUrl}
+                            contentBefore="https://"
+                            pattern="https://.*"></Input>
                     </Label>
 
                     <Label>
                         <h1>
                             <span className="select-none">🔧 </span>
-                            {dataSideUrl}
+                            {sideUrl}
                         </h1>
                         <Input
+                            id="sideUrl"
                             type="url"
                             name="sideUrl"
-                            placeholder={dataSideUrl}
-                            pattern="https://.*"
-                            required></Input>
+                            placeholder={sideUrl}
+                            contentBefore="https://"
+                            pattern="https://.*"></Input>
                     </Label>
                 </div>
 
