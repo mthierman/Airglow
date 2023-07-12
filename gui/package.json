@@ -18,7 +18,7 @@
         "postcss-load-config": "latest",
         "postcss": "latest",
         "prettier-plugin-tailwindcss": "latest",
-        "prettier": "2.8.8",
+        "prettier": "latest",
         "react-dom": "latest",
         "react": "latest",
         "rollup": "latest",
