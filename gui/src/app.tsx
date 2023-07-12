@@ -6,6 +6,7 @@ import {
     Button,
     Input,
     Label,
+    Link,
 } from "@fluentui/react-components";
 import React, { useEffect, useState } from "react";
 
@@ -65,7 +66,9 @@ export default function App() {
                     <Label>
                         <h1>
                             <span className="select-none">🏠 https://</span>
-                            {mainUrl}
+                            <Link appearance="subtle" href="#">
+                                {mainUrl}
+                            </Link>
                         </h1>
                         <Input
                             type="text"
@@ -79,7 +82,9 @@ export default function App() {
                     <Label>
                         <h1>
                             <span className="select-none">🔧 https://</span>
-                            {sideUrl}
+                            <Link appearance="subtle" href="#">
+                                {sideUrl}
+                            </Link>
                         </h1>
                         <Input
                             type="text"

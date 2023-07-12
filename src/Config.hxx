@@ -20,8 +20,8 @@ class Config
         bool maximized{false};
         bool fullscreen{false};
         bool topmost{false};
-        string mainUrl{"https://www.google.com/"};
-        string sideUrl{"https://www.google.com/"};
+        string mainUrl{"google.com"};
+        string sideUrl{"google.com"};
     };
     struct Paths
     {
