@@ -46,6 +46,7 @@ void Config::Load()
     paths.config = ConfigPath();
     paths.db = DbPath();
     paths.gui = GuiPath();
+    paths.js = JsPath();
 
     if (!std::filesystem::exists(paths.config))
         Save();
@@ -115,6 +116,14 @@ path Config::GuiPath()
         return path{};
 
     return (paths.data.wstring() + path::preferred_separator + to_wide("gui"));
+}
+
+path Config::JsPath()
+{
+    if (!std::filesystem::exists(paths.data))
+        return path{};
+
+    return (paths.data.wstring() + path::preferred_separator + to_wide("Airglow.js"));
 }
 
 void Config::Tests()

@@ -70,8 +70,11 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
 
                             browser->Navigate(webView->SettingsNavigation().c_str());
 
+                            // browser->AddScriptToExecuteOnDocumentCreated(
+                            //     webView->GetMenuScript().c_str(), nullptr);
+
                             browser->AddScriptToExecuteOnDocumentCreated(
-                                webView->GetMenuScript().c_str(), nullptr);
+                                webView->GetScriptFile().c_str(), nullptr);
 
                             browser->add_DocumentTitleChanged(
                                 Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
@@ -728,12 +731,10 @@ wstring WebView::GetScriptFile()
     stringstream buffer{};
     wstring script{};
 
-    path file = (pConfig->paths.data.wstring() + path::preferred_separator + L"Airglow.js");
-
-    if (std::filesystem::exists(file))
+    if (std::filesystem::exists(pConfig->paths.js))
     {
-        ifstream f(file);
-        if (!std::filesystem::is_empty(file))
+        ifstream f(pConfig->paths.js);
+        if (!std::filesystem::is_empty(pConfig->paths.js))
         {
             buffer << f.rdbuf();
             script = to_wide(buffer.str());

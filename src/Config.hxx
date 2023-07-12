@@ -28,6 +28,7 @@ class Config
         path config{};
         path db{};
         path gui{};
+        path js{};
     };
 
     Paths paths{};
@@ -42,6 +43,7 @@ class Config
     path ConfigPath();
     path DbPath();
     path GuiPath();
+    path JsPath();
     void Tests();
 
   protected:
