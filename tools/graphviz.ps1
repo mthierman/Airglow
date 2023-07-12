@@ -1,5 +1,2 @@
 $repo = $PSScriptRoot | Split-Path
-Push-Location
-Set-Location "$repo/build/graphviz"
-dot -Tsvg graphviz.dot > graphviz.svg
-Pop-Location
+dot -Tsvg "$repo/build/graphviz/graphviz.dot" > "$repo/build/graphviz/graphviz.svg"
