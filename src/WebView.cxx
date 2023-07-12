@@ -157,7 +157,6 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
 
                             browser->Navigate(webView->MainNavigation().c_str());
 
-                            // browser->ExecuteScript(webView->GetScript().c_str(), nullptr);
                             browser->AddScriptToExecuteOnDocumentCreated(
                                 webView->GetScript().c_str(), nullptr);
 
@@ -244,7 +243,6 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
 
                             browser->Navigate(webView->SideNavigation().c_str());
 
-                            // browser->ExecuteScript(webView->GetScript().c_str(), nullptr);
                             browser->AddScriptToExecuteOnDocumentCreated(
                                 webView->GetScript().c_str(), nullptr);
 
