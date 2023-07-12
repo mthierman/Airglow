@@ -535,7 +535,7 @@ wstring WebView::MainNavigation()
         return args.first;
     }
 
-    return to_wide(pConfig->settings.mainUrl);
+    return to_wide("https://" + pConfig->settings.mainUrl);
 }
 
 wstring WebView::SideNavigation()
@@ -547,7 +547,7 @@ wstring WebView::SideNavigation()
         return args.second;
     }
 
-    return to_wide(pConfig->settings.sideUrl);
+    return to_wide("https://" + pConfig->settings.sideUrl);
 }
 
 bool WebView::VerifySettingsUrl(ICoreWebView2WebMessageReceivedEventArgs* args)

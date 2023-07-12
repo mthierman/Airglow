@@ -19,15 +19,6 @@ const useStyles = makeStyles({
 export default function App() {
     const styles = useStyles();
 
-    // function handleForm(e: any) {
-    //     e.preventDefault();
-    //     const data = new FormData(e.target);
-    //     let mainUrl = Object.fromEntries(data.entries()).mainUrl;
-    //     let sideUrl = Object.fromEntries(data.entries()).sideUrl;
-    //     window.chrome.webview.postMessage(`mainUrl ${mainUrl}`);
-    //     window.chrome.webview.postMessage(`sideUrl ${sideUrl}`);
-    // }
-
     const [mainUrl, setMainUrl] = useState("");
     const [sideUrl, setSideUrl] = useState("");
 
@@ -100,9 +91,6 @@ export default function App() {
                     </Label>
                 </div>
 
-                {/* <Button appearance="transparent" type="submit" formNoValidate>
-                    Save
-                </Button> */}
                 <Button appearance="transparent" type="submit">
                     Save
                 </Button>
