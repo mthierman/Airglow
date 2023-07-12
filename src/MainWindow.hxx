@@ -37,6 +37,9 @@ class MainWindow
     int _OnExitSizeMove(HWND, WPARAM, LPARAM);
     int _OnGetMinMaxInfo(HWND, WPARAM, LPARAM);
     int _OnKeyDown(HWND, WPARAM, LPARAM);
+    int _OnMouseHover(HWND, WPARAM, LPARAM);
+    int _OnMouseLeave(HWND, WPARAM, LPARAM);
+    int _OnMouseMove(HWND, WPARAM, LPARAM);
     int _OnMove(HWND, WPARAM, LPARAM);
     int _OnMoving(HWND, WPARAM, LPARAM);
     int _OnPaint(HWND, WPARAM, LPARAM);
@@ -57,6 +60,8 @@ class MainWindow
         ForceLight,
         Max
     };
+
+    BOOL mouseTracking{FALSE};
 
   protected:
     MainWindow(HINSTANCE, int, Config*);

@@ -113,6 +113,12 @@ __int64 __stdcall MainWindow::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARA
             return pMainWindow->_OnGetMinMaxInfo(hwnd, wparam, lparam);
         case WM_KEYDOWN:
             return pMainWindow->_OnKeyDown(hwnd, wparam, lparam);
+        case WM_MOUSEHOVER:
+            return pMainWindow->_OnMouseHover(hwnd, wparam, lparam);
+        case WM_MOUSELEAVE:
+            return pMainWindow->_OnMouseLeave(hwnd, wparam, lparam);
+        case WM_MOUSEMOVE:
+            return pMainWindow->_OnMouseMove(hwnd, wparam, lparam);
         case WM_MOVE:
             return pMainWindow->_OnMove(hwnd, wparam, lparam);
         case WM_MOVING:
@@ -533,6 +539,54 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
         if (state & 0x8000)
             PostMessageW(hwnd, WM_CLOSE, 0, 0);
     }
+
+    return 0;
+}
+
+int MainWindow::_OnMouseHover(HWND hwnd, WPARAM wparam, LPARAM lparam)
+{
+#ifdef _DEBUG
+    println("WM_MOUSEHOVER");
+#endif
+    // https://github.com/MicrosoftEdge/WebView2Feedback/issues/425
+    // https://stackoverflow.com/questions/27272944/popup-window-on-wm-mousehover-in-win32-api-how-to-close-it
+    // https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-trackmouseevent
+    // https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-trackmouseevent
+    //
+    // mouseTracking = false;
+    // TRACKMOUSEEVENT tme{};
+    // tme.cbSize = sizeof(TRACKMOUSEEVENT);
+    // tme.dwFlags = TME_LEAVE;
+    // tme.hwndTrack = hwnd;
+    // mouseTracking = TrackMouseEvent(&tme);
+
+    return 0;
+}
+
+int MainWindow::_OnMouseLeave(HWND hwnd, WPARAM wparam, LPARAM lparam)
+{
+#ifdef _DEBUG
+    println("WM_MOUSELEAVE");
+#endif
+    // mouseTracking = false;
+
+    return 0;
+}
+
+int MainWindow::_OnMouseMove(HWND hwnd, WPARAM wparam, LPARAM lparam)
+{
+#ifdef _DEBUG
+    println("WM_MOUSEMOVE");
+#endif
+    // if (!mouseTracking)
+    // {
+    //     TRACKMOUSEEVENT tme{};
+    //     tme.cbSize = sizeof(TRACKMOUSEEVENT);
+    //     tme.dwFlags = TME_HOVER;
+    //     tme.hwndTrack = hwnd;
+    //     tme.dwHoverTime = HOVER_DEFAULT;
+    //     mouseTracking = TrackMouseEvent(&tme);
+    // }
 
     return 0;
 }
