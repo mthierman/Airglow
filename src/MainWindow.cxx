@@ -548,17 +548,6 @@ int MainWindow::_OnMouseHover(HWND hwnd, WPARAM wparam, LPARAM lparam)
 #ifdef _DEBUG
     println("WM_MOUSEHOVER");
 #endif
-    // https://github.com/MicrosoftEdge/WebView2Feedback/issues/425
-    // https://stackoverflow.com/questions/27272944/popup-window-on-wm-mousehover-in-win32-api-how-to-close-it
-    // https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-trackmouseevent
-    // https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-trackmouseevent
-    //
-    // mouseTracking = false;
-    // TRACKMOUSEEVENT tme{};
-    // tme.cbSize = sizeof(TRACKMOUSEEVENT);
-    // tme.dwFlags = TME_LEAVE;
-    // tme.hwndTrack = hwnd;
-    // mouseTracking = TrackMouseEvent(&tme);
 
     return 0;
 }
@@ -568,7 +557,6 @@ int MainWindow::_OnMouseLeave(HWND hwnd, WPARAM wparam, LPARAM lparam)
 #ifdef _DEBUG
     println("WM_MOUSELEAVE");
 #endif
-    // mouseTracking = false;
 
     return 0;
 }
@@ -578,15 +566,6 @@ int MainWindow::_OnMouseMove(HWND hwnd, WPARAM wparam, LPARAM lparam)
 #ifdef _DEBUG
     println("WM_MOUSEMOVE");
 #endif
-    // if (!mouseTracking)
-    // {
-    //     TRACKMOUSEEVENT tme{};
-    //     tme.cbSize = sizeof(TRACKMOUSEEVENT);
-    //     tme.dwFlags = TME_HOVER;
-    //     tme.hwndTrack = hwnd;
-    //     tme.dwHoverTime = HOVER_DEFAULT;
-    //     mouseTracking = TrackMouseEvent(&tme);
-    // }
 
     return 0;
 }
