@@ -23,7 +23,7 @@ jobs:
           node-version: "*"
           check-latest: true
           cache: "pnpm"
-          cache-dependency-path: gui/package-lock.yaml
+          cache-dependency-path: gui/pnpm-lock.yaml
       - run: |
           Push-Location
           Set-Location gui
