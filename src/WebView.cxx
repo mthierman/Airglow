@@ -70,9 +70,6 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
 
                             browser->Navigate(webView->SettingsNavigation().c_str());
 
-                            // browser->AddScriptToExecuteOnDocumentCreated(
-                            //     webView->GetMenuScript().c_str(), nullptr);
-
                             browser->AddScriptToExecuteOnDocumentCreated(
                                 webView->GetScriptFile().c_str(), nullptr);
 
@@ -161,7 +158,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                             browser->Navigate(webView->MainNavigation().c_str());
 
                             browser->AddScriptToExecuteOnDocumentCreated(
-                                webView->GetScript().c_str(), nullptr);
+                                webView->GetScriptFile().c_str(), nullptr);
 
                             browser->add_DocumentTitleChanged(
                                 Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
@@ -247,7 +244,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                             browser->Navigate(webView->SideNavigation().c_str());
 
                             browser->AddScriptToExecuteOnDocumentCreated(
-                                webView->GetScript().c_str(), nullptr);
+                                webView->GetScriptFile().c_str(), nullptr);
 
                             browser->add_DocumentTitleChanged(
                                 Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
