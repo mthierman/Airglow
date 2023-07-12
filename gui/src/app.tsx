@@ -73,34 +73,37 @@ export default function App() {
                 <div id="url">
                     <Label>
                         <h1>
-                            <span className="select-none">🏠 </span>
+                            <span className="select-none">🏠 https://</span>
                             {mainUrl}
                         </h1>
                         <Input
-                            type="url"
+                            type="text"
                             name="mainUrl"
                             id="mainUrl"
                             placeholder={mainUrl}
                             contentBefore="https://"
-                            pattern="https://.*"></Input>
+                            pattern=".*[.].*"></Input>
                     </Label>
 
                     <Label>
                         <h1>
-                            <span className="select-none">🔧 </span>
+                            <span className="select-none">🔧 https://</span>
                             {sideUrl}
                         </h1>
                         <Input
-                            type="url"
+                            type="text"
                             name="sideUrl"
                             id="sideUrl"
                             placeholder={sideUrl}
                             contentBefore="https://"
-                            pattern="https://.*"></Input>
+                            pattern=".*[.].*"></Input>
                     </Label>
                 </div>
 
-                <Button appearance="transparent" type="submit" formNoValidate>
+                {/* <Button appearance="transparent" type="submit" formNoValidate>
+                    Save
+                </Button> */}
+                <Button appearance="transparent" type="submit">
                     Save
                 </Button>
             </form>
