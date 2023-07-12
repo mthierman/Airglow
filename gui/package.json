@@ -7,6 +7,7 @@
         "preview": "vite preview"
     },
     "devDependencies": {
+        "@fluentui/react-components": "latest",
         "@tailwindcss/typography": "latest",
         "@types/node": "latest",
         "@types/prettier": "latest",
