@@ -77,9 +77,9 @@ export default function App() {
                             {mainUrl}
                         </h1>
                         <Input
-                            id="mainUrl"
                             type="url"
                             name="mainUrl"
+                            id="mainUrl"
                             placeholder={mainUrl}
                             contentBefore="https://"
                             pattern="https://.*"></Input>
@@ -91,16 +91,16 @@ export default function App() {
                             {sideUrl}
                         </h1>
                         <Input
-                            id="sideUrl"
                             type="url"
                             name="sideUrl"
+                            id="sideUrl"
                             placeholder={sideUrl}
                             contentBefore="https://"
                             pattern="https://.*"></Input>
                     </Label>
                 </div>
 
-                <Button appearance="transparent" type="submit">
+                <Button appearance="transparent" type="submit" formNoValidate>
                     Save
                 </Button>
             </form>
