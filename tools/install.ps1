@@ -1,37 +1,23 @@
-$repo = Convert-Path $PSScriptRoot | Split-Path
+$root = $PSScriptRoot
 
-Get-Content -Raw "$repo/Airglow.json" | ConvertFrom-Json
-
-if (!(Test-Path "$env:LOCALAPPDATA/Airglow")) { New-Item -ItemType Directory "$env:LOCALAPPDATA/Airglow" }
-$appdata = "$env:LOCALAPPDATA/Airglow" | Resolve-Path
-Write-Host -ForegroundColor Cyan "Installation path:"
-Write-Host -ForegroundColor Green $appdata.Path`n
-
-if (Test-Path "$repo/build/Airglow.exe")
+if (!(Test-Path "$env:LOCALAPPDATA/Airglow")) 
 {
-    $exe = "$repo/build/Airglow.exe" | Resolve-Path
-    Write-Host -ForegroundColor Cyan "Built executable found:"
-    Write-Host -ForegroundColor Green $exe.Path`n
-    Copy-Item -Path $exe -Destination "$appdata/Airglow.exe" -Force
+    New-Item -ItemType Directory "$env:LOCALAPPDATA/Airglow" 
 }
+$destination = "$env:LOCALAPPDATA/Airglow" | Resolve-Path
 
-if (Test-Path "$repo/gui/dist")
-{
-    if (Test-Path "$appdata/gui") { Remove-Item "$appdata/gui" -Force -Recurse }
-    $gui = "$repo/gui/dist" | Resolve-Path
-    Write-Host -ForegroundColor Cyan "GUI folder found:"
-    Write-Host -ForegroundColor Green $gui.Path`n
-    Copy-Item -Path $gui -Destination $appdata -Recurse -Force
-    Rename-Item -Path "$appdata/dist" -NewName "gui" -Force
-}
+Get-Content -Raw "$root/Airglow.json" | ConvertFrom-Json
 
-Write-Host -ForegroundColor Blue "Open Airglow?"
+Write-Host -ForegroundColor Cyan "Installing to `"$($destination.Path)\Airglow.exe`"..."`n
 
-$open = Read-Host -Prompt "[y/n]"
+Copy-Item -Path "$root/Airglow.exe" -Destination "$destination/Airglow.exe"
+Copy-Item -Path "$root/gui" -Destination "$destination/gui" -Recurse
+
+$open = Read-Host -Prompt "$($PSStyle.Foreground.Green)Open Airglow? $($PSStyle.Foreground.Cyan)[y/n]"
 if ($open -eq 'y')
 {
     Write-Host -ForegroundColor Green "Launching..."`n
-    & "$appdata/Airglow.exe"
+    & "$destination/Airglow.exe"
 }
 
-Write-Host -ForegroundColor Green `n"Thanks! Goodbye!"
+Write-Host -ForegroundColor Green "🌃 Installation Successful"

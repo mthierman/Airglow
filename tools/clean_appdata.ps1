@@ -1,7 +1,4 @@
-$repo = $PSScriptRoot | Split-Path
 $appdata = "$env:LOCALAPPDATA/Airglow"
-if (Test-Path "$repo/build") { Remove-Item "$repo/build" -Force -Recurse }
-if (Test-Path "$repo/gui/dist") { Remove-Item "$repo/gui/dist" -Force -Recurse }
 if (Test-Path "$appdata/EBWebView") { Remove-Item "$appdata/EBWebView" -Force -Recurse }
 if (Test-Path "$appdata/gui") { Remove-Item "$appdata/gui" -Force -Recurse }
 if (Test-Path "$appdata/Airglow.exe") { Remove-Item "$appdata/Airglow.exe" -Force -Recurse }

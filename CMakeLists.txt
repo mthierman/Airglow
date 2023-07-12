@@ -147,14 +147,17 @@ target_link_libraries(
 
 add_custom_command(
     TARGET ${APP_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/tools/install.ps1 ${CMAKE_BINARY_DIR}/Install.ps1
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/Airglow.json ${CMAKE_BINARY_DIR}/Airglow.json
     COMMAND cd ${CMAKE_SOURCE_DIR}/gui && pnpm run build
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/gui/dist ${CMAKE_BINARY_DIR}/gui
 )
 
 if(USER_INSTALL)
     add_custom_command(
         TARGET ${APP_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/${APP_NAME}.exe $ENV{LocalAppData}/Airglow/${APP_NAME}.exe
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/gui/dist/ $ENV{LocalAppData}/Airglow/gui/
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_BINARY_DIR}/gui $ENV{LocalAppData}/Airglow/gui
     )
 endif()
 
@@ -162,6 +165,6 @@ if(SYSTEM_INSTALL)
     add_custom_command(
         TARGET ${APP_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/${APP_NAME}.exe $ENV{ProgramFiles}/Airglow/${APP_NAME}.exe
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/gui/dist/ $ENV{LocalAppData}/Airglow/gui/
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_BINARY_DIR}/gui $ENV{LocalAppData}/Airglow/gui
     )
 endif()
