@@ -147,24 +147,34 @@ target_link_libraries(
 
 add_custom_command(
     TARGET ${APP_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/tools/install.ps1 ${CMAKE_BINARY_DIR}/Install.ps1
-    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/Airglow.json ${CMAKE_BINARY_DIR}/Airglow.json
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/${APP_NAME}.exe ${CMAKE_BINARY_DIR}/${APP_NAME}/${APP_NAME}.exe
     COMMAND cd ${CMAKE_SOURCE_DIR}/gui && pnpm run build
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/gui/dist ${CMAKE_BINARY_DIR}/gui
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/gui/dist ${CMAKE_BINARY_DIR}/${APP_NAME}/gui
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/Airglow.ps1 ${CMAKE_BINARY_DIR}/${APP_NAME}/Airglow.ps1
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/Airglow.json ${CMAKE_BINARY_DIR}/${APP_NAME}/Airglow.json
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/Airglow.js ${CMAKE_BINARY_DIR}/${APP_NAME}/Airglow.js
+    COMMAND 7z a ${CMAKE_BINARY_DIR}/Airglow.zip ${CMAKE_BINARY_DIR}/${APP_NAME}/*
 )
 
 if(USER_INSTALL)
     add_custom_command(
         TARGET ${APP_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/${APP_NAME}.exe $ENV{LocalAppData}/Airglow/${APP_NAME}.exe
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_BINARY_DIR}/gui $ENV{LocalAppData}/Airglow/gui
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/${APP_NAME}/${APP_NAME}.exe $ENV{LocalAppData}/${APP_NAME}/${APP_NAME}.exe
     )
 endif()
 
 if(SYSTEM_INSTALL)
     add_custom_command(
         TARGET ${APP_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/${APP_NAME}.exe $ENV{ProgramFiles}/Airglow/${APP_NAME}.exe
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_BINARY_DIR}/gui $ENV{LocalAppData}/Airglow/gui
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/${APP_NAME}.exe $ENV{ProgramFiles}/${APP_NAME}/${APP_NAME}.exe
+    )
+endif()
+
+if(USER_INSTALL OR SYSTEM_INSTALL)
+    add_custom_command(
+        TARGET ${APP_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_BINARY_DIR}/${APP_NAME}/gui $ENV{LocalAppData}/${APP_NAME}/gui
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/${APP_NAME}/Airglow.json $ENV{LocalAppData}/${APP_NAME}/Airglow.json
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/${APP_NAME}/Airglow.js $ENV{LocalAppData}/${APP_NAME}/Airglow.js
     )
 endif()

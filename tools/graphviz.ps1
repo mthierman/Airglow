@@ -1,2 +1,2 @@
 $repo = $PSScriptRoot | Split-Path
-dot -Tsvg "$repo/build/graphviz/graphviz.dot" > "$repo/build/graphviz/graphviz.svg"
+dot -Tsvg "$repo/build/CMakeFiles/graphviz/graphviz.dot" > "$repo/build/CMakeFiles/graphviz/graphviz.svg"
