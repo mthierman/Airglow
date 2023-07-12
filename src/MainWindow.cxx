@@ -1,5 +1,9 @@
 #include "MainWindow.hxx"
 
+#ifndef DEBUG_MSG
+// #define DEBUG_MSG
+#endif
+
 Config* MainWindow::pConfig{nullptr};
 WebView* MainWindow::pWebView{nullptr};
 
@@ -363,7 +367,7 @@ bool MainWindow::Uncloak()
 
 int MainWindow::_OnActivate(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
     println("WM_ACTIVATE");
 #endif
     SavePosition();
@@ -374,7 +378,7 @@ int MainWindow::_OnActivate(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int MainWindow::_OnChar(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
     println("WM_CHAR");
 #endif
 
@@ -383,7 +387,7 @@ int MainWindow::_OnChar(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int MainWindow::_OnClose(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
     println("WM_CLOSE");
 #endif
     DestroyWindow(hwnd);
@@ -393,7 +397,7 @@ int MainWindow::_OnClose(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int MainWindow::_OnCommand(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
     println("WM_COMMAND");
 #endif
 
@@ -402,7 +406,7 @@ int MainWindow::_OnCommand(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int MainWindow::_OnCreate(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
     println("WM_CREATE");
 #endif
 
@@ -411,7 +415,7 @@ int MainWindow::_OnCreate(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int MainWindow::_OnDestroy(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
     println("WM_DESTROY");
 #endif
     PostQuitMessage(0);
@@ -421,7 +425,7 @@ int MainWindow::_OnDestroy(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int MainWindow::_OnDpiChanged(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
     println("WM_DPICHANGED");
 #endif
 
@@ -430,7 +434,7 @@ int MainWindow::_OnDpiChanged(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int MainWindow::_OnEnterSizeMove(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
     println("WM_ENTERSIZEMOVE");
 #endif
 
@@ -439,7 +443,7 @@ int MainWindow::_OnEnterSizeMove(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int MainWindow::_OnExitSizeMove(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
     println("WM_EXITSIZEMOVE");
 #endif
     SavePosition();
@@ -449,7 +453,7 @@ int MainWindow::_OnExitSizeMove(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int MainWindow::_OnGetMinMaxInfo(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
     println("WM_GETMINMAXINFO");
 #endif
     LPMINMAXINFO minmax = (LPMINMAXINFO)lparam;
@@ -463,7 +467,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
     if (wparam == VK_F1)
     {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
         println("F1");
 #endif
         pConfig->settings.split = bool_toggle(pConfig->settings.split);
@@ -476,7 +480,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
     if (wparam == VK_F2)
     {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
         println("F2");
 #endif
         pConfig->settings.swapped = bool_toggle(pConfig->settings.swapped);
@@ -489,7 +493,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
     if (wparam == VK_F4)
     {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
         println("F4");
 #endif
         pConfig->settings.menu = bool_toggle(pConfig->settings.menu);
@@ -502,7 +506,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
     if (wparam == VK_F6)
     {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
         println("F6");
 #endif
         Maximize();
@@ -510,7 +514,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
     if (wparam == VK_F11)
     {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
         println("F11");
 #endif
         pConfig->settings.fullscreen = bool_toggle(pConfig->settings.fullscreen);
@@ -521,7 +525,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
     if (wparam == VK_F9)
     {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
         println("F9");
 #endif
         pConfig->settings.topmost = bool_toggle(pConfig->settings.topmost);
@@ -532,7 +536,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
     if (wparam == 0x57)
     {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
         println("Ctrl+W");
 #endif
         auto state = GetKeyState(VK_CONTROL);
@@ -545,7 +549,7 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int MainWindow::_OnMouseHover(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
     println("WM_MOUSEHOVER");
 #endif
 
@@ -554,7 +558,7 @@ int MainWindow::_OnMouseHover(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int MainWindow::_OnMouseLeave(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
     println("WM_MOUSELEAVE");
 #endif
 
@@ -563,7 +567,7 @@ int MainWindow::_OnMouseLeave(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int MainWindow::_OnMouseMove(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
     println("WM_MOUSEMOVE");
 #endif
 
@@ -572,7 +576,7 @@ int MainWindow::_OnMouseMove(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int MainWindow::_OnMove(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
     println("WM_MOVE");
 #endif
 
@@ -581,7 +585,7 @@ int MainWindow::_OnMove(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int MainWindow::_OnMoving(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
     println("WM_MOVING");
 #endif
 
@@ -590,7 +594,7 @@ int MainWindow::_OnMoving(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int MainWindow::_OnPaint(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
     println("WM_PAINT");
 #endif
     PAINTSTRUCT ps{};
@@ -602,7 +606,7 @@ int MainWindow::_OnPaint(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int MainWindow::_OnSetIcon(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
     println("WM_SETICON");
 #endif
     pWebView->SetWindowIcon();
@@ -612,7 +616,7 @@ int MainWindow::_OnSetIcon(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int MainWindow::_OnSetFocus(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
     println("WM_SETFOCUS");
 #endif
     if (!pWebView)
@@ -625,7 +629,7 @@ int MainWindow::_OnSetFocus(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int MainWindow::_OnSetText(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
     println("WM_SETTEXT");
 #endif
 
@@ -634,7 +638,7 @@ int MainWindow::_OnSetText(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int MainWindow::_OnSettingChange(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
     println("WM_SETTINGCHANGE");
 #endif
     InvalidateRect(hwnd, nullptr, true);
@@ -645,7 +649,7 @@ int MainWindow::_OnSettingChange(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int MainWindow::_OnSize(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
     println("WM_SIZE");
 #endif
     if (wparam != 2)
@@ -668,7 +672,7 @@ int MainWindow::_OnSize(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int MainWindow::_OnSizing(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
     println("WM_SIZING");
 #endif
 
@@ -677,7 +681,7 @@ int MainWindow::_OnSizing(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int MainWindow::_OnWindowPosChanged(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
     println("WM_WINDOWPOSCHANGED");
 #endif
 
@@ -686,7 +690,7 @@ int MainWindow::_OnWindowPosChanged(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int MainWindow::_OnWindowPosChanging(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
     println("WM_WINDOWPOSCHANGING");
 #endif
 

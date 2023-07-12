@@ -5,7 +5,7 @@
 @layer base {
     html,
     body {
-        @apply h-full bg-transparent;
+        @apply h-full bg-black;
     }
     #root {
         @apply grid min-h-full p-4;
