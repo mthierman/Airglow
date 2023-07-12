@@ -4,6 +4,8 @@ import {
     webLightTheme,
     webDarkTheme,
     Button,
+    Input,
+    Label,
 } from "@fluentui/react-components";
 
 const useStyles = makeStyles({
@@ -33,31 +35,29 @@ export default function App() {
                 method="post"
                 onSubmit={handleForm}>
                 <div id="url">
-                    <label>
-                        Main URL
-                        <input
+                    <Label>
+                        Test
+                        <Input
                             type="url"
                             name="mainUrl"
                             placeholder="https://"
                             pattern="https://.*"
-                            required
-                        />
-                    </label>
+                            required></Input>
+                    </Label>
 
-                    <label>
-                        Side URL
-                        <input
+                    <Label>
+                        Test
+                        <Input
                             type="url"
                             name="sideUrl"
                             placeholder="https://"
                             pattern="https://.*"
-                            required
-                        />
-                    </label>
+                            required></Input>
+                    </Label>
                 </div>
 
-                <Button appearance="secondary" type="submit">
-                    💾 Save
+                <Button appearance="primary" type="submit">
+                    Save
                 </Button>
             </form>
         </FluentProvider>

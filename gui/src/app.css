@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html,
+    body {
+        @apply h-full bg-transparent;
+    }
+    #root {
+        @apply grid min-h-full p-4;
+    }
+    #settings {
+        @apply grid h-full gap-6;
+    }
+    #url {
+        @apply grid gap-4 self-start;
+    }
+    label {
+        @apply grid gap-2 whitespace-nowrap text-xl leading-none;
+    }
+    button[type="submit"] {
+        @apply scale-100 self-end duration-100 ease-linear active:scale-95;
+    }
+}
