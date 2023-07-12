@@ -120,6 +120,8 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                     {
                                         if (webView->VerifySettingsUrl(args))
                                             webView->Messages(args);
+                                        pConfig->Save();
+                                        webView->UpdateBounds();
 
                                         return S_OK;
                                     })

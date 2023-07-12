@@ -8,6 +8,7 @@ class Config
 {
   public:
     static std::unique_ptr<Config> Create();
+    void Load();
     void Save();
 
     struct Settings
@@ -38,7 +39,6 @@ class Config
     HICON hIcon{};
 
   private:
-    void Load();
     path DataPath();
     path ConfigPath();
     path DbPath();

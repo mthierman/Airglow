@@ -15,31 +15,6 @@ std::unique_ptr<Config> Config::Create()
     return config;
 }
 
-void Config::Save()
-{
-    try
-    {
-        json j{};
-        j["position"] = settings.position;
-        j["menu"] = settings.menu;
-        j["split"] = settings.split;
-        j["swapped"] = settings.swapped;
-        j["maximized"] = settings.maximized;
-        j["fullscreen"] = settings.fullscreen;
-        j["topmost"] = settings.topmost;
-        j["mainUrl"] = settings.mainUrl;
-        j["sideUrl"] = settings.sideUrl;
-
-        ofstream f(paths.config);
-        f << std::setw(4) << j << "\n";
-        f.close();
-    }
-    catch (const std::exception& e)
-    {
-        return;
-    }
-}
-
 void Config::Load()
 {
     paths.data = DataPath();
@@ -77,6 +52,31 @@ void Config::Load()
     }
 }
 
+void Config::Save()
+{
+    try
+    {
+        json j{};
+        j["position"] = settings.position;
+        j["menu"] = settings.menu;
+        j["split"] = settings.split;
+        j["swapped"] = settings.swapped;
+        j["maximized"] = settings.maximized;
+        j["fullscreen"] = settings.fullscreen;
+        j["topmost"] = settings.topmost;
+        j["mainUrl"] = settings.mainUrl;
+        j["sideUrl"] = settings.sideUrl;
+
+        ofstream f(paths.config);
+        f << std::setw(4) << j << "\n";
+        f.close();
+    }
+    catch (const std::exception& e)
+    {
+        return;
+    }
+}
+
 path Config::DataPath()
 {
     PWSTR buffer{};
@@ -99,7 +99,8 @@ path Config::ConfigPath()
     if (!std::filesystem::exists(paths.data))
         return path{};
 
-    return (paths.data.wstring() + path::preferred_separator + to_wide("Config.json"));
+    return (paths.data.wstring() + path::preferred_separator + to_wide("gui") +
+            path::preferred_separator + to_wide("state.json"));
 }
 
 path Config::DbPath()
