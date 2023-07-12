@@ -62,7 +62,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                             settings->put_IsWebMessageEnabled(true);
                             settings->put_IsZoomControlEnabled(false);
 
-                            controller->put_Bounds(webView->MenuBounds());
+                            controller->put_Bounds(webView->SettingsBounds());
 
                             browser->Navigate(webView->SettingsNavigation().c_str());
 
@@ -295,7 +295,7 @@ void WebView::UpdateBounds()
         !Browsers::Side::controller)
         return;
 
-    Browsers::Settings::controller->put_Bounds(MenuBounds());
+    Browsers::Settings::controller->put_Bounds(SettingsBounds());
     Browsers::Main::controller->put_Bounds(MainBounds());
     Browsers::Side::controller->put_Bounds(SideBounds());
 }
@@ -478,7 +478,7 @@ std::pair<wstring, wstring> WebView::CommandLine()
     if (number == 2)
     {
         commands.first = args[1];
-        commands.second = args[1];
+        commands.second = wstring{};
     }
 
     if (number == 3)
@@ -658,9 +658,7 @@ void WebView::Messages(ICoreWebView2WebMessageReceivedEventArgs* args)
     }
 }
 
-RECT WebView::FullBounds() { return get_rect(pConfig->hwnd); }
-
-RECT WebView::MenuBounds()
+RECT WebView::SettingsBounds()
 {
     if (!pConfig->settings.menu)
         return RECT{0, 0, 0, 0};
@@ -670,6 +668,9 @@ RECT WebView::MenuBounds()
 
 RECT WebView::MainBounds()
 {
+    if (!pConfig->settings.split && pConfig->settings.swapped)
+        return RECT{0, 0, 0, 0};
+
     auto bounds{get_rect(pConfig->hwnd)};
 
     if (!pConfig->settings.split && !pConfig->settings.swapped)
@@ -703,6 +704,9 @@ RECT WebView::MainBounds()
 
 RECT WebView::SideBounds()
 {
+    if (!pConfig->settings.split && !pConfig->settings.swapped)
+        return RECT{0, 0, 0, 0};
+
     auto bounds{get_rect(pConfig->hwnd)};
 
     if (!pConfig->settings.split & pConfig->settings.swapped)

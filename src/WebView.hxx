@@ -49,8 +49,7 @@ class WebView
     bool VerifySettingsUrl(ICoreWebView2WebMessageReceivedEventArgs* args);
     wstring SettingsNavigation();
     void Messages(ICoreWebView2WebMessageReceivedEventArgs*);
-    RECT FullBounds();
-    RECT MenuBounds();
+    RECT SettingsBounds();
     RECT MainBounds();
     RECT SideBounds();
     wstring GetScriptFile();
