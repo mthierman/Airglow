@@ -23,7 +23,11 @@ jobs:
           node-version: "*"
           check-latest: true
           cache: "pnpm"
-      - run: cd gui && pnpm install --frozen-lockfile
+      - run: |
+          Push-Location
+          Set-Location gui
+          pnpm install --frozen-lockfile
+          Pop-Location
       - uses: actions/cache@v3
         id: library-cache
         with:
