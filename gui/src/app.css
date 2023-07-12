@@ -7,6 +7,9 @@
     body {
         @apply h-full bg-transparent;
     }
+    h1 {
+        @apply text-xl;
+    }
     #root {
         @apply grid min-h-full p-4;
     }
@@ -17,9 +20,9 @@
         @apply grid gap-4 self-start;
     }
     label {
-        @apply grid gap-2 whitespace-nowrap text-xl leading-none;
+        @apply grid gap-2 whitespace-nowrap leading-none;
     }
     button[type="submit"] {
-        @apply scale-100 self-end duration-100 ease-linear active:scale-95;
+        @apply text-lg scale-100 self-end duration-100 ease-linear active:scale-95;
     }
 }

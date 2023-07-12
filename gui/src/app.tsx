@@ -20,18 +20,14 @@ export default function App() {
     let mainUrl;
     let sideUrl;
 
-    window.chrome.webview.addEventListener("message", (arg: any) => {
-        if (arg.data.includes("mainUrl")) {
-            // console.log(arg.data);
-            mainUrl = arg.data.slice(8);
-            // console.log(mainUrl);
-        }
-        if (arg.data.includes("sideUrl")) {
-            // console.log(arg.data);
-            sideUrl = arg.data.slice(8);
-            // console.log(sideUrl);
-        }
-    });
+    // window.chrome.webview.addEventListener("message", (arg: any) => {
+    //     if (arg.data.includes("mainUrl")) {
+    //         mainUrl = arg.data.slice(8);
+    //     }
+    //     if (arg.data.includes("sideUrl")) {
+    //         sideUrl = arg.data.slice(8);
+    //     }
+    // });
 
     const styles = useStyles();
     function handleForm(e: any) {
@@ -64,13 +60,16 @@ export default function App() {
     return (
         <FluentProvider className={styles.provider} theme={webDarkTheme}>
             <form
-                autoComplete="off"
+                autoComplete="on"
                 id="settings"
                 method="post"
                 onSubmit={handleForm}>
                 <div id="url">
                     <Label>
-                        Test
+                        <h1>
+                            <span className="select-none">🏠 </span>
+                            {dataMainUrl}
+                        </h1>
                         <Input
                             type="url"
                             name="mainUrl"
@@ -80,7 +79,10 @@ export default function App() {
                     </Label>
 
                     <Label>
-                        Test
+                        <h1>
+                            <span className="select-none">🔧 </span>
+                            {dataSideUrl}
+                        </h1>
                         <Input
                             type="url"
                             name="sideUrl"
@@ -90,7 +92,7 @@ export default function App() {
                     </Label>
                 </div>
 
-                <Button appearance="primary" type="submit">
+                <Button appearance="transparent" type="submit">
                     Save
                 </Button>
             </form>
