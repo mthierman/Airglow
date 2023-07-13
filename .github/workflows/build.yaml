@@ -46,12 +46,12 @@ jobs:
 
           $zip = Get-Item "build/Airglow.zip"
           $version = Get-Content "build/app_version.txt"
-          $notes = Get-Item "build/release_notes.txt"
+          $notes = Get-Content "build/release_notes.txt"
 
           if ("${{ github.ref_name }}" -eq "main") {
-            gh release create stable $zip -F $notes -t "Airglow $version"
+            gh release create stable $zip -n $notes -t "Airglow $version"
           }
 
           if ("${{ github.ref_name }}" -eq "dev") {
-            gh release create nightly $zip -F $notes -t $title "Airglow Nightly"
+            gh release create nightly $zip -n $notes -t "Airglow Nightly"
           }
