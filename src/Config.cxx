@@ -22,6 +22,8 @@ void Config::Load()
     paths.db = DbPath();
     paths.gui = GuiPath();
     paths.js = JsPath();
+    settings.accentColor =
+        get_system_color(winrt::Windows::UI::ViewManagement::UIColorType::Accent);
 
     if (!std::filesystem::exists(paths.config))
         Save();
@@ -44,6 +46,7 @@ void Config::Load()
             settings.topmost = j["topmost"].get<bool>();
             settings.mainUrl = j["mainUrl"].get<string>();
             settings.sideUrl = j["sideUrl"].get<string>();
+            settings.accentColor = j["accentColor"].get<string>();
         }
         catch (const std::exception& e)
         {
@@ -66,6 +69,7 @@ void Config::Save()
         j["topmost"] = settings.topmost;
         j["mainUrl"] = settings.mainUrl;
         j["sideUrl"] = settings.sideUrl;
+        j["accentColor"] = settings.accentColor;
 
         ofstream f(paths.config);
         f << std::setw(4) << j << "\n";
@@ -99,8 +103,7 @@ path Config::ConfigPath()
     if (!std::filesystem::exists(paths.data))
         return path{};
 
-    return (paths.data.wstring() + path::preferred_separator + to_wide("gui") +
-            path::preferred_separator + to_wide("state.json"));
+    return (paths.data.wstring() + path::preferred_separator + to_wide("Config.json"));
 }
 
 path Config::DbPath()
@@ -131,6 +134,7 @@ void Config::Tests()
 {
     println(settings.mainUrl);
     println(settings.sideUrl);
+    println(settings.accentColor);
     println(bool_to_string(settings.fullscreen));
     println(bool_to_string(settings.maximized));
     println(bool_to_string(settings.menu));

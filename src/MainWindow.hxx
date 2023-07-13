@@ -20,7 +20,6 @@ class MainWindow
     void Topmost();
     void Maximize();
     void SavePosition();
-    bool CheckSystemDarkMode();
     bool SetDarkTitle();
     bool SetDarkMode();
     bool SetMica();

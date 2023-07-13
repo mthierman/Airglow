@@ -22,6 +22,7 @@ class Config
         bool topmost{false};
         string mainUrl{"google.com"};
         string sideUrl{"google.com"};
+        string accentColor{""};
     };
     struct Paths
     {

@@ -27,4 +27,6 @@ void dberror(string in);
 RECT get_rect(HWND hwnd);
 std::vector<int> rect_to_bounds(RECT);
 RECT bounds_to_rect(std::vector<int>);
+bool check_system_dark_mode();
+string get_system_color(winrt::Windows::UI::ViewManagement::UIColorType);
 }; // namespace util

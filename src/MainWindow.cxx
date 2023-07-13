@@ -281,17 +281,6 @@ void MainWindow::SavePosition()
     }
 }
 
-bool MainWindow::CheckSystemDarkMode()
-{
-    using namespace winrt::Windows::UI;
-    using namespace winrt::Windows::UI::ViewManagement;
-
-    UISettings settings{UISettings()};
-    Color fg{settings.GetColorValue(UIColorType::Foreground)};
-
-    return (((5 * fg.G) + (2 * fg.R) + fg.B) > (8 * 128));
-}
-
 bool MainWindow::SetDarkTitle()
 {
     using fnSetPreferredAppMode = PreferredAppMode(WINAPI*)(PreferredAppMode appMode);
@@ -318,7 +307,7 @@ bool MainWindow::SetDarkMode()
     auto dark{TRUE};
     auto light{FALSE};
 
-    if (!CheckSystemDarkMode())
+    if (!check_system_dark_mode())
     {
         DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &light, sizeof(light));
 

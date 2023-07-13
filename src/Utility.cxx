@@ -86,4 +86,26 @@ RECT bounds_to_rect(std::vector<int> bounds)
 {
     return RECT{bounds[0], bounds[1], (bounds[0] + bounds[2]), (bounds[1] + bounds[3])};
 }
+
+bool check_system_dark_mode()
+{
+    using namespace winrt::Windows::UI;
+    using namespace winrt::Windows::UI::ViewManagement;
+
+    UISettings settings{UISettings()};
+    Color fg{settings.GetColorValue(UIColorType::Foreground)};
+
+    return (((5 * fg.G) + (2 * fg.R) + fg.B) > (8 * 128));
+}
+
+string get_system_color(winrt::Windows::UI::ViewManagement::UIColorType colorType)
+{
+    using namespace winrt::Windows::UI;
+    using namespace winrt::Windows::UI::ViewManagement;
+
+    UISettings settings{UISettings()};
+    Color accent{settings.GetColorValue(colorType)};
+
+    return string{std::format("#{:x}{:x}{:x}{:x}", accent.R, accent.G, accent.B, accent.A)};
+}
 } // namespace util
