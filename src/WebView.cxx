@@ -570,7 +570,8 @@ wstring WebView::SideNavigation()
 
 bool WebView::VerifySettingsUrl(ICoreWebView2WebMessageReceivedEventArgs* args)
 {
-    wstring verify{L"https://settings/index.html"};
+    wstring verify{};
+    verify = L"https://settings/index.html";
     // #ifdef _DEBUG
     //     verify = L"https://localhost:8000/";
     // #endif
