@@ -7,9 +7,6 @@ class MainWindow
 {
   public:
     static std::unique_ptr<MainWindow> Create(HINSTANCE, int, Config*);
-    HBRUSH hbrBackground{};
-    HWND hwnd{};
-    HICON hIcon{};
 
   private:
     static Config* pConfig;

@@ -18,16 +18,16 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Con
     auto className{to_wide("airglow")};
     auto menuName{to_wide("airglowmenu")};
     auto programIcon{to_wide("PROGRAM_ICON")};
-    auto appName{to_wide("Airglow")};
+    auto appName{to_wide(APP_NAME)};
     auto hbrBackground{(HBRUSH)GetStockObject(BLACK_BRUSH)};
     auto hCursor{(HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED)};
     auto hIcon{(HICON)LoadImageW(hinstance, programIcon.c_str(), IMAGE_ICON, 0, 0,
                                  LR_DEFAULTCOLOR | LR_DEFAULTSIZE)};
 
-    config->hbrBackground = hbrBackground;
-    config->hIcon = hIcon;
-    mainWindow->hbrBackground = hbrBackground;
-    mainWindow->hIcon = hIcon;
+    config->window.hbrBackground = hbrBackground;
+    config->window.hIcon = hIcon;
+    config->window.hbrBackground = hbrBackground;
+    config->window.hIcon = hIcon;
 
     WNDCLASSEXW wcex{};
     wcex.cbSize = sizeof(WNDCLASSEX);
@@ -46,13 +46,11 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Con
     if (!RegisterClassExW(&wcex))
         return nullptr;
 
-    mainWindow->hwnd = CreateWindowExW(0, className.c_str(), appName.c_str(), WS_OVERLAPPEDWINDOW,
-                                       CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
-                                       nullptr, nullptr, hinstance, mainWindow.get());
+    pConfig->window.hwnd = CreateWindowExW(
+        0, className.c_str(), appName.c_str(), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
+        CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, hinstance, mainWindow.get());
 
-    config->hwnd = mainWindow->hwnd;
-
-    if (!mainWindow->hwnd)
+    if (!pConfig->window.hwnd)
         return nullptr;
 
     mainWindow->Show();
@@ -162,22 +160,22 @@ void MainWindow::Show()
     if (pConfig->settings.position[0] == 0 && pConfig->settings.position[1] == 0 &&
         pConfig->settings.position[2] == 0 && pConfig->settings.position[3] == 0)
     {
-        ShowWindow(hwnd, SW_SHOWDEFAULT);
+        ShowWindow(pConfig->window.hwnd, SW_SHOWDEFAULT);
     }
 
     else
     {
         if (pConfig->settings.maximized)
         {
-            ShowWindow(hwnd, SW_MAXIMIZE);
+            ShowWindow(pConfig->window.hwnd, SW_MAXIMIZE);
         }
 
         else
         {
-            SetWindowPos(hwnd, nullptr, pConfig->settings.position[0],
+            SetWindowPos(pConfig->window.hwnd, nullptr, pConfig->settings.position[0],
                          pConfig->settings.position[1], pConfig->settings.position[2],
                          pConfig->settings.position[3], 0);
-            ShowWindow(hwnd, SW_SHOWNORMAL);
+            ShowWindow(pConfig->window.hwnd, SW_SHOWNORMAL);
         }
     }
 
@@ -198,15 +196,15 @@ void MainWindow::Fullscreen()
 {
     static RECT position;
 
-    auto style = GetWindowLongPtrW(hwnd, GWL_STYLE);
+    auto style = GetWindowLongPtrW(pConfig->window.hwnd, GWL_STYLE);
     if (style & WS_OVERLAPPEDWINDOW)
     {
         MONITORINFO mi = {sizeof(mi)};
-        GetWindowRect(hwnd, &position);
-        if (GetMonitorInfoW(MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST), &mi))
+        GetWindowRect(pConfig->window.hwnd, &position);
+        if (GetMonitorInfoW(MonitorFromWindow(pConfig->window.hwnd, MONITOR_DEFAULTTONEAREST), &mi))
         {
-            SetWindowLongPtrW(hwnd, GWL_STYLE, style & ~WS_OVERLAPPEDWINDOW);
-            SetWindowPos(hwnd, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top,
+            SetWindowLongPtrW(pConfig->window.hwnd, GWL_STYLE, style & ~WS_OVERLAPPEDWINDOW);
+            SetWindowPos(pConfig->window.hwnd, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top,
                          mi.rcMonitor.right - mi.rcMonitor.left,
                          mi.rcMonitor.bottom - mi.rcMonitor.top, SWP_FRAMECHANGED);
         }
@@ -214,10 +212,11 @@ void MainWindow::Fullscreen()
 
     else
     {
-        SetWindowLongPtrW(hwnd, GWL_STYLE, style | WS_OVERLAPPEDWINDOW);
-        SetWindowPos(hwnd, nullptr, position.left, position.top, (position.right - position.left),
-                     (position.bottom - position.top), SWP_FRAMECHANGED);
-        SendMessage(hwnd, WM_SETICON, 0, 0);
+        SetWindowLongPtrW(pConfig->window.hwnd, GWL_STYLE, style | WS_OVERLAPPEDWINDOW);
+        SetWindowPos(pConfig->window.hwnd, nullptr, position.left, position.top,
+                     (position.right - position.left), (position.bottom - position.top),
+                     SWP_FRAMECHANGED);
+        SendMessage(pConfig->window.hwnd, WM_SETICON, 0, 0);
     }
 }
 
@@ -225,21 +224,21 @@ void MainWindow::Topmost()
 {
     FLASHWINFO fwi{};
     fwi.cbSize = sizeof(FLASHWINFO);
-    fwi.hwnd = hwnd;
+    fwi.hwnd = pConfig->window.hwnd;
     fwi.dwFlags = FLASHW_CAPTION;
     fwi.uCount = 1;
     fwi.dwTimeout = 100;
 
-    auto style = GetWindowLongPtrW(hwnd, GWL_EXSTYLE);
+    auto style = GetWindowLongPtrW(pConfig->window.hwnd, GWL_EXSTYLE);
     if (style & WS_EX_TOPMOST)
     {
-        SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        SetWindowPos(pConfig->window.hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         FlashWindowEx(&fwi);
     }
 
     else
     {
-        SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        SetWindowPos(pConfig->window.hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         FlashWindowEx(&fwi);
     }
 
@@ -251,17 +250,17 @@ void MainWindow::Maximize()
     if (!pConfig->settings.fullscreen)
     {
         WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
-        GetWindowPlacement(hwnd, &wp);
+        GetWindowPlacement(pConfig->window.hwnd, &wp);
         if (wp.showCmd == 3)
         {
-            ShowWindow(hwnd, SW_SHOWNORMAL);
-            SetWindowPos(hwnd, nullptr, pConfig->settings.position[0],
+            ShowWindow(pConfig->window.hwnd, SW_SHOWNORMAL);
+            SetWindowPos(pConfig->window.hwnd, nullptr, pConfig->settings.position[0],
                          pConfig->settings.position[1], pConfig->settings.position[2],
                          pConfig->settings.position[3], 0);
         }
 
         else
-            ShowWindow(hwnd, SW_MAXIMIZE);
+            ShowWindow(pConfig->window.hwnd, SW_MAXIMIZE);
     }
 }
 
@@ -270,11 +269,11 @@ void MainWindow::SavePosition()
     if (!pConfig->settings.fullscreen || !pConfig->settings.maximized)
     {
         WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
-        GetWindowPlacement(hwnd, &wp);
+        GetWindowPlacement(pConfig->window.hwnd, &wp);
         if (!pConfig->settings.fullscreen & (wp.showCmd != 3))
         {
             RECT rect{0, 0, 0, 0};
-            GetWindowRect(hwnd, &rect);
+            GetWindowRect(pConfig->window.hwnd, &rect);
             pConfig->settings.position = rect_to_bounds(rect);
         }
     }
@@ -308,12 +307,13 @@ bool MainWindow::SetDarkMode()
 
     if (!check_system_dark_mode())
     {
-        DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &light, sizeof(light));
+        DwmSetWindowAttribute(pConfig->window.hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &light,
+                              sizeof(light));
 
         return false;
     }
 
-    DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dark, sizeof(dark));
+    DwmSetWindowAttribute(pConfig->window.hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dark, sizeof(dark));
 
     return true;
 }
@@ -323,11 +323,11 @@ bool MainWindow::SetMica()
     MARGINS m{0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
     auto backdrop = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
 
-    if (FAILED(DwmExtendFrameIntoClientArea(hwnd, &m)))
+    if (FAILED(DwmExtendFrameIntoClientArea(pConfig->window.hwnd, &m)))
         return false;
 
-    if (FAILED(
-            DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop, sizeof(&backdrop))))
+    if (FAILED(DwmSetWindowAttribute(pConfig->window.hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop,
+                                     sizeof(&backdrop))))
         return false;
 
     return true;
@@ -337,7 +337,7 @@ bool MainWindow::Cloak()
 {
     auto cloak{TRUE};
 
-    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloak, sizeof(cloak))))
+    if (FAILED(DwmSetWindowAttribute(pConfig->window.hwnd, DWMWA_CLOAK, &cloak, sizeof(cloak))))
         return false;
 
     return true;
@@ -347,7 +347,7 @@ bool MainWindow::Uncloak()
 {
     auto uncloak{FALSE};
 
-    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &uncloak, sizeof(uncloak))))
+    if (FAILED(DwmSetWindowAttribute(pConfig->window.hwnd, DWMWA_CLOAK, &uncloak, sizeof(uncloak))))
         return false;
 
     return true;

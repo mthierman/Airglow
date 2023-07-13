@@ -10,7 +10,6 @@ class Config
     static std::unique_ptr<Config> Create();
     void Load();
     void Save();
-    path PortableAppDataPath();
 
     struct Settings
     {
@@ -24,6 +23,11 @@ class Config
         string mainUrl{"google.com"};
         string sideUrl{"google.com"};
         string accentColor{"#FFFFFFFF"};
+    };
+    struct App
+    {
+        string name{};
+        string version{};
     };
     struct Paths
     {
@@ -40,15 +44,15 @@ class Config
         HICON hIcon{};
     };
 
+    App app{};
     Paths paths{};
     Settings settings{};
     Window window{};
-    HWND hwnd{};
-    HBRUSH hbrBackground{};
-    HICON hIcon{};
 
   private:
+    void Initialize();
     path LocalAppDataPath();
+    path PortableAppDataPath();
     path SettingsPath();
     path ConfigPath();
     path DbPath();

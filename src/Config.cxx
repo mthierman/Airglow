@@ -6,7 +6,10 @@ std::unique_ptr<Config> Config::Create()
 {
     auto config{std::unique_ptr<Config>(new Config())};
 
+    config->Initialize();
+
     config->Load();
+
     config->settings.accentColor =
         get_system_color(winrt::Windows::UI::ViewManagement::UIColorType::Accent);
 
@@ -19,19 +22,6 @@ std::unique_ptr<Config> Config::Create()
 
 void Config::Load()
 {
-    paths.data = PortableAppDataPath();
-    paths.settings = SettingsPath();
-    paths.config = ConfigPath();
-    paths.db = DbPath();
-    paths.js = JsPath();
-
-#ifdef _DEBUG
-    wprintln(paths.data);
-    wprintln(paths.settings);
-    wprintln(paths.config);
-    wprintln(paths.db);
-    wprintln(paths.js);
-#endif
     if (!std::filesystem::exists(paths.config))
         Save();
 
@@ -86,6 +76,26 @@ void Config::Save()
     {
         return;
     }
+}
+
+void Config::Initialize()
+{
+    app.name = APP_NAME;
+    app.version = APP_VERSION;
+    paths.data = PortableAppDataPath();
+    paths.settings = SettingsPath();
+    paths.config = ConfigPath();
+    paths.db = DbPath();
+    paths.js = JsPath();
+#ifdef _DEBUG
+    println(app.name);
+    println(app.version);
+    wprintln(paths.data);
+    wprintln(paths.settings);
+    wprintln(paths.config);
+    wprintln(paths.db);
+    wprintln(paths.js);
+#endif
 }
 
 // json Config::GetCurrent()

@@ -27,7 +27,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
 
                 // SETTINGS WEBVIEW
                 e->CreateCoreWebView2Controller(
-                    pConfig->hwnd,
+                    pConfig->window.hwnd,
                     Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
                         [&](HRESULT result, ICoreWebView2Controller* c) -> HRESULT
                         {
@@ -133,7 +133,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
 
                 // MAIN WEBVIEW
                 e->CreateCoreWebView2Controller(
-                    pConfig->hwnd,
+                    pConfig->window.hwnd,
                     Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
                         [&](HRESULT result, ICoreWebView2Controller* c) -> HRESULT
                         {
@@ -219,7 +219,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
 
                 // SIDE WEBVIEW
                 e->CreateCoreWebView2Controller(
-                    pConfig->hwnd,
+                    pConfig->window.hwnd,
                     Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
                         [&](HRESULT result, ICoreWebView2Controller* c) -> HRESULT
                         {
@@ -366,12 +366,12 @@ void WebView::SetWindowTitle()
         auto title = s.get();
 
         if (!pConfig->settings.topmost)
-            SetWindowTextW(pConfig->hwnd, title);
+            SetWindowTextW(pConfig->window.hwnd, title);
 
         if (pConfig->settings.topmost)
         {
             wstring add = title + wstring(L" [On Top]");
-            SetWindowTextW(pConfig->hwnd, add.c_str());
+            SetWindowTextW(pConfig->window.hwnd, add.c_str());
         }
     }
 
@@ -382,12 +382,12 @@ void WebView::SetWindowTitle()
         auto title = s.get();
 
         if (!pConfig->settings.topmost)
-            SetWindowTextW(pConfig->hwnd, title);
+            SetWindowTextW(pConfig->window.hwnd, title);
 
         if (pConfig->settings.topmost)
         {
             wstring add = title + wstring(L" [On Top]");
-            SetWindowTextW(pConfig->hwnd, add.c_str());
+            SetWindowTextW(pConfig->window.hwnd, add.c_str());
         }
     }
 
@@ -398,12 +398,12 @@ void WebView::SetWindowTitle()
         auto title = s.get();
 
         if (!pConfig->settings.topmost)
-            SetWindowTextW(pConfig->hwnd, title);
+            SetWindowTextW(pConfig->window.hwnd, title);
 
         if (pConfig->settings.topmost)
         {
             wstring add = title + wstring(L" [On Top]");
-            SetWindowTextW(pConfig->hwnd, add.c_str());
+            SetWindowTextW(pConfig->window.hwnd, add.c_str());
         }
     }
 }
@@ -434,8 +434,10 @@ void WebView::SetWindowIcon()
                         if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
                         {
                             auto favicon = std::move(icon);
-                            SetClassLongPtrW(pConfig->hwnd, GCLP_HICONSM, (LONG_PTR)favicon.get());
-                            SetClassLongPtrW(pConfig->hwnd, GCLP_HICON, (LONG_PTR)pConfig->hIcon);
+                            SetClassLongPtrW(pConfig->window.hwnd, GCLP_HICONSM,
+                                             (LONG_PTR)favicon.get());
+                            SetClassLongPtrW(pConfig->window.hwnd, GCLP_HICON,
+                                             (LONG_PTR)pConfig->window.hIcon);
                         }
                     }
                     return S_OK;
@@ -462,8 +464,10 @@ void WebView::SetWindowIcon()
                         if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
                         {
                             auto favicon = std::move(icon);
-                            SetClassLongPtrW(pConfig->hwnd, GCLP_HICONSM, (LONG_PTR)favicon.get());
-                            SetClassLongPtrW(pConfig->hwnd, GCLP_HICON, (LONG_PTR)pConfig->hIcon);
+                            SetClassLongPtrW(pConfig->window.hwnd, GCLP_HICONSM,
+                                             (LONG_PTR)favicon.get());
+                            SetClassLongPtrW(pConfig->window.hwnd, GCLP_HICON,
+                                             (LONG_PTR)pConfig->window.hIcon);
                         }
                     }
                     return S_OK;
@@ -490,8 +494,10 @@ void WebView::SetWindowIcon()
                         if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
                         {
                             auto favicon = std::move(icon);
-                            SetClassLongPtrW(pConfig->hwnd, GCLP_HICONSM, (LONG_PTR)favicon.get());
-                            SetClassLongPtrW(pConfig->hwnd, GCLP_HICON, (LONG_PTR)pConfig->hIcon);
+                            SetClassLongPtrW(pConfig->window.hwnd, GCLP_HICONSM,
+                                             (LONG_PTR)favicon.get());
+                            SetClassLongPtrW(pConfig->window.hwnd, GCLP_HICON,
+                                             (LONG_PTR)pConfig->window.hIcon);
                         }
                     }
                     return S_OK;
@@ -628,7 +634,7 @@ void WebView::Messages(ICoreWebView2WebMessageReceivedEventArgs* args)
 #ifdef DEBUG_MSG
             println("F1 (WebView)");
 #endif
-            SendMessageW(pConfig->hwnd, WM_KEYDOWN, VK_F1, 0);
+            SendMessageW(pConfig->window.hwnd, WM_KEYDOWN, VK_F1, 0);
         }
 
         if (message == swapKey)
@@ -636,7 +642,7 @@ void WebView::Messages(ICoreWebView2WebMessageReceivedEventArgs* args)
 #ifdef DEBUG_MSG
             println("F2 (WebView)");
 #endif
-            SendMessageW(pConfig->hwnd, WM_KEYDOWN, VK_F2, 0);
+            SendMessageW(pConfig->window.hwnd, WM_KEYDOWN, VK_F2, 0);
         }
 
         if (message == hideMenuKey)
@@ -644,7 +650,7 @@ void WebView::Messages(ICoreWebView2WebMessageReceivedEventArgs* args)
 #ifdef DEBUG_MSG
             println("F4 (WebView)");
 #endif
-            SendMessageW(pConfig->hwnd, WM_KEYDOWN, VK_F4, 0);
+            SendMessageW(pConfig->window.hwnd, WM_KEYDOWN, VK_F4, 0);
         }
 
         if (message == maximizeKey)
@@ -652,7 +658,7 @@ void WebView::Messages(ICoreWebView2WebMessageReceivedEventArgs* args)
 #ifdef DEBUG_MSG
             println("F6 (WebView)");
 #endif
-            SendMessageW(pConfig->hwnd, WM_KEYDOWN, VK_F6, 0);
+            SendMessageW(pConfig->window.hwnd, WM_KEYDOWN, VK_F6, 0);
         }
 
         if (message == fullscreenKey)
@@ -660,7 +666,7 @@ void WebView::Messages(ICoreWebView2WebMessageReceivedEventArgs* args)
 #ifdef DEBUG_MSG
             println("F11 (WebView)");
 #endif
-            SendMessageW(pConfig->hwnd, WM_KEYDOWN, VK_F11, 0);
+            SendMessageW(pConfig->window.hwnd, WM_KEYDOWN, VK_F11, 0);
         }
 
         if (message == onTopKey)
@@ -668,7 +674,7 @@ void WebView::Messages(ICoreWebView2WebMessageReceivedEventArgs* args)
 #ifdef DEBUG_MSG
             println("F9 (WebView)");
 #endif
-            SendMessageW(pConfig->hwnd, WM_KEYDOWN, VK_F9, 0);
+            SendMessageW(pConfig->window.hwnd, WM_KEYDOWN, VK_F9, 0);
         }
 
         if (message == closeKey)
@@ -676,7 +682,7 @@ void WebView::Messages(ICoreWebView2WebMessageReceivedEventArgs* args)
 #ifdef DEBUG_MSG
             println("Ctrl+W (WebView)");
 #endif
-            SendMessageW(pConfig->hwnd, WM_KEYDOWN, 0x57, 0);
+            SendMessageW(pConfig->window.hwnd, WM_KEYDOWN, 0x57, 0);
         }
     }
 }
@@ -686,7 +692,7 @@ RECT WebView::SettingsBounds()
     if (!pConfig->settings.menu)
         return RECT{0, 0, 0, 0};
 
-    return get_rect(pConfig->hwnd);
+    return get_rect(pConfig->window.hwnd);
 }
 
 RECT WebView::MainBounds()
@@ -694,7 +700,7 @@ RECT WebView::MainBounds()
     if (pConfig->settings.menu || !pConfig->settings.split && pConfig->settings.swapped)
         return RECT{0, 0, 0, 0};
 
-    auto bounds{get_rect(pConfig->hwnd)};
+    auto bounds{get_rect(pConfig->window.hwnd)};
 
     if (!pConfig->settings.split && !pConfig->settings.swapped)
         return bounds;
@@ -727,7 +733,7 @@ RECT WebView::SideBounds()
     if (pConfig->settings.menu || !pConfig->settings.split && !pConfig->settings.swapped)
         return RECT{0, 0, 0, 0};
 
-    auto bounds{get_rect(pConfig->hwnd)};
+    auto bounds{get_rect(pConfig->window.hwnd)};
 
     if (!pConfig->settings.split & pConfig->settings.swapped)
         return bounds;

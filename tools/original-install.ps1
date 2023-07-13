@@ -1,8 +1,10 @@
+$root = $PSScriptRoot
+
 if (!(Test-Path "$env:LOCALAPPDATA/Airglow"))
 {
     New-Item -ItemType Directory "$env:LOCALAPPDATA/Airglow"
 }
-$app = "$env:LOCALAPPDATA/Airglow" | Resolve-Path
+$destination = "$env:LOCALAPPDATA/Airglow" | Resolve-Path
 
 Get-Content -Raw "$root/Airglow.json" | ConvertFrom-Json -AsHashtable | Format-Table -AutoSize -HideTableHeaders
 

@@ -37,8 +37,6 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
         return 0;
     }
 
-    config->PortableAppDataPath();
-
     MSG msg{};
     while (GetMessageW(&msg, nullptr, 0, 0))
     {

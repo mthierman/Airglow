@@ -111,6 +111,8 @@ target_compile_definitions(
     ${APP_NAME}
     PRIVATE
     UNICODE
+    APP_NAME="${APP_NAME}"
+    APP_VERSION="${APP_VERSION}"
 )
 
 target_precompile_headers(
