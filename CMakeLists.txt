@@ -1,4 +1,6 @@
 cmake_minimum_required(VERSION 3.26)
+set(APP_NAME "Airglow")
+set(APP_VERSION "1.1.9")
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${APP_NAME}")
@@ -6,9 +8,6 @@ include(FetchContent)
 
 option(ENV_LIBS OFF)
 option(INSTALL OFF)
-
-set(APP_NAME "Airglow")
-set(APP_VERSION "1.1.9")
 
 project(
     ${APP_NAME}
@@ -160,7 +159,6 @@ add_custom_command(
     TARGET ${APP_NAME} PRE_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/tools/install.ps1" "${CMAKE_BINARY_DIR}/install.ps1"
     COMMAND cd "${CMAKE_SOURCE_DIR}/gui" && pnpm run build
-    COMMAND 7z a "${CMAKE_BINARY_DIR}/Airglow.zip" "${CMAKE_BINARY_DIR}/${APP_NAME}/*"
 )
 
 add_custom_command(
