@@ -1,14 +1,32 @@
 import {
-    makeStyles,
+    BrandVariants,
+    Theme,
     FluentProvider,
+    createLightTheme,
+    createDarkTheme,
     webLightTheme,
     webDarkTheme,
+    makeStyles,
+    tokens,
     Button,
     Input,
     Label,
     Link,
 } from "@fluentui/react-components";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+
+export const customTheme: Theme = {
+    ...webDarkTheme,
+    colorNeutralForeground2BrandPressed: "#FF0000",
+    colorNeutralForeground3BrandPressed: "#FF0000",
+    // colorNeutralForeground1: "#FF0000",
+    // colorNeutralForeground2: "#FF0000",
+    // colorBrandForeground1: "#FF0000",
+    // colorBrandForeground2: "#FF0000",
+    // colorBrandForegroundLinkPressed: "#FF0000",
+    // colorBrandForegroundInvertedPressed: "#FF0000",
+    // colorBrandForeground2Pressed: "#FF0000",
+};
 
 const useStyles = makeStyles({
     provider: {
@@ -44,7 +62,7 @@ export default function App() {
     useEffect(() => {
         const getData = async () => {
             try {
-                const response = await fetch(`https://airglow/state.json`);
+                const response = await fetch(`https://airglow/Config.json`);
                 let data = await response.json();
                 setMainUrl(data.mainUrl);
                 setSideUrl(data.sideUrl);
@@ -56,7 +74,7 @@ export default function App() {
     }, []);
 
     return (
-        <FluentProvider className={styles.provider} theme={webDarkTheme}>
+        <FluentProvider className={styles.provider} theme={customTheme}>
             <form
                 autoComplete="on"
                 id="settings"
@@ -96,7 +114,7 @@ export default function App() {
                     </Label>
                 </div>
 
-                <Button appearance="transparent" type="submit">
+                <Button appearance="primary" type="submit">
                     Save
                 </Button>
             </form>
