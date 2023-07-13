@@ -70,7 +70,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                             controller->put_Bounds(webView->SettingsBounds());
 
                             browser->SetVirtualHostNameToFolderMapping(
-                                L"airglow", pConfig->paths.data.wstring().c_str(),
+                                L"settings", pConfig->paths.settings.wstring().c_str(),
                                 COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
 
                             browser->Navigate(webView->SettingsNavigation().c_str());
@@ -570,10 +570,10 @@ wstring WebView::SideNavigation()
 
 bool WebView::VerifySettingsUrl(ICoreWebView2WebMessageReceivedEventArgs* args)
 {
-    wstring verify{L"https://airglow/settings/index.html"};
-#ifdef _DEBUG
-    verify = L"https://localhost:8000/";
-#endif
+    wstring verify{L"https://settings/index.html"};
+    // #ifdef _DEBUG
+    //     verify = L"https://localhost:8000/";
+    // #endif
     wil::unique_cotaskmem_string s{};
     args->get_Source(&s);
     wstring source = s.get();
@@ -585,10 +585,10 @@ bool WebView::VerifySettingsUrl(ICoreWebView2WebMessageReceivedEventArgs* args)
 
 wstring WebView::SettingsNavigation()
 {
-#ifdef _DEBUG
-    return L"https://localhost:8000/";
-#endif
-    return L"https://airglow/settings/index.html";
+    // #ifdef _DEBUG
+    //     return L"https://localhost:8000/";
+    // #endif
+    return L"https://settings/index.html";
 }
 
 void WebView::Messages(ICoreWebView2WebMessageReceivedEventArgs* args)
