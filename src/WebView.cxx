@@ -124,9 +124,9 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                     })
                                     .Get(),
                                 &tokenReceivedMsg);
-
+#ifdef _DEBUG
                             browser->OpenDevToolsWindow();
-
+#endif
                             return S_OK;
                         })
                         .Get());
