@@ -8,6 +8,7 @@ option(INSTALL OFF)
 
 set(APP_NAME "Airglow")
 set(APP_VERSION "1.1.8")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${APP_NAME})
 
 project(
     ${APP_NAME}
@@ -19,6 +20,14 @@ message(STATUS "")
 math(EXPR BITNESS "${CMAKE_SIZEOF_VOID_P} * 8" OUTPUT_FORMAT DECIMAL)
 message(STATUS "${APP_NAME} v${APP_VERSION} (${BITNESS}-bit) [${CMAKE_BUILD_TYPE}]")
 message(STATUS "")
+
+file(WRITE "${CMAKE_BINARY_DIR}/app_version.txt" "v${APP_VERSION}")
+
+execute_process(
+    COMMAND
+    git --no-pager log -5 --oneline --no-decorate
+    OUTPUT_FILE "${CMAKE_BINARY_DIR}/release_notes.txt"
+)
 
 set(WEBVIEW "Microsoft.Web.WebView2")
 set(WEBVIEW_VERSION "1.0.1823.32")
@@ -147,24 +156,16 @@ target_link_libraries(
     sqlite
 )
 
-file(WRITE "${CMAKE_BINARY_DIR}/app_version.txt" "v${APP_VERSION}")
-
-execute_process(
-    COMMAND
-    git --no-pager log -5 --oneline --no-decorate
-    OUTPUT_FILE "${CMAKE_BINARY_DIR}/release_notes.txt"
+add_custom_command(
+    TARGET ${APP_NAME} PRE_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/tools/install.ps1" "${CMAKE_BINARY_DIR}/install.ps1"
+    COMMAND cd "${CMAKE_SOURCE_DIR}/gui" && pnpm run build
+    COMMAND 7z a "${CMAKE_BINARY_DIR}/Airglow.zip" "${CMAKE_BINARY_DIR}/${APP_NAME}/*"
 )
 
 add_custom_command(
     TARGET ${APP_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/${APP_NAME}"
-    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/tools/install.ps1" "${CMAKE_BINARY_DIR}/install.ps1"
-    COMMAND cd "${CMAKE_SOURCE_DIR}/gui" && pnpm run build
-    COMMAND ${CMAKE_COMMAND} -E rename "${CMAKE_BINARY_DIR}/${APP_NAME}.exe" "${CMAKE_BINARY_DIR}/${APP_NAME}/${APP_NAME}.exe"
-    COMMAND ${CMAKE_COMMAND} -E create_symlink "${CMAKE_BINARY_DIR}/${APP_NAME}/${APP_NAME}.exe" "${CMAKE_BINARY_DIR}/${APP_NAME}.exe"
-    COMMAND ${CMAKE_COMMAND} -E rename "${CMAKE_BINARY_DIR}/settings" "${CMAKE_BINARY_DIR}/${APP_NAME}/settings"
-    COMMAND ${CMAKE_COMMAND} -E create_symlink "${CMAKE_BINARY_DIR}/${APP_NAME}/settings" "${CMAKE_BINARY_DIR}/settings"
-    COMMAND 7z a "${CMAKE_BINARY_DIR}/Airglow.zip" "${CMAKE_BINARY_DIR}/${APP_NAME}/*"
+    COMMAND 7z a "${CMAKE_BINARY_DIR}/Airglow.zip" "${CMAKE_BINARY_DIR}/${APP_NAME}/${APP_NAME}.exe" "${CMAKE_BINARY_DIR}/${APP_NAME}/settings"
 )
 
 if(INSTALL)

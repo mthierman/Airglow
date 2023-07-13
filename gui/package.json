@@ -1,9 +1,10 @@
 {
-    "name": "template-react",
+    "name": "settings",
     "scripts": {
         "dev": "vite",
         "build": "vite build --emptyOutDir",
         "watch": "vite build --emptyOutDir --watch",
+        "postbuild": "node -e \"fs.cp('../build/settings', '../build/Airglow/settings', { recursive: true }, err => {})\"",
         "preview": "vite preview"
     },
     "devDependencies": {
