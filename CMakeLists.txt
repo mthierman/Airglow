@@ -7,7 +7,7 @@ option(ENV_LIBS OFF)
 option(INSTALL OFF)
 
 set(APP_NAME "Airglow")
-set(APP_VERSION "1.1.8")
+set(APP_VERSION "1.1.9")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${APP_NAME})
 
 project(
