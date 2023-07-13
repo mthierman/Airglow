@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import icon from "./icon.svg?raw";
+import icon from "../../data/icons/icon.svg?raw";
 
 if (document.readyState === "interactive") {
     const favicon = document.createElement("link");

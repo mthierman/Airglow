@@ -157,11 +157,14 @@ execute_process(
 
 add_custom_command(
     TARGET ${APP_NAME} POST_BUILD
-    COMMAND cd "${CMAKE_SOURCE_DIR}/gui" && pnpm run build
-    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_BINARY_DIR}/${APP_NAME}.exe" "${CMAKE_BINARY_DIR}/${APP_NAME}/${APP_NAME}.exe"
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_BINARY_DIR}/settings" "${CMAKE_BINARY_DIR}/${APP_NAME}/settings"
-    COMMAND 7z a "${CMAKE_BINARY_DIR}/Airglow.zip" "${CMAKE_BINARY_DIR}/${APP_NAME}/*"
+    COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/${APP_NAME}"
     COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/tools/install.ps1" "${CMAKE_BINARY_DIR}/install.ps1"
+    COMMAND cd "${CMAKE_SOURCE_DIR}/gui" && pnpm run build
+    COMMAND ${CMAKE_COMMAND} -E rename "${CMAKE_BINARY_DIR}/${APP_NAME}.exe" "${CMAKE_BINARY_DIR}/${APP_NAME}/${APP_NAME}.exe"
+    COMMAND ${CMAKE_COMMAND} -E create_symlink "${CMAKE_BINARY_DIR}/${APP_NAME}/${APP_NAME}.exe" "${CMAKE_BINARY_DIR}/${APP_NAME}.exe"
+    COMMAND ${CMAKE_COMMAND} -E rename "${CMAKE_BINARY_DIR}/settings" "${CMAKE_BINARY_DIR}/${APP_NAME}/settings"
+    COMMAND ${CMAKE_COMMAND} -E create_symlink "${CMAKE_BINARY_DIR}/${APP_NAME}/settings" "${CMAKE_BINARY_DIR}/settings"
+    COMMAND 7z a "${CMAKE_BINARY_DIR}/Airglow.zip" "${CMAKE_BINARY_DIR}/${APP_NAME}/*"
 )
 
 if(INSTALL)
