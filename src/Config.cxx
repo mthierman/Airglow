@@ -20,10 +20,18 @@ std::unique_ptr<Config> Config::Create()
 void Config::Load()
 {
     paths.data = PortableAppDataPath();
+    paths.settings = SettingsPath();
     paths.config = ConfigPath();
     paths.db = DbPath();
     paths.js = JsPath();
 
+#ifdef _DEBUG
+    wprintln(paths.data);
+    wprintln(paths.settings);
+    wprintln(paths.config);
+    wprintln(paths.db);
+    wprintln(paths.js);
+#endif
     if (!std::filesystem::exists(paths.config))
         Save();
 
@@ -113,31 +121,39 @@ path Config::PortableAppDataPath()
     path path{args[0]};
     LocalFree(args);
 
-    return path.remove_filename();
+    return std::filesystem::canonical(path.remove_filename());
+}
+
+path Config::SettingsPath()
+{
+    if (!std::filesystem::exists(paths.data))
+        return path{};
+
+    return (paths.data.wstring() + path::preferred_separator + to_wide("settings"));
 }
 
 path Config::ConfigPath()
 {
-    if (!std::filesystem::exists(paths.data))
+    if (!std::filesystem::exists(paths.settings))
         return path{};
 
-    return (paths.data.wstring() + path::preferred_separator + to_wide("Config.json"));
+    return (paths.settings.wstring() + path::preferred_separator + to_wide("config.json"));
 }
 
 path Config::DbPath()
 {
-    if (!std::filesystem::exists(paths.data))
+    if (!std::filesystem::exists(paths.settings))
         return path{};
 
-    return (paths.data.wstring() + path::preferred_separator + to_wide("Database.sqlite"));
+    return (paths.settings.wstring() + path::preferred_separator + to_wide("db.sqlite"));
 }
 
 path Config::JsPath()
 {
-    if (!std::filesystem::exists(paths.data))
+    if (!std::filesystem::exists(paths.settings))
         return path{};
 
-    return (paths.data.wstring() + path::preferred_separator + to_wide("inject.js"));
+    return (paths.settings.wstring() + path::preferred_separator + to_wide("inject.js"));
 }
 
 void Config::Tests()

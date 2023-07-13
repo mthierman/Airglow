@@ -26,7 +26,7 @@ export default defineConfig(async ({ command, mode }) => {
     } else {
         return {
             build: {
-                outDir: "../build/Airglow",
+                outDir: "../build/settings",
                 assetsDir: "./",
             },
             plugins: [react()],

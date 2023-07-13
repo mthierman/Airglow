@@ -28,19 +28,28 @@ class Config
     struct Paths
     {
         path data{};
+        path settings{};
         path config{};
         path db{};
         path js{};
     };
+    struct Window
+    {
+        HWND hwnd{};
+        HBRUSH hbrBackground{};
+        HICON hIcon{};
+    };
 
     Paths paths{};
     Settings settings{};
+    Window window{};
     HWND hwnd{};
     HBRUSH hbrBackground{};
     HICON hIcon{};
 
   private:
     path LocalAppDataPath();
+    path SettingsPath();
     path ConfigPath();
     path DbPath();
     path JsPath();

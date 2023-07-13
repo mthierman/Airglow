@@ -4,7 +4,6 @@
         "dev": "vite",
         "build": "vite build --emptyOutDir",
         "watch": "vite build --emptyOutDir --watch",
-        "postbuild": "node -e \"fs.copyFile('src/inject.js', '../build/Airglow/inject.js', err => {})\"",
         "preview": "vite preview"
     },
     "devDependencies": {
