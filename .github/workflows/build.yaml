@@ -53,5 +53,5 @@ jobs:
           }
 
           if ("${{ github.ref_name }}" -eq "dev") {
-            gh release create nightly $zip -n $notes -t "Airglow Nightly"
+            gh release create nightly $zip -n $notes -t "Airglow Nightly" -p
           }
