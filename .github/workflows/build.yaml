@@ -45,8 +45,8 @@ jobs:
           cmake --build --preset release
 
           $zip = Get-Item "build/Airglow.zip"
-          $version = Get-Item "build/app_version.txt"
-          $notes = Get-Item "build/release_notes.txt"
+          $version = Get-Content "build/app_version.txt"
+          $notes = Get-Content "build/release_notes.txt"
 
           if ("${{ github.ref_name }}" -eq "main") {
             gh release create stable $zip -F $notes -t "Airglow $version"
