@@ -23,7 +23,7 @@
         @apply grid gap-2 whitespace-nowrap leading-none;
     }
     button[type="submit"] {
-        @apply hover:bg-accent scale-100 self-end text-lg duration-100 ease-linear active:scale-95;
+        @apply hover:text-accent scale-100 self-end text-lg duration-100 ease-linear active:scale-95;
     }
 }
 

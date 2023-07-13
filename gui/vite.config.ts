@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import path from "path";
 import react from "@vitejs/plugin-react-swc";
 
-export default defineConfig(({ command, mode, ssrBuild }) => {
+export default defineConfig(async ({ command, mode }) => {
     if (command === "serve") {
         const cert = path.resolve("../../.cert/localhost.pfx");
         const passphrase = "localhost";
@@ -25,6 +25,10 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
         };
     } else {
         return {
+            build: {
+                outDir: "../build/Airglow",
+                assetsDir: "./",
+            },
             plugins: [react()],
         };
     }

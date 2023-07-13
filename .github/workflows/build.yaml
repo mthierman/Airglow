@@ -43,12 +43,10 @@ jobs:
           cmake --preset release
           cmake --build --preset release
 
+          $name = "Airglow"
           $zip = Get-Item "build/Airglow.zip"
-          git --no-pager log -5 --oneline --no-decorate > build/notes.txt
-
-          $name = (Get-Content Airglow.json | ConvertFrom-Json).name
-          $version = (Get-Content Airglow.json | ConvertFrom-Json).version
-          $notes = Get-Item "build/notes.txt"
+          $version = Get-Item "build/app_version.txt"
+          $notes = Get-Item "build/release_notes.txt"
 
           if ("${{ github.ref_name }}" -eq "main") {
             $title = "$name $version"

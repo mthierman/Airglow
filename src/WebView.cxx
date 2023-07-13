@@ -564,7 +564,7 @@ wstring WebView::SideNavigation()
 
 bool WebView::VerifySettingsUrl(ICoreWebView2WebMessageReceivedEventArgs* args)
 {
-    wstring verify{L"https://airglow/gui/index.html"};
+    wstring verify{L"https://airglow/index.html"};
 #ifdef _DEBUG
     verify = L"https://localhost:8000/";
 #endif
@@ -582,7 +582,7 @@ wstring WebView::SettingsNavigation()
 #ifdef _DEBUG
     return L"https://localhost:8000/";
 #endif
-    return L"https://airglow/gui/index.html";
+    return L"https://airglow/index.html";
 }
 
 void WebView::Messages(ICoreWebView2WebMessageReceivedEventArgs* args)

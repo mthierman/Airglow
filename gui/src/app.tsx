@@ -1,16 +1,27 @@
 import { useEffect, useState } from "react";
+import icon from "./icon.svg?raw";
 
-window.chrome.webview.addEventListener("message", (arg: any) => {
-    console.log(arg.data);
+if (document.readyState === "interactive") {
+    const favicon = document.createElement("link");
+    favicon.type = "image/svg+xml";
+    favicon.rel = "icon";
+    favicon.href = `data:image/svg+xml,${encodeURIComponent(icon)}`;
+    document.head.appendChild(favicon);
+}
 
-    let settings = arg.data.settings;
+if (window.chrome.webview) {
+    window.chrome.webview.addEventListener("message", (arg: any) => {
+        console.log(arg.data);
 
-    if (arg.data == "accentColor") console.log(arg.data.accentColor);
-    document.documentElement.style.setProperty(
-        "--accentColor",
-        settings.accentColor,
-    );
-});
+        let settings = arg.data.settings;
+
+        if (arg.data == "accentColor") console.log(arg.data.accentColor);
+        document.documentElement.style.setProperty(
+            "--accentColor",
+            settings.accentColor,
+        );
+    });
+}
 
 export default function App() {
     const [mainUrl, setMainUrl] = useState("");
@@ -21,19 +32,6 @@ export default function App() {
 
         const rawData = new FormData(e.target);
         const data = Object.fromEntries(rawData.entries());
-
-        // if (data.mainUrl.toString() != "") {
-        //     setMainUrl(data.mainUrl.toString());
-        //     window.chrome.webview.postMessage(
-        //         `mainUrl ${data.mainUrl.toString()}`,
-        //     );
-        // }
-        // if (data.sideUrl.toString() != "") {
-        //     setSideUrl(data.sideUrl.toString());
-        //     window.chrome.webview.postMessage(
-        //         `sideUrl ${data.sideUrl.toString()}`,
-        //     );
-        // }
 
         if (data.mainUrl.toString() != "") {
             setMainUrl(data.mainUrl.toString());

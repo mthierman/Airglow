@@ -3,17 +3,11 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 include(FetchContent)
 
-option(USER_LIBS OFF)
-option(USER_INSTALL OFF)
-option(SYSTEM_INSTALL OFF)
+option(ENV_LIBS OFF)
+option(INSTALL OFF)
 
-file(READ ${CMAKE_SOURCE_DIR}/Airglow.json PROJECT_JSON)
-string(JSON APP_NAME GET ${PROJECT_JSON} "name")
-string(JSON APP_VERSION GET ${PROJECT_JSON} "version")
-string(JSON WEBVIEW GET ${PROJECT_JSON} "webview")
-string(JSON WEBVIEW_VER GET ${PROJECT_JSON} "webview_ver")
-string(JSON WIL GET ${PROJECT_JSON} "wil")
-string(JSON WIL_VER GET ${PROJECT_JSON} "wil_ver")
+set(APP_NAME "Airglow")
+set(APP_VERSION "1.1.8")
 
 project(
     ${APP_NAME}
@@ -21,11 +15,17 @@ project(
     LANGUAGES C CXX ASM
 )
 
+message(STATUS "")
 math(EXPR BITNESS "${CMAKE_SIZEOF_VOID_P} * 8" OUTPUT_FORMAT DECIMAL)
-
 message(STATUS "${APP_NAME} v${APP_VERSION} (${BITNESS}-bit) [${CMAKE_BUILD_TYPE}]")
+message(STATUS "")
 
-if(USER_LIBS)
+set(WEBVIEW "Microsoft.Web.WebView2")
+set(WEBVIEW_VERSION "1.0.1823.32")
+set(WIL "Microsoft.Windows.ImplementationLibrary")
+set(WIL_VERSION "1.0.230629.1")
+
+if(ENV_LIBS)
     file(TO_CMAKE_PATH $ENV{LIB_WEBVIEW} WEBVIEW_PKG)
     file(TO_CMAKE_PATH $ENV{LIB_WIL} WIL_PKG)
     file(TO_CMAKE_PATH $ENV{LIB_CHOC} CHOC_PKG)
@@ -35,15 +35,15 @@ if(USER_LIBS)
 else()
     execute_process(
         COMMAND
-        nuget install ${WEBVIEW} -Version ${WEBVIEW_VER} -OutputDirectory ${CMAKE_BINARY_DIR}/_deps
+        nuget install ${WEBVIEW} -Version ${WEBVIEW_VERSION} -OutputDirectory ${CMAKE_BINARY_DIR}/_deps
     )
-    file(TO_CMAKE_PATH ${CMAKE_BINARY_DIR}/_deps/${WEBVIEW}.${WEBVIEW_VER} WEBVIEW_PKG)
+    file(TO_CMAKE_PATH ${CMAKE_BINARY_DIR}/_deps/${WEBVIEW}.${WEBVIEW_VERSION} WEBVIEW_PKG)
 
     execute_process(
         COMMAND
-        nuget install ${WIL} -Version ${WIL_VER} -OutputDirectory ${CMAKE_BINARY_DIR}/_deps
+        nuget install ${WIL} -Version ${WIL_VERSION} -OutputDirectory ${CMAKE_BINARY_DIR}/_deps
     )
-    file(TO_CMAKE_PATH ${CMAKE_BINARY_DIR}/_deps/${WIL}.${WIL_VER} WIL_PKG)
+    file(TO_CMAKE_PATH ${CMAKE_BINARY_DIR}/_deps/${WIL}.${WIL_VERSION} WIL_PKG)
 
     FetchContent_Declare(
         choc
@@ -74,12 +74,13 @@ else()
     file(TO_CMAKE_PATH ${curl_SOURCE_DIR} CURL_PKG)
 endif()
 
-message(STATUS "${WEBVIEW}.${WEBVIEW_VER}: ${WEBVIEW_PKG}")
-message(STATUS "${WIL}.${WIL_VER}: ${WIL_PKG}")
-message(STATUS "choc: ${CHOC_PKG}")
-message(STATUS "nlohmann/json: ${JSON_PKG}")
-message(STATUS "SQLite3: ${SQLITE_PKG}")
-message(STATUS "curl: ${CURL_PKG}")
+message(STATUS "Libraries found:\n")
+message(STATUS "${WEBVIEW}.${WEBVIEW_VERSION}: ${WEBVIEW_PKG}\n")
+message(STATUS "${WIL}.${WIL_VERSION}: ${WIL_PKG}\n")
+message(STATUS "choc: ${CHOC_PKG}\n")
+message(STATUS "nlohmann/json: ${JSON_PKG}\n")
+message(STATUS "SQLite3: ${SQLITE_PKG}\n")
+message(STATUS "curl: ${CURL_PKG}\n")
 
 add_library(sqlite ${SQLITE_PKG}/sqlite3.c ${SQLITE_PKG}/sqlite3.h)
 set_target_properties(sqlite PROPERTIES LINKER_LANGUAGE C)
@@ -145,34 +146,26 @@ target_link_libraries(
     sqlite
 )
 
+file(WRITE "${CMAKE_BINARY_DIR}/app_version.txt" "v${APP_VERSION}")
+
+execute_process(
+    COMMAND
+    git --no-pager log -5 --oneline --no-decorate
+    OUTPUT_FILE "${CMAKE_BINARY_DIR}/release_notes.txt"
+)
+
 add_custom_command(
     TARGET ${APP_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/${APP_NAME}.exe ${CMAKE_BINARY_DIR}/${APP_NAME}/${APP_NAME}.exe
     COMMAND cd ${CMAKE_SOURCE_DIR}/gui && pnpm run build
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/gui/dist ${CMAKE_BINARY_DIR}/${APP_NAME}/gui
-    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/Airglow.ps1 ${CMAKE_BINARY_DIR}/${APP_NAME}/Airglow.ps1
-    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/Airglow.json ${CMAKE_BINARY_DIR}/${APP_NAME}/Airglow.json
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/${APP_NAME}.exe ${CMAKE_BINARY_DIR}/${APP_NAME}/${APP_NAME}.exe
+
+    # COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/tools/install.ps1 ${CMAKE_BINARY_DIR}/${APP_NAME}/install.ps1
     COMMAND 7z a ${CMAKE_BINARY_DIR}/Airglow.zip ${CMAKE_BINARY_DIR}/${APP_NAME}/*
 )
 
-if(USER_INSTALL)
+if(INSTALL)
     add_custom_command(
         TARGET ${APP_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/${APP_NAME}/${APP_NAME}.exe $ENV{LocalAppData}/${APP_NAME}/${APP_NAME}.exe
-    )
-endif()
-
-if(SYSTEM_INSTALL)
-    add_custom_command(
-        TARGET ${APP_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/${APP_NAME}.exe $ENV{ProgramFiles}/${APP_NAME}/${APP_NAME}.exe
-    )
-endif()
-
-if(USER_INSTALL OR SYSTEM_INSTALL)
-    add_custom_command(
-        TARGET ${APP_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_BINARY_DIR}/${APP_NAME}/gui $ENV{LocalAppData}/${APP_NAME}/gui
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/${APP_NAME}/Airglow.json $ENV{LocalAppData}/${APP_NAME}/Airglow.json
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_BINARY_DIR}/${APP_NAME} $ENV{LocalAppData}/${APP_NAME}
     )
 endif()

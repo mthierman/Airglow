@@ -22,7 +22,6 @@ void Config::Load()
     paths.data = DataPath();
     paths.config = ConfigPath();
     paths.db = DbPath();
-    paths.gui = GuiPath();
     paths.js = JsPath();
 
     if (!std::filesystem::exists(paths.config))
@@ -122,21 +121,12 @@ path Config::DbPath()
     return (paths.data.wstring() + path::preferred_separator + to_wide("Database.sqlite"));
 }
 
-path Config::GuiPath()
-{
-    if (!std::filesystem::exists(paths.data))
-        return path{};
-
-    return (paths.data.wstring() + path::preferred_separator + to_wide("gui"));
-}
-
 path Config::JsPath()
 {
     if (!std::filesystem::exists(paths.data))
         return path{};
 
-    return (paths.data.wstring() + path::preferred_separator + to_wide("gui") +
-            path::preferred_separator + to_wide("Airglow.js"));
+    return (paths.data.wstring() + path::preferred_separator + to_wide("inject.js"));
 }
 
 void Config::Tests()

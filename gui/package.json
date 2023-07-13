@@ -2,9 +2,9 @@
     "name": "template-react",
     "scripts": {
         "dev": "vite",
-        "build": "vite build",
-        "watch": "vite build --watch",
-        "postbuild": "node -e \"fs.copyFile('Airglow.js', 'dist/Airglow.js', err => {})\"",
+        "build": "vite build --emptyOutDir",
+        "watch": "vite build --emptyOutDir --watch",
+        "postbuild": "node -e \"fs.copyFile('src/inject.js', '../build/Airglow/inject.js', err => {})\"",
         "preview": "vite preview"
     },
     "devDependencies": {
