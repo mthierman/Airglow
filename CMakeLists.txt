@@ -4,6 +4,7 @@ set(APP_VERSION "1.1.9")
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${APP_NAME}")
+
 include(FetchContent)
 
 option(ENV_LIBS OFF)
