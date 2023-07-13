@@ -1,19 +1,40 @@
 import { useEffect, useState } from "react";
 
-// window.chrome.webview.addEventListener("message", (arg: any) => {
-//     console.log(arg.data);
-//     if (arg.data == "settingsChange") console.log("CHANGE");
-// });
+window.chrome.webview.addEventListener("message", (arg: any) => {
+    console.log(arg.data);
+
+    let settings = arg.data.settings;
+
+    if (arg.data == "accentColor") console.log(arg.data.accentColor);
+    document.documentElement.style.setProperty(
+        "--accentColor",
+        settings.accentColor,
+    );
+});
 
 export default function App() {
     const [mainUrl, setMainUrl] = useState("");
     const [sideUrl, setSideUrl] = useState("");
-    const [accentColor, setAccentColor] = useState("");
 
     const handleForm = (e: any) => {
         e.preventDefault();
+
         const rawData = new FormData(e.target);
         const data = Object.fromEntries(rawData.entries());
+
+        // if (data.mainUrl.toString() != "") {
+        //     setMainUrl(data.mainUrl.toString());
+        //     window.chrome.webview.postMessage(
+        //         `mainUrl ${data.mainUrl.toString()}`,
+        //     );
+        // }
+        // if (data.sideUrl.toString() != "") {
+        //     setSideUrl(data.sideUrl.toString());
+        //     window.chrome.webview.postMessage(
+        //         `sideUrl ${data.sideUrl.toString()}`,
+        //     );
+        // }
+
         if (data.mainUrl.toString() != "") {
             setMainUrl(data.mainUrl.toString());
             window.chrome.webview.postMessage(
@@ -38,11 +59,11 @@ export default function App() {
                 let data = await response.json();
                 setMainUrl(data.mainUrl);
                 setSideUrl(data.sideUrl);
-                setAccentColor(data.accentColor);
-                document.documentElement.style.setProperty(
-                    "--accentColor",
-                    data.accentColor,
-                );
+                // setAccentColor(data.accentColor);
+                // document.documentElement.style.setProperty(
+                //     "--accentColor",
+                //     data.accentColor,
+                // );
             } catch (error) {
                 console.error("error", error);
             }

@@ -4,6 +4,7 @@
         "dev": "vite",
         "build": "vite build",
         "watch": "vite build --watch",
+        "postbuild": "node -e \"fs.copyFile('Airglow.js', 'dist/Airglow.js', err => {})\"",
         "preview": "vite preview"
     },
     "devDependencies": {

@@ -1,5 +1,9 @@
 #include "WebView.hxx"
 
+#ifndef DEBUG_MSG
+// #define DEBUG_MSG
+#endif
+
 Config* WebView::pConfig{nullptr};
 
 WebView::WebView(Config* config) {}
@@ -78,12 +82,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                 Callback<ICoreWebView2NavigationCompletedEventHandler>(
                                     [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                     {
-                                        browser->PostWebMessageAsString(
-                                            to_wide(string{"mainUrl " + pConfig->settings.mainUrl})
-                                                .c_str());
-                                        browser->PostWebMessageAsString(
-                                            to_wide(string{"sideUrl " + pConfig->settings.sideUrl})
-                                                .c_str());
+                                        webView->UpdateConfig();
 
                                         return S_OK;
                                     })
@@ -125,6 +124,8 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                     })
                                     .Get(),
                                 &tokenReceivedMsg);
+
+                            browser->OpenDevToolsWindow();
 
                             return S_OK;
                         })
@@ -320,12 +321,17 @@ void WebView::UpdateBounds()
     Browsers::Side::controller->put_Bounds(SideBounds());
 }
 
-void WebView::UpdateAccent()
+void WebView::UpdateConfig()
 {
     if (!pConfig || !Browsers::Settings::browser)
         return;
 
-    Browsers::Settings::browser->PostWebMessageAsString(L"settingsChange");
+    json j{{"settings",
+            {{"mainUrl", pConfig->settings.mainUrl},
+             {"sideUrl", pConfig->settings.sideUrl},
+             {"accentColor", pConfig->settings.accentColor}}}};
+
+    Browsers::Settings::browser->PostWebMessageAsJson(to_wide(j.dump()).c_str());
 }
 
 void WebView::UpdateFocus()
@@ -411,7 +417,7 @@ void WebView::SetWindowIcon()
 
     if (pConfig->settings.menu)
     {
-        // #ifdef _DEBUG
+        // #ifdef DEBUG_MSG
         //         LPWSTR faviconUri;
         //         Browsers::Settings::browser->get_FaviconUri(&faviconUri);
         //         wprintln(wstring(faviconUri));
@@ -439,7 +445,7 @@ void WebView::SetWindowIcon()
 
     if (!pConfig->settings.swapped && !pConfig->settings.menu)
     {
-        // #ifdef _DEBUG
+        // #ifdef DEBUG_MSG
         //         LPWSTR faviconUri;
         //         Browsers::Main::browser->get_FaviconUri(&faviconUri);
         //         wprintln(wstring(faviconUri));
@@ -467,7 +473,7 @@ void WebView::SetWindowIcon()
 
     if (pConfig->settings.swapped && !pConfig->settings.menu)
     {
-        // #ifdef _DEBUG
+        // #ifdef DEBUG_MSG
         //         LPWSTR faviconUri;
         //         Browsers::Side::browser->get_FaviconUri(&faviconUri);
         //         wprintln(wstring(faviconUri));
@@ -597,13 +603,13 @@ void WebView::Messages(ICoreWebView2WebMessageReceivedEventArgs* args)
 
         auto message = to_string(wstring(messageRaw.get()));
 
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
         println(message);
 #endif
 
         if (message.compare(0, 8, "mainUrl ") == 0)
         {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
             println("mainUrl (WebView)");
 #endif
             pConfig->settings.mainUrl = message.substr(8);
@@ -611,7 +617,7 @@ void WebView::Messages(ICoreWebView2WebMessageReceivedEventArgs* args)
 
         if (message.compare(0, 8, "sideUrl ") == 0)
         {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
             println("sideUrl (WebView)");
 #endif
             pConfig->settings.sideUrl = message.substr(8);
@@ -619,7 +625,7 @@ void WebView::Messages(ICoreWebView2WebMessageReceivedEventArgs* args)
 
         if (message == splitKey)
         {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
             println("F1 (WebView)");
 #endif
             SendMessageW(pConfig->hwnd, WM_KEYDOWN, VK_F1, 0);
@@ -627,7 +633,7 @@ void WebView::Messages(ICoreWebView2WebMessageReceivedEventArgs* args)
 
         if (message == swapKey)
         {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
             println("F2 (WebView)");
 #endif
             SendMessageW(pConfig->hwnd, WM_KEYDOWN, VK_F2, 0);
@@ -635,7 +641,7 @@ void WebView::Messages(ICoreWebView2WebMessageReceivedEventArgs* args)
 
         if (message == hideMenuKey)
         {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
             println("F4 (WebView)");
 #endif
             SendMessageW(pConfig->hwnd, WM_KEYDOWN, VK_F4, 0);
@@ -643,7 +649,7 @@ void WebView::Messages(ICoreWebView2WebMessageReceivedEventArgs* args)
 
         if (message == maximizeKey)
         {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
             println("F6 (WebView)");
 #endif
             SendMessageW(pConfig->hwnd, WM_KEYDOWN, VK_F6, 0);
@@ -651,7 +657,7 @@ void WebView::Messages(ICoreWebView2WebMessageReceivedEventArgs* args)
 
         if (message == fullscreenKey)
         {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
             println("F11 (WebView)");
 #endif
             SendMessageW(pConfig->hwnd, WM_KEYDOWN, VK_F11, 0);
@@ -659,7 +665,7 @@ void WebView::Messages(ICoreWebView2WebMessageReceivedEventArgs* args)
 
         if (message == onTopKey)
         {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
             println("F9 (WebView)");
 #endif
             SendMessageW(pConfig->hwnd, WM_KEYDOWN, VK_F9, 0);
@@ -667,7 +673,7 @@ void WebView::Messages(ICoreWebView2WebMessageReceivedEventArgs* args)
 
         if (message == closeKey)
         {
-#ifdef _DEBUG
+#ifdef DEBUG_MSG
             println("Ctrl+W (WebView)");
 #endif
             SendMessageW(pConfig->hwnd, WM_KEYDOWN, 0x57, 0);

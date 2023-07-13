@@ -22,7 +22,7 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Con
     auto hbrBackground{(HBRUSH)GetStockObject(BLACK_BRUSH)};
     auto hCursor{(HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED)};
     auto hIcon{(HICON)LoadImageW(hinstance, programIcon.c_str(), IMAGE_ICON, 0, 0,
-                                 LR_DEFAULTCOLOR | LR_DEFAULTSIZE | LR_SHARED)};
+                                 LR_DEFAULTCOLOR | LR_DEFAULTSIZE)};
 
     config->hbrBackground = hbrBackground;
     config->hIcon = hIcon;
@@ -276,7 +276,6 @@ void MainWindow::SavePosition()
             RECT rect{0, 0, 0, 0};
             GetWindowRect(hwnd, &rect);
             pConfig->settings.position = rect_to_bounds(rect);
-            pConfig->Save();
         }
     }
 }
@@ -436,6 +435,7 @@ int MainWindow::_OnExitSizeMove(HWND hwnd, WPARAM wparam, LPARAM lparam)
     println("WM_EXITSIZEMOVE");
 #endif
     SavePosition();
+    pConfig->Save();
 
     return 0;
 }
@@ -632,8 +632,9 @@ int MainWindow::_OnSettingChange(HWND hwnd, WPARAM wparam, LPARAM lparam)
 #endif
     pConfig->settings.accentColor =
         get_system_color(winrt::Windows::UI::ViewManagement::UIColorType::Accent);
-    pWebView->UpdateAccent();
+    pWebView->UpdateConfig();
     pConfig->Save();
+
     InvalidateRect(hwnd, nullptr, true);
     SetDarkMode();
 

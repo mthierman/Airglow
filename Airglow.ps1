@@ -13,7 +13,6 @@ Write-Host -ForegroundColor Cyan "Installing to `"$($destination.Path)\Airglow.e
 Copy-Item -Path "$root/Airglow.exe" -Destination "$destination/Airglow.exe"
 Copy-Item -Path "$root/gui" -Destination "$destination/gui" -Recurse -Force
 Copy-Item -Path "$root/Airglow.json" -Destination "$destination/Airglow.json"
-Copy-Item -Path "$root/Airglow.js" -Destination "$destination/Airglow.js"
 
 $open = Read-Host -Prompt "$($PSStyle.Foreground.Cyan)Open Airglow? $($PSStyle.Reset)[y/n]"
 if ($open -eq 'y')

@@ -81,6 +81,14 @@ void Config::Save()
     }
 }
 
+// json Config::GetCurrent()
+// {
+//     json j{{"settings",
+//             {{"mainUrl", pConfig->settings.mainUrl},
+//              {"sideUrl", pConfig->settings.sideUrl},
+//              {"accentColor", pConfig->settings.accentColor}}}};
+// }
+
 path Config::DataPath()
 {
     PWSTR buffer{};
@@ -127,7 +135,8 @@ path Config::JsPath()
     if (!std::filesystem::exists(paths.data))
         return path{};
 
-    return (paths.data.wstring() + path::preferred_separator + to_wide("Airglow.js"));
+    return (paths.data.wstring() + path::preferred_separator + to_wide("gui") +
+            path::preferred_separator + to_wide("Airglow.js"));
 }
 
 void Config::Tests()

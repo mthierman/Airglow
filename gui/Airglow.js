@@ -8,7 +8,7 @@ if (window.location.href != "https://airglow/index.html") {
             document.getElementsByTagName("head")[0].appendChild(scheme);
             document.documentElement.style.setProperty(
                 "color-scheme",
-                "light dark"
+                "light dark",
             );
         }
         if (document.readyState === "complete") {
@@ -33,7 +33,7 @@ if (window.location.href == "https://airglow/index.html") {
             document.getElementsByTagName("head")[0].appendChild(scheme);
             document.documentElement.style.setProperty(
                 "color-scheme",
-                "light dark"
+                "light dark",
             );
         }
         if (document.readyState === "complete") {
