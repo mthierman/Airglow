@@ -572,9 +572,9 @@ bool WebView::VerifySettingsUrl(ICoreWebView2WebMessageReceivedEventArgs* args)
 {
     wstring verify{};
     verify = L"https://settings/index.html";
-    // #ifdef _DEBUG
-    //     verify = L"https://localhost:8000/";
-    // #endif
+    #ifdef _DEBUG
+        verify = L"https://localhost:8000/";
+    #endif
     wil::unique_cotaskmem_string s{};
     args->get_Source(&s);
     wstring source = s.get();
@@ -586,9 +586,9 @@ bool WebView::VerifySettingsUrl(ICoreWebView2WebMessageReceivedEventArgs* args)
 
 wstring WebView::SettingsNavigation()
 {
-    // #ifdef _DEBUG
-    //     return L"https://localhost:8000/";
-    // #endif
+    #ifdef _DEBUG
+        return L"https://localhost:8000/";
+    #endif
     return L"https://settings/index.html";
 }
 
