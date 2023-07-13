@@ -49,11 +49,9 @@ jobs:
           $notes = Get-Item "build/release_notes.txt"
 
           if ("${{ github.ref_name }}" -eq "main") {
-            $title = "Airglow $version"
-            gh release create $version $zip -F $notes -t $title
+            gh release create stable $zip -F $notes -t "Airglow $version"
           }
 
           if ("${{ github.ref_name }}" -eq "dev") {
-            $title = "Airglow Nightly"
-            gh release create nightly $zip -F $notes -t $title -p
+            gh release create nightly $zip -F $notes -t $title "Airglow Nightly"
           }
