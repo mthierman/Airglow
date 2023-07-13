@@ -23,6 +23,10 @@
         @apply grid gap-2 whitespace-nowrap leading-none;
     }
     button[type="submit"] {
-        @apply text-lg scale-100 self-end duration-100 ease-linear active:scale-95;
+        @apply hover:bg-accent scale-100 self-end text-lg duration-100 ease-linear active:scale-95;
     }
+}
+
+:root {
+    --accentColor: #ffffff;
 }

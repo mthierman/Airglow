@@ -84,7 +84,6 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                         browser->PostWebMessageAsString(
                                             to_wide(string{"sideUrl " + pConfig->settings.sideUrl})
                                                 .c_str());
-                                        // browser->PostWebMessageAsJson();
 
                                         return S_OK;
                                     })
@@ -121,7 +120,6 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                         if (webView->VerifySettingsUrl(args))
                                             webView->Messages(args);
                                         pConfig->Save();
-                                        webView->UpdateBounds();
 
                                         return S_OK;
                                     })
@@ -320,6 +318,14 @@ void WebView::UpdateBounds()
     Browsers::Settings::controller->put_Bounds(SettingsBounds());
     Browsers::Main::controller->put_Bounds(MainBounds());
     Browsers::Side::controller->put_Bounds(SideBounds());
+}
+
+void WebView::UpdateAccent()
+{
+    if (!pConfig || !Browsers::Settings::browser)
+        return;
+
+    Browsers::Settings::browser->PostWebMessageAsString(L"settingsChange");
 }
 
 void WebView::UpdateFocus()

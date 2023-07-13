@@ -7,6 +7,8 @@ std::unique_ptr<Config> Config::Create()
     auto config{std::unique_ptr<Config>(new Config())};
 
     config->Load();
+    config->settings.accentColor =
+        get_system_color(winrt::Windows::UI::ViewManagement::UIColorType::Accent);
 
     if (!std::filesystem::exists(config->paths.data) ||
         !std::filesystem::exists(config->paths.config))
@@ -22,8 +24,6 @@ void Config::Load()
     paths.db = DbPath();
     paths.gui = GuiPath();
     paths.js = JsPath();
-    settings.accentColor =
-        get_system_color(winrt::Windows::UI::ViewManagement::UIColorType::Accent);
 
     if (!std::filesystem::exists(paths.config))
         Save();

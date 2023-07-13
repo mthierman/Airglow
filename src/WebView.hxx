@@ -35,6 +35,7 @@ class WebView
 {
   public:
     static std::unique_ptr<WebView> Create(Config*);
+    void UpdateAccent();
     void UpdateBounds();
     void UpdateFocus();
     void SetWindowTitle();

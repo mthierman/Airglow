@@ -446,8 +446,8 @@ int MainWindow::_OnGetMinMaxInfo(HWND hwnd, WPARAM wparam, LPARAM lparam)
     println("WM_GETMINMAXINFO");
 #endif
     LPMINMAXINFO minmax = (LPMINMAXINFO)lparam;
-    minmax->ptMinTrackSize.x = 300;
-    minmax->ptMinTrackSize.y = 300;
+    minmax->ptMinTrackSize.x = 400;
+    minmax->ptMinTrackSize.y = 450;
 
     return 0;
 }
@@ -630,6 +630,10 @@ int MainWindow::_OnSettingChange(HWND hwnd, WPARAM wparam, LPARAM lparam)
 #ifdef DEBUG_MSG
     println("WM_SETTINGCHANGE");
 #endif
+    pConfig->settings.accentColor =
+        get_system_color(winrt::Windows::UI::ViewManagement::UIColorType::Accent);
+    pWebView->UpdateAccent();
+    pConfig->Save();
     InvalidateRect(hwnd, nullptr, true);
     SetDarkMode();
 

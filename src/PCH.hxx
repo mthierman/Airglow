@@ -5,6 +5,8 @@
 #include <fstream>
 #include <iostream>
 #include <memory>
+#include <sstream>
+#include <ios>
 
 #include <dwmapi.h>
 #include <gdiplus.h>

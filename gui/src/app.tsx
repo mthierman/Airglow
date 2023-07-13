@@ -1,45 +1,14 @@
-import {
-    BrandVariants,
-    Theme,
-    FluentProvider,
-    createLightTheme,
-    createDarkTheme,
-    webLightTheme,
-    webDarkTheme,
-    makeStyles,
-    tokens,
-    Button,
-    Input,
-    Label,
-    Link,
-} from "@fluentui/react-components";
 import { useEffect, useState } from "react";
 
-export const customTheme: Theme = {
-    ...webDarkTheme,
-    colorNeutralForeground2BrandPressed: "#FF0000",
-    colorNeutralForeground3BrandPressed: "#FF0000",
-    // colorNeutralForeground1: "#FF0000",
-    // colorNeutralForeground2: "#FF0000",
-    // colorBrandForeground1: "#FF0000",
-    // colorBrandForeground2: "#FF0000",
-    // colorBrandForegroundLinkPressed: "#FF0000",
-    // colorBrandForegroundInvertedPressed: "#FF0000",
-    // colorBrandForeground2Pressed: "#FF0000",
-};
-
-const useStyles = makeStyles({
-    provider: {
-        backgroundColor: "transparent",
-        height: "100%",
-    },
-});
+// window.chrome.webview.addEventListener("message", (arg: any) => {
+//     console.log(arg.data);
+//     if (arg.data == "settingsChange") console.log("CHANGE");
+// });
 
 export default function App() {
-    const styles = useStyles();
-
     const [mainUrl, setMainUrl] = useState("");
     const [sideUrl, setSideUrl] = useState("");
+    const [accentColor, setAccentColor] = useState("");
 
     const handleForm = (e: any) => {
         e.preventDefault();
@@ -61,11 +30,19 @@ export default function App() {
 
     useEffect(() => {
         const getData = async () => {
+            // window.chrome.webview.addEventListener("message", (arg: any) => {
+            //     getData();
+            // });
             try {
                 const response = await fetch(`https://airglow/Config.json`);
                 let data = await response.json();
                 setMainUrl(data.mainUrl);
                 setSideUrl(data.sideUrl);
+                setAccentColor(data.accentColor);
+                document.documentElement.style.setProperty(
+                    "--accentColor",
+                    data.accentColor,
+                );
             } catch (error) {
                 console.error("error", error);
             }
@@ -74,50 +51,42 @@ export default function App() {
     }, []);
 
     return (
-        <FluentProvider className={styles.provider} theme={customTheme}>
+        <div>
             <form
                 autoComplete="on"
                 id="settings"
                 method="post"
                 onSubmit={handleForm}>
                 <div id="url">
-                    <Label>
+                    <label>
                         <h1>
                             <span className="select-none">🏠 https://</span>
-                            <Link appearance="subtle" href="#">
-                                {mainUrl}
-                            </Link>
+                            {mainUrl}
                         </h1>
-                        <Input
+                        <input
                             type="text"
                             name="mainUrl"
                             id="mainUrl"
-                            // placeholder={mainUrl}
-                            contentBefore="https://"
-                            pattern=".*[.].*"></Input>
-                    </Label>
+                            pattern=".*[.].*"></input>
+                    </label>
 
-                    <Label>
+                    <label>
                         <h1>
                             <span className="select-none">🔧 https://</span>
-                            <Link appearance="subtle" href="#">
-                                {sideUrl}
-                            </Link>
+                            {sideUrl}
                         </h1>
-                        <Input
+                        <input
                             type="text"
                             name="sideUrl"
                             id="sideUrl"
-                            // placeholder={sideUrl}
-                            contentBefore="https://"
-                            pattern=".*[.].*"></Input>
-                    </Label>
+                            pattern=".*[.].*"></input>
+                    </label>
                 </div>
 
-                <Button appearance="primary" type="submit">
+                <button id="submitUrl" type="submit">
                     Save
-                </Button>
+                </button>
             </form>
-        </FluentProvider>
+        </div>
     );
 }
