@@ -10,6 +10,7 @@ class Config
     static std::unique_ptr<Config> Create();
     void Load();
     void Save();
+    path PortableAppDataPath();
 
     struct Settings
     {
@@ -39,7 +40,7 @@ class Config
     HICON hIcon{};
 
   private:
-    path DataPath();
+    path LocalAppDataPath();
     path ConfigPath();
     path DbPath();
     path JsPath();

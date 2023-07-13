@@ -44,7 +44,7 @@ jobs:
           cmake --build --preset release
 
           $name = "Airglow"
-          $zip = Get-Item "build/Airglow.zip"
+          $zip = Get-Item "build/$name.zip"
           $version = Get-Item "build/app_version.txt"
           $notes = Get-Item "build/release_notes.txt"
 

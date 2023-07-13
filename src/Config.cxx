@@ -19,7 +19,7 @@ std::unique_ptr<Config> Config::Create()
 
 void Config::Load()
 {
-    paths.data = DataPath();
+    paths.data = PortableAppDataPath();
     paths.config = ConfigPath();
     paths.db = DbPath();
     paths.js = JsPath();
@@ -88,7 +88,7 @@ void Config::Save()
 //              {"accentColor", pConfig->settings.accentColor}}}};
 // }
 
-path Config::DataPath()
+path Config::LocalAppDataPath()
 {
     PWSTR buffer{};
 
@@ -103,6 +103,17 @@ path Config::DataPath()
         std::filesystem::create_directory(path);
 
     return path;
+}
+
+path Config::PortableAppDataPath()
+{
+    auto cmd = GetCommandLineW();
+    int count;
+    auto args = CommandLineToArgvW(cmd, &count);
+    path path{args[0]};
+    LocalFree(args);
+
+    return path.remove_filename();
 }
 
 path Config::ConfigPath()

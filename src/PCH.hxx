@@ -12,6 +12,7 @@
 #include <gdiplus.h>
 #include <ShlObj.h>
 #include <urlmon.h>
+#include <libloaderapi.h>
 
 #include <WebView2.h>
 

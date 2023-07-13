@@ -143,6 +143,7 @@ target_link_libraries(
     gdiplus.lib
     Uxtheme.lib
     Urlmon.lib
+    Kernel32.lib
     sqlite
 )
 
@@ -156,11 +157,10 @@ execute_process(
 
 add_custom_command(
     TARGET ${APP_NAME} POST_BUILD
-    COMMAND cd ${CMAKE_SOURCE_DIR}/gui && pnpm run build
-    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/${APP_NAME}.exe ${CMAKE_BINARY_DIR}/${APP_NAME}/${APP_NAME}.exe
-
-    # COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/tools/install.ps1 ${CMAKE_BINARY_DIR}/${APP_NAME}/install.ps1
-    COMMAND 7z a ${CMAKE_BINARY_DIR}/Airglow.zip ${CMAKE_BINARY_DIR}/${APP_NAME}/*
+    COMMAND cd "${CMAKE_SOURCE_DIR}/gui" && pnpm run build
+    COMMAND ${CMAKE_COMMAND} -E rename "${CMAKE_BINARY_DIR}/${APP_NAME}.exe" "${CMAKE_BINARY_DIR}/${APP_NAME}/${APP_NAME}.exe"
+    COMMAND 7z a "${CMAKE_BINARY_DIR}/Airglow.zip" "${CMAKE_BINARY_DIR}/${APP_NAME}/*"
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/tools/install.ps1 ${CMAKE_BINARY_DIR}/install.ps1
 )
 
 if(INSTALL)
