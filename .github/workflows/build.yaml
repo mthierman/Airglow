@@ -46,14 +46,14 @@ jobs:
 
           $zip = Get-Item "build/Airglow.zip"
           $version = Get-Content "build/app_version.txt"
-          $notes = Get-Content "build/release_notes.txt"
+          $notes = Get-Item "build/release_notes.txt"
 
           if ("${{ github.ref_name }}" -eq "main") {
             gh release delete stable -y --cleanup-tag
-            gh release create stable $zip -n $notes -t "Airglow $version"
+            gh release create stable $zip -F $notes -t "Airglow $version"
           }
 
           if ("${{ github.ref_name }}" -eq "dev") {
             gh release delete nightly -y --cleanup-tag
-            gh release create nightly $zip -n $notes -t "Airglow Nightly" -p
+            gh release create nightly $zip -F $notes -t "Airglow Nightly" -p
           }
