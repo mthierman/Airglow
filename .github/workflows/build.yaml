@@ -49,11 +49,11 @@ jobs:
           $notes = Get-Item "build/release_notes.txt"
 
           if ("${{ github.ref_name }}" -eq "main") {
-            gh release delete stable -y --cleanup-tag
+            gh release delete stable -y
             gh release create stable $zip -F $notes -t "Airglow $version"
           }
 
           if ("${{ github.ref_name }}" -eq "dev") {
-            gh release delete nightly -y --cleanup-tag
+            gh release delete nightly -y
             gh release create nightly $zip -F $notes -t "Airglow Nightly" -p
           }
