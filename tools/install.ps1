@@ -1,8 +1,5 @@
-# TO RUN WITH BYPASS:
-# pwsh -nop -nol -ExecutionPolicy Bypass -File .\Installer.ps1
-
-# TO RUN WITH Invoke-WebRequest
-# irm https://github.com/mthierman/Airglow/releases/download/stable/Installer.ps1 | iex
+# pwsh -nop -nol -ExecutionPolicy Bypass -File .\install.ps1
+# irm https://github.com/mthierman/Airglow/releases/download/stable/install.ps1 | iex
 
 $download = 'https://github.com/mthierman/Airglow/releases/download/stable/Airglow.zip'
 

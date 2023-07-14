@@ -163,7 +163,7 @@ configure_file("${CMAKE_SOURCE_DIR}/tools/install.ps1" "${CMAKE_BINARY_DIR}/inst
 
 add_custom_command(
     TARGET ${APP_NAME} PRE_BUILD
-    COMMAND cd "${CMAKE_SOURCE_DIR}/gui" && pnpm run build
+    COMMAND cd "${CMAKE_SOURCE_DIR}/settings" && pnpm run build
 )
 
 add_custom_command(

@@ -45,7 +45,7 @@ jobs:
           cmake --build --preset release
 
           $zip = Get-Item "build/Airglow.zip"
-          $installer = Get-Item "build/Installer.ps1"
+          $installer = Get-Item "build/install.ps1"
           $version = Get-Content "build/app_version.txt"
           $notes = Get-Item "build/release_notes.txt"
 
