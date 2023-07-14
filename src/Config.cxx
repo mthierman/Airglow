@@ -172,5 +172,6 @@ path Config::JsPath()
     if (!std::filesystem::exists(paths.data))
         return path{};
 
-    return (paths.data.wstring() + path::preferred_separator + to_wide("inject.js"));
+    return (paths.data.wstring() + path::preferred_separator + to_wide("js") +
+            path::preferred_separator + to_wide("inject.js"));
 }

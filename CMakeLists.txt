@@ -158,14 +158,17 @@ target_link_libraries(
     sqlite
 )
 
-# file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/${APP_NAME}")
-# file(COPY_FILE "${CMAKE_SOURCE_DIR}/js/inject.js" "${CMAKE_BINARY_DIR}/${APP_NAME}/inject.js" ONLY_IF_DIFFERENT INPUT_MAY_BE_RECENT)
-configure_file("${CMAKE_SOURCE_DIR}/js/inject.js" "${CMAKE_BINARY_DIR}/${APP_NAME}/inject.js")
+configure_file("${CMAKE_SOURCE_DIR}/js/inject.js" "${CMAKE_BINARY_DIR}/${APP_NAME}/js/inject.js")
 configure_file("${CMAKE_SOURCE_DIR}/tools/install.ps1" "${CMAKE_BINARY_DIR}/install.ps1")
 
 add_custom_command(
+    TARGET ${APP_NAME} PRE_BUILD
+    COMMAND cd "${CMAKE_SOURCE_DIR}/gui" && pnpm run build
+)
+
+add_custom_command(
     TARGET ${APP_NAME} POST_BUILD
-    COMMAND 7z a "${CMAKE_BINARY_DIR}/Airglow.zip" "${CMAKE_BINARY_DIR}/${APP_NAME}/${APP_NAME}.exe" "${CMAKE_BINARY_DIR}/${APP_NAME}/settings"
+    COMMAND 7z a "${CMAKE_BINARY_DIR}/Airglow.zip" "${CMAKE_BINARY_DIR}/${APP_NAME}/${APP_NAME}.exe" "${CMAKE_BINARY_DIR}/${APP_NAME}/settings" "${CMAKE_BINARY_DIR}/${APP_NAME}/js"
 )
 
 if(INSTALL)
