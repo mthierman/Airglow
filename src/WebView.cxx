@@ -36,7 +36,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                             EventRegistrationToken tokenTitle;
                             EventRegistrationToken tokenFavicon;
                             EventRegistrationToken tokenReceivedMsg;
-                            EventRegistrationToken tokenPostMsg;
+                            EventRegistrationToken tokenNavigationCompleted;
 
                             if (!c)
                                 return E_POINTER;
@@ -84,7 +84,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                         return S_OK;
                                     })
                                     .Get(),
-                                &tokenPostMsg);
+                                &tokenNavigationCompleted);
 
                             browser->add_DocumentTitleChanged(
                                 Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
@@ -124,6 +124,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
 #ifdef _DEBUG
                             browser->OpenDevToolsWindow();
 #endif
+
                             return S_OK;
                         })
                         .Get());
@@ -138,7 +139,8 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
 
                             EventRegistrationToken tokenTitle;
                             EventRegistrationToken tokenFavicon;
-                            EventRegistrationToken tokenMsg;
+                            EventRegistrationToken tokenReceivedMsg;
+                            EventRegistrationToken tokenNavigationCompleted;
 
                             if (!c)
                                 return E_POINTER;
@@ -174,7 +176,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                             browser->Navigate(webView->MainNavigation().c_str());
 
                             browser->AddScriptToExecuteOnDocumentCreated(
-                                webView->GetScriptFile().c_str(), nullptr);
+                                webView->GetScript().c_str(), nullptr);
 
                             browser->add_DocumentTitleChanged(
                                 Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
@@ -208,7 +210,10 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                         return S_OK;
                                     })
                                     .Get(),
-                                &tokenMsg);
+                                &tokenReceivedMsg);
+#ifdef _DEBUG
+                            browser->OpenDevToolsWindow();
+#endif
 
                             return S_OK;
                         })
@@ -224,7 +229,8 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
 
                             EventRegistrationToken tokenTitle;
                             EventRegistrationToken tokenFavicon;
-                            EventRegistrationToken tokenMsg;
+                            EventRegistrationToken tokenReceivedMsg;
+                            EventRegistrationToken tokenNavigationCompleted;
 
                             if (!c)
                                 return E_POINTER;
@@ -260,7 +266,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                             browser->Navigate(webView->SideNavigation().c_str());
 
                             browser->AddScriptToExecuteOnDocumentCreated(
-                                webView->GetScriptFile().c_str(), nullptr);
+                                webView->GetScript().c_str(), nullptr);
 
                             browser->add_DocumentTitleChanged(
                                 Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
@@ -294,7 +300,10 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                         return S_OK;
                                     })
                                     .Get(),
-                                &tokenMsg);
+                                &tokenReceivedMsg);
+#ifdef _DEBUG
+                            browser->OpenDevToolsWindow();
+#endif
 
                             return S_OK;
                         })
@@ -326,7 +335,7 @@ void WebView::UpdateConfig()
     json j{{"settings",
             {{"mainUrl", pConfig->settings.mainUrl},
              {"sideUrl", pConfig->settings.sideUrl},
-             {"accentColor", pConfig->settings.accentColor}}}};
+             {"accentColor", pConfig->colors.accent}}}};
 
     Browsers::Settings::browser->PostWebMessageAsJson(to_wide(j.dump()).c_str());
 }

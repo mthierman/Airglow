@@ -10,8 +10,7 @@ std::unique_ptr<Config> Config::Create()
 
     config->Load();
 
-    config->settings.accentColor =
-        get_system_color(winrt::Windows::UI::ViewManagement::UIColorType::Accent);
+    config->InitializeColors();
 
     if (!std::filesystem::exists(config->paths.data) ||
         !std::filesystem::exists(config->paths.config))
@@ -43,7 +42,6 @@ void Config::Load()
             settings.topmost = j["topmost"].get<bool>();
             settings.mainUrl = j["mainUrl"].get<string>();
             settings.sideUrl = j["sideUrl"].get<string>();
-            settings.accentColor = j["accentColor"].get<string>();
         }
         catch (const std::exception& e)
         {
@@ -66,7 +64,6 @@ void Config::Save()
         j["topmost"] = settings.topmost;
         j["mainUrl"] = settings.mainUrl;
         j["sideUrl"] = settings.sideUrl;
-        j["accentColor"] = settings.accentColor;
 
         ofstream f(paths.config);
         f << std::setw(4) << j << "\n";
@@ -87,15 +84,27 @@ void Config::Initialize()
     paths.config = ConfigPath();
     paths.db = DbPath();
     paths.js = JsPath();
-#ifdef _DEBUG
-    println(app.name);
-    println(app.version);
-    wprintln(paths.data);
-    wprintln(paths.settings);
-    wprintln(paths.config);
-    wprintln(paths.db);
-    wprintln(paths.js);
-#endif
+}
+
+void Config::InitializeColors()
+{
+    colors.accent = get_system_color(winrt::Windows::UI::ViewManagement::UIColorType::Accent);
+    colors.accentDark1 =
+        get_system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark1);
+    colors.accentDark2 =
+        get_system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark2);
+    colors.accentDark3 =
+        get_system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark3);
+    colors.accentLight1 =
+        get_system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight1);
+    colors.accentLight2 =
+        get_system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight2);
+    colors.accentLight3 =
+        get_system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight3);
+    colors.Background =
+        get_system_color(winrt::Windows::UI::ViewManagement::UIColorType::Background);
+    colors.Foreground =
+        get_system_color(winrt::Windows::UI::ViewManagement::UIColorType::Foreground);
 }
 
 // json Config::GetCurrent()
@@ -164,21 +173,4 @@ path Config::JsPath()
         return path{};
 
     return (paths.settings.wstring() + path::preferred_separator + to_wide("inject.js"));
-}
-
-void Config::Tests()
-{
-    println(settings.mainUrl);
-    println(settings.sideUrl);
-    println(settings.accentColor);
-    println(bool_to_string(settings.fullscreen));
-    println(bool_to_string(settings.maximized));
-    println(bool_to_string(settings.menu));
-    println(bool_to_string(settings.split));
-    println(bool_to_string(settings.swapped));
-    println(bool_to_string(settings.topmost));
-    println(std::to_string(settings.position[0]));
-    println(std::to_string(settings.position[1]));
-    println(std::to_string(settings.position[2]));
-    println(std::to_string(settings.position[3]));
 }

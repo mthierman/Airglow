@@ -159,13 +159,8 @@ target_link_libraries(
 )
 
 add_custom_command(
-    TARGET ${APP_NAME} PRE_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/tools/install.ps1" "${CMAKE_BINARY_DIR}/install.ps1"
-    COMMAND cd "${CMAKE_SOURCE_DIR}/gui" && pnpm run build
-)
-
-add_custom_command(
     TARGET ${APP_NAME} POST_BUILD
+    COMMAND cd "${CMAKE_SOURCE_DIR}/gui" && pnpm run build
     COMMAND 7z a "${CMAKE_BINARY_DIR}/Airglow.zip" "${CMAKE_BINARY_DIR}/${APP_NAME}/${APP_NAME}.exe" "${CMAKE_BINARY_DIR}/${APP_NAME}/settings"
 )
 

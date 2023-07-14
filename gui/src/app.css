@@ -23,10 +23,13 @@
         @apply grid gap-2 whitespace-nowrap leading-none;
     }
     input {
-        @apply hover:border-accent shadow-accent rounded border-2 bg-transparent p-2 shadow-lg;
+        @apply rounded border-2 bg-transparent p-2 shadow-lg shadow-accent outline-none hover:border-accent;
+    }
+    input:focus {
+        @apply border-accent outline-none;
     }
     button[type="submit"] {
-        @apply border-accent hover:bg-accent shadow-accent scale-100 self-end rounded border-2 p-2 text-2xl font-semibold shadow-2xl duration-100 ease-linear active:scale-95;
+        @apply scale-100 self-end rounded border-2 border-accent p-2 text-2xl font-semibold shadow-2xl shadow-accent duration-100 ease-linear hover:bg-accent active:scale-95;
     }
 }
 

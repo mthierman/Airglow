@@ -8,8 +8,44 @@ class Config
 {
   public:
     static std::unique_ptr<Config> Create();
+    void InitializeColors();
     void Load();
     void Save();
+
+    struct App
+    {
+        string name{};
+        string version{};
+    };
+
+    struct Paths
+    {
+        path data{};
+        path settings{};
+        path config{};
+        path db{};
+        path js{};
+    };
+
+    struct Window
+    {
+        HWND hwnd{};
+        HBRUSH hbrBackground{};
+        HICON hIcon{};
+    };
+
+    struct Colors
+    {
+        std::string accent{};
+        std::string accentDark1{};
+        std::string accentDark2{};
+        std::string accentDark3{};
+        std::string accentLight1{};
+        std::string accentLight2{};
+        std::string accentLight3{};
+        std::string Background{};
+        std::string Foreground{};
+    };
 
     struct Settings
     {
@@ -22,32 +58,13 @@ class Config
         bool topmost{false};
         string mainUrl{"google.com"};
         string sideUrl{"google.com"};
-        string accentColor{"#FFFFFFFF"};
-    };
-    struct App
-    {
-        string name{};
-        string version{};
-    };
-    struct Paths
-    {
-        path data{};
-        path settings{};
-        path config{};
-        path db{};
-        path js{};
-    };
-    struct Window
-    {
-        HWND hwnd{};
-        HBRUSH hbrBackground{};
-        HICON hIcon{};
     };
 
     App app{};
     Paths paths{};
-    Settings settings{};
     Window window{};
+    Colors colors{};
+    Settings settings{};
 
   private:
     void Initialize();
@@ -57,7 +74,6 @@ class Config
     path ConfigPath();
     path DbPath();
     path JsPath();
-    void Tests();
 
   protected:
     Config();

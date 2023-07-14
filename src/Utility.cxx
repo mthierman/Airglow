@@ -106,20 +106,22 @@ string get_system_color(winrt::Windows::UI::ViewManagement::UIColorType colorTyp
     UISettings settings{UISettings()};
     Color accent{settings.GetColorValue(colorType)};
 
-    std::stringstream buffer;
-    buffer << "#";
-    buffer << std::hex << std::setfill('0');
-    buffer << std::hex << std::setw(2) << static_cast<int>(accent.R);
-    buffer << std::hex << std::setw(2) << static_cast<int>(accent.G);
-    buffer << std::hex << std::setw(2) << static_cast<int>(accent.B);
-    buffer << std::hex << std::setw(2) << static_cast<int>(accent.A);
+    // std::stringstream version, old implementation:
+    //
+    // std::stringstream buffer;
+    // buffer << "#";
+    // buffer << std::hex << std::setfill('0');
+    // buffer << std::hex << std::setw(2) << static_cast<int>(accent.R);
+    // buffer << std::hex << std::setw(2) << static_cast<int>(accent.G);
+    // buffer << std::hex << std::setw(2) << static_cast<int>(accent.B);
+    // buffer << std::hex << std::setw(2) << static_cast<int>(accent.A);
+    // return buffer.str();
 
+    // new std::format version:
+    //
     auto formatted{
         std::format("#{:0>2x}{:0>2x}{:0>2x}{:0>2x}", accent.R, accent.G, accent.B, accent.A)};
 
-    println(formatted);
-
-    // return buffer.str();
     return formatted;
 }
 } // namespace util

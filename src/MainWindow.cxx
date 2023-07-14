@@ -630,8 +630,7 @@ int MainWindow::_OnSettingChange(HWND hwnd, WPARAM wparam, LPARAM lparam)
 #ifdef DEBUG_MSG
     println("WM_SETTINGCHANGE");
 #endif
-    pConfig->settings.accentColor =
-        get_system_color(winrt::Windows::UI::ViewManagement::UIColorType::Accent);
+    pConfig->InitializeColors();
     pWebView->UpdateConfig();
     pConfig->Save();
 
