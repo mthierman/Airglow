@@ -4,6 +4,10 @@
 // #define DEBUG_MSG
 #endif
 
+#ifndef DEVTOOLS
+// #define DEVTOOLS
+#endif
+
 Config* WebView::pConfig{nullptr};
 
 WebView::WebView(Config* config) {}
@@ -121,7 +125,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                     })
                                     .Get(),
                                 &tokenReceivedMsg);
-#ifdef _DEBUG
+#ifdef DEV_TOOLS
                             browser->OpenDevToolsWindow();
 #endif
 
@@ -211,7 +215,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                     })
                                     .Get(),
                                 &tokenReceivedMsg);
-#ifdef _DEBUG
+#ifdef DEV_TOOLS
                             browser->OpenDevToolsWindow();
 #endif
 
@@ -301,7 +305,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                     })
                                     .Get(),
                                 &tokenReceivedMsg);
-#ifdef _DEBUG
+#ifdef DEV_TOOLS
                             browser->OpenDevToolsWindow();
 #endif
 
