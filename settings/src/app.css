@@ -23,10 +23,10 @@
         @apply grid gap-2 whitespace-nowrap leading-none;
     }
     input {
-        @apply rounded border-2 bg-transparent p-2 shadow-lg shadow-accent outline-none hover:border-accent;
+        @apply rounded border-2 border-accent bg-accent p-2 shadow-md shadow-accent outline-none;
     }
     input:focus {
-        @apply border-accent outline-none;
+        @apply border-current;
     }
     button[type="submit"] {
         @apply scale-100 self-end rounded border-2 border-accent p-2 text-2xl font-semibold shadow-2xl shadow-accent duration-100 ease-linear hover:bg-accent active:scale-95;
@@ -35,4 +35,9 @@
 
 :root {
     --accentColor: #ffffff;
+}
+
+input:-webkit-autofill {
+    transition: all 5000s ease-in-out 0s;
+    transition-property: background-color, color;
 }
