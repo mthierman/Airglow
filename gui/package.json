@@ -4,7 +4,7 @@
         "dev": "vite",
         "build": "vite build",
         "watch": "vite build --watch",
-        "postbuild": "node -e \"fs.cp('../build/settings', '../build/Airglow/settings', { recursive: true }, err => {})\"",
+        "postbuild": "node -e \"fs.cp('dist', '../build/Airglow/settings', { recursive: true }, err => {})\"",
         "preview": "vite preview"
     },
     "devDependencies": {

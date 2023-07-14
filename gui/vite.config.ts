@@ -7,10 +7,6 @@ export default defineConfig(async ({ command, mode }) => {
         const cert = path.resolve("../../.cert/localhost.pfx");
         const passphrase = "localhost";
         return {
-            build: {
-                outDir: "../build/Airglow/settings",
-                assetsDir: "./",
-            },
             plugins: [react()],
             server: {
                 port: 8000,
@@ -29,10 +25,6 @@ export default defineConfig(async ({ command, mode }) => {
         };
     } else {
         return {
-            build: {
-                outDir: "../build/Airglow/settings",
-                assetsDir: "./",
-            },
             plugins: [react()],
         };
     }

@@ -1,0 +1,1 @@
+        "postbuild": "node -e \"fs.cp('../build/settings', '../build/Airglow/settings', { recursive: true }, err => {})\"",

@@ -6,7 +6,7 @@ document.onreadystatechange = () => {
         document.getElementsByTagName("head")[0].appendChild(scheme);
         document.documentElement.style.setProperty(
             "color-scheme",
-            "light dark",
+            "light dark"
         );
     }
     if (document.readyState === "complete") {
