@@ -40,17 +40,18 @@ jobs:
           $vswhere = "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
           $vspath = & $vswhere -products * -latest -property installationPath
           & "$vspath\Common7\Tools\Launch-VsDevShell.ps1" -HostArch amd64 -Arch amd64 -SkipAutomaticLocation
-          
+
           cmake --preset release
           cmake --build --preset release
 
           $zip = Get-Item "build/Airglow.zip"
+          $installer = Get-Item "build/Installer.ps1"
           $version = Get-Content "build/app_version.txt"
           $notes = Get-Item "build/release_notes.txt"
 
           if ("${{ github.ref_name }}" -eq "main") {
             gh release delete stable -y
-            gh release create stable $zip -F $notes -t "Airglow $version"
+            gh release create stable $zip $installer -F $notes -t "Airglow $version"
           }
 
           if ("${{ github.ref_name }}" -eq "dev") {
