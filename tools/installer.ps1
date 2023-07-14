@@ -1,6 +1,9 @@
 # TO RUN WITH BYPASS:
 # pwsh -nop -nol -ExecutionPolicy Bypass -File .\Installer.ps1
 
+# TO RUN WITH Invoke-WebRequest
+# irm https://github.com/mthierman/Airglow/releases/download/stable/Installer.ps1 | iex
+
 $download = 'https://github.com/mthierman/Airglow/releases/download/stable/Airglow.zip'
 
 $T = "$($env:TEMP)\tmp$([System.Convert]::ToString((Get-Random 65535),16).padleft(4, '0')).tmp"
