@@ -23,10 +23,10 @@ jobs:
           node-version: "*"
           check-latest: true
           cache: "pnpm"
-          cache-dependency-path: gui/pnpm-lock.yaml
+          cache-dependency-path: settings/pnpm-lock.yaml
       - run: |
           Push-Location
-          Set-Location gui
+          Set-Location settings
           pnpm install --frozen-lockfile
           Pop-Location
       - uses: actions/cache@v3
