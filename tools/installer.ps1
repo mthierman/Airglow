@@ -1,3 +1,6 @@
+# TO RUN WITH BYPASS:
+# pwsh -nop -nol -ExecutionPolicy Bypass -File .\Installer.ps1
+
 $download = 'https://github.com/mthierman/Airglow/releases/download/stable/Airglow.zip'
 
 $T = "$($env:TEMP)\tmp$([System.Convert]::ToString((Get-Random 65535),16).padleft(4, '0')).tmp"
