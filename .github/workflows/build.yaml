@@ -59,5 +59,7 @@ jobs:
 
           if ("${{ github.ref_name }}" -eq "dev") {
             gh release delete nightly -y
+            git tag -f nightly $commit
+            git push --tags --force
             gh release create nightly $zip -F $notes -t "Airglow Nightly" -p
           }

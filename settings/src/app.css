@@ -20,21 +20,21 @@
         @apply grid gap-4 self-start;
     }
     label {
-        @apply grid gap-2 whitespace-nowrap leading-none;
+        @apply grid gap-2 whitespace-nowrap font-semibold;
     }
     input {
-        @apply rounded border-2 border-accent bg-accent p-2 shadow-md shadow-accent outline-none;
+        @apply rounded border-2 border-black bg-black p-2 font-medium text-white shadow-md shadow-black outline-none;
     }
     input:focus {
-        @apply border-current;
+        @apply border-gray-400;
     }
     button[type="submit"] {
-        @apply scale-100 self-end rounded border-2 border-accent p-2 text-2xl font-semibold shadow-2xl shadow-accent duration-100 ease-linear hover:bg-accent active:scale-95;
+        @apply scale-100  self-end rounded border-2 border-black bg-black p-2 text-2xl font-semibold text-white shadow-2xl shadow-accent duration-100 ease-linear hover:border-accent hover:bg-accent active:scale-95;
     }
 }
 
 :root {
-    --accentColor: #ffffff;
+    --accentColor: #2ab6fc;
 }
 
 input:-webkit-autofill {

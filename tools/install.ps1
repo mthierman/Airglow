@@ -2,11 +2,9 @@
 # irm https://github.com/mthierman/Airglow/releases/download/stable/install.ps1 | iex
 
 $download = 'https://github.com/mthierman/Airglow/releases/download/stable/Airglow.zip'
-
 $T = "$($env:TEMP)\tmp$([System.Convert]::ToString((Get-Random 65535),16).padleft(4, '0')).tmp"
 $temp = ((New-Item -ItemType Directory -Path $T) | Resolve-Path).ProviderPath
 
-Write-Host -ForegroundColor Magenta "Downloading from GitHub...`n"
 Invoke-WebRequest -Uri $download -OutFile "$temp/Airglow.zip"
 $zip = ("$temp/Airglow.zip" | Resolve-Path).ProviderPath
 [System.IO.Compression.ZipFile]::ExtractToDirectory($zip, "$temp/Airglow")
@@ -14,8 +12,6 @@ $zip = ("$temp/Airglow.zip" | Resolve-Path).ProviderPath
 $bundle = ("$temp/Airglow" | Resolve-Path).ProviderPath
 
 Copy-Item -Path $bundle -Destination $env:LOCALAPPDATA -Recurse -Force
-$output = ("$env:LOCALAPPDATA/Airglow" | Resolve-Path).ProviderPath
-Write-Host -ForegroundColor Blue "Installed to `"$output`""
 Remove-Item $temp -Recurse -Force
 
 $shell = New-Object -ComObject WScript.Shell

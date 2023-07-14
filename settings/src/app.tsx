@@ -87,6 +87,7 @@ export default function App() {
                             type="text"
                             name="mainUrl"
                             id="mainUrl"
+                            placeholder={mainUrl}
                             pattern=".*[.].*"></input>
                     </label>
 
@@ -99,6 +100,7 @@ export default function App() {
                             type="text"
                             name="sideUrl"
                             id="sideUrl"
+                            placeholder={mainUrl}
                             pattern=".*[.].*"></input>
                     </label>
                 </div>
