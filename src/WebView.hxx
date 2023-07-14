@@ -55,7 +55,6 @@ class WebView
     RECT SideBounds();
     wstring GetScriptFile();
     wstring GetScript();
-    wstring GetMenuScript();
 
   protected:
     WebView(Config*);

@@ -1,21 +1,30 @@
 import { useEffect, useState } from "react";
 import icon from "../../data/icons/icon.svg?raw";
 
-if (document.readyState === "interactive") {
-    const favicon = document.createElement("link");
-    favicon.type = "image/svg+xml";
-    favicon.rel = "icon";
-    favicon.href = `data:image/svg+xml,${encodeURIComponent(icon)}`;
-    document.head.appendChild(favicon);
-}
+document.onreadystatechange = () => {
+    if (document.readyState === "complete") {
+        const favicon = document.createElement("link");
+        favicon.type = "image/svg+xml";
+        favicon.rel = "icon";
+        favicon.href = `data:image/svg+xml,${encodeURIComponent(icon)}`;
+        document.head.appendChild(favicon);
+
+        onkeydown = (e) => {
+            if (e.key === "F3") {
+                e.preventDefault();
+            }
+            if (e.ctrlKey && e.key === "w") {
+                window.chrome.webview.postMessage("close");
+            } else {
+                window.chrome.webview.postMessage(e.key);
+            }
+        };
+    }
+};
 
 if (window.chrome.webview) {
     window.chrome.webview.addEventListener("message", (arg: any) => {
-        console.log(arg.data);
-
         let settings = arg.data.settings;
-
-        if (arg.data == "accentColor") console.log(arg.data.accentColor);
         document.documentElement.style.setProperty(
             "--accentColor",
             settings.accentColor,
@@ -49,19 +58,11 @@ export default function App() {
 
     useEffect(() => {
         const getData = async () => {
-            // window.chrome.webview.addEventListener("message", (arg: any) => {
-            //     getData();
-            // });
             try {
-                const response = await fetch(`https://airglow/Config.json`);
+                const response = await fetch(`https://settings/config.json`);
                 let data = await response.json();
                 setMainUrl(data.mainUrl);
                 setSideUrl(data.sideUrl);
-                // setAccentColor(data.accentColor);
-                // document.documentElement.style.setProperty(
-                //     "--accentColor",
-                //     data.accentColor,
-                // );
             } catch (error) {
                 console.error("error", error);
             }

@@ -10,9 +10,9 @@ export default {
             },
         },
         fontFamily: {
-            sans: ["Segoe UI Variable Text", "Segoe UI", "Arial"],
-            serif: ["Constantia", "Georgia", "Times New Roman"],
-            mono: ["Cascadia Mono", "Consolas", "Courier New"],
+            sans: ["IBM Plex Sans", "Segoe UI Variable Text", "Segoe UI", "Arial", "Noto Emoji"],
+            serif: ["Constantia", "Georgia", "Times New Roman", "Noto Emoji"],
+            mono: ["Cascadia Mono", "Consolas", "Courier New", "Noto Emoji"],
         },
     },
     corePlugins: {

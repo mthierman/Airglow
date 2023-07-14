@@ -22,8 +22,11 @@
     label {
         @apply grid gap-2 whitespace-nowrap leading-none;
     }
+    input {
+        @apply hover:border-accent shadow-accent rounded border-2 bg-transparent p-2 shadow-lg;
+    }
     button[type="submit"] {
-        @apply hover:text-accent scale-100 self-end text-lg duration-100 ease-linear active:scale-95;
+        @apply border-accent hover:bg-accent shadow-accent scale-100 self-end rounded border-2 p-2 text-2xl font-semibold shadow-2xl duration-100 ease-linear active:scale-95;
     }
 }
 

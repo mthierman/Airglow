@@ -57,7 +57,7 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                             if (!settings)
                                 return E_POINTER;
 
-                            settings->put_AreDefaultContextMenusEnabled(false);
+                            settings->put_AreDefaultContextMenusEnabled(true);
                             settings->put_AreDefaultScriptDialogsEnabled(true);
                             settings->put_AreDevToolsEnabled(true);
                             settings->put_AreHostObjectsAllowed(true);
@@ -74,9 +74,6 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                                 COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
 
                             browser->Navigate(webView->SettingsNavigation().c_str());
-
-                            browser->AddScriptToExecuteOnDocumentCreated(
-                                webView->GetScriptFile().c_str(), nullptr);
 
                             browser->add_NavigationCompleted(
                                 Callback<ICoreWebView2NavigationCompletedEventHandler>(
@@ -572,9 +569,9 @@ bool WebView::VerifySettingsUrl(ICoreWebView2WebMessageReceivedEventArgs* args)
 {
     wstring verify{};
     verify = L"https://settings/index.html";
-    #ifdef _DEBUG
-        verify = L"https://localhost:8000/";
-    #endif
+#ifdef _DEBUG
+    verify = L"https://localhost:8000/";
+#endif
     wil::unique_cotaskmem_string s{};
     args->get_Source(&s);
     wstring source = s.get();
@@ -586,9 +583,9 @@ bool WebView::VerifySettingsUrl(ICoreWebView2WebMessageReceivedEventArgs* args)
 
 wstring WebView::SettingsNavigation()
 {
-    #ifdef _DEBUG
-        return L"https://localhost:8000/";
-    #endif
+#ifdef _DEBUG
+    return L"https://localhost:8000/";
+#endif
     return L"https://settings/index.html";
 }
 
@@ -797,26 +794,6 @@ wstring WebView::GetScript()
             }
             if (document.readyState === "complete") {
                 onkeydown = (e) => {
-                    if (e.ctrlKey && e.key === "w") {
-                        window.chrome.webview.postMessage("close");
-                    } else {
-                        window.chrome.webview.postMessage(e.key);
-                    }
-                };
-            }
-        };
-    )"};
-}
-
-wstring WebView::GetMenuScript()
-{
-    return wstring{LR"(
-        document.onreadystatechange = () => {
-            if (document.readyState === "complete") {
-                onkeydown = (e) => {
-                    if (e.key === "F3") {
-                        e.preventDefault();
-                    }
                     if (e.ctrlKey && e.key === "w") {
                         window.chrome.webview.postMessage("close");
                     } else {

@@ -2,8 +2,8 @@
     "name": "settings",
     "scripts": {
         "dev": "vite",
-        "build": "vite build --emptyOutDir",
-        "watch": "vite build --emptyOutDir --watch",
+        "build": "vite build",
+        "watch": "vite build --watch",
         "postbuild": "node -e \"fs.cp('../build/settings', '../build/Airglow/settings', { recursive: true }, err => {})\"",
         "preview": "vite preview"
     },
