@@ -9,10 +9,10 @@ $zip = ("$temp/Airglow.zip" | Resolve-Path).ProviderPath
 [System.IO.Compression.ZipFile]::ExtractToDirectory($zip, "$temp/Airglow")
 
 $bundle = ("$temp/Airglow" | Resolve-Path).ProviderPath
-$output = ("$env:LOCALAPPDATA/Airglow" | Resolve-Path).ProviderPath
 
-Write-Host -ForegroundColor Blue "Installing to `"$output`"..."
 Copy-Item -Path $bundle -Destination $env:LOCALAPPDATA -Recurse -Force
+$output = ("$env:LOCALAPPDATA/Airglow" | Resolve-Path).ProviderPath
+Write-Host -ForegroundColor Blue "Installed to `"$output`""
 Remove-Item $temp -Recurse -Force
 
 $shell = New-Object -ComObject WScript.Shell
