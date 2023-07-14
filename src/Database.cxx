@@ -34,12 +34,12 @@ std::unique_ptr<Database> Database::Create(Config* config)
         return nullptr;
     }
 
-    if (!std::filesystem::exists(pConfig->paths.db))
+    if (std::filesystem::exists(pConfig->paths.db))
     {
         auto debExec = sqlite3_exec(db, sql.c_str(), nullptr, 0, &errMsg);
         if (debExec != SQLITE_OK)
         {
-            dberror(errMsg);
+            // dberror(errMsg);
             sqlite3_free(errMsg);
         }
     }
