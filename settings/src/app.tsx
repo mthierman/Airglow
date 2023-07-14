@@ -100,7 +100,7 @@ export default function App() {
                             type="text"
                             name="sideUrl"
                             id="sideUrl"
-                            placeholder={mainUrl}
+                            placeholder={sideUrl}
                             pattern=".*[.].*"></input>
                     </label>
                 </div>
