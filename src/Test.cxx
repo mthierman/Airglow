@@ -1,6 +1,4 @@
-#include "Test.hxx"
-
-using namespace util;
+#include "Config.hxx"
 
 void Test(HWND hwnd)
 {

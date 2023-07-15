@@ -1,6 +1,6 @@
 #include "Utility.hxx"
 
-namespace util
+namespace Utility
 {
 string to_string(wstring in)
 {
@@ -124,4 +124,4 @@ string get_system_color(winrt::Windows::UI::ViewManagement::UIColorType colorTyp
 
     return formatted;
 }
-} // namespace util
+} // namespace Utility

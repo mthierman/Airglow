@@ -6,7 +6,7 @@ class App
 {
   public:
     static std::unique_ptr<App> Create(HINSTANCE, int);
-    void Close();
+    ~App();
 
   private:
     unsigned long long gdiplusToken{};

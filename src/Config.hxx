@@ -2,7 +2,7 @@
 
 #include "Utility.hxx"
 
-using namespace util;
+using namespace Utility;
 
 class Config
 {

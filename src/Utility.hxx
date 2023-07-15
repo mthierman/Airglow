@@ -1,6 +1,6 @@
 #pragma once
 
-namespace util
+namespace Utility
 {
 using json = nlohmann::json;
 using path = std::filesystem::path;
@@ -28,4 +28,4 @@ std::vector<int> rect_to_bounds(RECT);
 RECT bounds_to_rect(std::vector<int>);
 bool check_system_dark_mode();
 string get_system_color(winrt::Windows::UI::ViewManagement::UIColorType);
-}; // namespace util
+}; // namespace Utility

@@ -2,6 +2,9 @@
 
 #include "Config.hxx"
 #include "WebView.hxx"
+#include "Utility.hxx"
+
+using namespace Utility;
 
 class MainWindow
 {

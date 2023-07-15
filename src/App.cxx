@@ -6,8 +6,7 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
 {
     auto app{std::unique_ptr<App>(new App(hinstance, ncs))};
 
-    if (Gdiplus::GdiplusStartup(&app->gdiplusToken, &app->gdiplusStartupInput, nullptr) !=
-        Gdiplus::Status::Ok)
+    if (GdiplusStartup(&app->gdiplusToken, &app->gdiplusStartupInput, nullptr) != Status::Ok)
     {
         error("GDI+ initialization failed");
         return nullptr;
@@ -30,6 +29,6 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
     return app;
 }
 
-void App::Close() { GdiplusShutdown(gdiplusToken); }
+App::~App() { GdiplusShutdown(gdiplusToken); }
 
 App::App(HINSTANCE hinstance, int ncs) {}
