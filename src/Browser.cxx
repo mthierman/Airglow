@@ -6,19 +6,28 @@ using namespace Gdiplus;
 using namespace Microsoft::WRL;
 
 Window* Browser::pWindow{nullptr};
+wil::com_ptr<ICoreWebView2Controller> Browser::wv2_controller{nullptr};
+wil::com_ptr<ICoreWebView2> Browser::wv2{nullptr};
+wil::com_ptr<ICoreWebView2_19> Browser::wv2_19{nullptr};
+wil::com_ptr<ICoreWebView2Settings> Browser::wv2_settings{nullptr};
 
 Browser::Browser(HWND hwnd) {}
 
-static wil::com_ptr<ICoreWebView2Controller> wv2_controller{};
-static wil::com_ptr<ICoreWebView2> wv2{};
-static wil::com_ptr<ICoreWebView2_19> wv2_19{};
-static wil::com_ptr<ICoreWebView2Settings> wv2_settings{};
+// static wil::com_ptr<ICoreWebView2Controller> wv2_controller{};
+// static wil::com_ptr<ICoreWebView2> wv2{};
+// static wil::com_ptr<ICoreWebView2_19> wv2_19{};
+// static wil::com_ptr<ICoreWebView2Settings> wv2_settings{};
 
 std::unique_ptr<Browser> Browser::Create(HWND hwnd)
 {
     auto browser{std::unique_ptr<Browser>(new Browser(hwnd))};
 
     // pWindow = window;
+
+    // static wil::com_ptr<ICoreWebView2Controller> wv2_controller{};
+    // static wil::com_ptr<ICoreWebView2> wv2{};
+    // static wil::com_ptr<ICoreWebView2_19> wv2_19{};
+    // static wil::com_ptr<ICoreWebView2Settings> wv2_settings{};
 
     CreateCoreWebView2EnvironmentWithOptions(
         nullptr, path_portable().wstring().c_str(), nullptr,

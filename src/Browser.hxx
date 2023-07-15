@@ -16,6 +16,10 @@ class Browser
   private:
     Browser(HWND hwnd);
     static Window* pWindow;
+    static wil::com_ptr<ICoreWebView2Controller> wv2_controller;
+    static wil::com_ptr<ICoreWebView2> wv2;
+    static wil::com_ptr<ICoreWebView2_19> wv2_19;
+    static wil::com_ptr<ICoreWebView2Settings> wv2_settings;
     // std::pair<wstring, wstring> CommandLine();
     // wstring MainNavigation();
     // wstring SideNavigation();
