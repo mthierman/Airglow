@@ -501,17 +501,6 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
         Maximize();
     }
 
-    if (wparam == VK_F11)
-    {
-#ifdef DEBUG_MSG
-        println("F11");
-#endif
-        pConfig->settings.fullscreen = bool_toggle(pConfig->settings.fullscreen);
-        pConfig->Save();
-
-        Fullscreen();
-    }
-
     if (wparam == VK_F9)
     {
 #ifdef DEBUG_MSG
@@ -521,6 +510,17 @@ int MainWindow::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
         pConfig->Save();
 
         Topmost();
+    }
+
+    if (wparam == VK_F11)
+    {
+#ifdef DEBUG_MSG
+        println("F11");
+#endif
+        pConfig->settings.fullscreen = bool_toggle(pConfig->settings.fullscreen);
+        pConfig->Save();
+
+        Fullscreen();
     }
 
     if (wparam == 0x57)

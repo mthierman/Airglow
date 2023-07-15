@@ -1,7 +1,7 @@
 #include "WebView.hxx"
 
 #ifndef DEBUG_MSG
-// #define DEBUG_MSG
+#define DEBUG_MSG
 #endif
 
 #ifndef DEVTOOLS
@@ -160,9 +160,6 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                             if (!browser)
                                 return E_POINTER;
 
-                            browser->AddScriptToExecuteOnDocumentCreated(
-                                webView->GetScript().c_str(), nullptr);
-
                             browser->get_Settings(&settings);
 
                             if (!settings)
@@ -181,6 +178,10 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                             controller->put_Bounds(webView->MainBounds());
 
                             browser->Navigate(webView->MainNavigation().c_str());
+
+                            auto script = webView->GetScriptFile();
+                            browser->ExecuteScript(script.c_str(), nullptr);
+                            browser->AddScriptToExecuteOnDocumentCreated(script.c_str(), nullptr);
 
                             browser->add_DocumentTitleChanged(
                                 Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
@@ -250,9 +251,6 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                             if (!browser)
                                 return E_POINTER;
 
-                            browser->AddScriptToExecuteOnDocumentCreated(
-                                webView->GetScript().c_str(), nullptr);
-
                             browser->get_Settings(&settings);
 
                             if (!settings)
@@ -271,6 +269,10 @@ std::unique_ptr<WebView> WebView::Create(Config* config)
                             controller->put_Bounds(webView->SideBounds());
 
                             browser->Navigate(webView->SideNavigation().c_str());
+
+                            auto script = webView->GetScriptFile();
+                            browser->ExecuteScript(script.c_str(), nullptr);
+                            browser->AddScriptToExecuteOnDocumentCreated(script.c_str(), nullptr);
 
                             browser->add_DocumentTitleChanged(
                                 Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
@@ -604,13 +606,13 @@ wstring WebView::SettingsNavigation()
 
 void WebView::Messages(ICoreWebView2WebMessageReceivedEventArgs* args)
 {
-    string splitKey{"F1"};
-    string swapKey{"F2"};
-    string hideMenuKey{"F4"};
-    string maximizeKey{"F6"};
-    string fullscreenKey{"F11"};
-    string onTopKey{"F9"};
-    string closeKey{"close"};
+    // string splitKey{"F1"};
+    // string swapKey{"F2"};
+    // string hideMenuKey{"F4"};
+    // string maximizeKey{"F6"};
+    // string fullscreenKey{"F11"};
+    // string onTopKey{"F9"};
+    // string closeKey{"close"};
 
     wil::unique_cotaskmem_string messageRaw;
     if (SUCCEEDED(args->TryGetWebMessageAsString(&messageRaw)))
@@ -626,73 +628,46 @@ void WebView::Messages(ICoreWebView2WebMessageReceivedEventArgs* args)
 
         if (message.compare(0, 8, "mainUrl ") == 0)
         {
-#ifdef DEBUG_MSG
-            println("mainUrl (WebView)");
-#endif
             pConfig->settings.mainUrl = message.substr(8);
         }
 
         if (message.compare(0, 8, "sideUrl ") == 0)
         {
-#ifdef DEBUG_MSG
-            println("sideUrl (WebView)");
-#endif
             pConfig->settings.sideUrl = message.substr(8);
         }
 
-        if (message == splitKey)
+        if (message == "split")
         {
-#ifdef DEBUG_MSG
-            println("F1 (WebView)");
-#endif
             SendMessageW(pConfig->window.hwnd, WM_KEYDOWN, VK_F1, 0);
         }
 
-        if (message == swapKey)
+        if (message == "swapped")
         {
-#ifdef DEBUG_MSG
-            println("F2 (WebView)");
-#endif
             SendMessageW(pConfig->window.hwnd, WM_KEYDOWN, VK_F2, 0);
         }
 
-        if (message == hideMenuKey)
+        if (message == "menu")
         {
-#ifdef DEBUG_MSG
-            println("F4 (WebView)");
-#endif
             SendMessageW(pConfig->window.hwnd, WM_KEYDOWN, VK_F4, 0);
         }
 
-        if (message == maximizeKey)
+        if (message == "maximize")
         {
-#ifdef DEBUG_MSG
-            println("F6 (WebView)");
-#endif
             SendMessageW(pConfig->window.hwnd, WM_KEYDOWN, VK_F6, 0);
         }
 
-        if (message == fullscreenKey)
+        if (message == "topmost")
         {
-#ifdef DEBUG_MSG
-            println("F11 (WebView)");
-#endif
-            SendMessageW(pConfig->window.hwnd, WM_KEYDOWN, VK_F11, 0);
-        }
-
-        if (message == onTopKey)
-        {
-#ifdef DEBUG_MSG
-            println("F9 (WebView)");
-#endif
             SendMessageW(pConfig->window.hwnd, WM_KEYDOWN, VK_F9, 0);
         }
 
-        if (message == closeKey)
+        if (message == "fullscreen")
         {
-#ifdef DEBUG_MSG
-            println("Ctrl+W (WebView)");
-#endif
+            SendMessageW(pConfig->window.hwnd, WM_KEYDOWN, VK_F11, 0);
+        }
+
+        if (message == "close")
+        {
             SendMessageW(pConfig->window.hwnd, WM_KEYDOWN, 0x57, 0);
         }
     }
