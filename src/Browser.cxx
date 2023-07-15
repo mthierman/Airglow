@@ -5,27 +5,31 @@ using namespace Utility;
 using namespace Gdiplus;
 using namespace Microsoft::WRL;
 
-static wil::com_ptr<ICoreWebView2Controller> wv2_controller;
-static wil::com_ptr<ICoreWebView2> wv2;
-static wil::com_ptr<ICoreWebView2_19> wv2_19;
-static wil::com_ptr<ICoreWebView2Settings> wv2_settings;
+Window* Browser::pWindow{nullptr};
 
-Browser::Browser(HWND hwnd) {}
+Browser::Browser(Window* window) {}
 
-std::unique_ptr<Browser> Browser::Create(HWND hwnd)
+static wil::com_ptr<ICoreWebView2Controller> wv2_controller{};
+static wil::com_ptr<ICoreWebView2> wv2{};
+static wil::com_ptr<ICoreWebView2_19> wv2_19{};
+static wil::com_ptr<ICoreWebView2Settings> wv2_settings{};
+
+std::unique_ptr<Browser> Browser::Create(Window* window)
 {
-    auto browser{std::unique_ptr<Browser>(new Browser(hwnd))};
+    auto browser{std::unique_ptr<Browser>(new Browser(window))};
+
+    pWindow = window;
 
     CreateCoreWebView2EnvironmentWithOptions(
         nullptr, path_portable().wstring().c_str(), nullptr,
         Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
-            [hwnd](HRESULT hr, ICoreWebView2Environment* environment) -> HRESULT
+            [&](HRESULT hr, ICoreWebView2Environment* environment) -> HRESULT
             {
                 if (!environment)
                     return E_POINTER;
 
                 environment->CreateCoreWebView2Controller(
-                    hwnd,
+                    pWindow->hwnd,
                     Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
                         [&](HRESULT hr, ICoreWebView2Controller* controller) -> HRESULT
                         {
@@ -63,7 +67,7 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
                             wv2_settings->put_IsWebMessageEnabled(true);
                             wv2_settings->put_IsZoomControlEnabled(false);
 
-                            wv2_controller->put_Bounds(get_rect(hwnd));
+                            wv2_controller->put_Bounds(get_rect(pWindow->hwnd));
 
                             wv2_19->SetVirtualHostNameToFolderMapping(
                                 L"settings", path_settings().wstring().c_str(),

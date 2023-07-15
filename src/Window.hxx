@@ -9,12 +9,11 @@ class Window
     void Maximize();
     void Topmost();
     void Fullscreen();
-    HWND GetHwnd();
+    HWND hwnd;
 
   private:
     std::wstring appName{};
     std::wstring appVersion{};
-    HWND hwnd{};
     std::vector<int> position{0, 0, 0, 0};
     HBRUSH darkBrush{};
     HBRUSH lightBrush{};

@@ -68,8 +68,6 @@ void Window::Fullscreen()
     window_uncloak(hwnd);
 }
 
-HWND Window::GetHwnd() { return hwnd; }
-
 Window::Window(HINSTANCE hinstance, int ncs) {}
 
 template <class T> T* InstanceFromWndProc(HWND hwnd, UINT msg, LPARAM lparam)
@@ -233,6 +231,8 @@ int Window::_OnSize(HWND hwnd, WPARAM wparam, LPARAM lparam)
     {
         maximized = true;
     }
+
+    // using namespace SettingsView
 
     // if (!pWebView)
     //     return 0;

@@ -1,9 +1,11 @@
 #pragma once
 
+#include "Window.hxx"
+
 class Browser
 {
   public:
-    static std::unique_ptr<Browser> Create(HWND hwnd);
+    static std::unique_ptr<Browser> Create(Window*);
     // void UpdateConfig();
     // void UpdateBounds();
     // void UpdateFocus();
@@ -12,8 +14,8 @@ class Browser
     // void SetWindowIcon();
 
   private:
-    Browser(HWND hwnd);
-    // HWND hwnd;
+    Browser(Window*);
+    static Window* pWindow;
     // std::pair<wstring, wstring> CommandLine();
     // wstring MainNavigation();
     // wstring SideNavigation();

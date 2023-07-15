@@ -23,7 +23,7 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
 
     window->Show();
 
-    auto browser{Browser::Create(window->GetHwnd())};
+    auto browser{Browser::Create(window.get())};
     if (!browser)
     {
         error("WebView2 creation failed");
