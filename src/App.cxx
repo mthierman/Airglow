@@ -1,7 +1,7 @@
 #include "App.hxx"
-#include "Browser.hxx"
 #include "Utility.hxx"
 #include "Window.hxx"
+#include "Browser.hxx"
 
 using namespace Utility;
 using namespace Gdiplus;
