@@ -5,7 +5,7 @@
 class Browser
 {
   public:
-    static std::unique_ptr<Browser> Create(Window*);
+    static std::unique_ptr<Browser> Create(HWND hwnd);
     // void UpdateConfig();
     // void UpdateBounds();
     // void UpdateFocus();
@@ -14,7 +14,7 @@ class Browser
     // void SetWindowIcon();
 
   private:
-    Browser(Window*);
+    Browser(HWND hwnd);
     static Window* pWindow;
     // std::pair<wstring, wstring> CommandLine();
     // wstring MainNavigation();
