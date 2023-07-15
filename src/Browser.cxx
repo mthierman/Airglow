@@ -16,89 +16,35 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
 {
     auto browser{std::unique_ptr<Browser>(new Browser(hwnd))};
 
-    CreateCoreWebView2EnvironmentWithOptions(
+    auto create = CreateCoreWebView2EnvironmentWithOptions(
         nullptr, path_portable().wstring().c_str(), nullptr,
         Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
             [=](HRESULT hr, ICoreWebView2Environment* environment) -> HRESULT
             {
                 environment->CreateCoreWebView2Controller(
-                    hwnd,
-                    Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                        [=](HRESULT hr, ICoreWebView2Controller* controller) -> HRESULT
-                        {
-                            if (!controller)
-                                return E_POINTER;
+                    hwnd, Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+                              [=](HRESULT hr, ICoreWebView2Controller* controller) -> HRESULT
+                              {
+                                  if (!controller)
+                                      return E_POINTER;
 
-                            wv2_controller = controller;
-                            controller->get_CoreWebView2(&wv2);
+                                  wv2_controller = controller;
 
-                            if (!wv2)
-                                return E_POINTER;
+                                  if (FAILED(wv2_controller->get_CoreWebView2(&wv2)))
+                                      return E_POINTER;
 
-                            wv2_19 = wv2.try_query<ICoreWebView2_19>();
+                                  wv2_19 = wv2.try_query<ICoreWebView2_19>();
 
-                            if (!wv2_19)
-                                return E_POINTER;
+                                  if (!wv2_19)
+                                      return E_POINTER;
 
-                            wv2_19->get_Settings(&wv2_settings);
+                                  wv2_controller->put_Bounds(get_rect(hwnd));
 
-                            if (!wv2_settings)
-                                return E_POINTER;
+                                  wv2_19->Navigate(L"https://wwww.google.com/");
 
-                            wv2_settings->put_AreDefaultContextMenusEnabled(true);
-                            wv2_settings->put_AreDefaultScriptDialogsEnabled(true);
-                            wv2_settings->put_AreDevToolsEnabled(true);
-                            wv2_settings->put_AreHostObjectsAllowed(true);
-                            wv2_settings->put_IsBuiltInErrorPageEnabled(true);
-                            wv2_settings->put_IsScriptEnabled(true);
-                            wv2_settings->put_IsStatusBarEnabled(false);
-                            wv2_settings->put_IsWebMessageEnabled(true);
-                            wv2_settings->put_IsZoomControlEnabled(false);
-
-                            wv2_controller->put_Bounds(get_rect(hwnd));
-
-                            wv2_19->SetVirtualHostNameToFolderMapping(
-                                L"settings", path_settings().wstring().c_str(),
-                                COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
-
-                            wv2_19->Navigate(L"https://wwww.google.com/");
-
-                            EventRegistrationToken tokenNavigationCompleted;
-                            wv2_19->add_NavigationCompleted(
-                                Callback<ICoreWebView2NavigationCompletedEventHandler>(
-                                    [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
-                                    { return S_OK; })
-                                    .Get(),
-                                &tokenNavigationCompleted);
-
-                            EventRegistrationToken tokenDocumentTitleChanged;
-                            wv2_19->add_DocumentTitleChanged(
-                                Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
-                                    [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
-                                    { return S_OK; })
-                                    .Get(),
-                                &tokenDocumentTitleChanged);
-
-                            EventRegistrationToken tokenFaviconChanged;
-                            wv2_19->add_FaviconChanged(
-                                Callback<ICoreWebView2FaviconChangedEventHandler>(
-                                    [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
-                                    { return S_OK; })
-                                    .Get(),
-                                &tokenFaviconChanged);
-
-                            EventRegistrationToken tokenWebMessageReceived;
-                            wv2_19->add_WebMessageReceived(
-                                Callback<ICoreWebView2WebMessageReceivedEventHandler>(
-                                    [&](ICoreWebView2* sender,
-                                        ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT
-                                    { return S_OK; })
-                                    .Get(),
-                                &tokenWebMessageReceived);
-
-                            return S_OK;
-                        })
-                        .Get());
+                                  return S_OK;
+                              })
+                              .Get());
 
                 return S_OK;
             })
@@ -106,6 +52,152 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
 
     return browser;
 }
+
+// std::unique_ptr<Browser> Browser::Create(HWND hwnd)
+// {
+//     auto browser{std::unique_ptr<Browser>(new Browser(hwnd))};
+
+//     auto create = CreateCoreWebView2EnvironmentWithOptions(
+//         nullptr, path_portable().wstring().c_str(), nullptr,
+//         Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
+//             [=](HRESULT hr, ICoreWebView2Environment* environment) -> HRESULT
+//             {
+//                 environment->CreateCoreWebView2Controller(
+//                     hwnd, Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+//                               [=](HRESULT hr, ICoreWebView2Controller* controller) -> HRESULT
+//                               {
+//                                   if (!controller)
+//                                       return E_POINTER;
+
+//                                   wv2_controller = controller;
+
+//                                   if (FAILED(wv2_controller->get_CoreWebView2(&wv2)))
+//                                       return E_POINTER;
+
+//                                   wv2_19 = wv2.try_query<ICoreWebView2_19>();
+
+//                                   if (!wv2_19)
+//                                       return E_POINTER;
+
+//                                   wv2_controller->put_Bounds(get_rect(hwnd));
+
+//                                   wv2_19->Navigate(L"https://wwww.google.com/");
+
+//                                   return S_OK;
+//                               })
+//                               .Get());
+
+//                 return S_OK;
+//             })
+//             .Get());
+
+//     // if (!wv2_19)
+//     //     return nullptr;
+
+//     return browser;
+// }
+
+// std::unique_ptr<Browser> Browser::Create(HWND hwnd)
+// {
+//     auto browser{std::unique_ptr<Browser>(new Browser(hwnd))};
+
+//     auto createEnvironment = CreateCoreWebView2EnvironmentWithOptions(
+//         nullptr, path_portable().wstring().c_str(), nullptr,
+//         Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
+//             [=](HRESULT hr, ICoreWebView2Environment* environment) -> HRESULT
+//             {
+//                 auto createController = environment->CreateCoreWebView2Controller(
+//                     hwnd,
+//                     Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+//                         [=](HRESULT hr, ICoreWebView2Controller* controller) -> HRESULT
+//                         {
+//                             if (controller)
+//                                 return E_ABORT;
+
+//                             wv2_controller = controller;
+//                             controller->get_CoreWebView2(&wv2);
+
+//                             if (!wv2)
+//                                 return E_ABORT;
+
+//                             wv2_19 = wv2.try_query<ICoreWebView2_19>();
+
+//                             if (!wv2_19)
+//                                 return E_ABORT;
+
+//                             wv2_19->get_Settings(&wv2_settings);
+
+//                             if (!wv2_settings)
+//                                 return E_ABORT;
+
+//                             wv2_settings->put_AreDefaultContextMenusEnabled(true);
+//                             wv2_settings->put_AreDefaultScriptDialogsEnabled(true);
+//                             wv2_settings->put_AreDevToolsEnabled(true);
+//                             wv2_settings->put_AreHostObjectsAllowed(true);
+//                             wv2_settings->put_IsBuiltInErrorPageEnabled(true);
+//                             wv2_settings->put_IsScriptEnabled(true);
+//                             wv2_settings->put_IsStatusBarEnabled(false);
+//                             wv2_settings->put_IsWebMessageEnabled(true);
+//                             wv2_settings->put_IsZoomControlEnabled(false);
+
+//                             wv2_controller->put_Bounds(get_rect(hwnd));
+
+//                             wv2_19->SetVirtualHostNameToFolderMapping(
+//                                 L"settings", path_settings().wstring().c_str(),
+//                                 COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
+
+//                             wv2_19->Navigate(L"https://wwww.google.com/");
+
+//                             EventRegistrationToken tokenNavigationCompleted;
+//                             wv2_19->add_NavigationCompleted(
+//                                 Callback<ICoreWebView2NavigationCompletedEventHandler>(
+//                                     [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+//                                     { return S_OK; })
+//                                     .Get(),
+//                                 &tokenNavigationCompleted);
+
+//                             EventRegistrationToken tokenDocumentTitleChanged;
+//                             wv2_19->add_DocumentTitleChanged(
+//                                 Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
+//                                     [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+//                                     { return S_OK; })
+//                                     .Get(),
+//                                 &tokenDocumentTitleChanged);
+
+//                             EventRegistrationToken tokenFaviconChanged;
+//                             wv2_19->add_FaviconChanged(
+//                                 Callback<ICoreWebView2FaviconChangedEventHandler>(
+//                                     [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+//                                     { return S_OK; })
+//                                     .Get(),
+//                                 &tokenFaviconChanged);
+
+//                             EventRegistrationToken tokenWebMessageReceived;
+//                             wv2_19->add_WebMessageReceived(
+//                                 Callback<ICoreWebView2WebMessageReceivedEventHandler>(
+//                                     [&](ICoreWebView2* sender,
+//                                         ICoreWebView2WebMessageReceivedEventArgs* args) ->
+//                                         HRESULT
+//                                     { return S_OK; })
+//                                     .Get(),
+//                                 &tokenWebMessageReceived);
+
+//                             return S_OK;
+//                         })
+//                         .Get());
+
+//                 if (createController == E_ABORT)
+//                     return E_ABORT;
+
+//                 return S_OK;
+//             })
+//             .Get());
+
+//     if (createEnvironment != S_OK)
+//         return nullptr;
+
+//     return browser;
+// }
 
 // MAIN WEBVIEW
 //                 e->CreateCoreWebView2Controller(
