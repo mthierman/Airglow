@@ -21,19 +21,11 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
         Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
             [=](HRESULT hr, ICoreWebView2Environment* environment) -> HRESULT
             {
-                if (!environment)
-                    return E_POINTER;
-
                 environment->CreateCoreWebView2Controller(
                     hwnd,
                     Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
                         [=](HRESULT hr, ICoreWebView2Controller* controller) -> HRESULT
                         {
-                            EventRegistrationToken tokenTitle;
-                            EventRegistrationToken tokenFavicon;
-                            EventRegistrationToken tokenReceivedMsg;
-                            EventRegistrationToken tokenNavigationCompleted;
-
                             if (!controller)
                                 return E_POINTER;
 
@@ -71,52 +63,38 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
 
                             wv2_19->Navigate(L"https://wwww.google.com/");
 
+                            EventRegistrationToken tokenNavigationCompleted;
                             wv2_19->add_NavigationCompleted(
                                 Callback<ICoreWebView2NavigationCompletedEventHandler>(
                                     [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
-                                    {
-                                        // webView->UpdateConfig();
-
-                                        return S_OK;
-                                    })
+                                    { return S_OK; })
                                     .Get(),
                                 &tokenNavigationCompleted);
 
+                            EventRegistrationToken tokenDocumentTitleChanged;
                             wv2_19->add_DocumentTitleChanged(
                                 Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
                                     [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
-                                    {
-                                        // webView->SetWindowTitle();
-
-                                        return S_OK;
-                                    })
+                                    { return S_OK; })
                                     .Get(),
-                                &tokenTitle);
+                                &tokenDocumentTitleChanged);
 
+                            EventRegistrationToken tokenFaviconChanged;
                             wv2_19->add_FaviconChanged(
                                 Callback<ICoreWebView2FaviconChangedEventHandler>(
                                     [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
-                                    {
-                                        // webView->SetWindowIcon();
-
-                                        return S_OK;
-                                    })
+                                    { return S_OK; })
                                     .Get(),
-                                &tokenFavicon);
+                                &tokenFaviconChanged);
 
+                            EventRegistrationToken tokenWebMessageReceived;
                             wv2_19->add_WebMessageReceived(
                                 Callback<ICoreWebView2WebMessageReceivedEventHandler>(
                                     [&](ICoreWebView2* sender,
                                         ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT
-                                    {
-                                        // if (webView->VerifySettingsUrl(args))
-                                        //     webView->Messages(args);
-                                        // pConfig->Save();
-
-                                        return S_OK;
-                                    })
+                                    { return S_OK; })
                                     .Get(),
-                                &tokenReceivedMsg);
+                                &tokenWebMessageReceived);
 
                             return S_OK;
                         })
