@@ -1,32 +1,18 @@
-#include "Config.hxx"
+#include "Settings.hxx"
 
-Config::Config() {}
+Settings::Config() {}
 
-std::unique_ptr<Config> Config::Create()
+std::unique_ptr<Settings> Settings::Create()
 {
-    auto config{std::unique_ptr<Config>(new Config())};
+    auto settings{std::unique_ptr<Settings>(new Settings())};
 
-    SetEnvironmentVariableW(to_wide("WEBVIEW2_DEFAULT_BACKGROUND_COLOR").c_str(),
-                            to_wide("0").c_str());
+    settings->Initialize();
 
-    config->Initialize();
-
-    config->Load();
-
-    config->InitializeColors();
-
-    if (!std::filesystem::exists(config->paths.data) ||
-        !std::filesystem::exists(config->paths.config))
-        return nullptr;
-
-    return config;
+    return settings;
 }
 
-void Config::Load()
+void Settings::Load()
 {
-    if (!std::filesystem::exists(paths.config))
-        Save();
-
     if (std::filesystem::exists(paths.config) && !std::filesystem::is_empty(paths.config))
     {
         try
@@ -78,8 +64,11 @@ void Config::Save()
     }
 }
 
-void Config::Initialize()
+bool Config::Initialize()
 {
+    SetEnvironmentVariableW(to_wide("WEBVIEW2_DEFAULT_BACKGROUND_COLOR").c_str(),
+                            to_wide("0").c_str());
+
     app.name = APP_NAME;
     app.version = APP_VERSION;
     paths.data = PortableAppDataPath();
@@ -87,27 +76,43 @@ void Config::Initialize()
     paths.config = ConfigPath();
     paths.db = DbPath();
     paths.js = JsPath();
+
+    if (!std::filesystem::exists(paths.config))
+        Save();
+
+    Load();
+
+    colors = GetSystemColors();
+
+    if (!std::filesystem::exists(paths.data) || !std::filesystem::exists(paths.settings) ||
+        !std::filesystem::exists(paths.config))
+        return false;
+
+    return true;
 }
 
-void Config::InitializeColors()
+Config::Colors Config::GetSystemColors()
 {
-    colors.accent = get_system_color(winrt::Windows::UI::ViewManagement::UIColorType::Accent);
-    colors.accentDark1 =
+    Colors system;
+    system.accent = get_system_color(winrt::Windows::UI::ViewManagement::UIColorType::Accent);
+    system.accentDark1 =
         get_system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark1);
-    colors.accentDark2 =
+    system.accentDark2 =
         get_system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark2);
-    colors.accentDark3 =
+    system.accentDark3 =
         get_system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark3);
-    colors.accentLight1 =
+    system.accentLight1 =
         get_system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight1);
-    colors.accentLight2 =
+    system.accentLight2 =
         get_system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight2);
-    colors.accentLight3 =
+    system.accentLight3 =
         get_system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight3);
-    colors.Background =
+    system.Background =
         get_system_color(winrt::Windows::UI::ViewManagement::UIColorType::Background);
-    colors.Foreground =
+    system.Foreground =
         get_system_color(winrt::Windows::UI::ViewManagement::UIColorType::Foreground);
+
+    return system;
 }
 
 // json Config::GetCurrent()
@@ -133,50 +138,6 @@ path Config::LocalAppDataPath()
         std::filesystem::create_directory(path);
 
     return path;
-}
-
-path Config::PortableAppDataPath()
-{
-    auto cmd = GetCommandLineW();
-    int count;
-    auto args = CommandLineToArgvW(cmd, &count);
-    path path{args[0]};
-    LocalFree(args);
-
-    return std::filesystem::canonical(path.remove_filename());
-}
-
-path Config::SettingsPath()
-{
-    if (!std::filesystem::exists(paths.data))
-        return path{};
-
-    return (paths.data.wstring() + path::preferred_separator + to_wide("settings"));
-}
-
-path Config::ConfigPath()
-{
-    if (!std::filesystem::exists(paths.settings))
-        return path{};
-
-    return (paths.settings.wstring() + path::preferred_separator + to_wide("config.json"));
-}
-
-path Config::DbPath()
-{
-    if (!std::filesystem::exists(paths.settings))
-        return path{};
-
-    return (paths.settings.wstring() + path::preferred_separator + to_wide("db.sqlite"));
-}
-
-path Config::JsPath()
-{
-    if (!std::filesystem::exists(paths.data))
-        return path{};
-
-    return (paths.data.wstring() + path::preferred_separator + to_wide("js") +
-            path::preferred_separator + to_wide("inject.js"));
 }
 
 void Config::CreateDb()

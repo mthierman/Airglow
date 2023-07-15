@@ -2,6 +2,9 @@
 
 void Test(HWND hwnd)
 {
+    // println(get_system_color(winrt::Windows::UI::ViewManagement::UIColorType::Foreground));
+    // println(get_system_color(winrt::Windows::UI::ViewManagement::UIColorType::Background));
+
     auto toggleTest = bool_toggle(false);
     if (toggleTest != false)
         println("Toggle(): TEST FAILED");

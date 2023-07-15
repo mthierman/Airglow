@@ -1,7 +1,5 @@
 #pragma once
 
-using namespace Gdiplus;
-
 class App
 {
   public:
@@ -9,9 +7,8 @@ class App
     ~App();
 
   private:
-    unsigned long long gdiplusToken{};
-    GdiplusStartupInput gdiplusStartupInput{};
-
-  protected:
     App(HINSTANCE, int);
+    unsigned long long gdiplusToken{};
+    Gdiplus::GdiplusStartupInput gdiplusStartupInput{};
+    MSG msg{};
 };

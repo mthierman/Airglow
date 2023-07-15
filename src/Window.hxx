@@ -1,30 +1,32 @@
 #pragma once
 
-#include "Config.hxx"
-#include "WebView.hxx"
-#include "Utility.hxx"
-
-using namespace Utility;
-
-class MainWindow
+class Window
 {
   public:
-    static std::unique_ptr<MainWindow> Create(HINSTANCE, int, Config*);
+    static std::unique_ptr<Window> Create(HINSTANCE, int);
+    void Show();
+    void Theme();
+    void Maximize();
+    void Topmost();
+    void Fullscreen();
+    HWND GetHwnd();
 
   private:
-    static Config* pConfig;
-    static WebView* pWebView;
+    std::wstring appName{};
+    std::wstring appVersion{};
+    HWND hwnd{};
+    std::vector<int> position{0, 0, 0, 0};
+    HBRUSH darkBrush{};
+    HBRUSH lightBrush{};
+    HCURSOR cursor{};
+    HICON icon{};
+    bool maximized{false};
+    bool topmost{false};
+    bool fullscreen{false};
+    bool allowdark{};
+
+    Window(HINSTANCE, int);
     static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
-    void Show();
-    void Fullscreen();
-    void Topmost();
-    void Maximize();
-    void SavePosition();
-    bool SetDarkTitle();
-    bool SetDarkMode();
-    bool SetMica();
-    bool Cloak();
-    bool Uncloak();
     int _OnActivate(HWND, WPARAM, LPARAM);
     int _OnChar(HWND, WPARAM, LPARAM);
     int _OnClose(HWND, WPARAM, LPARAM);
@@ -33,6 +35,7 @@ class MainWindow
     int _OnDestroy(HWND, WPARAM, LPARAM);
     int _OnDpiChanged(HWND, WPARAM, LPARAM);
     int _OnEnterSizeMove(HWND, WPARAM, LPARAM);
+    int _OnEraseBackground(HWND, WPARAM, LPARAM);
     int _OnExitSizeMove(HWND, WPARAM, LPARAM);
     int _OnGetMinMaxInfo(HWND, WPARAM, LPARAM);
     int _OnKeyDown(HWND, WPARAM, LPARAM);
@@ -50,16 +53,4 @@ class MainWindow
     int _OnSizing(HWND, WPARAM, LPARAM);
     int _OnWindowPosChanged(HWND, WPARAM, LPARAM);
     int _OnWindowPosChanging(HWND, WPARAM, LPARAM);
-
-    enum PreferredAppMode
-    {
-        Default,
-        AllowDark,
-        ForceDark,
-        ForceLight,
-        Max
-    };
-
-  protected:
-    MainWindow(HINSTANCE, int, Config*);
 };

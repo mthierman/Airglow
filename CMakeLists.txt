@@ -102,7 +102,13 @@ file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/src/PCH.hxx" PCH_FILE)
 add_executable(
     ${APP_NAME}
     WIN32
-    "${SOURCES}"
+
+    # "${SOURCES}"
+    src/Airglow.cxx
+    src/App.cxx
+    src/Browser.cxx
+    src/Window.cxx
+    src/Utility.cxx
     "${RC_FILE}"
     "${MANIFEST_FILE}"
 )
@@ -155,6 +161,7 @@ target_link_libraries(
     Uxtheme.lib
     Urlmon.lib
     Kernel32.lib
+    User32.lib
     sqlite
 )
 

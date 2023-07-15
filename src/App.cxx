@@ -1,6 +1,10 @@
 #include "App.hxx"
-#include "Config.hxx"
-#include "MainWindow.hxx"
+#include "Browser.hxx"
+#include "Utility.hxx"
+#include "Window.hxx"
+
+using namespace Utility;
+using namespace Gdiplus;
 
 std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
 {
@@ -12,18 +16,24 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
         return nullptr;
     }
 
-    auto config{Config::Create()};
-    if (!config)
+    auto window{Window::Create(hinstance, ncs)};
+
+    if (!window)
+        return nullptr;
+
+    window->Show();
+
+    auto browser{Browser::Create(window->GetHwnd())};
+    if (!browser)
     {
-        error("Configuration failed");
+        error("WebView2 creation failed");
         return nullptr;
     }
 
-    auto window{MainWindow::Create(hinstance, ncs, config.get())};
-    if (!window)
+    while (GetMessageW(&app->msg, nullptr, 0, 0))
     {
-        error("Window creation failed");
-        return 0;
+        TranslateMessage(&app->msg);
+        DispatchMessageW(&app->msg);
     }
 
     return app;
