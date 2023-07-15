@@ -74,6 +74,7 @@ class Config
     path ConfigPath();
     path DbPath();
     path JsPath();
+    void CreateDb();
 
   protected:
     Config();

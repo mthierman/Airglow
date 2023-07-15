@@ -5,7 +5,7 @@ namespace util
 string to_string(wstring in)
 {
     int size = WideCharToMultiByte(CP_UTF8, 0, in.c_str(), in.size(), nullptr, 0, nullptr, nullptr);
-    string out;
+    string out{};
     out.resize(size);
     WideCharToMultiByte(CP_UTF8, 0, in.c_str(), in.size(), out.data(), size, nullptr, nullptr);
 
@@ -15,7 +15,7 @@ string to_string(wstring in)
 wstring to_wide(string in)
 {
     int size = MultiByteToWideChar(CP_UTF8, 0, in.c_str(), in.size(), nullptr, 0);
-    wstring out;
+    wstring out{};
     out.resize(size);
     MultiByteToWideChar(CP_UTF8, 0, in.c_str(), in.size(), out.data(), size);
 

@@ -1,5 +1,7 @@
 #pragma once
 
+namespace util
+{
 using json = nlohmann::json;
 using path = std::filesystem::path;
 using string = std::string;
@@ -7,9 +9,6 @@ using wstring = std::wstring;
 using ofstream = std::ofstream;
 using ifstream = std::ifstream;
 using stringstream = std::stringstream;
-
-namespace util
-{
 string to_string(wstring);
 wstring to_wide(string);
 string bool_to_string(bool);

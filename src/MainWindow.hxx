@@ -57,8 +57,6 @@ class MainWindow
         Max
     };
 
-    BOOL mouseTracking{FALSE};
-
   protected:
     MainWindow(HINSTANCE, int, Config*);
 };

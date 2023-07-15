@@ -15,8 +15,8 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Con
 
     mainWindow->pConfig = config;
 
-    auto className{to_wide("airglow")};
-    auto menuName{to_wide("airglowmenu")};
+    auto className{to_wide(APP_NAME)};
+    auto menuName{to_wide(APP_NAME)};
     auto programIcon{to_wide("PROGRAM_ICON")};
     auto appName{to_wide(APP_NAME)};
     auto hbrBackground{(HBRUSH)GetStockObject(BLACK_BRUSH)};
@@ -24,8 +24,6 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Con
     auto hIcon{(HICON)LoadImageW(hinstance, programIcon.c_str(), IMAGE_ICON, 0, 0,
                                  LR_DEFAULTCOLOR | LR_DEFAULTSIZE)};
 
-    config->window.hbrBackground = hbrBackground;
-    config->window.hIcon = hIcon;
     config->window.hbrBackground = hbrBackground;
     config->window.hIcon = hIcon;
 
@@ -63,6 +61,13 @@ std::unique_ptr<MainWindow> MainWindow::Create(HINSTANCE hinstance, int ncs, Con
     }
 
     mainWindow->pWebView = webView.get();
+
+    MSG msg{};
+    while (GetMessageW(&msg, nullptr, 0, 0))
+    {
+        TranslateMessage(&msg);
+        DispatchMessageW(&msg);
+    }
 
     return mainWindow;
 }
