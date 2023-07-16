@@ -7,23 +7,6 @@ using namespace Utility;
 using namespace Gdiplus;
 using namespace Microsoft::WRL;
 
-struct Settings
-{
-    string mainUrl{"google.com"};
-    string sideUrl{"google.com"};
-    bool menu{false};
-    bool split{false};
-    bool swapped{false};
-};
-struct Paths
-{
-    path data{};
-    path settings{};
-    path config{};
-    path db{};
-    path js{};
-};
-
 class App
 {
   public:
@@ -43,18 +26,32 @@ class App
 
     std::wstring name{};
     std::wstring version{};
-    std::vector<int> position{0, 0, 0, 0};
-    HWND hwnd;
     string theme{};
+
+    HWND hwnd;
     HBRUSH darkBrush{};
     HBRUSH lightBrush{};
     HCURSOR cursor{};
     HICON icon{};
+
+    std::vector<int> position{0, 0, 0, 0};
+    bool menu{false};
+    bool split{false};
+    bool swapped{false};
     bool maximized{false};
     bool topmost{false};
     bool fullscreen{false};
+    string mainUrl{"google.com"};
+    string sideUrl{"google.com"};
 
-    Settings settings;
+    struct Paths
+    {
+        path data{};
+        path settings{};
+        path config{};
+        path db{};
+        path js{};
+    };
     Paths paths;
 
     App(HINSTANCE, int);

@@ -13,7 +13,7 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
     if (FAILED(CreateCoreWebView2EnvironmentWithOptions(
             nullptr, path_portable().wstring().c_str(), nullptr,
             Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
-                [hwnd](HRESULT hr, ICoreWebView2Environment* e) -> HRESULT
+                [&browser, hwnd](HRESULT hr, ICoreWebView2Environment* e) -> HRESULT
                 {
                     e->CreateCoreWebView2Controller(
                         hwnd, Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
@@ -28,7 +28,15 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
                                       if (Core::main)
                                           Core19::main = Core::main.try_query<ICoreWebView2_19>();
 
-                                      Core19::main->Navigate(L"https://www.google.com/");
+                                      Core19::main->Navigate(L"https://www.juce.com/");
+
+                                      auto bounds{get_rect(hwnd)};
+                                      Controller::main->put_Bounds(RECT{
+                                          bounds.left,
+                                          bounds.top,
+                                          bounds.right / 2,
+                                          bounds.bottom,
+                                      });
 
                                       return S_OK;
                                   })
@@ -49,6 +57,14 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
 
                                       Core19::side->Navigate(L"https://www.google.com/");
 
+                                      auto bounds{get_rect(hwnd)};
+                                      Controller::side->put_Bounds(RECT{
+                                          bounds.right / 2,
+                                          bounds.top,
+                                          bounds.right,
+                                          bounds.bottom,
+                                      });
+
                                       return S_OK;
                                   })
                                   .Get());
@@ -67,7 +83,10 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
                                           Core19::settings =
                                               Core::settings.try_query<ICoreWebView2_19>();
 
-                                      Core19::settings->Navigate(L"https://www.google.com/");
+                                      Core19::settings->Navigate(L"https://www.github.com/");
+
+                                      auto bounds{get_rect(hwnd)};
+                                      Controller::settings->put_Bounds(RECT{0, 0, 0, 0});
 
                                       return S_OK;
                                   })
