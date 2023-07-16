@@ -55,8 +55,11 @@ class App
     Paths paths;
 
     App(HINSTANCE, int);
+    void SaveJson();
+    void LoadJson();
+    void CreateDb();
+
     static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
-    std::pair<wstring, wstring> args();
     int _OnActivate(HWND, WPARAM, LPARAM);
     int _OnChar(HWND, WPARAM, LPARAM);
     int _OnClose(HWND, WPARAM, LPARAM);
@@ -83,8 +86,4 @@ class App
     int _OnSizing(HWND, WPARAM, LPARAM);
     int _OnWindowPosChanged(HWND, WPARAM, LPARAM);
     int _OnWindowPosChanging(HWND, WPARAM, LPARAM);
-    bool Environment();
-    void LoadJson();
-    void SaveJson();
-    void CreateDb();
 };

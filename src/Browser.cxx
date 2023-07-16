@@ -143,6 +143,8 @@ void Browser::Navigate()
     if (!settings || !main || !side)
         return;
 
+    auto args = command_line();
+
     println("TEST");
 
     main->Navigate(L"https://www.bing.com/");

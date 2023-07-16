@@ -54,6 +54,8 @@ void window_topmost(HWND);
 
 std::vector<int> window_position(HWND);
 
+std::pair<wstring, wstring> command_line();
+
 struct Colors
 {
     string accent{};

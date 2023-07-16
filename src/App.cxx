@@ -85,20 +85,65 @@ void App::Fullscreen()
     window_uncloak(hwnd);
 }
 
-// bool App::Environment()
+void App::SaveJson()
+{
+    try
+    {
+        json j{};
+        j["position"] = position;
+        j["menu"] = menu;
+        j["split"] = split;
+        j["swapped"] = swapped;
+        j["maximized"] = maximized;
+        j["fullscreen"] = fullscreen;
+        j["topmost"] = topmost;
+        j["mainUrl"] = mainUrl;
+        j["sideUrl"] = sideUrl;
+
+        ofstream f(paths.config);
+        f << std::setw(4) << j << "\n";
+        f.close();
+    }
+    catch (const std::exception& e)
+    {
+        return;
+    }
+}
+
+void App::LoadJson()
+{
+    if (std::filesystem::exists(paths.config) && !std::filesystem::is_empty(paths.config))
+    {
+        try
+        {
+            json j{};
+            ifstream f(paths.config);
+            j = json::parse(f, nullptr, false, true);
+            f.close();
+
+            position = j["position"].get<std::vector<int>>();
+            menu = j["menu"].get<bool>();
+            split = j["split"].get<bool>();
+            swapped = j["swapped"].get<bool>();
+            maximized = j["maximized"].get<bool>();
+            fullscreen = j["fullscreen"].get<bool>();
+            topmost = j["topmost"].get<bool>();
+            mainUrl = j["mainUrl"].get<string>();
+            sideUrl = j["sideUrl"].get<string>();
+        }
+        catch (const std::exception& e)
+        {
+            return;
+        }
+    }
+}
+
+// json App::GetJson()
 // {
-// if (!std::filesystem::exists(paths.config))
-//     Save();
-
-// Load();
-
-// colors = GetSystemColors();
-
-// if (!std::filesystem::exists(paths.data) || !std::filesystem::exists(paths.settings) ||
-//     !std::filesystem::exists(paths.config))
-//     return false;
-
-// return true;
+//     json j{{"settings",
+//             {{"mainUrl", pConfig->settings.mainUrl},
+//              {"sideUrl", pConfig->settings.sideUrl},
+//              {"accentColor", pConfig->settings.accentColor}}}};
 // }
 
 template <class T> T* InstanceFromWndProc(HWND hwnd, UINT msg, LPARAM lparam)
@@ -268,97 +313,6 @@ int App::_OnSize(HWND hwnd, WPARAM wparam, LPARAM lparam)
     return 0;
 }
 
-// std::pair<wstring, wstring> App::args()
-// {
-//     std::pair<wstring, wstring> commands;
-
-//     auto cmd = GetCommandLineW();
-//     int count;
-
-//     auto args = CommandLineToArgvW(cmd, &count);
-
-//     if (count == 2)
-//     {
-//         commands.first = args[1];
-//         commands.second = wstring{};
-//     }
-
-//     if (count == 3)
-//     {
-//         commands.first = args[1];
-//         commands.second = args[2];
-//     }
-
-//     LocalFree(args);
-
-//     if (!commands.first.empty())
-//     {
-//         if (!commands.first.starts_with(L"http") || !commands.first.starts_with(L"https"))
-//             commands.first = L"https://" + commands.first;
-//     }
-
-//     if (!commands.second.empty())
-//     {
-//         if (!commands.second.starts_with(L"http") || !commands.second.starts_with(L"https"))
-//             commands.second = L"https://" + commands.second;
-//     }
-
-//     return commands;
-// }
-
-// void App::LoadJson()
-// {
-//     if (std::filesystem::exists(paths.config) && !std::filesystem::is_empty(paths.config))
-//     {
-//         try
-//         {
-//             json j{};
-//             ifstream f(paths.config);
-//             j = json::parse(f, nullptr, false, true);
-//             f.close();
-
-//             settings.position = j["position"].get<std::vector<int>>();
-//             settings.menu = j["menu"].get<bool>();
-//             settings.split = j["split"].get<bool>();
-//             settings.swapped = j["swapped"].get<bool>();
-//             settings.maximized = j["maximized"].get<bool>();
-//             settings.fullscreen = j["fullscreen"].get<bool>();
-//             settings.topmost = j["topmost"].get<bool>();
-//             settings.mainUrl = j["mainUrl"].get<string>();
-//             settings.sideUrl = j["sideUrl"].get<string>();
-//         }
-//         catch (const std::exception& e)
-//         {
-//             return;
-//         }
-//     }
-// }
-
-// void App::SaveJson()
-// {
-//     try
-//     {
-//         json j{};
-//         j["position"] = settings.position;
-//         j["menu"] = settings.menu;
-//         j["split"] = settings.split;
-//         j["swapped"] = settings.swapped;
-//         j["maximized"] = settings.maximized;
-//         j["fullscreen"] = settings.fullscreen;
-//         j["topmost"] = settings.topmost;
-//         j["mainUrl"] = settings.mainUrl;
-//         j["sideUrl"] = settings.sideUrl;
-
-//         ofstream f(paths.config);
-//         f << std::setw(4) << j << "\n";
-//         f.close();
-//     }
-//     catch (const std::exception& e)
-//     {
-//         return;
-//     }
-// }
-
 // void App::CreateDb()
 // {
 //     auto dbFile{(paths.db).string()};
@@ -401,12 +355,4 @@ int App::_OnSize(HWND hwnd, WPARAM wparam, LPARAM lparam)
 //     sqlite3_close(db);
 
 //     return;
-// }
-
-// json Config::GetCurrent()
-// {
-//     json j{{"settings",
-//             {{"mainUrl", pConfig->settings.mainUrl},
-//              {"sideUrl", pConfig->settings.sideUrl},
-//              {"accentColor", pConfig->settings.accentColor}}}};
 // }

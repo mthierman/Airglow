@@ -371,4 +371,42 @@ std::vector<int> window_position(HWND hwnd)
     GetWindowRect(hwnd, &rect);
     return rect_to_bounds(rect);
 }
+
+std::pair<wstring, wstring> command_line()
+{
+    std::pair<wstring, wstring> commands;
+
+    auto cmd = GetCommandLineW();
+    int count;
+
+    auto args = CommandLineToArgvW(cmd, &count);
+
+    if (count == 2)
+    {
+        commands.first = args[1];
+        commands.second = wstring{};
+    }
+
+    if (count == 3)
+    {
+        commands.first = args[1];
+        commands.second = args[2];
+    }
+
+    LocalFree(args);
+
+    if (!commands.first.empty())
+    {
+        if (!commands.first.starts_with(L"http") || !commands.first.starts_with(L"https"))
+            commands.first = L"https://" + commands.first;
+    }
+
+    if (!commands.second.empty())
+    {
+        if (!commands.second.starts_with(L"http") || !commands.second.starts_with(L"https"))
+            commands.second = L"https://" + commands.second;
+    }
+
+    return commands;
+}
 } // namespace Utility
