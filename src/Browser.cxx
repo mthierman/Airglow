@@ -1,9 +1,6 @@
 #include "Browser.hxx"
 #include "Utility.hxx"
 
-using namespace Utility;
-using namespace Microsoft::WRL;
-
 static wil::com_ptr<ICoreWebView2Environment> browser_environment;
 static wil::com_ptr<ICoreWebView2Controller> settings_controller{nullptr};
 static wil::com_ptr<ICoreWebView2> settings_core{nullptr};

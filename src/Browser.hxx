@@ -1,5 +1,8 @@
 #pragma once
 
+using namespace Utility;
+using namespace Microsoft::WRL;
+
 class Window;
 
 class Browser
