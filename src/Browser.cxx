@@ -28,11 +28,7 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
                                       if (Core::main)
                                           Core19::main = Core::main.try_query<ICoreWebView2_19>();
 
-                                      if (Core19::main)
-                                      {
-                                          //   settings_controller->put_Bounds(get_rect(hwnd));
-                                          Core19::main->Navigate(L"https://wwww.google.com/");
-                                      }
+                                      Core19::main->Navigate(L"https://www.google.com/");
 
                                       return S_OK;
                                   })
@@ -51,11 +47,7 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
                                       if (Core::side)
                                           Core19::side = Core::side.try_query<ICoreWebView2_19>();
 
-                                      if (Core19::side)
-                                      {
-                                          //   settings_controller->put_Bounds(get_rect(hwnd));
-                                          Core19::side->Navigate(L"https://wwww.google.com/");
-                                      }
+                                      Core19::side->Navigate(L"https://www.google.com/");
 
                                       return S_OK;
                                   })
@@ -75,11 +67,7 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
                                           Core19::settings =
                                               Core::settings.try_query<ICoreWebView2_19>();
 
-                                      if (Core19::settings)
-                                      {
-                                          //   Controller::settings->put_Bounds(get_rect(hwnd));
-                                          //   Core19::settings->Navigate(L"https://wwww.google.com/");
-                                      }
+                                      Core19::settings->Navigate(L"https://www.google.com/");
 
                                       return S_OK;
                                   })
@@ -91,8 +79,6 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
     {
         return nullptr;
     };
-
-    browser->Navigate();
 
     return browser;
 }
@@ -120,11 +106,14 @@ void Browser::Bounds()
     });
 
     settings->put_Bounds(RECT{0, 0, 0, 0});
+}
 
+void Browser::Focus()
+{
     // settings->MoveFocus(
     //     COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 
-    main->MoveFocus(COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+    // main->MoveFocus(COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 
     // side->MoveFocus(COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 }
@@ -135,9 +124,11 @@ void Browser::Navigate()
     if (!settings || !main || !side)
         return;
 
-    main->Navigate(L"https://www.google.com/");
+    println("TEST");
 
-    side->Navigate(L"https://www.google.com/");
+    main->Navigate(L"https://www.bing.com/");
 
-    settings->Navigate(L"https://www.google.com/");
+    side->Navigate(L"https://www.bing.com/");
+
+    settings->Navigate(L"https://www.bing.com/");
 }

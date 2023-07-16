@@ -8,12 +8,22 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
 {
     auto app{std::unique_ptr<App>(new App(hinstance, ncs))};
 
+    SetEnvironmentVariableW(to_wide("WEBVIEW2_DEFAULT_BACKGROUND_COLOR").c_str(),
+                            to_wide("0").c_str());
+
     if (GdiplusStartup(&app->gdiplusToken, &app->gdiplusStartupInput, nullptr) !=
         Gdiplus::Status::Ok)
         return nullptr;
 
     app->name = to_wide(APP_NAME);
     app->version = to_wide(APP_VERSION);
+
+    app->paths.data = path_portable();
+    app->paths.settings = path_settings();
+    app->paths.config = path_json();
+    app->paths.db = path_db();
+    app->paths.js = path_js();
+
     app->cursor = (HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED);
     app->darkBrush = (HBRUSH)GetStockObject(BLACK_BRUSH);
     app->lightBrush = (HBRUSH)GetStockObject(WHITE_BRUSH);
@@ -74,6 +84,22 @@ void App::Fullscreen()
     window_fullscreen(hwnd);
     window_uncloak(hwnd);
 }
+
+// bool App::Environment()
+// {
+// if (!std::filesystem::exists(paths.config))
+//     Save();
+
+// Load();
+
+// colors = GetSystemColors();
+
+// if (!std::filesystem::exists(paths.data) || !std::filesystem::exists(paths.settings) ||
+//     !std::filesystem::exists(paths.config))
+//     return false;
+
+// return true;
+// }
 
 template <class T> T* InstanceFromWndProc(HWND hwnd, UINT msg, LPARAM lparam)
 {
@@ -242,167 +268,140 @@ int App::_OnSize(HWND hwnd, WPARAM wparam, LPARAM lparam)
     return 0;
 }
 
-std::pair<wstring, wstring> App::args()
-{
-    std::pair<wstring, wstring> commands;
+// std::pair<wstring, wstring> App::args()
+// {
+//     std::pair<wstring, wstring> commands;
 
-    auto cmd = GetCommandLineW();
-    int count;
+//     auto cmd = GetCommandLineW();
+//     int count;
 
-    auto args = CommandLineToArgvW(cmd, &count);
+//     auto args = CommandLineToArgvW(cmd, &count);
 
-    if (count == 2)
-    {
-        commands.first = args[1];
-        commands.second = wstring{};
-    }
+//     if (count == 2)
+//     {
+//         commands.first = args[1];
+//         commands.second = wstring{};
+//     }
 
-    if (count == 3)
-    {
-        commands.first = args[1];
-        commands.second = args[2];
-    }
+//     if (count == 3)
+//     {
+//         commands.first = args[1];
+//         commands.second = args[2];
+//     }
 
-    LocalFree(args);
+//     LocalFree(args);
 
-    if (!commands.first.empty())
-    {
-        if (!commands.first.starts_with(L"http") || !commands.first.starts_with(L"https"))
-            commands.first = L"https://" + commands.first;
-    }
+//     if (!commands.first.empty())
+//     {
+//         if (!commands.first.starts_with(L"http") || !commands.first.starts_with(L"https"))
+//             commands.first = L"https://" + commands.first;
+//     }
 
-    if (!commands.second.empty())
-    {
-        if (!commands.second.starts_with(L"http") || !commands.second.starts_with(L"https"))
-            commands.second = L"https://" + commands.second;
-    }
+//     if (!commands.second.empty())
+//     {
+//         if (!commands.second.starts_with(L"http") || !commands.second.starts_with(L"https"))
+//             commands.second = L"https://" + commands.second;
+//     }
 
-    return commands;
-}
+//     return commands;
+// }
 
-bool App::Environment()
-{
-    SetEnvironmentVariableW(to_wide("WEBVIEW2_DEFAULT_BACKGROUND_COLOR").c_str(),
-                            to_wide("0").c_str());
+// void App::LoadJson()
+// {
+//     if (std::filesystem::exists(paths.config) && !std::filesystem::is_empty(paths.config))
+//     {
+//         try
+//         {
+//             json j{};
+//             ifstream f(paths.config);
+//             j = json::parse(f, nullptr, false, true);
+//             f.close();
 
-    app.name = APP_NAME;
-    app.version = APP_VERSION;
-    paths.data = PortableAppDataPath();
-    paths.settings = SettingsPath();
-    paths.config = ConfigPath();
-    paths.db = DbPath();
-    paths.js = JsPath();
+//             settings.position = j["position"].get<std::vector<int>>();
+//             settings.menu = j["menu"].get<bool>();
+//             settings.split = j["split"].get<bool>();
+//             settings.swapped = j["swapped"].get<bool>();
+//             settings.maximized = j["maximized"].get<bool>();
+//             settings.fullscreen = j["fullscreen"].get<bool>();
+//             settings.topmost = j["topmost"].get<bool>();
+//             settings.mainUrl = j["mainUrl"].get<string>();
+//             settings.sideUrl = j["sideUrl"].get<string>();
+//         }
+//         catch (const std::exception& e)
+//         {
+//             return;
+//         }
+//     }
+// }
 
-    if (!std::filesystem::exists(paths.config))
-        Save();
+// void App::SaveJson()
+// {
+//     try
+//     {
+//         json j{};
+//         j["position"] = settings.position;
+//         j["menu"] = settings.menu;
+//         j["split"] = settings.split;
+//         j["swapped"] = settings.swapped;
+//         j["maximized"] = settings.maximized;
+//         j["fullscreen"] = settings.fullscreen;
+//         j["topmost"] = settings.topmost;
+//         j["mainUrl"] = settings.mainUrl;
+//         j["sideUrl"] = settings.sideUrl;
 
-    Load();
+//         ofstream f(paths.config);
+//         f << std::setw(4) << j << "\n";
+//         f.close();
+//     }
+//     catch (const std::exception& e)
+//     {
+//         return;
+//     }
+// }
 
-    colors = GetSystemColors();
+// void App::CreateDb()
+// {
+//     auto dbFile{(paths.db).string()};
+//     auto dbPath{dbFile.c_str()};
+//     sqlite3* db{nullptr};
+//     char* errMsg{0};
+//     string sql{"CREATE TABLE CONFIG("
+//                "X INT NOT NULL,"
+//                "Y INT NOT NULL,"
+//                "WIDTH INT NOT NULL,"
+//                "HEIGHT INT NOT NULL,"
+//                "MENU INT NOT NULL,"
+//                "SPLIT INT NOT NULL,"
+//                "MAXIMIZED INT NOT NULL,"
+//                "FULLSCREEN INT NOT NULL,"
+//                "TOPMOST INT NOT NULL,"
+//                "MAIN TEXT NOT NULL,"
+//                "SIDE TEXT NOT NULL);"};
 
-    if (!std::filesystem::exists(paths.data) || !std::filesystem::exists(paths.settings) ||
-        !std::filesystem::exists(paths.config))
-        return false;
+//     auto dbOpen = sqlite3_open(dbPath, &db);
+//     if (dbOpen != SQLITE_OK)
+//     {
+//         dberror("Database opening failed");
+//         return;
+//     }
 
-    return true;
-}
+//     if (std::filesystem::exists(paths.db))
+//     {
+//         auto debExec = sqlite3_exec(db, sql.c_str(), nullptr, 0, &errMsg);
+//         if (debExec != SQLITE_OK)
+//         {
+//             dberror(errMsg);
+//             sqlite3_free(errMsg);
+//         }
+//     }
 
-void App::LoadJson()
-{
-    if (std::filesystem::exists(paths.config) && !std::filesystem::is_empty(paths.config))
-    {
-        try
-        {
-            json j{};
-            ifstream f(paths.config);
-            j = json::parse(f, nullptr, false, true);
-            f.close();
+//     if (!std::filesystem::exists(paths.db))
+//         return;
 
-            settings.position = j["position"].get<std::vector<int>>();
-            settings.menu = j["menu"].get<bool>();
-            settings.split = j["split"].get<bool>();
-            settings.swapped = j["swapped"].get<bool>();
-            settings.maximized = j["maximized"].get<bool>();
-            settings.fullscreen = j["fullscreen"].get<bool>();
-            settings.topmost = j["topmost"].get<bool>();
-            settings.mainUrl = j["mainUrl"].get<string>();
-            settings.sideUrl = j["sideUrl"].get<string>();
-        }
-        catch (const std::exception& e)
-        {
-            return;
-        }
-    }
-}
+//     sqlite3_close(db);
 
-void App::SaveJson()
-{
-    try
-    {
-        json j{};
-        j["position"] = settings.position;
-        j["menu"] = settings.menu;
-        j["split"] = settings.split;
-        j["swapped"] = settings.swapped;
-        j["maximized"] = settings.maximized;
-        j["fullscreen"] = settings.fullscreen;
-        j["topmost"] = settings.topmost;
-        j["mainUrl"] = settings.mainUrl;
-        j["sideUrl"] = settings.sideUrl;
-
-        ofstream f(paths.config);
-        f << std::setw(4) << j << "\n";
-        f.close();
-    }
-    catch (const std::exception& e)
-    {
-        return;
-    }
-}
-
-void App::CreateDb()
-{
-    auto dbFile{(paths.db).string()};
-    auto dbPath{dbFile.c_str()};
-    sqlite3* db{nullptr};
-    char* errMsg{0};
-    string sql{"CREATE TABLE CONFIG("
-               "X INT NOT NULL,"
-               "Y INT NOT NULL,"
-               "WIDTH INT NOT NULL,"
-               "HEIGHT INT NOT NULL,"
-               "MENU INT NOT NULL,"
-               "SPLIT INT NOT NULL,"
-               "MAXIMIZED INT NOT NULL,"
-               "FULLSCREEN INT NOT NULL,"
-               "TOPMOST INT NOT NULL,"
-               "MAIN TEXT NOT NULL,"
-               "SIDE TEXT NOT NULL);"};
-
-    auto dbOpen = sqlite3_open(dbPath, &db);
-    if (dbOpen != SQLITE_OK)
-    {
-        dberror("Database opening failed");
-        return;
-    }
-
-    if (std::filesystem::exists(paths.db))
-    {
-        auto debExec = sqlite3_exec(db, sql.c_str(), nullptr, 0, &errMsg);
-        if (debExec != SQLITE_OK)
-        {
-            dberror(errMsg);
-            sqlite3_free(errMsg);
-        }
-    }
-
-    if (!std::filesystem::exists(paths.db))
-        return;
-
-    sqlite3_close(db);
-
-    return;
-}
+//     return;
+// }
 
 // json Config::GetCurrent()
 // {

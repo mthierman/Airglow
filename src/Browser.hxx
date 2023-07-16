@@ -11,10 +11,11 @@ class Browser
   public:
     static std::unique_ptr<Browser> Create(HWND);
     void Bounds();
+    void Focus();
+    void Navigate();
 
   private:
     Browser(HWND);
-    void Navigate();
     HWND hwnd;
 };
 

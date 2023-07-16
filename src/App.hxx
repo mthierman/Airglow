@@ -7,6 +7,23 @@ using namespace Utility;
 using namespace Gdiplus;
 using namespace Microsoft::WRL;
 
+struct Settings
+{
+    string mainUrl{"google.com"};
+    string sideUrl{"google.com"};
+    bool menu{false};
+    bool split{false};
+    bool swapped{false};
+};
+struct Paths
+{
+    path data{};
+    path settings{};
+    path config{};
+    path db{};
+    path js{};
+};
+
 class App
 {
   public:
@@ -37,23 +54,8 @@ class App
     bool topmost{false};
     bool fullscreen{false};
 
-    struct Configs
-    {
-        string mainUrl{"google.com"};
-        string sideUrl{"google.com"};
-        bool menu{false};
-        bool split{false};
-        bool swapped{false};
-    };
-
-    struct Paths
-    {
-        path data{};
-        path settings{};
-        path config{};
-        path db{};
-        path js{};
-    };
+    Settings settings;
+    Paths paths;
 
     App(HINSTANCE, int);
     static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
