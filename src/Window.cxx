@@ -43,6 +43,8 @@ std::unique_ptr<Window> Window::Create(HINSTANCE hinstance, int ncs)
         return nullptr;
     }
 
+    window->Show();
+
     return window;
 }
 
@@ -55,16 +57,16 @@ void Window::Show()
     window_uncloak(hwnd);
 }
 
-void Window::Theme() { allowdark = window_darkmode(hwnd); }
+void Window::Theme() { window_darkmode(hwnd); }
 
-void Window::Maximize() { maximized = window_maximize(hwnd); }
+void Window::Maximize() { window_maximize(hwnd); }
 
-void Window::Topmost() { topmost = window_topmost(hwnd); }
+void Window::Topmost() { window_topmost(hwnd); }
 
 void Window::Fullscreen()
 {
     window_cloak(hwnd);
-    fullscreen = window_fullscreen(hwnd);
+    window_fullscreen(hwnd);
     window_uncloak(hwnd);
 }
 
@@ -231,11 +233,6 @@ int Window::_OnSize(HWND hwnd, WPARAM wparam, LPARAM lparam)
     {
         maximized = true;
     }
-
-    // using namespace SettingsView
-
-    // if (!pWebView)
-    //     return 0;
 
     // pWebView->UpdateBounds();
 

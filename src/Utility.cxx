@@ -210,9 +210,8 @@ bool window_mica(HWND hwnd)
     return true;
 }
 
-bool window_maximize(HWND hwnd)
+void window_maximize(HWND hwnd)
 {
-    // window_cloak(hwnd);
     auto style = GetWindowLongPtrW(hwnd, GWL_STYLE);
     if (style & WS_OVERLAPPEDWINDOW)
     {
@@ -222,22 +221,16 @@ bool window_maximize(HWND hwnd)
         if (wp.showCmd == 3)
         {
             ShowWindow(hwnd, SW_SHOWNORMAL);
-            // window_uncloak(hwnd);
-
-            return false;
         }
 
         else
         {
             ShowWindow(hwnd, SW_MAXIMIZE);
-            // window_uncloak(hwnd);
-
-            return true;
         }
     };
 }
 
-bool window_fullscreen(HWND hwnd)
+void window_fullscreen(HWND hwnd)
 {
     static RECT position;
 
@@ -253,8 +246,6 @@ bool window_fullscreen(HWND hwnd)
                          mi.rcMonitor.right - mi.rcMonitor.left,
                          mi.rcMonitor.bottom - mi.rcMonitor.top, SWP_FRAMECHANGED);
         }
-
-        return true;
     }
 
     else
@@ -263,12 +254,10 @@ bool window_fullscreen(HWND hwnd)
         SetWindowPos(hwnd, nullptr, position.left, position.top, (position.right - position.left),
                      (position.bottom - position.top), SWP_FRAMECHANGED);
         SendMessage(hwnd, WM_SETICON, 0, 0);
-
-        return false;
     }
 }
 
-bool window_topmost(HWND hwnd)
+void window_topmost(HWND hwnd)
 {
     FLASHWINFO fwi{};
     fwi.cbSize = sizeof(FLASHWINFO);
@@ -282,17 +271,13 @@ bool window_topmost(HWND hwnd)
     {
         SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         FlashWindowEx(&fwi);
-        return false;
     }
 
     else
     {
         SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         FlashWindowEx(&fwi);
-        return true;
     }
-
-    // pWebView->SetWindowTitle();
 }
 
 void window_show(HWND hwnd)

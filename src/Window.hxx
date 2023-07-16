@@ -1,5 +1,7 @@
 #pragma once
 
+class Browser;
+
 class Window
 {
   public:
@@ -10,6 +12,7 @@ class Window
     void Topmost();
     void Fullscreen();
     HWND hwnd;
+    Browser* pBrowser;
 
   private:
     std::wstring appName{};
