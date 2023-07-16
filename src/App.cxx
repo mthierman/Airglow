@@ -3,9 +3,6 @@
 #include "Window.hxx"
 #include "Browser.hxx"
 
-using namespace Utility;
-using namespace Gdiplus;
-
 std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
 {
     auto app{std::unique_ptr<App>(new App(hinstance, ncs))};
@@ -30,10 +27,11 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
         return nullptr;
     }
 
-    while (GetMessageW(&app->msg, nullptr, 0, 0))
+    MSG msg{};
+    while (GetMessageW(&msg, nullptr, 0, 0))
     {
-        TranslateMessage(&app->msg);
-        DispatchMessageW(&app->msg);
+        TranslateMessage(&msg);
+        DispatchMessageW(&msg);
     }
 
     return app;
