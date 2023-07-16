@@ -5,6 +5,7 @@ using namespace Utility;
 using namespace Gdiplus;
 using namespace Microsoft::WRL;
 
+wil::com_ptr<ICoreWebView2Environment> Browser::wv2_environment{nullptr};
 wil::com_ptr<ICoreWebView2Controller> Browser::wv2_controller{nullptr};
 wil::com_ptr<ICoreWebView2> Browser::wv2{nullptr};
 wil::com_ptr<ICoreWebView2_19> Browser::wv2_19{nullptr};
@@ -16,39 +17,43 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
 {
     auto browser{std::unique_ptr<Browser>(new Browser(hwnd))};
 
-    auto create = CreateCoreWebView2EnvironmentWithOptions(
-        nullptr, path_portable().wstring().c_str(), nullptr,
-        Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
-            [=](HRESULT hr, ICoreWebView2Environment* environment) -> HRESULT
-            {
-                environment->CreateCoreWebView2Controller(
-                    hwnd, Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                              [=](HRESULT hr, ICoreWebView2Controller* controller) -> HRESULT
-                              {
-                                  if (!controller)
-                                      return E_POINTER;
+    if (FAILED(CreateCoreWebView2EnvironmentWithOptions(
+            nullptr, path_portable().wstring().c_str(), nullptr,
+            Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
+                [=](HRESULT hr, ICoreWebView2Environment* environment) -> HRESULT
+                {
+                    if (environment)
+                        wv2_environment = environment;
 
-                                  wv2_controller = controller;
+                    return S_OK;
+                })
+                .Get())))
+    {
+        return nullptr;
+    };
 
-                                  if (FAILED(wv2_controller->get_CoreWebView2(&wv2)))
-                                      return E_POINTER;
+    if (FAILED(wv2_environment->CreateCoreWebView2Controller(
+            hwnd, Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+                      [=](HRESULT hr, ICoreWebView2Controller* controller) -> HRESULT
+                      {
+                          if (controller)
+                              wv2_controller = controller;
 
-                                  wv2_19 = wv2.try_query<ICoreWebView2_19>();
+                          if (SUCCEEDED(wv2_controller->get_CoreWebView2(&wv2)))
+                              wv2_19 = wv2.try_query<ICoreWebView2_19>();
 
-                                  if (!wv2_19)
-                                      return E_POINTER;
+                          if (wv2_19)
+                          {
+                              wv2_controller->put_Bounds(get_rect(hwnd));
+                              wv2_19->Navigate(L"https://wwww.google.com/");
+                          }
 
-                                  wv2_controller->put_Bounds(get_rect(hwnd));
-
-                                  wv2_19->Navigate(L"https://wwww.google.com/");
-
-                                  return S_OK;
-                              })
-                              .Get());
-
-                return S_OK;
-            })
-            .Get());
+                          return S_OK;
+                      })
+                      .Get())))
+    {
+        return nullptr;
+    };
 
     return browser;
 }
@@ -63,8 +68,10 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
 //             [=](HRESULT hr, ICoreWebView2Environment* environment) -> HRESULT
 //             {
 //                 environment->CreateCoreWebView2Controller(
-//                     hwnd, Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-//                               [=](HRESULT hr, ICoreWebView2Controller* controller) -> HRESULT
+//                     hwnd,
+//                     Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+//                               [=](HRESULT hr, ICoreWebView2Controller* controller) ->
+//                               HRESULT
 //                               {
 //                                   if (!controller)
 //                                       return E_POINTER;
@@ -176,8 +183,8 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
 //                             wv2_19->add_WebMessageReceived(
 //                                 Callback<ICoreWebView2WebMessageReceivedEventHandler>(
 //                                     [&](ICoreWebView2* sender,
-//                                         ICoreWebView2WebMessageReceivedEventArgs* args) ->
-//                                         HRESULT
+//                                         ICoreWebView2WebMessageReceivedEventArgs* args)
+//                                         -> HRESULT
 //                                     { return S_OK; })
 //                                     .Get(),
 //                                 &tokenWebMessageReceived);
@@ -619,13 +626,15 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
 
 //     if (!commands.first.empty())
 //     {
-//         if (!commands.first.starts_with(L"http") || !commands.first.starts_with(L"https"))
+//         if (!commands.first.starts_with(L"http") ||
+//         !commands.first.starts_with(L"https"))
 //             commands.first = L"https://" + commands.first;
 //     }
 
 //     if (!commands.second.empty())
 //     {
-//         if (!commands.second.starts_with(L"http") || !commands.second.starts_with(L"https"))
+//         if (!commands.second.starts_with(L"http") ||
+//         !commands.second.starts_with(L"https"))
 //             commands.second = L"https://" + commands.second;
 //     }
 

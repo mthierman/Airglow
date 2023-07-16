@@ -3,7 +3,7 @@
 class Browser
 {
   public:
-    static std::unique_ptr<Browser> Create(HWND hwnd);
+    static std::unique_ptr<Browser> Create(HWND);
     // void UpdateConfig();
     // void UpdateBounds();
     // void UpdateFocus();
@@ -12,12 +12,13 @@ class Browser
     // void SetWindowIcon();
 
   private:
+    static wil::com_ptr<ICoreWebView2Environment> wv2_environment;
     static wil::com_ptr<ICoreWebView2Controller> wv2_controller;
     static wil::com_ptr<ICoreWebView2> wv2;
     static wil::com_ptr<ICoreWebView2_19> wv2_19;
     static wil::com_ptr<ICoreWebView2Settings> wv2_settings;
 
-    Browser(HWND hwnd);
+    Browser(HWND);
     // std::pair<wstring, wstring> CommandLine();
     // wstring MainNavigation();
     // wstring SideNavigation();
