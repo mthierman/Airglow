@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Utility.hxx"
+#include "Browser.hxx"
 
 using namespace Utility;
 using namespace Gdiplus;
@@ -18,6 +19,8 @@ class App
     void Fullscreen();
 
   private:
+    std::unique_ptr<Browser> browser{nullptr};
+
     unsigned long long gdiplusToken{};
     GdiplusStartupInput gdiplusStartupInput{};
 

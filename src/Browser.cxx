@@ -79,8 +79,8 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
 
                                       if (side_browser)
                                       {
-                                          //   side_controller->put_Bounds(get_rect(hwnd));
-                                          //   side_browser->Navigate(L"https://wwww.google.com/");
+                                          side_controller->put_Bounds(get_rect(hwnd));
+                                          side_browser->Navigate(L"https://wwww.google.com/");
                                       }
 
                                       return S_OK;

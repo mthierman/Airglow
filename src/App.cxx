@@ -1,6 +1,4 @@
 #include "App.hxx"
-#include "Browser.hxx"
-std::unique_ptr<Browser> browser{nullptr};
 
 App::App(HINSTANCE hinstance, int ncs) {}
 
@@ -48,10 +46,10 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
 
     app->Show();
 
-    // browser = Browser::Create(app->hwnd);
+    app->browser = Browser::Create(app->hwnd);
 
-    // if (!browser)
-    //     return nullptr;
+    if (!app->browser)
+        return nullptr;
 
     return app;
 }
