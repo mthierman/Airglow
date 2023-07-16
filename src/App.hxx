@@ -37,6 +37,24 @@ class App
     bool topmost{false};
     bool fullscreen{false};
 
+    struct Configs
+    {
+        string mainUrl{"google.com"};
+        string sideUrl{"google.com"};
+        bool menu{false};
+        bool split{false};
+        bool swapped{false};
+    };
+
+    struct Paths
+    {
+        path data{};
+        path settings{};
+        path config{};
+        path db{};
+        path js{};
+    };
+
     App(HINSTANCE, int);
     static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
     std::pair<wstring, wstring> args();
@@ -66,4 +84,8 @@ class App
     int _OnSizing(HWND, WPARAM, LPARAM);
     int _OnWindowPosChanged(HWND, WPARAM, LPARAM);
     int _OnWindowPosChanging(HWND, WPARAM, LPARAM);
+    bool Environment();
+    void LoadJson();
+    void SaveJson();
+    void CreateDb();
 };

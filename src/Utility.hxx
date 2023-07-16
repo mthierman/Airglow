@@ -53,4 +53,17 @@ void window_fullscreen(HWND);
 void window_topmost(HWND);
 
 std::vector<int> window_position(HWND);
+
+struct Colors
+{
+    string accent{};
+    string accentDark1{};
+    string accentDark2{};
+    string accentDark3{};
+    string accentLight1{};
+    string accentLight2{};
+    string accentLight3{};
+    string Background{};
+    string Foreground{};
+};
 }; // namespace Utility

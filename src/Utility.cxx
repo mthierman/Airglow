@@ -178,6 +178,25 @@ string system_color(winrt::Windows::UI::ViewManagement::UIColorType colorType)
     return formatted;
 }
 
+Colors system_colors()
+{
+    Colors system;
+    system.accent = system_color(winrt::Windows::UI::ViewManagement::UIColorType::Accent);
+    system.accentDark1 = system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark1);
+    system.accentDark2 = system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark2);
+    system.accentDark3 = system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark3);
+    system.accentLight1 =
+        system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight1);
+    system.accentLight2 =
+        system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight2);
+    system.accentLight3 =
+        system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight3);
+    system.Background = system_color(winrt::Windows::UI::ViewManagement::UIColorType::Background);
+    system.Foreground = system_color(winrt::Windows::UI::ViewManagement::UIColorType::Foreground);
+
+    return system;
+}
+
 string system_theme()
 {
     using namespace winrt::Windows::UI;
