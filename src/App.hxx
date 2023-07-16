@@ -1,7 +1,10 @@
 #pragma once
 
-using namespace Gdiplus;
+#include "Utility.hxx"
+
 using namespace Utility;
+using namespace Gdiplus;
+using namespace Microsoft::WRL;
 
 class App
 {
@@ -15,7 +18,6 @@ class App
     void Fullscreen();
 
   private:
-    std::unique_ptr<Browser> browser;
     unsigned long long gdiplusToken{};
     GdiplusStartupInput gdiplusStartupInput{};
 

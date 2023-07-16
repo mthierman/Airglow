@@ -5,7 +5,10 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
     auto app = App::Create(hinstance, ncs);
 
     if (!app)
+    {
+        error("Application failed to start");
         return 0;
+    }
 
     MSG msg{};
     while (GetMessageW(&msg, nullptr, 0, 0))

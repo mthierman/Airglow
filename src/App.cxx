@@ -1,6 +1,6 @@
 #include "App.hxx"
-#include "Utility.hxx"
 #include "Browser.hxx"
+std::unique_ptr<Browser> browser{nullptr};
 
 App::App(HINSTANCE hinstance, int ncs) {}
 
@@ -48,10 +48,10 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
 
     app->Show();
 
-    app->browser = Browser::Create();
+    // browser = Browser::Create(app->hwnd);
 
-    if (!app->browser)
-        return nullptr;
+    // if (!browser)
+    //     return nullptr;
 
     return app;
 }
@@ -77,8 +77,6 @@ void App::Fullscreen()
     window_fullscreen(hwnd);
     window_uncloak(hwnd);
 }
-
-App::App(HINSTANCE hinstance, int ncs) {}
 
 template <class T> T* InstanceFromWndProc(HWND hwnd, UINT msg, LPARAM lparam)
 {

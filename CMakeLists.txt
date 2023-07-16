@@ -107,7 +107,6 @@ add_executable(
     src/Airglow.cxx
     src/App.cxx
     src/Browser.cxx
-    src/Window.cxx
     src/Utility.cxx
     "${RC_FILE}"
     "${MANIFEST_FILE}"
