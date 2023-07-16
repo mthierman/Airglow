@@ -55,8 +55,6 @@ class App
     Paths paths;
 
     App(HINSTANCE, int);
-    void SaveJson();
-    void LoadJson();
     void CreateDb();
 
     static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
