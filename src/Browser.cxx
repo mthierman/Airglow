@@ -28,8 +28,6 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
                                       if (Core::main)
                                           Core19::main = Core::main.try_query<ICoreWebView2_19>();
 
-                                      Core19::main->Navigate(L"https://www.juce.com/");
-
                                       auto bounds{get_rect(hwnd)};
                                       Controller::main->put_Bounds(RECT{
                                           bounds.left,
@@ -37,6 +35,8 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
                                           bounds.right / 2,
                                           bounds.bottom,
                                       });
+
+                                      Core19::main->Navigate(L"https://www.juce.com/");
 
                                       return S_OK;
                                   })
@@ -55,8 +55,6 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
                                       if (Core::side)
                                           Core19::side = Core::side.try_query<ICoreWebView2_19>();
 
-                                      Core19::side->Navigate(L"https://www.google.com/");
-
                                       auto bounds{get_rect(hwnd)};
                                       Controller::side->put_Bounds(RECT{
                                           bounds.right / 2,
@@ -64,6 +62,8 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
                                           bounds.right,
                                           bounds.bottom,
                                       });
+
+                                      Core19::side->Navigate(L"https://www.google.com/");
 
                                       return S_OK;
                                   })
@@ -83,10 +83,10 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
                                           Core19::settings =
                                               Core::settings.try_query<ICoreWebView2_19>();
 
-                                      Core19::settings->Navigate(L"https://www.github.com/");
-
                                       auto bounds{get_rect(hwnd)};
                                       Controller::settings->put_Bounds(RECT{0, 0, 0, 0});
+
+                                      Core19::settings->Navigate(L"https://www.github.com/");
 
                                       return S_OK;
                                   })
