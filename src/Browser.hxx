@@ -12,11 +12,11 @@ class Browser
     // void SetWindowIcon();
 
   private:
-    static wil::com_ptr<ICoreWebView2Environment> wv2_environment;
-    static wil::com_ptr<ICoreWebView2Controller> wv2_controller;
-    static wil::com_ptr<ICoreWebView2> wv2;
-    static wil::com_ptr<ICoreWebView2_19> wv2_19;
-    static wil::com_ptr<ICoreWebView2Settings> wv2_settings;
+    static wil::com_ptr<ICoreWebView2Environment> settings_environment;
+    static wil::com_ptr<ICoreWebView2Controller> settings_controller;
+    static wil::com_ptr<ICoreWebView2> settings_core;
+    static wil::com_ptr<ICoreWebView2_19> settings_browser;
+    static wil::com_ptr<ICoreWebView2Settings> settings_settings;
 
     Browser(HWND);
     // std::pair<wstring, wstring> CommandLine();
