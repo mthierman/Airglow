@@ -59,6 +59,7 @@ void App::Show()
     window_cloak(hwnd);
     window_darktitle();
     theme = window_theme(hwnd);
+    window_mica(hwnd);
     ShowWindow(hwnd, SW_SHOWDEFAULT);
     window_uncloak(hwnd);
 }
@@ -239,4 +240,42 @@ int App::_OnSize(HWND hwnd, WPARAM wparam, LPARAM lparam)
     browser->Bounds();
 
     return 0;
+}
+
+std::pair<wstring, wstring> App::args()
+{
+    std::pair<wstring, wstring> commands;
+
+    auto cmd = GetCommandLineW();
+    int count;
+
+    auto args = CommandLineToArgvW(cmd, &count);
+
+    if (count == 2)
+    {
+        commands.first = args[1];
+        commands.second = wstring{};
+    }
+
+    if (count == 3)
+    {
+        commands.first = args[1];
+        commands.second = args[2];
+    }
+
+    LocalFree(args);
+
+    if (!commands.first.empty())
+    {
+        if (!commands.first.starts_with(L"http") || !commands.first.starts_with(L"https"))
+            commands.first = L"https://" + commands.first;
+    }
+
+    if (!commands.second.empty())
+    {
+        if (!commands.second.starts_with(L"http") || !commands.second.starts_with(L"https"))
+            commands.second = L"https://" + commands.second;
+    }
+
+    return commands;
 }

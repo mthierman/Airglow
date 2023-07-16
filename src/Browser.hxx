@@ -14,6 +14,7 @@ class Browser
 
   private:
     Browser(HWND);
+    void Navigate();
     HWND hwnd;
 };
 

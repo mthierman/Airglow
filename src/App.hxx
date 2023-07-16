@@ -39,6 +39,7 @@ class App
 
     App(HINSTANCE, int);
     static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
+    std::pair<wstring, wstring> args();
     int _OnActivate(HWND, WPARAM, LPARAM);
     int _OnChar(HWND, WPARAM, LPARAM);
     int _OnClose(HWND, WPARAM, LPARAM);

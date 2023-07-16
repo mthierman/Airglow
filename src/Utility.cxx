@@ -344,49 +344,6 @@ void window_topmost(HWND hwnd)
     }
 }
 
-void window_show(HWND hwnd)
-{
-    // Cloak();
-
-    // SetDarkTitle();
-    // SetDarkMode();
-    // SetMica();
-
-    // if (pConfig->settings.position[0] == 0 && pConfig->settings.position[1] == 0 &&
-    //     pConfig->settings.position[2] == 0 && pConfig->settings.position[3] == 0)
-    // {
-    //     ShowWindow(pConfig->window.hwnd, SW_SHOWDEFAULT);
-    // }
-
-    // else
-    // {
-    //     if (pConfig->settings.maximized)
-    //     {
-    //         ShowWindow(pConfig->window.hwnd, SW_MAXIMIZE);
-    //     }
-
-    //     else
-    //     {
-    //         SetWindowPos(pConfig->window.hwnd, nullptr, pConfig->settings.position[0],
-    //                      pConfig->settings.position[1], pConfig->settings.position[2],
-    //                      pConfig->settings.position[3], 0);
-    //         ShowWindow(pConfig->window.hwnd, SW_SHOWNORMAL);
-    //     }
-    // }
-
-    // if (pConfig->settings.topmost)
-    // {
-    //     Topmost();
-    // }
-
-    // if (pConfig->settings.fullscreen)
-    // {
-    //     Fullscreen();
-    // }
-
-    // Uncloak();
-}
-
 std::vector<int> window_position(HWND hwnd)
 {
     WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};

@@ -51,6 +51,6 @@ bool window_mica(HWND);
 void window_maximize(HWND);
 void window_fullscreen(HWND);
 void window_topmost(HWND);
-void window_show(HWND);
+
 std::vector<int> window_position(HWND);
 }; // namespace Utility

@@ -92,6 +92,8 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
         return nullptr;
     };
 
+    browser->Navigate();
+
     return browser;
 }
 
@@ -103,17 +105,39 @@ void Browser::Bounds()
 
     auto bounds{get_rect(hwnd)};
 
-    settings->put_Bounds(RECT{0, 0, 0, 0});
     main->put_Bounds(RECT{
         bounds.left,
         bounds.top,
         bounds.right / 2,
         bounds.bottom,
     });
+
     side->put_Bounds(RECT{
         bounds.right / 2,
         bounds.top,
         bounds.right,
         bounds.bottom,
     });
+
+    settings->put_Bounds(RECT{0, 0, 0, 0});
+
+    // settings->MoveFocus(
+    //     COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+
+    main->MoveFocus(COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+
+    // side->MoveFocus(COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+}
+
+void Browser::Navigate()
+{
+    using namespace Core19;
+    if (!settings || !main || !side)
+        return;
+
+    main->Navigate(L"https://www.google.com/");
+
+    side->Navigate(L"https://www.google.com/");
+
+    settings->Navigate(L"https://www.google.com/");
 }
