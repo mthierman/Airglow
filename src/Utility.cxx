@@ -87,18 +87,68 @@ RECT bounds_to_rect(std::vector<int> bounds)
     return RECT{bounds[0], bounds[1], (bounds[0] + bounds[2]), (bounds[1] + bounds[3])};
 }
 
-string system_theme()
+path path_appdata()
 {
-    using namespace winrt::Windows::UI;
-    using namespace winrt::Windows::UI::ViewManagement;
+    PWSTR buffer{};
 
-    UISettings settings{UISettings()};
-    Color fg{settings.GetColorValue(UIColorType::Foreground)};
+    if (FAILED(SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &buffer)))
+        return path{};
 
-    if (((5 * fg.G) + (2 * fg.R) + fg.B) > (8 * 128))
-        return "dark";
+    path data = wstring(buffer) + path::preferred_separator + to_wide("Airglow");
 
-    return "light";
+    CoTaskMemFree(buffer);
+
+    if (!std::filesystem::exists(data))
+        std::filesystem::create_directory(data);
+
+    return data;
+}
+
+path path_portable()
+{
+    auto cmd = GetCommandLineW();
+    int count;
+    auto args = CommandLineToArgvW(cmd, &count);
+    path data{args[0]};
+    LocalFree(args);
+
+    return std::filesystem::canonical(data.remove_filename());
+}
+
+path path_settings()
+{
+    auto data = path_portable();
+    if (!std::filesystem::exists(data))
+        return path{};
+
+    return (data.wstring() + path::preferred_separator + to_wide("settings"));
+}
+
+path path_json()
+{
+    auto data = path_portable();
+    if (!std::filesystem::exists(data))
+        return path{};
+
+    return (data.wstring() + path::preferred_separator + to_wide("airglow.json"));
+}
+
+path path_db()
+{
+    auto data = path_portable();
+    if (!std::filesystem::exists(data))
+        return path{};
+
+    return (data.wstring() + path::preferred_separator + to_wide("airglow.sqlite"));
+}
+
+path path_js()
+{
+    auto data = path_portable();
+    if (!std::filesystem::exists(data))
+        return path{};
+
+    return (data.wstring() + path::preferred_separator + to_wide("js"));
 }
 
 string system_color(winrt::Windows::UI::ViewManagement::UIColorType colorType)
@@ -128,27 +178,38 @@ string system_color(winrt::Windows::UI::ViewManagement::UIColorType colorType)
     return formatted;
 }
 
-bool window_cloak(HWND hwnd)
+string system_theme()
 {
-    auto cloak{TRUE};
+    using namespace winrt::Windows::UI;
+    using namespace winrt::Windows::UI::ViewManagement;
 
-    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloak, sizeof(cloak))))
-        return false;
+    UISettings settings{UISettings()};
+    Color fg{settings.GetColorValue(UIColorType::Foreground)};
 
-    return true;
+    if (((5 * fg.G) + (2 * fg.R) + fg.B) > (8 * 128))
+        return "dark";
+
+    return "light";
 }
 
-bool window_uncloak(HWND hwnd)
+string window_theme(HWND hwnd)
 {
-    auto uncloak{FALSE};
+    auto dark{TRUE};
+    auto light{FALSE};
 
-    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &uncloak, sizeof(uncloak))))
-        return false;
+    if (system_theme() == "light")
+    {
+        DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &light, sizeof(light));
 
-    return true;
+        return "light";
+    }
+
+    DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dark, sizeof(dark));
+
+    return "dark";
 }
 
-bool window_allowdark()
+bool window_darktitle()
 {
     enum PreferredAppMode
     {
@@ -178,19 +239,22 @@ bool window_allowdark()
     return true;
 }
 
-bool window_darkmode(HWND hwnd)
+bool window_cloak(HWND hwnd)
 {
-    auto dark{TRUE};
-    auto light{FALSE};
+    auto cloak{TRUE};
 
-    if (system_theme() == "light")
-    {
-        DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &light, sizeof(light));
-
+    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloak, sizeof(cloak))))
         return false;
-    }
 
-    DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dark, sizeof(dark));
+    return true;
+}
+
+bool window_uncloak(HWND hwnd)
+{
+    auto uncloak{FALSE};
+
+    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &uncloak, sizeof(uncloak))))
+        return false;
 
     return true;
 }
@@ -331,69 +395,4 @@ std::vector<int> window_position(HWND hwnd)
     GetWindowRect(hwnd, &rect);
     return rect_to_bounds(rect);
 }
-
-path path_appdata()
-{
-    PWSTR buffer{};
-
-    if (FAILED(SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &buffer)))
-        return path{};
-
-    path data = wstring(buffer) + path::preferred_separator + to_wide("Airglow");
-
-    CoTaskMemFree(buffer);
-
-    if (!std::filesystem::exists(data))
-        std::filesystem::create_directory(data);
-
-    return data;
-}
-
-path path_portable()
-{
-    auto cmd = GetCommandLineW();
-    int count;
-    auto args = CommandLineToArgvW(cmd, &count);
-    path data{args[0]};
-    LocalFree(args);
-
-    return std::filesystem::canonical(data.remove_filename());
-}
-
-path path_settings()
-{
-    auto data = path_portable();
-    if (!std::filesystem::exists(data))
-        return path{};
-
-    return (data.wstring() + path::preferred_separator + to_wide("settings"));
-}
-
-path path_json()
-{
-    auto data = path_portable();
-    if (!std::filesystem::exists(data))
-        return path{};
-
-    return (data.wstring() + path::preferred_separator + to_wide("airglow.json"));
-}
-
-path path_db()
-{
-    auto data = path_portable();
-    if (!std::filesystem::exists(data))
-        return path{};
-
-    return (data.wstring() + path::preferred_separator + to_wide("airglow.sqlite"));
-}
-
-path path_js()
-{
-    auto data = path_portable();
-    if (!std::filesystem::exists(data))
-        return path{};
-
-    return (data.wstring() + path::preferred_separator + to_wide("js"));
-}
-
 } // namespace Utility

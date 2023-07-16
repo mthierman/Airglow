@@ -14,8 +14,8 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
         Gdiplus::Status::Ok)
         return nullptr;
 
-    app->appName = to_wide(APP_NAME);
-    app->appVersion = to_wide(APP_VERSION);
+    app->name = to_wide(APP_NAME);
+    app->version = to_wide(APP_VERSION);
     app->cursor = (HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED);
     app->darkBrush = (HBRUSH)GetStockObject(BLACK_BRUSH);
     app->lightBrush = (HBRUSH)GetStockObject(WHITE_BRUSH);
@@ -24,8 +24,8 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
 
     WNDCLASSEXW wcex{};
     wcex.cbSize = sizeof(WNDCLASSEX);
-    wcex.lpszClassName = app->appName.c_str();
-    wcex.lpszMenuName = app->appName.c_str();
+    wcex.lpszClassName = app->name.c_str();
+    wcex.lpszMenuName = app->name.c_str();
     wcex.lpfnWndProc = App::_WndProc;
     wcex.style = CS_HREDRAW | CS_VREDRAW;
     wcex.cbClsExtra = 0;
@@ -39,7 +39,7 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
     if (!RegisterClassExW(&wcex))
         return nullptr;
 
-    app->hwnd = CreateWindowExW(0, app->appName.c_str(), app->appName.c_str(), WS_OVERLAPPEDWINDOW,
+    app->hwnd = CreateWindowExW(0, app->name.c_str(), app->name.c_str(), WS_OVERLAPPEDWINDOW,
                                 CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
                                 nullptr, hinstance, app.get());
 
@@ -59,13 +59,11 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
 void App::Show()
 {
     window_cloak(hwnd);
-    window_allowdark();
-    Theme();
+    window_darktitle();
+    theme = window_theme(hwnd);
     ShowWindow(hwnd, SW_SHOWDEFAULT);
     window_uncloak(hwnd);
 }
-
-void App::Theme() { window_darkmode(hwnd); }
 
 void App::Maximize() { window_maximize(hwnd); }
 
@@ -159,7 +157,7 @@ int App::_OnEraseBackground(HWND hwnd, WPARAM wparam, LPARAM lparam)
     PAINTSTRUCT ps{};
     HDC hdc = BeginPaint(hwnd, &ps);
 
-    if (allowdark)
+    if (theme == "dark")
         FillRect(hdc, &ps.rcPaint, darkBrush);
 
     else
@@ -225,7 +223,7 @@ int App::_OnSetFocus(HWND hwnd, WPARAM wparam, LPARAM lparam) { return 0; }
 
 int App::_OnSettingChange(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-    Theme();
+    theme = window_theme(hwnd);
 
     return 0;
 }

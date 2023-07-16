@@ -21,10 +21,11 @@ class App
     unsigned long long gdiplusToken{};
     GdiplusStartupInput gdiplusStartupInput{};
 
-    std::wstring appName{};
-    std::wstring appVersion{};
+    std::wstring name{};
+    std::wstring version{};
     std::vector<int> position{0, 0, 0, 0};
     HWND hwnd;
+    string theme{};
     HBRUSH darkBrush{};
     HBRUSH lightBrush{};
     HCURSOR cursor{};
@@ -32,7 +33,6 @@ class App
     bool maximized{false};
     bool topmost{false};
     bool fullscreen{false};
-    bool allowdark{false};
 
     App(HINSTANCE, int);
     static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
