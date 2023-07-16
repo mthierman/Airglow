@@ -10,32 +10,37 @@ class Browser
 {
   public:
     static std::unique_ptr<Browser> Create(HWND);
+    void Bounds();
 
   private:
     Browser(HWND);
+    HWND hwnd;
 };
 
-namespace Browsers
+namespace WebView
 {
+namespace Controller
+{
+static wil::com_ptr<ICoreWebView2Controller> main;
+static wil::com_ptr<ICoreWebView2Controller> side;
+static wil::com_ptr<ICoreWebView2Controller> settings;
+} // namespace Controller
+namespace Core
+{
+static wil::com_ptr<ICoreWebView2> main;
+static wil::com_ptr<ICoreWebView2> side;
+static wil::com_ptr<ICoreWebView2> settings;
+} // namespace Core
+namespace Core19
+{
+static wil::com_ptr<ICoreWebView2_19> main;
+static wil::com_ptr<ICoreWebView2_19> side;
+static wil::com_ptr<ICoreWebView2_19> settings;
+} // namespace Core19
 namespace Settings
 {
-static wil::com_ptr<ICoreWebView2Controller> settings_controller;
-static wil::com_ptr<ICoreWebView2> settings_core;
-static wil::com_ptr<ICoreWebView2_19> settings_browser;
-static wil::com_ptr<ICoreWebView2Settings> settings_settings;
-}; // namespace Settings
-namespace Main
-{
-static wil::com_ptr<ICoreWebView2Controller> main_controller;
-static wil::com_ptr<ICoreWebView2> main_core;
-static wil::com_ptr<ICoreWebView2_19> main_browser;
-static wil::com_ptr<ICoreWebView2Settings> main_settings;
-}; // namespace Main
-namespace Side
-{
-static wil::com_ptr<ICoreWebView2Controller> side_controller;
-static wil::com_ptr<ICoreWebView2> side_core;
-static wil::com_ptr<ICoreWebView2_19> side_browser;
-static wil::com_ptr<ICoreWebView2Settings> side_settings;
-}; // namespace Side
-} // namespace Browsers
+static wil::com_ptr<ICoreWebView2Settings> main;
+static wil::com_ptr<ICoreWebView2Settings> side;
+static wil::com_ptr<ICoreWebView2Settings> settings;
+} // namespace Settings
+} // namespace WebView

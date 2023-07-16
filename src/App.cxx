@@ -236,7 +236,7 @@ int App::_OnSize(HWND hwnd, WPARAM wparam, LPARAM lparam)
         maximized = true;
     }
 
-    // pWebView->UpdateBounds();
+    browser->Bounds();
 
     return 0;
 }

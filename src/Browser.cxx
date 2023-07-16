@@ -1,36 +1,37 @@
 #include "Browser.hxx"
 
+using namespace WebView;
+
 Browser::Browser(HWND hwnd) {}
 
 std::unique_ptr<Browser> Browser::Create(HWND hwnd)
 {
     auto browser{std::unique_ptr<Browser>(new Browser(hwnd))};
 
+    browser->hwnd = hwnd;
+
     if (FAILED(CreateCoreWebView2EnvironmentWithOptions(
             nullptr, path_portable().wstring().c_str(), nullptr,
             Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
-                [=](HRESULT hr, ICoreWebView2Environment* e) -> HRESULT
+                [hwnd](HRESULT hr, ICoreWebView2Environment* e) -> HRESULT
                 {
                     e->CreateCoreWebView2Controller(
                         hwnd, Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                                  [=](HRESULT hr, ICoreWebView2Controller* controller) -> HRESULT
+                                  [hwnd](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
                                   {
-                                      using namespace Browsers::Settings;
-
-                                      if (controller)
+                                      if (c)
                                       {
-                                          settings_controller = controller;
-                                          settings_controller->get_CoreWebView2(&settings_core);
+                                          Controller::main = c;
+                                          Controller::main->get_CoreWebView2(&Core::main);
                                       }
 
-                                      if (settings_core)
-                                          settings_browser =
-                                              settings_core.try_query<ICoreWebView2_19>();
+                                      if (Core::main)
+                                          Core19::main = Core::main.try_query<ICoreWebView2_19>();
 
-                                      if (settings_browser)
+                                      if (Core19::main)
                                       {
                                           //   settings_controller->put_Bounds(get_rect(hwnd));
-                                          //   settings_browser->Navigate(L"https://wwww.google.com/");
+                                          Core19::main->Navigate(L"https://wwww.google.com/");
                                       }
 
                                       return S_OK;
@@ -39,23 +40,21 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
 
                     e->CreateCoreWebView2Controller(
                         hwnd, Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                                  [=](HRESULT hr, ICoreWebView2Controller* controller) -> HRESULT
+                                  [hwnd](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
                                   {
-                                      using namespace Browsers::Main;
-
-                                      if (controller)
+                                      if (c)
                                       {
-                                          main_controller = controller;
-                                          main_controller->get_CoreWebView2(&main_core);
+                                          Controller::side = c;
+                                          Controller::side->get_CoreWebView2(&Core::side);
                                       }
 
-                                      if (main_core)
-                                          main_browser = main_core.try_query<ICoreWebView2_19>();
+                                      if (Core::side)
+                                          Core19::side = Core::side.try_query<ICoreWebView2_19>();
 
-                                      if (main_browser)
+                                      if (Core19::side)
                                       {
-                                          //   main_controller->put_Bounds(get_rect(hwnd));
-                                          //   main_browser->Navigate(L"https://wwww.google.com/");
+                                          //   settings_controller->put_Bounds(get_rect(hwnd));
+                                          Core19::side->Navigate(L"https://wwww.google.com/");
                                       }
 
                                       return S_OK;
@@ -64,23 +63,22 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
 
                     e->CreateCoreWebView2Controller(
                         hwnd, Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                                  [=](HRESULT hr, ICoreWebView2Controller* controller) -> HRESULT
+                                  [hwnd](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
                                   {
-                                      using namespace Browsers::Side;
-
-                                      if (controller)
+                                      if (c)
                                       {
-                                          side_controller = controller;
-                                          side_controller->get_CoreWebView2(&side_core);
+                                          Controller::settings = c;
+                                          Controller::settings->get_CoreWebView2(&Core::settings);
                                       }
 
-                                      if (side_core)
-                                          side_browser = side_core.try_query<ICoreWebView2_19>();
+                                      if (Core::settings)
+                                          Core19::settings =
+                                              Core::settings.try_query<ICoreWebView2_19>();
 
-                                      if (side_browser)
+                                      if (Core19::settings)
                                       {
-                                          side_controller->put_Bounds(get_rect(hwnd));
-                                          side_browser->Navigate(L"https://wwww.google.com/");
+                                          //   Controller::settings->put_Bounds(get_rect(hwnd));
+                                          //   Core19::settings->Navigate(L"https://wwww.google.com/");
                                       }
 
                                       return S_OK;
@@ -95,4 +93,27 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
     };
 
     return browser;
+}
+
+void Browser::Bounds()
+{
+    using namespace Controller;
+    if (!settings || !main || !side)
+        return;
+
+    auto bounds{get_rect(hwnd)};
+
+    settings->put_Bounds(RECT{0, 0, 0, 0});
+    main->put_Bounds(RECT{
+        bounds.left,
+        bounds.top,
+        bounds.right / 2,
+        bounds.bottom,
+    });
+    side->put_Bounds(RECT{
+        bounds.right / 2,
+        bounds.top,
+        bounds.right,
+        bounds.bottom,
+    });
 }
