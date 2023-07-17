@@ -464,7 +464,6 @@ wstring js_inject()
         ifstream f(path_inject());
         if (!std::filesystem::is_empty(path_inject()))
         {
-            println("inject works!");
             buffer << f.rdbuf();
             script = to_wide(buffer.str());
         }

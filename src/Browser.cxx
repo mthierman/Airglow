@@ -48,6 +48,11 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
                                           Settings::main->put_IsZoomControlEnabled(false);
                                       }
 
+                                      Core19::main->AddScriptToExecuteOnDocumentCreated(
+                                          js_inject_embed().c_str(), nullptr);
+
+                                      Core19::main->Navigate(L"https://www.juce.com/");
+
                                       auto bounds{window_bounds(hwnd)};
                                       Controller::main->put_Bounds(RECT{
                                           bounds.left,
@@ -62,14 +67,12 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
                                       //   else
                                       //       Core19::main->Navigate(L"https://www.bing.com/");
 
-                                      Core19::main->Navigate(L"https://www.juce.com/");
-
-                                      Core::main->AddScriptToExecuteOnDocumentCreated(
-                                          js_inject().c_str(), nullptr);
+                                      //   Core::main->AddScriptToExecuteOnDocumentCreated(
+                                      //       js_inject().c_str(), nullptr);
 
                                       Core19::main->add_DocumentTitleChanged(
                                           Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
-                                              [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                              [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                               {
                                                   //   set_title();
 
@@ -80,7 +83,7 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
 
                                       Core19::main->add_FaviconChanged(
                                           Callback<ICoreWebView2FaviconChangedEventHandler>(
-                                              [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                              [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                               {
                                                   //   set_icon();
 
@@ -91,8 +94,8 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
 
                                       Core19::main->add_WebMessageReceived(
                                           Callback<ICoreWebView2WebMessageReceivedEventHandler>(
-                                              [&](ICoreWebView2* webview,
-                                                  ICoreWebView2WebMessageReceivedEventArgs* args)
+                                              [](ICoreWebView2* webview,
+                                                 ICoreWebView2WebMessageReceivedEventArgs* args)
                                                   -> HRESULT
                                               {
                                                   //   Messages();
@@ -155,12 +158,45 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
 
                                       Core19::side->Navigate(L"https://www.juce.com/");
 
-                                      Core19::side->AddScriptToExecuteOnDocumentCreated(
-                                          js_inject().c_str(), nullptr);
+                                      // Core19::side->AddScriptToExecuteOnDocumentCreated(
+                                      //     js_inject().c_str(),
+                                      //     Callback<
+                                      //         ICoreWebView2AddScriptToExecuteOnDocumentCreatedCompletedHandler>(
+                                      //         [](HRESULT hr, PCWSTR id) -> HRESULT
+                                      //         {
+                                      //             Core19::side->ExecuteScript(
+                                      //                 js_inject().c_str(),
+                                      //                 Callback<
+                                      //                     ICoreWebView2ExecuteScriptCompletedHandler>(
+                                      //                     [](HRESULT hr, PCWSTR id) -> HRESULT
+                                      //                     {
+                                      //                         println("SUCCESS SCRIPT INJECT");
+                                      //                         return S_OK;
+                                      //                     })
+                                      //                     .Get());
+
+                                      //             return S_OK;
+                                      //         })
+                                      //         .Get());
+
+                                      // Core19::side->ExecuteScript(js_inject().c_str(), nullptr);
+
+                                      // Core19::side->AddScriptToExecuteOnDocumentCreated(
+                                      //     js_inject().c_str(),
+                                      //     Callback<
+                                      //         ICoreWebView2AddScriptToExecuteOnDocumentCreatedCompletedHandler>(
+                                      //         [](HRESULT hr, PCWSTR id) -> HRESULT
+                                      //         {
+                                      //             Core19::side->ExecuteScript(js_inject().c_str(),
+                                      //                                         nullptr);
+
+                                      //             return S_OK;
+                                      //         })
+                                      //         .Get());
 
                                       Core19::side->add_DocumentTitleChanged(
                                           Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
-                                              [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                              [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                               {
                                                   //   set_title();
 
@@ -171,7 +207,7 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
 
                                       Core19::side->add_FaviconChanged(
                                           Callback<ICoreWebView2FaviconChangedEventHandler>(
-                                              [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                              [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                               {
                                                   //   set_icon();
 
@@ -182,8 +218,8 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
 
                                       Core19::side->add_WebMessageReceived(
                                           Callback<ICoreWebView2WebMessageReceivedEventHandler>(
-                                              [&](ICoreWebView2* webview,
-                                                  ICoreWebView2WebMessageReceivedEventArgs* args)
+                                              [](ICoreWebView2* webview,
+                                                 ICoreWebView2WebMessageReceivedEventArgs* args)
                                                   -> HRESULT
                                               {
                                                   //   Messages();
@@ -242,7 +278,7 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
 
                                 Core19::settings->add_DocumentTitleChanged(
                                     Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
-                                        [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                        [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                         {
                                             //   set_title();
 
@@ -253,7 +289,7 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
 
                                 Core19::settings->add_FaviconChanged(
                                     Callback<ICoreWebView2FaviconChangedEventHandler>(
-                                        [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                        [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                         {
                                             //   set_icon();
 
@@ -264,8 +300,8 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
 
                                 Core19::settings->add_WebMessageReceived(
                                     Callback<ICoreWebView2WebMessageReceivedEventHandler>(
-                                        [&](ICoreWebView2* webview,
-                                            ICoreWebView2WebMessageReceivedEventArgs* args)
+                                        [](ICoreWebView2* webview,
+                                           ICoreWebView2WebMessageReceivedEventArgs* args)
                                             -> HRESULT
                                         {
                                             //   Messages();
