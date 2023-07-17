@@ -14,48 +14,38 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
         Gdiplus::Status::Ok)
         return nullptr;
 
-    app->name = to_wide(APP_NAME);
-    app->version = to_wide(APP_VERSION);
-
-    app->paths.data = path_portable();
-    app->paths.settings = path_settings();
-    app->paths.config = path_json();
-    app->paths.db = path_db();
-    app->paths.js = path_js();
-
-    app->cursor = (HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED);
-    app->darkBrush = (HBRUSH)GetStockObject(BLACK_BRUSH);
-    app->lightBrush = (HBRUSH)GetStockObject(WHITE_BRUSH);
-    app->icon = (HICON)LoadImageW(hinstance, to_wide("PROGRAM_ICON").c_str(), IMAGE_ICON, 0, 0,
-                                  LR_DEFAULTCOLOR | LR_DEFAULTSIZE);
+    app->window.icon = (HICON)LoadImageW(hinstance, to_wide("PROGRAM_ICON").c_str(), IMAGE_ICON, 0,
+                                         0, LR_DEFAULTCOLOR | LR_DEFAULTSIZE);
+    app->window.cursor =
+        (HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED);
 
     WNDCLASSEXW wcex{};
     wcex.cbSize = sizeof(WNDCLASSEX);
-    wcex.lpszClassName = app->name.c_str();
-    wcex.lpszMenuName = app->name.c_str();
+    wcex.lpszClassName = app->window.name.c_str();
+    wcex.lpszMenuName = app->window.name.c_str();
     wcex.lpfnWndProc = App::_WndProc;
     wcex.style = CS_HREDRAW | CS_VREDRAW;
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
     wcex.hInstance = hinstance;
     wcex.hbrBackground = 0;
-    wcex.hCursor = app->cursor;
-    wcex.hIcon = app->icon;
-    wcex.hIconSm = app->icon;
+    wcex.hCursor = app->window.cursor;
+    wcex.hIcon = app->window.icon;
+    wcex.hIconSm = app->window.icon;
 
     if (!RegisterClassExW(&wcex))
         return nullptr;
 
-    app->hwnd = CreateWindowExW(0, app->name.c_str(), app->name.c_str(), WS_OVERLAPPEDWINDOW,
-                                CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
-                                nullptr, hinstance, app.get());
+    app->window.hwnd = CreateWindowExW(
+        0, app->window.name.c_str(), app->window.name.c_str(), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT,
+        CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, hinstance, app.get());
 
-    if (!app->hwnd)
+    if (!app->window.hwnd)
         return nullptr;
 
-    app->Show();
+    app->Show(app->window.hwnd);
 
-    app->browser = Browser::Create(app->hwnd);
+    app->browser = Browser::Create(app->window.hwnd);
 
     if (!app->browser)
         return nullptr;
@@ -63,11 +53,11 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
     return app;
 }
 
-void App::Show()
+void App::Show(HWND hwnd)
 {
     window_cloak(hwnd);
     window_darktitle();
-    theme = window_theme(hwnd);
+    window.theme = window_theme(hwnd);
     window_mica(hwnd);
     ShowWindow(hwnd, SW_SHOWDEFAULT);
     window_uncloak(hwnd);
@@ -128,8 +118,8 @@ __int64 __stdcall App::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
 
 int App::_OnActivate(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-    if (!maximized && !fullscreen)
-        position = window_position(hwnd);
+    if (!window.maximized && !window.fullscreen)
+        window.position = window_position(hwnd);
 
     return 0;
 }
@@ -154,11 +144,11 @@ int App::_OnEraseBackground(HWND hwnd, WPARAM wparam, LPARAM lparam)
     PAINTSTRUCT ps{};
     HDC hdc = BeginPaint(hwnd, &ps);
 
-    if (theme == "dark")
-        FillRect(hdc, &ps.rcPaint, darkBrush);
+    if (window.theme == "dark")
+        FillRect(hdc, &ps.rcPaint, window.darkBrush);
 
     else
-        FillRect(hdc, &ps.rcPaint, lightBrush);
+        FillRect(hdc, &ps.rcPaint, window.lightBrush);
 
     EndPaint(hwnd, &ps);
 
@@ -167,8 +157,8 @@ int App::_OnEraseBackground(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int App::_OnExitSizeMove(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-    if (!maximized && !fullscreen)
-        position = window_position(hwnd);
+    if (!window.maximized && !window.fullscreen)
+        window.position = window_position(hwnd);
 
     return 0;
 }
@@ -196,13 +186,13 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
         // pConfig->settings.menu = bool_toggle(pConfig->settings.menu);
         return 0;
     case VK_F6:
-        maximized = window_maximize(hwnd);
+        window.maximized = window_maximize(hwnd);
         return 0;
     case VK_F9:
-        topmost = window_topmost(hwnd);
+        window.topmost = window_topmost(hwnd);
         return 0;
     case VK_F11:
-        fullscreen = window_fullscreen(hwnd);
+        window.fullscreen = window_fullscreen(hwnd);
         return 0;
     case 0x57:
         auto state = GetKeyState(VK_CONTROL);
@@ -220,7 +210,7 @@ int App::_OnSetFocus(HWND hwnd, WPARAM wparam, LPARAM lparam) { return 0; }
 
 int App::_OnSettingChange(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-    theme = window_theme(hwnd);
+    window.theme = window_theme(hwnd);
 
     return 0;
 }
@@ -228,11 +218,11 @@ int App::_OnSettingChange(HWND hwnd, WPARAM wparam, LPARAM lparam)
 int App::_OnSize(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
     if (wparam != 2)
-        maximized = false;
+        window.maximized = false;
 
     if (wparam == 2)
     {
-        maximized = true;
+        window.maximized = true;
     }
 
     browser->Bounds();

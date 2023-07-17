@@ -178,23 +178,23 @@ string system_color(winrt::Windows::UI::ViewManagement::UIColorType colorType)
     return formatted;
 }
 
-Colors system_colors()
+State::Color system_colors()
 {
-    Colors system;
-    system.accent = system_color(winrt::Windows::UI::ViewManagement::UIColorType::Accent);
-    system.accentDark1 = system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark1);
-    system.accentDark2 = system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark2);
-    system.accentDark3 = system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark3);
-    system.accentLight1 =
+    State::Color color;
+    color.accent = system_color(winrt::Windows::UI::ViewManagement::UIColorType::Accent);
+    color.accentDark1 = system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark1);
+    color.accentDark2 = system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark2);
+    color.accentDark3 = system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark3);
+    color.accentLight1 =
         system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight1);
-    system.accentLight2 =
+    color.accentLight2 =
         system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight2);
-    system.accentLight3 =
+    color.accentLight3 =
         system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight3);
-    system.Background = system_color(winrt::Windows::UI::ViewManagement::UIColorType::Background);
-    system.Foreground = system_color(winrt::Windows::UI::ViewManagement::UIColorType::Foreground);
+    color.Background = system_color(winrt::Windows::UI::ViewManagement::UIColorType::Background);
+    color.Foreground = system_color(winrt::Windows::UI::ViewManagement::UIColorType::Foreground);
 
-    return system;
+    return color;
 }
 
 string system_theme()

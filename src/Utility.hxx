@@ -56,7 +56,39 @@ std::vector<int> window_position(HWND);
 
 std::pair<wstring, wstring> command_line();
 
-struct Colors
+namespace State
+{
+struct Window
+{
+    std::wstring name{to_wide(APP_NAME)};
+    std::wstring version{to_wide(APP_NAME)};
+    HWND hwnd{};
+    HBRUSH darkBrush{(HBRUSH)GetStockObject(BLACK_BRUSH)};
+    HBRUSH lightBrush{(HBRUSH)GetStockObject(WHITE_BRUSH)};
+    HCURSOR cursor{};
+    HICON icon{};
+    string theme{};
+    std::vector<int> position{0, 0, 0, 0};
+    bool menu{false};
+    bool split{false};
+    bool swapped{false};
+    bool maximized{false};
+    bool topmost{false};
+    bool fullscreen{false};
+    string mainUrl{"google.com"};
+    string sideUrl{"google.com"};
+};
+
+struct Path
+{
+    path data{path_portable()};
+    path settings{path_settings()};
+    path json{path_json()};
+    path db{path_db()};
+    path js{path_js()};
+};
+
+struct Color
 {
     string accent{};
     string accentDark1{};
@@ -68,4 +100,5 @@ struct Colors
     string Background{};
     string Foreground{};
 };
+} // namespace State
 }; // namespace Utility

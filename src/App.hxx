@@ -7,26 +7,28 @@ using namespace Utility;
 using namespace Gdiplus;
 using namespace Microsoft::WRL;
 
-struct Paths
-{
-    path data{};
-    path settings{};
-    path config{};
-    path db{};
-    path js{};
-};
-
 class App
 {
   public:
     static std::unique_ptr<App> Create(HINSTANCE, int);
     ~App();
-    void Show();
+    void Show(HWND);
     void CreateDb();
 
   private:
-    App(HINSTANCE, int);
+    unsigned long long gdiplusToken{};
+    GdiplusStartupInput gdiplusStartupInput{};
 
+    // std::string name{APP_NAME};
+    // std::string version{APP_VERSION};
+
+
+    std::unique_ptr<Browser> browser{nullptr};
+    State::Window window{};
+    State::Path path{};
+    State::Color color{};
+
+    App(HINSTANCE, int);
     static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
     int _OnActivate(HWND, WPARAM, LPARAM);
     int _OnChar(HWND, WPARAM, LPARAM);
@@ -54,31 +56,4 @@ class App
     int _OnSizing(HWND, WPARAM, LPARAM);
     int _OnWindowPosChanged(HWND, WPARAM, LPARAM);
     int _OnWindowPosChanging(HWND, WPARAM, LPARAM);
-
-    std::unique_ptr<Browser> browser{nullptr};
-
-    unsigned long long gdiplusToken{};
-    GdiplusStartupInput gdiplusStartupInput{};
-
-    std::wstring name{};
-    std::wstring version{};
-    string theme{};
-
-    Paths paths{};
-
-    HWND hwnd{};
-    HBRUSH darkBrush{};
-    HBRUSH lightBrush{};
-    HCURSOR cursor{};
-    HICON icon{};
-
-    std::vector<int> position{0, 0, 0, 0};
-    bool menu{false};
-    bool split{false};
-    bool swapped{false};
-    bool maximized{false};
-    bool topmost{false};
-    bool fullscreen{false};
-    string mainUrl{"google.com"};
-    string sideUrl{"google.com"};
 };
