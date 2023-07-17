@@ -19,6 +19,11 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
                         hwnd, Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
                                   [hwnd](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
                                   {
+                                      EventRegistrationToken tokenTitle;
+                                      EventRegistrationToken tokenFavicon;
+                                      EventRegistrationToken tokenReceivedMsg;
+                                      EventRegistrationToken tokenNavigationCompleted;
+
                                       if (c)
                                       {
                                           Controller::main = c;
@@ -27,6 +32,21 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
 
                                       if (Core::main)
                                           Core19::main = Core::main.try_query<ICoreWebView2_19>();
+
+                                      if (Core19::main)
+                                      {
+                                          Core19::main->get_Settings(&Settings::main);
+
+                                          Settings::main->put_AreDefaultContextMenusEnabled(true);
+                                          Settings::main->put_AreDefaultScriptDialogsEnabled(true);
+                                          Settings::main->put_AreDevToolsEnabled(true);
+                                          Settings::main->put_AreHostObjectsAllowed(true);
+                                          Settings::main->put_IsBuiltInErrorPageEnabled(true);
+                                          Settings::main->put_IsScriptEnabled(true);
+                                          Settings::main->put_IsStatusBarEnabled(false);
+                                          Settings::main->put_IsWebMessageEnabled(true);
+                                          Settings::main->put_IsZoomControlEnabled(false);
+                                      }
 
                                       auto bounds{get_rect(hwnd)};
                                       Controller::main->put_Bounds(RECT{
@@ -46,6 +66,11 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
                         hwnd, Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
                                   [hwnd](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
                                   {
+                                      EventRegistrationToken tokenTitle;
+                                      EventRegistrationToken tokenFavicon;
+                                      EventRegistrationToken tokenReceivedMsg;
+                                      EventRegistrationToken tokenNavigationCompleted;
+
                                       if (c)
                                       {
                                           Controller::side = c;
@@ -54,6 +79,21 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
 
                                       if (Core::side)
                                           Core19::side = Core::side.try_query<ICoreWebView2_19>();
+
+                                      if (Core19::side)
+                                      {
+                                          Core19::side->get_Settings(&Settings::side);
+
+                                          Settings::side->put_AreDefaultContextMenusEnabled(true);
+                                          Settings::side->put_AreDefaultScriptDialogsEnabled(true);
+                                          Settings::side->put_AreDevToolsEnabled(true);
+                                          Settings::side->put_AreHostObjectsAllowed(true);
+                                          Settings::side->put_IsBuiltInErrorPageEnabled(true);
+                                          Settings::side->put_IsScriptEnabled(true);
+                                          Settings::side->put_IsStatusBarEnabled(false);
+                                          Settings::side->put_IsWebMessageEnabled(true);
+                                          Settings::side->put_IsZoomControlEnabled(false);
+                                      }
 
                                       auto bounds{get_rect(hwnd)};
                                       Controller::side->put_Bounds(RECT{
@@ -70,27 +110,51 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
                                   .Get());
 
                     e->CreateCoreWebView2Controller(
-                        hwnd, Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                                  [hwnd](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
-                                  {
-                                      if (c)
-                                      {
-                                          Controller::settings = c;
-                                          Controller::settings->get_CoreWebView2(&Core::settings);
-                                      }
+                        hwnd,
+                        Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+                            [hwnd](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
+                            {
+                                EventRegistrationToken tokenTitle;
+                                EventRegistrationToken tokenFavicon;
+                                EventRegistrationToken tokenReceivedMsg;
+                                EventRegistrationToken tokenNavigationCompleted;
 
-                                      if (Core::settings)
-                                          Core19::settings =
-                                              Core::settings.try_query<ICoreWebView2_19>();
+                                if (c)
+                                {
+                                    Controller::settings = c;
+                                    Controller::settings->get_CoreWebView2(&Core::settings);
+                                }
 
-                                      auto bounds{get_rect(hwnd)};
-                                      Controller::settings->put_Bounds(RECT{0, 0, 0, 0});
+                                if (Core::settings)
+                                    Core19::settings = Core::settings.try_query<ICoreWebView2_19>();
 
-                                      Core19::settings->Navigate(L"https://www.github.com/");
+                                if (Core19::settings)
+                                {
+                                    Core19::settings->get_Settings(&Settings::settings);
 
-                                      return S_OK;
-                                  })
-                                  .Get());
+                                    Settings::settings->put_AreDefaultContextMenusEnabled(true);
+                                    Settings::settings->put_AreDefaultScriptDialogsEnabled(true);
+                                    Settings::settings->put_AreDevToolsEnabled(true);
+                                    Settings::settings->put_AreHostObjectsAllowed(true);
+                                    Settings::settings->put_IsBuiltInErrorPageEnabled(true);
+                                    Settings::settings->put_IsScriptEnabled(true);
+                                    Settings::settings->put_IsStatusBarEnabled(false);
+                                    Settings::settings->put_IsWebMessageEnabled(true);
+                                    Settings::settings->put_IsZoomControlEnabled(false);
+                                }
+
+                                Core19::settings->SetVirtualHostNameToFolderMapping(
+                                    L"settings", path_settings().wstring().c_str(),
+                                    COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
+
+                                auto bounds{get_rect(hwnd)};
+                                Controller::settings->put_Bounds(RECT{0, 0, 0, 0});
+
+                                Core19::settings->Navigate(L"https://settings/index.html");
+
+                                return S_OK;
+                            })
+                            .Get());
 
                     return S_OK;
                 })

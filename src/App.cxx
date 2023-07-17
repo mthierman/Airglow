@@ -58,7 +58,30 @@ void App::Show(HWND hwnd)
     window_darktitle();
     window.theme = window_theme(hwnd);
     window_mica(hwnd);
-    ShowWindow(hwnd, SW_SHOWDEFAULT);
+
+    if (window.position[0] == 0 && window.position[1] == 0 && window.position[2] == 0 &&
+        window.position[3] == 0)
+        ShowWindow(hwnd, SW_SHOWDEFAULT);
+
+    else
+    {
+        if (window.maximized)
+            ShowWindow(hwnd, SW_MAXIMIZE);
+
+        else
+        {
+            SetWindowPos(hwnd, nullptr, window.position[0], window.position[1], window.position[2],
+                         window.position[3], 0);
+            ShowWindow(hwnd, SW_SHOWNORMAL);
+        }
+    }
+
+    if (window.topmost)
+        window_topmost(hwnd);
+
+    if (window.fullscreen)
+        window_fullscreen(hwnd);
+
     window_uncloak(hwnd);
 }
 
