@@ -130,7 +130,7 @@ path path_json()
     if (!std::filesystem::exists(data))
         return path{};
 
-    return (data.wstring() + path::preferred_separator + to_wide("State.json"));
+    return (data.wstring() + path::preferred_separator + to_wide("Airglow.json"));
 }
 
 path path_db()
@@ -477,23 +477,18 @@ Window window_deserialize(json j)
 
 json window_load_state(State::Path path)
 {
-    if (std::filesystem::exists(path.json) && !std::filesystem::is_empty(path.json))
+    try
     {
-        try
-        {
-            ifstream f(path.json);
-            json j{json::parse(f, nullptr, false, true)};
-            f.close();
+        ifstream f(path.json);
+        json j{json::parse(f, nullptr, false, true)};
+        f.close();
 
-            return j;
-        }
-        catch (const std::exception& e)
-        {
-            return json{};
-        }
+        return j;
     }
-
-    return json{};
+    catch (const std::exception& e)
+    {
+        return json{};
+    }
 }
 
 void window_save_state(Path path, json j)

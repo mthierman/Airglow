@@ -8,6 +8,8 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
 {
     auto app{std::unique_ptr<App>(new App(hinstance, ncs))};
 
+    app->Load();
+
     SetEnvironmentVariableW(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR", L"0");
 
     if (GdiplusStartup(&app->gdiplusToken, &app->gdiplusStartupInput, nullptr) !=
@@ -64,8 +66,15 @@ void App::Load()
 {
     using namespace State;
 
-    auto load = window_load_state(path);
-    window = window_deserialize(load);
+    if (std::filesystem::exists(path.json) && !std::filesystem::is_empty(path.json))
+    {
+        auto load = window_load_state(path);
+
+        if (load.empty())
+            return;
+
+        window = window_deserialize(load);
+    }
 }
 
 void App::Save()
@@ -125,20 +134,21 @@ __int64 __stdcall App::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
         }
     }
 
-    return DefWindowProc(hwnd, msg, wparam, lparam);
+    return DefWindowProcW(hwnd, msg, wparam, lparam);
 }
 
 int App::_OnActivate(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-    // if (!window.maximized && !window.fullscreen)
-    //     window.position = window_position(hwnd);
+    if (!window.maximized && !window.fullscreen)
+        window.position = window_position(hwnd);
+    Save();
 
     return 0;
 }
 
 int App::_OnClose(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-    // Save();
+    Save();
     DestroyWindow(hwnd);
 
     return 0;
@@ -201,12 +211,18 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
         return 0;
     case VK_F6:
         window.maximized = window_maximize(hwnd);
+        Save();
+
         return 0;
     case VK_F9:
         window.topmost = window_topmost(hwnd);
+        Save();
+
         return 0;
     case VK_F11:
         window.fullscreen = window_fullscreen(hwnd);
+        Save();
+
         return 0;
     case 0x57:
         auto state = GetKeyState(VK_CONTROL);
@@ -225,19 +241,21 @@ int App::_OnSetFocus(HWND hwnd, WPARAM wparam, LPARAM lparam) { return 0; }
 int App::_OnSettingChange(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
     window.theme = window_theme(hwnd);
+    Save();
 
     return 0;
 }
 
 int App::_OnSize(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-    // if (wparam != 2)
-    //     window.maximized = false;
+    if (wparam != 2)
+        window.maximized = false;
 
-    // if (wparam == 2)
-    // {
-    //     window.maximized = true;
-    // }
+    if (wparam == 2)
+    {
+        window.maximized = true;
+    }
+    Save();
 
     browser->Bounds();
 

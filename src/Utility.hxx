@@ -66,7 +66,7 @@ struct Window
     HICON icon{(HICON)LoadImageW(nullptr, (LPCWSTR)IDI_APPLICATION, IMAGE_ICON, 0, 0,
                                  LR_SHARED | LR_DEFAULTCOLOR | LR_DEFAULTSIZE)};
 
-    string theme{"dark"};
+    string theme{"light"};
     string mainUrl{"google.com"};
     string sideUrl{"google.com"};
     std::vector<int> position{0, 0, 0, 0};
