@@ -48,7 +48,7 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
                                           Settings::main->put_IsZoomControlEnabled(false);
                                       }
 
-                                      auto bounds{get_rect(hwnd)};
+                                      auto bounds{window_bounds(hwnd)};
                                       Controller::main->put_Bounds(RECT{
                                           bounds.left,
                                           bounds.top,
@@ -56,7 +56,51 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
                                           bounds.bottom,
                                       });
 
+                                      //   auto url{L"https://" + command_line().first};
+                                      //   if (!url.empty())
+                                      //       Core19::main->Navigate(url.c_str());
+                                      //   else
+                                      //       Core19::main->Navigate(L"https://www.bing.com/");
+
                                       Core19::main->Navigate(L"https://www.juce.com/");
+
+                                      Core::main->AddScriptToExecuteOnDocumentCreated(
+                                          js_inject().c_str(), nullptr);
+
+                                      Core19::main->add_DocumentTitleChanged(
+                                          Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
+                                              [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                              {
+                                                  //   set_title();
+
+                                                  return S_OK;
+                                              })
+                                              .Get(),
+                                          &tokenTitle);
+
+                                      Core19::main->add_FaviconChanged(
+                                          Callback<ICoreWebView2FaviconChangedEventHandler>(
+                                              [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                              {
+                                                  //   set_icon();
+
+                                                  return S_OK;
+                                              })
+                                              .Get(),
+                                          &tokenFavicon);
+
+                                      Core19::main->add_WebMessageReceived(
+                                          Callback<ICoreWebView2WebMessageReceivedEventHandler>(
+                                              [&](ICoreWebView2* webview,
+                                                  ICoreWebView2WebMessageReceivedEventArgs* args)
+                                                  -> HRESULT
+                                              {
+                                                  //   Messages();
+
+                                                  return S_OK;
+                                              })
+                                              .Get(),
+                                          &tokenReceivedMsg);
 
                                       return S_OK;
                                   })
@@ -95,7 +139,7 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
                                           Settings::side->put_IsZoomControlEnabled(false);
                                       }
 
-                                      auto bounds{get_rect(hwnd)};
+                                      auto bounds{window_bounds(hwnd)};
                                       Controller::side->put_Bounds(RECT{
                                           bounds.right / 2,
                                           bounds.top,
@@ -103,7 +147,51 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
                                           bounds.bottom,
                                       });
 
-                                      Core19::side->Navigate(L"https://www.google.com/");
+                                      //   auto url{L"https://" + command_line().second};
+                                      //   if (!url.empty())
+                                      //       Core19::side->Navigate(url.c_str());
+                                      //   else
+                                      //       Core19::side->Navigate(L"https://www.google.com/");
+
+                                      Core19::side->Navigate(L"https://www.juce.com/");
+
+                                      Core19::side->AddScriptToExecuteOnDocumentCreated(
+                                          js_inject().c_str(), nullptr);
+
+                                      Core19::side->add_DocumentTitleChanged(
+                                          Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
+                                              [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                              {
+                                                  //   set_title();
+
+                                                  return S_OK;
+                                              })
+                                              .Get(),
+                                          &tokenTitle);
+
+                                      Core19::side->add_FaviconChanged(
+                                          Callback<ICoreWebView2FaviconChangedEventHandler>(
+                                              [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                              {
+                                                  //   set_icon();
+
+                                                  return S_OK;
+                                              })
+                                              .Get(),
+                                          &tokenFavicon);
+
+                                      Core19::side->add_WebMessageReceived(
+                                          Callback<ICoreWebView2WebMessageReceivedEventHandler>(
+                                              [&](ICoreWebView2* webview,
+                                                  ICoreWebView2WebMessageReceivedEventArgs* args)
+                                                  -> HRESULT
+                                              {
+                                                  //   Messages();
+
+                                                  return S_OK;
+                                              })
+                                              .Get(),
+                                          &tokenReceivedMsg);
 
                                       return S_OK;
                                   })
@@ -147,10 +235,45 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
                                     L"settings", path_settings().wstring().c_str(),
                                     COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
 
-                                auto bounds{get_rect(hwnd)};
+                                auto bounds{window_bounds(hwnd)};
                                 Controller::settings->put_Bounds(RECT{0, 0, 0, 0});
 
                                 Core19::settings->Navigate(L"https://settings/index.html");
+
+                                Core19::settings->add_DocumentTitleChanged(
+                                    Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
+                                        [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                        {
+                                            //   set_title();
+
+                                            return S_OK;
+                                        })
+                                        .Get(),
+                                    &tokenTitle);
+
+                                Core19::settings->add_FaviconChanged(
+                                    Callback<ICoreWebView2FaviconChangedEventHandler>(
+                                        [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                        {
+                                            //   set_icon();
+
+                                            return S_OK;
+                                        })
+                                        .Get(),
+                                    &tokenFavicon);
+
+                                Core19::settings->add_WebMessageReceived(
+                                    Callback<ICoreWebView2WebMessageReceivedEventHandler>(
+                                        [&](ICoreWebView2* webview,
+                                            ICoreWebView2WebMessageReceivedEventArgs* args)
+                                            -> HRESULT
+                                        {
+                                            //   Messages();
+
+                                            return S_OK;
+                                        })
+                                        .Get(),
+                                    &tokenReceivedMsg);
 
                                 return S_OK;
                             })
@@ -166,29 +289,49 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
     return browser;
 }
 
-void Browser::Bounds()
+void Browser::Bounds(State::Window window)
 {
     using namespace Controller;
     if (!settings || !main || !side)
         return;
 
-    auto bounds{get_rect(hwnd)};
+    auto bounds{window_bounds(hwnd)};
 
-    main->put_Bounds(RECT{
-        bounds.left,
-        bounds.top,
-        bounds.right / 2,
-        bounds.bottom,
-    });
+    if (window.menu)
+    {
+        main->put_Bounds(RECT{0, 0, 0, 0});
+        side->put_Bounds(RECT{0, 0, 0, 0});
+        settings->put_Bounds(bounds);
+    }
 
-    side->put_Bounds(RECT{
-        bounds.right / 2,
-        bounds.top,
-        bounds.right,
-        bounds.bottom,
-    });
+    else
+    {
+        settings->put_Bounds(RECT{0, 0, 0, 0});
 
-    settings->put_Bounds(RECT{0, 0, 0, 0});
+        if (!window.split && !window.swapped)
+        {
+            main->put_Bounds(bounds);
+            side->put_Bounds(RECT{0, 0, 0, 0});
+        }
+
+        if (!window.split && window.swapped)
+        {
+            main->put_Bounds(RECT{0, 0, 0, 0});
+            side->put_Bounds(bounds);
+        }
+
+        if (window.split && !window.swapped)
+        {
+            main->put_Bounds(left_panel(bounds));
+            side->put_Bounds(right_panel(bounds));
+        }
+
+        if (window.split && window.swapped)
+        {
+            main->put_Bounds(right_panel(bounds));
+            side->put_Bounds(left_panel(bounds));
+        }
+    }
 }
 
 void Browser::Focus()
@@ -199,19 +342,4 @@ void Browser::Focus()
     // main->MoveFocus(COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 
     // side->MoveFocus(COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-}
-
-void Browser::Navigate()
-{
-    using namespace Core19;
-    if (!settings || !main || !side)
-        return;
-
-    auto args = command_line();
-
-    main->Navigate(L"https://www.bing.com/");
-
-    side->Navigate(L"https://www.bing.com/");
-
-    settings->Navigate(L"https://www.bing.com/");
 }

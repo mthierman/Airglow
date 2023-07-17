@@ -27,31 +27,16 @@ void error(string);
 void errorw(wstring);
 void dberror(string);
 
-RECT get_rect(HWND);
-std::vector<int> rect_to_bounds(RECT);
-RECT bounds_to_rect(std::vector<int>);
-
 path path_appdata();
 path path_portable();
 path path_settings();
 path path_json();
 path path_db();
 path path_js();
+path path_inject();
 
-string system_color(winrt::Windows::UI::ViewManagement::UIColorType);
-string system_theme();
-
-string window_theme(HWND);
-bool window_darktitle();
-bool window_cloak(HWND);
-bool window_uncloak(HWND);
-bool window_mica(HWND);
-bool window_maximize(HWND);
-bool window_fullscreen(HWND);
-bool window_topmost(HWND);
-std::vector<int> window_position(HWND);
-
-std::pair<wstring, wstring> command_line();
+std::vector<int> rect_to_bounds(RECT);
+RECT bounds_to_rect(std::vector<int>);
 
 namespace State
 {
@@ -77,7 +62,6 @@ struct Window
     bool fullscreen{false};
     bool topmost{false};
 };
-
 struct Path
 {
     path data{path_portable()};
@@ -85,8 +69,8 @@ struct Path
     path json{path_json()};
     path db{path_db()};
     path js{path_js()};
+    path inject{path_inject()};
 };
-
 struct Color
 {
     string accent{};
@@ -99,7 +83,36 @@ struct Color
     string Background{};
     string Foreground{};
 };
+} // namespace State
+} // namespace Utility
 
+namespace Utility
+{
+
+string system_color(winrt::Windows::UI::ViewManagement::UIColorType);
+string system_theme();
+string window_theme(HWND);
+
+bool window_darktitle();
+bool window_cloak(HWND);
+bool window_uncloak(HWND);
+bool window_mica(HWND);
+bool window_maximize(HWND);
+bool window_fullscreen(HWND);
+bool window_topmost(HWND);
+
+std::vector<int> window_position(HWND);
+
+RECT window_bounds(HWND);
+RECT left_panel(RECT);
+RECT right_panel(RECT);
+
+std::pair<wstring, wstring> command_line();
+wstring js_inject();
+wstring js_inject_embed();
+
+namespace State
+{
 json window_serialize(Window);
 Window window_deserialize(json);
 json window_load_state(Path);

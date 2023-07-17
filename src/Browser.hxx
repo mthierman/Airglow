@@ -10,7 +10,7 @@ class Browser
 {
   public:
     static std::unique_ptr<Browser> Create(HWND);
-    void Bounds();
+    void Bounds(State::Window);
     void Focus();
     void Navigate();
 

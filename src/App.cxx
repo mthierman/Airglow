@@ -280,7 +280,7 @@ int App::_OnSize(HWND hwnd, WPARAM wparam, LPARAM lparam)
     }
     Save();
 
-    browser->Bounds();
+    browser->Bounds(window);
 
     return 0;
 }

@@ -68,12 +68,32 @@ void dberror(string in)
     MessageBoxW(nullptr, to_wide(in).c_str(), wstring(L"Airglow").c_str(), 0);
 };
 
-RECT get_rect(HWND hwnd)
+RECT window_bounds(HWND hwnd)
 {
     RECT bounds{0, 0, 0, 0};
     GetClientRect(hwnd, &bounds);
 
     return bounds;
+}
+
+RECT left_panel(RECT bounds)
+{
+    return RECT{
+        bounds.left,
+        bounds.top,
+        bounds.right / 2,
+        bounds.bottom,
+    };
+}
+
+RECT right_panel(RECT bounds)
+{
+    return RECT{
+        bounds.right / 2,
+        bounds.top,
+        bounds.right,
+        bounds.bottom,
+    };
 }
 
 std::vector<int> rect_to_bounds(RECT rect)
@@ -149,6 +169,15 @@ path path_js()
         return path{};
 
     return (data.wstring() + path::preferred_separator + to_wide("js"));
+}
+
+path path_inject()
+{
+    auto data = path_js();
+    if (!std::filesystem::exists(data))
+        return path{};
+
+    return (data.wstring() + path::preferred_separator + to_wide("inject.js"));
 }
 
 string system_color(winrt::Windows::UI::ViewManagement::UIColorType colorType)
@@ -424,6 +453,54 @@ std::pair<wstring, wstring> command_line()
 
     return commands;
 }
+
+wstring js_inject()
+{
+    stringstream buffer{};
+    wstring script{};
+
+    if (std::filesystem::exists(path_inject()))
+    {
+        ifstream f(path_inject());
+        if (!std::filesystem::is_empty(path_inject()))
+        {
+            println("inject works!");
+            buffer << f.rdbuf();
+            script = to_wide(buffer.str());
+        }
+        f.close();
+    }
+
+    return script;
+}
+
+wstring js_inject_embed()
+{
+    return wstring{LR"(
+        document.onreadystatechange = () => {
+            if (document.readyState === "interactive") {
+                let scheme = document.createElement("meta");
+                scheme.setAttribute("name", "color-scheme");
+                scheme.setAttribute("content", "light dark");
+                document.getElementsByTagName("head")[0].appendChild(scheme);
+                document.documentElement.style.setProperty(
+                    "color-scheme",
+                    "light dark"
+                );
+            }
+            if (document.readyState === "complete") {
+                onkeydown = (e) => {
+                    if (e.ctrlKey && e.key === "w") {
+                        window.chrome.webview.postMessage("close");
+                    } else {
+                        window.chrome.webview.postMessage(e.key);
+                    }
+                };
+            }
+        };
+    )"};
+}
+
 namespace State
 {
 json window_serialize(Window w)
