@@ -1,6 +1,7 @@
 #include "App.hxx"
 
 App::App(HINSTANCE hinstance, int ncs) {}
+
 App::~App() { GdiplusShutdown(gdiplusToken); }
 
 std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
@@ -15,11 +16,8 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
 
     app->window.icon = (HICON)LoadImageW(hinstance, to_wide("PROGRAM_ICON").c_str(), IMAGE_ICON, 0,
                                          0, LR_DEFAULTCOLOR | LR_DEFAULTSIZE);
-    app->window.cursor =
-        (HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED);
 
-    WNDCLASSEXW wcex{};
-    wcex.cbSize = sizeof(WNDCLASSEX);
+    WNDCLASSEXW wcex{sizeof(WNDCLASSEX)};
     wcex.lpszClassName = app->window.name.c_str();
     wcex.lpszMenuName = app->window.name.c_str();
     wcex.lpfnWndProc = App::_WndProc;
@@ -60,6 +58,21 @@ void App::Show(HWND hwnd)
     window_mica(hwnd);
     ShowWindow(hwnd, SW_SHOWDEFAULT);
     window_uncloak(hwnd);
+}
+
+void App::Load()
+{
+    using namespace State;
+
+    auto load = window_load_state(path);
+    window = window_deserialize(load);
+}
+
+void App::Save()
+{
+    using namespace State;
+
+    window_save_state(path, json{window_serialize(window)});
 }
 
 template <class T> T* InstanceFromWndProc(HWND hwnd, UINT msg, LPARAM lparam)
@@ -117,14 +130,15 @@ __int64 __stdcall App::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
 
 int App::_OnActivate(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-    if (!window.maximized && !window.fullscreen)
-        window.position = window_position(hwnd);
+    // if (!window.maximized && !window.fullscreen)
+    //     window.position = window_position(hwnd);
 
     return 0;
 }
 
 int App::_OnClose(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
+    // Save();
     DestroyWindow(hwnd);
 
     return 0;
@@ -158,6 +172,7 @@ int App::_OnExitSizeMove(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
     if (!window.maximized && !window.fullscreen)
         window.position = window_position(hwnd);
+    Save();
 
     return 0;
 }
@@ -216,13 +231,13 @@ int App::_OnSettingChange(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int App::_OnSize(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-    if (wparam != 2)
-        window.maximized = false;
+    // if (wparam != 2)
+    //     window.maximized = false;
 
-    if (wparam == 2)
-    {
-        window.maximized = true;
-    }
+    // if (wparam == 2)
+    // {
+    //     window.maximized = true;
+    // }
 
     browser->Bounds();
 

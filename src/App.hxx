@@ -12,20 +12,21 @@ class App
   public:
     static std::unique_ptr<App> Create(HINSTANCE, int);
     ~App();
-    void Show(HWND);
-    void CreateDb();
 
   private:
-    std::unique_ptr<Browser> browser{nullptr};
+    App(HINSTANCE, int);
 
+    std::unique_ptr<Browser> browser{nullptr};
     unsigned long long gdiplusToken{};
     GdiplusStartupInput gdiplusStartupInput{};
-
     State::Window window{};
     State::Path path{};
     State::Color color{};
 
-    App(HINSTANCE, int);
+    void Show(HWND);
+    void Load();
+    void Save();
+
     static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
     int _OnActivate(HWND, WPARAM, LPARAM);
     int _OnChar(HWND, WPARAM, LPARAM);

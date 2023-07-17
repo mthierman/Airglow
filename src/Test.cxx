@@ -24,8 +24,7 @@ void Test(HWND hwnd)
                            L" x " + std::to_wstring(windowRect.bottom - windowRect.top);
     wprintln(windowBounds.c_str());
 
-    WINDOWPLACEMENT wp;
-    wp.length = sizeof(WINDOWPLACEMENT);
+    WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
     GetWindowPlacement(hwnd, &wp);
     if (wp.showCmd == 3)
         println("Window is maximized");

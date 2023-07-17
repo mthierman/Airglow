@@ -10,11 +10,20 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
         return 0;
     }
 
-    MSG msg{};
-    while (GetMessageW(&msg, nullptr, 0, 0))
+    MSG msg{nullptr};
+    int r;
+    while ((r = GetMessageW(&msg, nullptr, 0, 0)) != 0)
     {
-        TranslateMessage(&msg);
-        DispatchMessageW(&msg);
+        if (r == -1)
+        {
+            error("Message loop crashed");
+            return 0;
+        }
+        else
+        {
+            TranslateMessage(&msg);
+            DispatchMessageW(&msg);
+        }
     }
 
     return 0;

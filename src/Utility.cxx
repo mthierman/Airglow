@@ -130,7 +130,7 @@ path path_json()
     if (!std::filesystem::exists(data))
         return path{};
 
-    return (data.wstring() + path::preferred_separator + to_wide("airglow.json"));
+    return (data.wstring() + path::preferred_separator + to_wide("State.json"));
 }
 
 path path_db()
@@ -139,7 +139,7 @@ path path_db()
     if (!std::filesystem::exists(data))
         return path{};
 
-    return (data.wstring() + path::preferred_separator + to_wide("airglow.sqlite"));
+    return (data.wstring() + path::preferred_separator + to_wide("Database.sqlite"));
 }
 
 path path_js()
@@ -353,8 +353,7 @@ bool window_fullscreen(HWND hwnd)
 
 bool window_topmost(HWND hwnd)
 {
-    FLASHWINFO fwi{};
-    fwi.cbSize = sizeof(FLASHWINFO);
+    FLASHWINFO fwi{sizeof(FLASHWINFO)};
     fwi.hwnd = hwnd;
     fwi.dwFlags = FLASHW_CAPTION;
     fwi.uCount = 1;
@@ -425,4 +424,90 @@ std::pair<wstring, wstring> command_line()
 
     return commands;
 }
+namespace State
+{
+json window_serialize(Window w)
+{
+    try
+    {
+        return json{{"settings",
+                     {
+                         {"theme", w.theme},
+                         {"mainUrl", w.mainUrl},
+                         {"sideUrl", w.sideUrl},
+                         {"position", w.position},
+                         {"menu", w.menu},
+                         {"split", w.split},
+                         {"swapped", w.swapped},
+                         {"maximized", w.maximized},
+                         {"fullscreen", w.fullscreen},
+                         {"topmost", w.topmost},
+                     }}};
+    }
+    catch (const std::exception& e)
+    {
+        return json{};
+    }
+}
+
+Window window_deserialize(json j)
+{
+    Window w{};
+
+    try
+    {
+        w.theme = j["theme"].get<string>();
+        w.mainUrl = j["mainUrl"].get<string>();
+        w.sideUrl = j["sideUrl"].get<string>();
+        w.position = j["position"].get<std::vector<int>>();
+        w.menu = j["menu"].get<bool>();
+        w.split = j["split"].get<bool>();
+        w.swapped = j["swapped"].get<bool>();
+        w.maximized = j["maximized"].get<bool>();
+        w.fullscreen = j["fullscreen"].get<bool>();
+        w.topmost = j["topmost"].get<bool>();
+
+        return w;
+    }
+    catch (const std::exception& e)
+    {
+        return w;
+    }
+}
+
+json window_load_state(State::Path path)
+{
+    if (std::filesystem::exists(path.json) && !std::filesystem::is_empty(path.json))
+    {
+        try
+        {
+            ifstream f(path.json);
+            json j{json::parse(f, nullptr, false, true)};
+            f.close();
+
+            return j;
+        }
+        catch (const std::exception& e)
+        {
+            return json{};
+        }
+    }
+
+    return json{};
+}
+
+void window_save_state(Path path, json j)
+{
+    try
+    {
+        ofstream f(path.json);
+        f << std::setw(4) << j << "\n";
+        f.close();
+    }
+    catch (const std::exception& e)
+    {
+        return;
+    }
+}
+} // namespace State
 } // namespace Utility
