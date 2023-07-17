@@ -1,7 +1,6 @@
 #include "App.hxx"
 
 App::App(HINSTANCE hinstance, int ncs) {}
-
 App::~App() { GdiplusShutdown(gdiplusToken); }
 
 std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
@@ -71,17 +70,6 @@ void App::Show()
     theme = window_theme(hwnd);
     window_mica(hwnd);
     ShowWindow(hwnd, SW_SHOWDEFAULT);
-    window_uncloak(hwnd);
-}
-
-void App::Maximize() { window_maximize(hwnd); }
-
-void App::Topmost() { window_topmost(hwnd); }
-
-void App::Fullscreen()
-{
-    window_cloak(hwnd);
-    window_fullscreen(hwnd);
     window_uncloak(hwnd);
 }
 
@@ -208,13 +196,13 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
         // pConfig->settings.menu = bool_toggle(pConfig->settings.menu);
         return 0;
     case VK_F6:
-        Maximize();
+        maximized = window_maximize(hwnd);
         return 0;
     case VK_F9:
-        Topmost();
+        topmost = window_topmost(hwnd);
         return 0;
     case VK_F11:
-        Fullscreen();
+        fullscreen = window_fullscreen(hwnd);
         return 0;
     case 0x57:
         auto state = GetKeyState(VK_CONTROL);

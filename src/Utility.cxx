@@ -293,31 +293,36 @@ bool window_mica(HWND hwnd)
     return true;
 }
 
-void window_maximize(HWND hwnd)
+bool window_maximize(HWND hwnd)
 {
     auto style = GetWindowLongPtrW(hwnd, GWL_STYLE);
-    if (style & WS_OVERLAPPEDWINDOW)
+
+    WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
+    GetWindowPlacement(hwnd, &wp);
+
+    if ((style & WS_OVERLAPPEDWINDOW) && wp.showCmd == 3)
     {
-        WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
-        GetWindowPlacement(hwnd, &wp);
+        ShowWindow(hwnd, SW_SHOWNORMAL);
 
-        if (wp.showCmd == 3)
-        {
-            ShowWindow(hwnd, SW_SHOWNORMAL);
-        }
+        return false;
+    }
 
-        else
-        {
-            ShowWindow(hwnd, SW_MAXIMIZE);
-        }
-    };
+    else
+    {
+        ShowWindow(hwnd, SW_MAXIMIZE);
+
+        return true;
+    }
 }
 
-void window_fullscreen(HWND hwnd)
+bool window_fullscreen(HWND hwnd)
 {
+    window_cloak(hwnd);
+
     static RECT position;
 
     auto style = GetWindowLongPtrW(hwnd, GWL_STYLE);
+
     if (style & WS_OVERLAPPEDWINDOW)
     {
         MONITORINFO mi = {sizeof(mi)};
@@ -329,6 +334,9 @@ void window_fullscreen(HWND hwnd)
                          mi.rcMonitor.right - mi.rcMonitor.left,
                          mi.rcMonitor.bottom - mi.rcMonitor.top, SWP_FRAMECHANGED);
         }
+        window_uncloak(hwnd);
+
+        return true;
     }
 
     else
@@ -337,10 +345,13 @@ void window_fullscreen(HWND hwnd)
         SetWindowPos(hwnd, nullptr, position.left, position.top, (position.right - position.left),
                      (position.bottom - position.top), SWP_FRAMECHANGED);
         SendMessage(hwnd, WM_SETICON, 0, 0);
+        window_uncloak(hwnd);
+
+        return false;
     }
 }
 
-void window_topmost(HWND hwnd)
+bool window_topmost(HWND hwnd)
 {
     FLASHWINFO fwi{};
     fwi.cbSize = sizeof(FLASHWINFO);
@@ -350,16 +361,21 @@ void window_topmost(HWND hwnd)
     fwi.dwTimeout = 100;
 
     auto style = GetWindowLongPtrW(hwnd, GWL_EXSTYLE);
+
     if (style & WS_EX_TOPMOST)
     {
         SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         FlashWindowEx(&fwi);
+
+        return false;
     }
 
     else
     {
         SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         FlashWindowEx(&fwi);
+
+        return true;
     }
 }
 

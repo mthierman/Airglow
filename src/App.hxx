@@ -7,55 +7,25 @@ using namespace Utility;
 using namespace Gdiplus;
 using namespace Microsoft::WRL;
 
+struct Paths
+{
+    path data{};
+    path settings{};
+    path config{};
+    path db{};
+    path js{};
+};
+
 class App
 {
   public:
-    ~App();
     static std::unique_ptr<App> Create(HINSTANCE, int);
+    ~App();
     void Show();
-    void Theme();
-    void Maximize();
-    void Topmost();
-    void Fullscreen();
+    void CreateDb();
 
   private:
-    std::unique_ptr<Browser> browser{nullptr};
-
-    unsigned long long gdiplusToken{};
-    GdiplusStartupInput gdiplusStartupInput{};
-
-    std::wstring name{};
-    std::wstring version{};
-    string theme{};
-
-    HWND hwnd;
-    HBRUSH darkBrush{};
-    HBRUSH lightBrush{};
-    HCURSOR cursor{};
-    HICON icon{};
-
-    std::vector<int> position{0, 0, 0, 0};
-    bool menu{false};
-    bool split{false};
-    bool swapped{false};
-    bool maximized{false};
-    bool topmost{false};
-    bool fullscreen{false};
-    string mainUrl{"google.com"};
-    string sideUrl{"google.com"};
-
-    struct Paths
-    {
-        path data{};
-        path settings{};
-        path config{};
-        path db{};
-        path js{};
-    };
-    Paths paths;
-
     App(HINSTANCE, int);
-    void CreateDb();
 
     static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
     int _OnActivate(HWND, WPARAM, LPARAM);
@@ -84,4 +54,31 @@ class App
     int _OnSizing(HWND, WPARAM, LPARAM);
     int _OnWindowPosChanged(HWND, WPARAM, LPARAM);
     int _OnWindowPosChanging(HWND, WPARAM, LPARAM);
+
+    std::unique_ptr<Browser> browser{nullptr};
+
+    unsigned long long gdiplusToken{};
+    GdiplusStartupInput gdiplusStartupInput{};
+
+    std::wstring name{};
+    std::wstring version{};
+    string theme{};
+
+    Paths paths{};
+
+    HWND hwnd{};
+    HBRUSH darkBrush{};
+    HBRUSH lightBrush{};
+    HCURSOR cursor{};
+    HICON icon{};
+
+    std::vector<int> position{0, 0, 0, 0};
+    bool menu{false};
+    bool split{false};
+    bool swapped{false};
+    bool maximized{false};
+    bool topmost{false};
+    bool fullscreen{false};
+    string mainUrl{"google.com"};
+    string sideUrl{"google.com"};
 };

@@ -145,8 +145,6 @@ void Browser::Navigate()
 
     auto args = command_line();
 
-    println("TEST");
-
     main->Navigate(L"https://www.bing.com/");
 
     side->Navigate(L"https://www.bing.com/");

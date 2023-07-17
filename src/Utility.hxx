@@ -48,9 +48,9 @@ bool window_cloak(HWND);
 bool window_uncloak(HWND);
 
 bool window_mica(HWND);
-void window_maximize(HWND);
-void window_fullscreen(HWND);
-void window_topmost(HWND);
+bool window_maximize(HWND);
+bool window_fullscreen(HWND);
+bool window_topmost(HWND);
 
 std::vector<int> window_position(HWND);
 
