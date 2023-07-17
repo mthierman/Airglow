@@ -7,8 +7,7 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
 {
     auto app{std::unique_ptr<App>(new App(hinstance, ncs))};
 
-    SetEnvironmentVariableW(to_wide("WEBVIEW2_DEFAULT_BACKGROUND_COLOR").c_str(),
-                            to_wide("0").c_str());
+    SetEnvironmentVariableW(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR", L"0");
 
     if (GdiplusStartup(&app->gdiplusToken, &app->gdiplusStartupInput, nullptr) !=
         Gdiplus::Status::Ok)
@@ -229,47 +228,3 @@ int App::_OnSize(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
     return 0;
 }
-
-// void App::CreateDb()
-// {
-//     auto dbFile{(paths.db).string()};
-//     auto dbPath{dbFile.c_str()};
-//     sqlite3* db{nullptr};
-//     char* errMsg{0};
-//     string sql{"CREATE TABLE CONFIG("
-//                "X INT NOT NULL,"
-//                "Y INT NOT NULL,"
-//                "WIDTH INT NOT NULL,"
-//                "HEIGHT INT NOT NULL,"
-//                "MENU INT NOT NULL,"
-//                "SPLIT INT NOT NULL,"
-//                "MAXIMIZED INT NOT NULL,"
-//                "FULLSCREEN INT NOT NULL,"
-//                "TOPMOST INT NOT NULL,"
-//                "MAIN TEXT NOT NULL,"
-//                "SIDE TEXT NOT NULL);"};
-
-//     auto dbOpen = sqlite3_open(dbPath, &db);
-//     if (dbOpen != SQLITE_OK)
-//     {
-//         dberror("Database opening failed");
-//         return;
-//     }
-
-//     if (std::filesystem::exists(paths.db))
-//     {
-//         auto debExec = sqlite3_exec(db, sql.c_str(), nullptr, 0, &errMsg);
-//         if (debExec != SQLITE_OK)
-//         {
-//             dberror(errMsg);
-//             sqlite3_free(errMsg);
-//         }
-//     }
-
-//     if (!std::filesystem::exists(paths.db))
-//         return;
-
-//     sqlite3_close(db);
-
-//     return;
-// }

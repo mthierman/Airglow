@@ -16,14 +16,11 @@ class App
     void CreateDb();
 
   private:
+    std::unique_ptr<Browser> browser{nullptr};
+
     unsigned long long gdiplusToken{};
     GdiplusStartupInput gdiplusStartupInput{};
 
-    // std::string name{APP_NAME};
-    // std::string version{APP_VERSION};
-
-
-    std::unique_ptr<Browser> browser{nullptr};
     State::Window window{};
     State::Path path{};
     State::Color color{};
