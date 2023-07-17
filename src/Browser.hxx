@@ -9,14 +9,13 @@ using namespace Microsoft::WRL;
 class Browser
 {
   public:
-    static std::unique_ptr<Browser> Create(HWND);
+    static std::unique_ptr<Browser> Create(State::Window);
     void Bounds(State::Window);
     void Focus();
     void Navigate();
 
   private:
-    Browser(HWND);
-    HWND hwnd;
+    Browser(State::Window);
 };
 
 namespace WebView

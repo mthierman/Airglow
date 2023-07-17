@@ -44,7 +44,7 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
 
     app->Show(app->window.hwnd);
 
-    app->browser = Browser::Create(app->window.hwnd);
+    app->browser = Browser::Create(app->window);
 
     if (!app->browser)
         return nullptr;
@@ -280,7 +280,7 @@ int App::_OnSize(HWND hwnd, WPARAM wparam, LPARAM lparam)
     }
     Save();
 
-    browser->Bounds(window);
+    // browser->Bounds(window);
 
     return 0;
 }

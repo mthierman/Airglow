@@ -2,22 +2,22 @@
 
 using namespace WebView;
 
-Browser::Browser(HWND hwnd) {}
+Browser::Browser(State::Window window) {}
 
-std::unique_ptr<Browser> Browser::Create(HWND hwnd)
+std::unique_ptr<Browser> Browser::Create(State::Window window)
 {
-    auto browser{std::unique_ptr<Browser>(new Browser(hwnd))};
+    auto browser{std::unique_ptr<Browser>(new Browser(window))};
 
-    browser->hwnd = hwnd;
+    auto hwnd{window.hwnd};
 
     if (FAILED(CreateCoreWebView2EnvironmentWithOptions(
             nullptr, path_portable().wstring().c_str(), nullptr,
             Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
-                [&browser, hwnd](HRESULT hr, ICoreWebView2Environment* e) -> HRESULT
+                [=](HRESULT hr, ICoreWebView2Environment* e) -> HRESULT
                 {
                     e->CreateCoreWebView2Controller(
                         hwnd, Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                                  [hwnd](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
+                                  [=](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
                                   {
                                       EventRegistrationToken tokenTitle;
                                       EventRegistrationToken tokenFavicon;
@@ -48,27 +48,13 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
                                           Settings::main->put_IsZoomControlEnabled(false);
                                       }
 
-                                      Core19::main->AddScriptToExecuteOnDocumentCreated(
-                                          js_inject_embed().c_str(), nullptr);
-
-                                      Core19::main->Navigate(L"https://www.juce.com/");
-
-                                      auto bounds{window_bounds(hwnd)};
-                                      Controller::main->put_Bounds(RECT{
-                                          bounds.left,
-                                          bounds.top,
-                                          bounds.right / 2,
-                                          bounds.bottom,
-                                      });
-
                                       //   auto url{L"https://" + command_line().first};
                                       //   if (!url.empty())
                                       //       Core19::main->Navigate(url.c_str());
                                       //   else
                                       //       Core19::main->Navigate(L"https://www.bing.com/");
 
-                                      //   Core::main->AddScriptToExecuteOnDocumentCreated(
-                                      //       js_inject().c_str(), nullptr);
+                                      Core19::main->Navigate(L"https://www.bing.com/");
 
                                       Core19::main->add_DocumentTitleChanged(
                                           Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
@@ -98,7 +84,7 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
                                                  ICoreWebView2WebMessageReceivedEventArgs* args)
                                                   -> HRESULT
                                               {
-                                                  //   Messages();
+                                                  //   messages();
 
                                                   return S_OK;
                                               })
@@ -110,133 +96,90 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
                                   .Get());
 
                     e->CreateCoreWebView2Controller(
-                        hwnd, Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                                  [hwnd](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
-                                  {
-                                      EventRegistrationToken tokenTitle;
-                                      EventRegistrationToken tokenFavicon;
-                                      EventRegistrationToken tokenReceivedMsg;
-                                      EventRegistrationToken tokenNavigationCompleted;
-
-                                      if (c)
-                                      {
-                                          Controller::side = c;
-                                          Controller::side->get_CoreWebView2(&Core::side);
-                                      }
-
-                                      if (Core::side)
-                                          Core19::side = Core::side.try_query<ICoreWebView2_19>();
-
-                                      if (Core19::side)
-                                      {
-                                          Core19::side->get_Settings(&Settings::side);
-
-                                          Settings::side->put_AreDefaultContextMenusEnabled(true);
-                                          Settings::side->put_AreDefaultScriptDialogsEnabled(true);
-                                          Settings::side->put_AreDevToolsEnabled(true);
-                                          Settings::side->put_AreHostObjectsAllowed(true);
-                                          Settings::side->put_IsBuiltInErrorPageEnabled(true);
-                                          Settings::side->put_IsScriptEnabled(true);
-                                          Settings::side->put_IsStatusBarEnabled(false);
-                                          Settings::side->put_IsWebMessageEnabled(true);
-                                          Settings::side->put_IsZoomControlEnabled(false);
-                                      }
-
-                                      auto bounds{window_bounds(hwnd)};
-                                      Controller::side->put_Bounds(RECT{
-                                          bounds.right / 2,
-                                          bounds.top,
-                                          bounds.right,
-                                          bounds.bottom,
-                                      });
-
-                                      //   auto url{L"https://" + command_line().second};
-                                      //   if (!url.empty())
-                                      //       Core19::side->Navigate(url.c_str());
-                                      //   else
-                                      //       Core19::side->Navigate(L"https://www.google.com/");
-
-                                      Core19::side->Navigate(L"https://www.juce.com/");
-
-                                      // Core19::side->AddScriptToExecuteOnDocumentCreated(
-                                      //     js_inject().c_str(),
-                                      //     Callback<
-                                      //         ICoreWebView2AddScriptToExecuteOnDocumentCreatedCompletedHandler>(
-                                      //         [](HRESULT hr, PCWSTR id) -> HRESULT
-                                      //         {
-                                      //             Core19::side->ExecuteScript(
-                                      //                 js_inject().c_str(),
-                                      //                 Callback<
-                                      //                     ICoreWebView2ExecuteScriptCompletedHandler>(
-                                      //                     [](HRESULT hr, PCWSTR id) -> HRESULT
-                                      //                     {
-                                      //                         println("SUCCESS SCRIPT INJECT");
-                                      //                         return S_OK;
-                                      //                     })
-                                      //                     .Get());
-
-                                      //             return S_OK;
-                                      //         })
-                                      //         .Get());
-
-                                      // Core19::side->ExecuteScript(js_inject().c_str(), nullptr);
-
-                                      // Core19::side->AddScriptToExecuteOnDocumentCreated(
-                                      //     js_inject().c_str(),
-                                      //     Callback<
-                                      //         ICoreWebView2AddScriptToExecuteOnDocumentCreatedCompletedHandler>(
-                                      //         [](HRESULT hr, PCWSTR id) -> HRESULT
-                                      //         {
-                                      //             Core19::side->ExecuteScript(js_inject().c_str(),
-                                      //                                         nullptr);
-
-                                      //             return S_OK;
-                                      //         })
-                                      //         .Get());
-
-                                      Core19::side->add_DocumentTitleChanged(
-                                          Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
-                                              [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
-                                              {
-                                                  //   set_title();
-
-                                                  return S_OK;
-                                              })
-                                              .Get(),
-                                          &tokenTitle);
-
-                                      Core19::side->add_FaviconChanged(
-                                          Callback<ICoreWebView2FaviconChangedEventHandler>(
-                                              [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
-                                              {
-                                                  //   set_icon();
-
-                                                  return S_OK;
-                                              })
-                                              .Get(),
-                                          &tokenFavicon);
-
-                                      Core19::side->add_WebMessageReceived(
-                                          Callback<ICoreWebView2WebMessageReceivedEventHandler>(
-                                              [](ICoreWebView2* webview,
-                                                 ICoreWebView2WebMessageReceivedEventArgs* args)
-                                                  -> HRESULT
-                                              {
-                                                  //   Messages();
-
-                                                  return S_OK;
-                                              })
-                                              .Get(),
-                                          &tokenReceivedMsg);
-
-                                      return S_OK;
-                                  })
-                                  .Get());
-
-                    e->CreateCoreWebView2Controller(
-                        hwnd,
+                        window.hwnd,
                         Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                            [hwnd](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
+                            [=](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
+                            {
+                                EventRegistrationToken tokenTitle;
+                                EventRegistrationToken tokenFavicon;
+                                EventRegistrationToken tokenReceivedMsg;
+                                EventRegistrationToken tokenNavigationCompleted;
+
+                                if (c)
+                                {
+                                    Controller::side = c;
+                                    Controller::side->get_CoreWebView2(&Core::side);
+                                }
+
+                                if (Core::side)
+                                    Core19::side = Core::side.try_query<ICoreWebView2_19>();
+
+                                if (Core19::side)
+                                {
+                                    Core19::side->get_Settings(&Settings::side);
+
+                                    Settings::side->put_AreDefaultContextMenusEnabled(true);
+                                    Settings::side->put_AreDefaultScriptDialogsEnabled(true);
+                                    Settings::side->put_AreDevToolsEnabled(true);
+                                    Settings::side->put_AreHostObjectsAllowed(true);
+                                    Settings::side->put_IsBuiltInErrorPageEnabled(true);
+                                    Settings::side->put_IsScriptEnabled(true);
+                                    Settings::side->put_IsStatusBarEnabled(false);
+                                    Settings::side->put_IsWebMessageEnabled(true);
+                                    Settings::side->put_IsZoomControlEnabled(false);
+                                }
+
+                                //   auto url{L"https://" + command_line().second};
+                                //   if (!url.empty())
+                                //       Core19::side->Navigate(url.c_str());
+                                //   else
+                                //       Core19::side->Navigate(L"https://www.google.com/");
+
+                                Core19::side->Navigate(L"https://www.google.com/");
+
+                                Core19::side->add_DocumentTitleChanged(
+                                    Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
+                                        [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                        {
+                                            //   set_title();
+
+                                            return S_OK;
+                                        })
+                                        .Get(),
+                                    &tokenTitle);
+
+                                Core19::side->add_FaviconChanged(
+                                    Callback<ICoreWebView2FaviconChangedEventHandler>(
+                                        [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                        {
+                                            //   set_icon();
+
+                                            return S_OK;
+                                        })
+                                        .Get(),
+                                    &tokenFavicon);
+
+                                Core19::side->add_WebMessageReceived(
+                                    Callback<ICoreWebView2WebMessageReceivedEventHandler>(
+                                        [](ICoreWebView2* webview,
+                                           ICoreWebView2WebMessageReceivedEventArgs* args)
+                                            -> HRESULT
+                                        {
+                                            //   messages();
+
+                                            return S_OK;
+                                        })
+                                        .Get(),
+                                    &tokenReceivedMsg);
+
+                                return S_OK;
+                            })
+                            .Get());
+
+                    e->CreateCoreWebView2Controller(
+                        window.hwnd,
+                        Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+                            [=](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
                             {
                                 EventRegistrationToken tokenTitle;
                                 EventRegistrationToken tokenFavicon;
@@ -271,9 +214,6 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
                                     L"settings", path_settings().wstring().c_str(),
                                     COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
 
-                                auto bounds{window_bounds(hwnd)};
-                                Controller::settings->put_Bounds(RECT{0, 0, 0, 0});
-
                                 Core19::settings->Navigate(L"https://settings/index.html");
 
                                 Core19::settings->add_DocumentTitleChanged(
@@ -304,7 +244,7 @@ std::unique_ptr<Browser> Browser::Create(HWND hwnd)
                                            ICoreWebView2WebMessageReceivedEventArgs* args)
                                             -> HRESULT
                                         {
-                                            //   Messages();
+                                            //   messages();
 
                                             return S_OK;
                                         })
@@ -331,7 +271,7 @@ void Browser::Bounds(State::Window window)
     if (!settings || !main || !side)
         return;
 
-    auto bounds{window_bounds(hwnd)};
+    auto bounds{window_bounds(window.hwnd)};
 
     if (window.menu)
     {
