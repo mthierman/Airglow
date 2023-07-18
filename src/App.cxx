@@ -269,6 +269,19 @@ int App::_OnActivate(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int App::_OnClose(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
+    auto style = GetWindowLongPtrW(hwnd, GWL_STYLE);
+    auto exStyle = GetWindowLongPtrW(hwnd, GWL_EXSTYLE);
+
+    // if (style & WS_OVERLAPPEDWINDOW)
+    //     settings.fullscreen = false;
+    // else
+    //     settings.fullscreen = true;
+
+    // if (exStyle & WS_EX_TOPMOST)
+    //     settings.topmost = true;
+    // else
+    //     settings.topmost = false;
+
     SaveSettings();
     DestroyWindow(hwnd);
 
@@ -394,23 +407,10 @@ int App::_OnSize(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
     browser->Bounds(window, settings);
 
-    auto style = GetWindowLongPtrW(hwnd, GWL_STYLE);
-    auto exStyle = GetWindowLongPtrW(hwnd, GWL_EXSTYLE);
-
     if (wparam == 2)
         settings.maximized = true;
     else
         settings.maximized = false;
-
-    // if (style & WS_OVERLAPPEDWINDOW)
-    //     settings.fullscreen = false;
-    // else
-    //     settings.fullscreen = true;
-
-    // if (exStyle & WS_EX_TOPMOST)
-    //     settings.topmost = true;
-    // else
-    //     settings.topmost = false;
 
     return 0;
 }
