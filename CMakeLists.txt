@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.26)
 set(APP_NAME "Airglow")
-set(APP_VERSION "1.2.0")
+set(APP_VERSION "1.2.1")
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${APP_NAME}")
@@ -102,12 +102,7 @@ file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/src/PCH.hxx" PCH_FILE)
 add_executable(
     ${APP_NAME}
     WIN32
-
-    # "${SOURCES}"
-    src/Airglow.cxx
-    src/App.cxx
-    src/Browser.cxx
-    src/Utility.cxx
+    "${SOURCES}"
     "${RC_FILE}"
     "${MANIFEST_FILE}"
 )
