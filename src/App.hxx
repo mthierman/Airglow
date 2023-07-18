@@ -34,6 +34,8 @@ class App
     void SaveSettings();
     Colors SystemColors();
 
+    // void App::CreateDb();
+
     static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
     int _OnActivate(HWND, WPARAM, LPARAM);
     int _OnChar(HWND, WPARAM, LPARAM);
