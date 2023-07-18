@@ -8,9 +8,6 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
 {
     auto app{std::unique_ptr<App>(new App(hinstance, ncs))};
 
-    // app->Load();
-    // app->Save();
-
     SetEnvironmentVariableW(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR", L"0");
 
     if (GdiplusStartup(&app->gdiplusToken, &app->gdiplusStartupInput, nullptr) !=
@@ -60,30 +57,30 @@ void App::Show()
     window.theme = window_theme(window.hwnd);
     window_mica(window.hwnd);
 
-    ShowWindow(window.hwnd, SW_SHOWDEFAULT);
+    // ShowWindow(window.hwnd, SW_SHOWDEFAULT);
 
-    // if (window.position[0] == 0 && window.position[1] == 0 && window.position[2] == 0 &&
-    //     window.position[3] == 0)
-    //     ShowWindow(window.hwnd, SW_SHOWDEFAULT);
+    if (window.position[0] == 0 && window.position[1] == 0 && window.position[2] == 0 &&
+        window.position[3] == 0)
+        ShowWindow(window.hwnd, SW_SHOWDEFAULT);
 
-    // else
-    // {
-    //     if (window.maximized)
-    //         ShowWindow(window.hwnd, SW_MAXIMIZE);
+    else
+    {
+        if (window.maximized)
+            ShowWindow(window.hwnd, SW_MAXIMIZE);
 
-    //     else
-    //     {
-    //         SetWindowPos(window.hwnd, nullptr, window.position[0], window.position[1],
-    //                      window.position[2], window.position[3], 0);
-    //         ShowWindow(window.hwnd, SW_SHOWNORMAL);
-    //     }
-    // }
+        else
+        {
+            SetWindowPos(window.hwnd, nullptr, window.position[0], window.position[1],
+                         window.position[2], window.position[3], 0);
+            ShowWindow(window.hwnd, SW_SHOWNORMAL);
+        }
+    }
 
-    // if (window.topmost)
-    //     window_topmost(window.hwnd);
+    if (window.topmost)
+        window_topmost(window.hwnd);
 
-    // if (window.fullscreen)
-    //     window_fullscreen(window.hwnd);
+    if (window.fullscreen)
+        window_fullscreen(window.hwnd);
 
     window_uncloak(window.hwnd);
 }
@@ -210,8 +207,6 @@ int App::_OnExitSizeMove(HWND hwnd, WPARAM wparam, LPARAM lparam)
         window.position = window_position(hwnd);
     Save();
 
-    Debug();
-
     return 0;
 }
 
@@ -305,24 +300,5 @@ int App::_OnSize(HWND hwnd, WPARAM wparam, LPARAM lparam)
     else
         window.topmost = false;
 
-    Debug();
-
     return 0;
-}
-
-void App::Debug()
-{
-    println("theme: " + window.theme);
-    println("mainUrl: " + window.mainUrl);
-    println("sideUrl: " + window.sideUrl);
-    println("menu: " + bool_to_string(window.menu));
-    println("split: " + bool_to_string(window.split));
-    println("swapped: " + bool_to_string(window.swapped));
-    println("maximized: " + bool_to_string(window.maximized));
-    println("fullscreen: " + bool_to_string(window.fullscreen));
-    println("topmost: " + bool_to_string(window.topmost));
-    println(std::to_string(window.position[0]));
-    println(std::to_string(window.position[1]));
-    println(std::to_string(window.position[2]));
-    println(std::to_string(window.position[3]));
 }
