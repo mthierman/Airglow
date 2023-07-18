@@ -35,6 +35,9 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
 
                                       if (Core19::main)
                                       {
+                                          Core19::main->AddScriptToExecuteOnDocumentCreated(
+                                              js_inject_embed().c_str(), nullptr);
+
                                           Core19::main->get_Settings(&Settings::main);
 
                                           Settings::main->put_AreDefaultContextMenusEnabled(true);
@@ -118,6 +121,9 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
 
                                       if (Core19::side)
                                       {
+                                          Core19::side->AddScriptToExecuteOnDocumentCreated(
+                                              js_inject_embed().c_str(), nullptr);
+
                                           Core19::side->get_Settings(&Settings::side);
 
                                           Settings::side->put_AreDefaultContextMenusEnabled(true);
@@ -166,11 +172,11 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
 
                                       Core19::side->add_WebMessageReceived(
                                           Callback<ICoreWebView2WebMessageReceivedEventHandler>(
-                                              [](ICoreWebView2* webview,
-                                                 ICoreWebView2WebMessageReceivedEventArgs* args)
+                                              [&](ICoreWebView2* webview,
+                                                  ICoreWebView2WebMessageReceivedEventArgs* args)
                                                   -> HRESULT
                                               {
-                                                  //   messages();
+                                                  browser->Messages(window, args);
 
                                                   return S_OK;
                                               })
@@ -248,11 +254,11 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
 
                                 Core19::settings->add_WebMessageReceived(
                                     Callback<ICoreWebView2WebMessageReceivedEventHandler>(
-                                        [](ICoreWebView2* webview,
-                                           ICoreWebView2WebMessageReceivedEventArgs* args)
+                                        [&](ICoreWebView2* webview,
+                                            ICoreWebView2WebMessageReceivedEventArgs* args)
                                             -> HRESULT
                                         {
-                                            //   messages();
+                                            browser->Messages(window, args);
 
                                             return S_OK;
                                         })
