@@ -60,13 +60,13 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
                                       Core19::main->Navigate(L"https://www.bing.com/");
 
                                       browser->Bounds(window);
-                                      //   browser->Focus(window);
+                                      browser->Focus(window);
 
                                       Core19::main->add_DocumentTitleChanged(
                                           Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
                                               [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                               {
-                                                  //   set_title();
+                                                  // Title();
 
                                                   return S_OK;
                                               })
@@ -77,7 +77,7 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
                                           Callback<ICoreWebView2FaviconChangedEventHandler>(
                                               [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                               {
-                                                  //   set_icon();
+                                                  // Icon();
 
                                                   return S_OK;
                                               })
@@ -146,7 +146,7 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
                                       Core19::side->Navigate(L"https://www.google.com/");
 
                                       browser->Bounds(window);
-                                      //   browser->Focus(window);
+                                      browser->Focus(window);
 
                                       SendMessageW(hwnd, WM_SETFOCUS, 0, 0);
 
@@ -154,7 +154,7 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
                                           Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
                                               [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                               {
-                                                  //   set_title();
+                                                  // Title();
 
                                                   return S_OK;
                                               })
@@ -165,7 +165,7 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
                                           Callback<ICoreWebView2FaviconChangedEventHandler>(
                                               [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                               {
-                                                  //   set_icon();
+                                                  // Icon();
 
                                                   return S_OK;
                                               })
@@ -230,7 +230,7 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
                                 Core19::settings->Navigate(L"https://settings/index.html");
 
                                 browser->Bounds(window);
-                                // browser->Focus(window);
+                                browser->Focus(window);
 
                                 SendMessageW(hwnd, WM_SETFOCUS, 0, 0);
 
@@ -238,7 +238,7 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
                                     Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
                                         [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                         {
-                                            //   set_title();
+                                            // Title();
 
                                             return S_OK;
                                         })
@@ -249,7 +249,7 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
                                     Callback<ICoreWebView2FaviconChangedEventHandler>(
                                         [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                         {
-                                            //   set_icon();
+                                            // Icon();
 
                                             return S_OK;
                                         })
