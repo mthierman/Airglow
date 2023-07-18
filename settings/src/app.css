@@ -33,10 +33,6 @@
     }
 }
 
-/* :root {
-    --accentColor: #2ab6fc;
-} */
-
 input:-webkit-autofill {
     transition: all 5000s ease-in-out 0s;
     transition-property: background-color, color;
