@@ -59,8 +59,8 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
 
                                       Core19::main->Navigate(L"https://www.bing.com/");
 
-                                      SendMessageW(hwnd, WM_SIZE, 0, 0);
-                                      SendMessageW(hwnd, WM_SETFOCUS, 0, 0);
+                                      browser->Bounds(window);
+                                      //   browser->Focus(window);
 
                                       Core19::main->add_DocumentTitleChanged(
                                           Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
@@ -145,7 +145,9 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
 
                                       Core19::side->Navigate(L"https://www.google.com/");
 
-                                      SendMessageW(hwnd, WM_SIZE, 0, 0);
+                                      browser->Bounds(window);
+                                      //   browser->Focus(window);
+
                                       SendMessageW(hwnd, WM_SETFOCUS, 0, 0);
 
                                       Core19::side->add_DocumentTitleChanged(
@@ -227,7 +229,9 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
 
                                 Core19::settings->Navigate(L"https://settings/index.html");
 
-                                SendMessageW(hwnd, WM_SIZE, 0, 0);
+                                browser->Bounds(window);
+                                // browser->Focus(window);
+
                                 SendMessageW(hwnd, WM_SETFOCUS, 0, 0);
 
                                 Core19::settings->add_DocumentTitleChanged(
@@ -330,13 +334,17 @@ void Browser::Focus(State::Window& window)
     if (!settings || !main || !side)
         return;
 
+    if (!window.menu && !window.swapped)
+        main->MoveFocus(
+            COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+
+    if (!window.menu && window.swapped)
+        side->MoveFocus(
+            COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+
     if (window.menu)
         settings->MoveFocus(
             COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-
-    main->MoveFocus(COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-
-    side->MoveFocus(COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 }
 
 void Browser::Messages(State::Window& window, ICoreWebView2WebMessageReceivedEventArgs* args)

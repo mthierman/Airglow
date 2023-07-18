@@ -226,18 +226,21 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
     case VK_F1:
         window.split = bool_toggle(window.split);
         browser->Bounds(window);
+        browser->Focus(window);
         Save();
 
         return 0;
     case VK_F2:
         window.swapped = bool_toggle(window.swapped);
         browser->Bounds(window);
+        browser->Focus(window);
         Save();
 
         return 0;
     case VK_F4:
         window.menu = bool_toggle(window.menu);
         browser->Bounds(window);
+        browser->Focus(window);
         Save();
 
         return 0;
@@ -305,5 +308,24 @@ int App::_OnSize(HWND hwnd, WPARAM wparam, LPARAM lparam)
     else
         window.topmost = false;
 
+    Debug();
+
     return 0;
+}
+
+void App::Debug()
+{
+    println("theme: " + window.theme);
+    println("mainUrl: " + window.mainUrl);
+    println("sideUrl: " + window.sideUrl);
+    println("menu: " + bool_to_string(window.menu));
+    println("split: " + bool_to_string(window.split));
+    println("swapped: " + bool_to_string(window.swapped));
+    println("maximized: " + bool_to_string(window.maximized));
+    println("fullscreen: " + bool_to_string(window.fullscreen));
+    println("topmost: " + bool_to_string(window.topmost));
+    println(std::to_string(window.position[0]));
+    println(std::to_string(window.position[1]));
+    println(std::to_string(window.position[2]));
+    println(std::to_string(window.position[3]));
 }
