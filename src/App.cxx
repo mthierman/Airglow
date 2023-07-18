@@ -268,7 +268,12 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int App::_OnSetIcon(HWND hwnd, WPARAM wparam, LPARAM lparam) { return 0; }
 
-int App::_OnSetFocus(HWND hwnd, WPARAM wparam, LPARAM lparam) { return 0; }
+int App::_OnSetFocus(HWND hwnd, WPARAM wparam, LPARAM lparam)
+{
+    browser->Focus(window);
+
+    return 0;
+}
 
 int App::_OnSettingChange(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {

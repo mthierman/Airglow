@@ -11,7 +11,7 @@ class Browser
   public:
     static std::unique_ptr<Browser> Create(State::Window&);
     void Bounds(State::Window&);
-    void Focus();
+    void Focus(State::Window&);
     void Navigate();
 
   private:
