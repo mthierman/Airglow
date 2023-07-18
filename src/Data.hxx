@@ -55,22 +55,25 @@ struct Colors
     string Background{system_color(winrt::Windows::UI::ViewManagement::UIColorType::Background)};
     string Foreground{system_color(winrt::Windows::UI::ViewManagement::UIColorType::Foreground)};
 
-    Colors SystemColors()
+    json Serialize()
     {
-        Colors c;
-        c.accent = system_color(winrt::Windows::UI::ViewManagement::UIColorType::Accent);
-        c.accentDark1 = system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark1);
-        c.accentDark2 = system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark2);
-        c.accentDark3 = system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark3);
-        c.accentLight1 =
-            system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight1);
-        c.accentLight2 =
-            system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight2);
-        c.accentLight3 =
-            system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight3);
-        c.Background = system_color(winrt::Windows::UI::ViewManagement::UIColorType::Background);
-        c.Foreground = system_color(winrt::Windows::UI::ViewManagement::UIColorType::Foreground);
-
-        return c;
+        try
+        {
+            return json{{"colors",
+                         {{"accent", accent},
+                          {"accentDark1", accentDark1},
+                          {"accentDark2", accentDark2},
+                          {"accentDark3", accentDark3},
+                          {"accentLight1", accentLight1},
+                          {"accentLight2", accentLight2},
+                          {"accentLight3", accentLight3},
+                          {"background", Background},
+                          {"foreground", Foreground}}}};
+        }
+        catch (const std::exception& e)
+        {
+            println(e.what());
+            return json{};
+        }
     }
 };

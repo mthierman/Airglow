@@ -427,7 +427,6 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int App::_OnNotify(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-    println("WM_NOTIFY");
     SaveSettings();
 
     return 0;
@@ -444,9 +443,10 @@ int App::_OnSetFocus(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int App::_OnSettingChange(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-    colors = colors.SystemColors();
     settings.theme = window_theme(hwnd);
+    colors = Colors{};
     browser->PostSettings(SerializeJson(settings));
+    browser->PostSettings(colors.Serialize());
     SaveSettings();
 
     return 0;
