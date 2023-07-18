@@ -21,7 +21,7 @@ void wprint(wstring);
 void wprintln(wstring);
 void msgbox(string);
 void msgboxw(wstring);
-void error(string);
+int error(string);
 void errorw(wstring);
 void dberror(string);
 

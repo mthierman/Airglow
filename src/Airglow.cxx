@@ -4,7 +4,7 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
 {
     SetEnvironmentVariableW(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR", L"0");
 
-    auto app = App::Create(hinstance, ncs);
+    auto app{App::Create(hinstance, ncs)};
 
     if (!app)
     {
@@ -12,15 +12,13 @@ int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int
         return 0;
     }
 
-    MSG msg{nullptr};
+    MSG msg;
     int r;
     while ((r = GetMessageW(&msg, nullptr, 0, 0)) != 0)
     {
         if (r == -1)
-        {
             error("Message loop crashed");
-            return 0;
-        }
+
         else
         {
             TranslateMessage(&msg);

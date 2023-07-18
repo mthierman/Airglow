@@ -51,10 +51,12 @@ void msgbox(string in)
 
 void msgboxw(wstring in) { MessageBoxW(nullptr, in.c_str(), wstring(L"Airglow").c_str(), 0); };
 
-void error(string in)
+int error(string in)
 {
     wstring error = to_wide(in + ". Error: " + std::to_string(GetLastError()));
     MessageBoxW(nullptr, error.c_str(), wstring(L"Airglow").c_str(), 0);
+
+    return 0;
 };
 
 void errorw(wstring in)
