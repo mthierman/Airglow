@@ -16,6 +16,7 @@ class Browser
     void Title(Window&, Settings&);
     void Icon(Window&, Settings&);
     void Messages(Window&, Settings&, ICoreWebView2WebMessageReceivedEventArgs* args);
+    void PostConfig();
 
   private:
     Browser(Window&, Settings&);

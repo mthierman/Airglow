@@ -46,9 +46,9 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings)
                                           wvSettings->put_AreHostObjectsAllowed(true);
                                           wvSettings->put_IsBuiltInErrorPageEnabled(true);
                                           wvSettings->put_IsScriptEnabled(true);
-                                          wvSettings->put_IsStatusBarEnabled(false);
+                                          wvSettings->put_IsStatusBarEnabled(true);
                                           wvSettings->put_IsWebMessageEnabled(true);
-                                          wvSettings->put_IsZoomControlEnabled(false);
+                                          wvSettings->put_IsZoomControlEnabled(true);
                                       }
 
                                       if (!command_line().first.empty())
@@ -131,9 +131,9 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings)
                                           wvSettings->put_AreHostObjectsAllowed(true);
                                           wvSettings->put_IsBuiltInErrorPageEnabled(true);
                                           wvSettings->put_IsScriptEnabled(true);
-                                          wvSettings->put_IsStatusBarEnabled(false);
+                                          wvSettings->put_IsStatusBarEnabled(true);
                                           wvSettings->put_IsWebMessageEnabled(true);
-                                          wvSettings->put_IsZoomControlEnabled(false);
+                                          wvSettings->put_IsZoomControlEnabled(true);
                                       }
 
                                       if (!command_line().second.empty())
@@ -216,9 +216,9 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings)
                                           wvSettings->put_AreHostObjectsAllowed(true);
                                           wvSettings->put_IsBuiltInErrorPageEnabled(true);
                                           wvSettings->put_IsScriptEnabled(true);
-                                          wvSettings->put_IsStatusBarEnabled(false);
+                                          wvSettings->put_IsStatusBarEnabled(true);
                                           wvSettings->put_IsWebMessageEnabled(true);
-                                          wvSettings->put_IsZoomControlEnabled(false);
+                                          wvSettings->put_IsZoomControlEnabled(true);
                                       }
 
                                       wvBrowser->SetVirtualHostNameToFolderMapping(
@@ -544,4 +544,17 @@ void Browser::Messages(Window& window, Settings& settings,
             SendMessageW(window.hwnd, WM_KEYDOWN, 0x57, 0);
         }
     }
+}
+
+void Browser::PostConfig()
+{
+    // if (!pConfig || !Browsers::Settings::browser)
+    //     return;
+
+    // json j{{"settings",
+    //         {{"mainUrl", pConfig->settings.mainUrl},
+    //          {"sideUrl", pConfig->settings.sideUrl},
+    //          {"accentColor", pConfig->colors.accent}}}};
+
+    // Browsers::Settings::browser->PostWebMessageAsJson(to_wide(j.dump()).c_str());
 }
