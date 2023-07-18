@@ -8,11 +8,8 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
 {
     auto app{std::unique_ptr<App>(new App(hinstance, ncs))};
 
-    SetEnvironmentVariableW(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR", L"0");
-
-    if (GdiplusStartup(&app->gdiplusToken, &app->gdiplusStartupInput, nullptr) !=
-        Gdiplus::Status::Ok)
-        return nullptr;
+    app->Load();
+    app->Save();
 
     app->window.icon = (HICON)LoadImageW(hinstance, to_wide("PROGRAM_ICON").c_str(), IMAGE_ICON, 0,
                                          0, LR_DEFAULTCOLOR | LR_DEFAULTSIZE);
@@ -45,6 +42,10 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
     app->browser = Browser::Create(app->window);
 
     if (!app->browser)
+        return nullptr;
+
+    if (GdiplusStartup(&app->gdiplusToken, &app->gdiplusStartupInput, nullptr) !=
+        Gdiplus::Status::Ok)
         return nullptr;
 
     return app;
@@ -164,14 +165,14 @@ int App::_OnActivate(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
     if (!window.maximized && !window.fullscreen)
         window.position = window_position(hwnd);
-    Save();
+    // Save();
 
     return 0;
 }
 
 int App::_OnClose(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-    Save();
+    // Save();
     DestroyWindow(hwnd);
 
     return 0;
@@ -205,7 +206,7 @@ int App::_OnExitSizeMove(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
     if (!window.maximized && !window.fullscreen)
         window.position = window_position(hwnd);
-    Save();
+    // Save();
 
     return 0;
 }
@@ -227,36 +228,36 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
         window.split = bool_toggle(window.split);
         browser->Bounds(window);
         browser->Focus(window);
-        Save();
+        // Save();
 
         return 0;
     case VK_F2:
         window.swapped = bool_toggle(window.swapped);
         browser->Bounds(window);
         browser->Focus(window);
-        Save();
+        // Save();
 
         return 0;
     case VK_F4:
         window.menu = bool_toggle(window.menu);
         browser->Bounds(window);
         browser->Focus(window);
-        Save();
+        // Save();
 
         return 0;
     case VK_F6:
         window.maximized = window_maximize(hwnd);
-        Save();
+        // Save();
 
         return 0;
     case VK_F9:
         window.topmost = window_topmost(hwnd);
-        Save();
+        // Save();
 
         return 0;
     case VK_F11:
         window.fullscreen = window_fullscreen(hwnd);
-        Save();
+        // Save();
 
         return 0;
     case 0x57:
@@ -281,7 +282,7 @@ int App::_OnSetFocus(HWND hwnd, WPARAM wparam, LPARAM lparam)
 int App::_OnSettingChange(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
     window.theme = window_theme(hwnd);
-    Save();
+    // Save();
 
     return 0;
 }

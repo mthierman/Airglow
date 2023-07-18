@@ -35,8 +35,6 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
 
                                       if (Core19::main)
                                       {
-                                          //   Core19::main->AddScriptToExecuteOnDocumentCreated(
-                                          //       js_inject_embed().c_str(), nullptr);
                                           Core19::main->AddScriptToExecuteOnDocumentCreated(
                                               js_inject().c_str(), nullptr);
 
@@ -53,13 +51,10 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
                                           Settings::main->put_IsZoomControlEnabled(false);
                                       }
 
-                                      //   auto url{L"https://" + command_line().first};
-                                      //   if (!url.empty())
-                                      //       Core19::main->Navigate(url.c_str());
-                                      //   else
-                                      //       Core19::main->Navigate(L"https://www.bing.com/");
-
-                                      Core19::main->Navigate(L"https://www.bing.com/");
+                                      if (!command_line().first.empty())
+                                          Core19::main->Navigate(command_line().first.c_str());
+                                      else
+                                          Core19::main->Navigate(to_wide(window.mainUrl).c_str());
 
                                       browser->Bounds(window);
                                       browser->Focus(window);
@@ -123,8 +118,6 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
 
                                       if (Core19::side)
                                       {
-                                          //   Core19::side->AddScriptToExecuteOnDocumentCreated(
-                                          //       js_inject_embed().c_str(), nullptr);
                                           Core19::side->AddScriptToExecuteOnDocumentCreated(
                                               js_inject().c_str(), nullptr);
 
@@ -141,13 +134,10 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
                                           Settings::side->put_IsZoomControlEnabled(false);
                                       }
 
-                                      //   auto url{L"https://" + command_line().second};
-                                      //   if (!url.empty())
-                                      //       Core19::side->Navigate(url.c_str());
-                                      //   else
-                                      //       Core19::side->Navigate(L"https://www.google.com/");
-
-                                      Core19::side->Navigate(L"https://www.google.com/");
+                                      if (!command_line().second.empty())
+                                          Core19::side->Navigate(command_line().second.c_str());
+                                      else
+                                          Core19::side->Navigate(to_wide(window.sideUrl).c_str());
 
                                       browser->Bounds(window);
                                       browser->Focus(window);

@@ -71,16 +71,16 @@ struct Window
     HICON icon{(HICON)LoadImageW(nullptr, (LPCWSTR)IDI_APPLICATION, IMAGE_ICON, 0, 0,
                                  LR_SHARED | LR_DEFAULTCOLOR | LR_DEFAULTSIZE)};
 
-    string theme{""};
-    string mainUrl{""};
-    string sideUrl{""};
+    string theme{"dark"};
+    string mainUrl{"https://www.google.com/"};
+    string sideUrl{"https://www.bing.com/"};
     std::vector<int> position{0, 0, 0, 0};
-    bool menu{};
-    bool split{};
-    bool swapped{};
-    bool maximized{};
-    bool fullscreen{};
-    bool topmost{};
+    bool menu{false};
+    bool split{false};
+    bool swapped{false};
+    bool maximized{false};
+    bool fullscreen{false};
+    bool topmost{false};
 };
 struct Path
 {
