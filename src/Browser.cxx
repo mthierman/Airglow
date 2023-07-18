@@ -13,11 +13,11 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
     if (FAILED(CreateCoreWebView2EnvironmentWithOptions(
             nullptr, path_portable().wstring().c_str(), nullptr,
             Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
-                [hwnd](HRESULT hr, ICoreWebView2Environment* e) -> HRESULT
+                [&](HRESULT hr, ICoreWebView2Environment* e) -> HRESULT
                 {
                     e->CreateCoreWebView2Controller(
                         hwnd, Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                                  [hwnd](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
+                                  [&](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
                                   {
                                       EventRegistrationToken tokenTitle;
                                       EventRegistrationToken tokenFavicon;
@@ -83,11 +83,11 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
 
                                       Core19::main->add_WebMessageReceived(
                                           Callback<ICoreWebView2WebMessageReceivedEventHandler>(
-                                              [](ICoreWebView2* webview,
-                                                 ICoreWebView2WebMessageReceivedEventArgs* args)
+                                              [&](ICoreWebView2* webview,
+                                                  ICoreWebView2WebMessageReceivedEventArgs* args)
                                                   -> HRESULT
                                               {
-                                                  //   messages();
+                                                  browser->Messages(window, args);
 
                                                   return S_OK;
                                               })
@@ -100,7 +100,7 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
 
                     e->CreateCoreWebView2Controller(
                         hwnd, Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                                  [hwnd](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
+                                  [&](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
                                   {
                                       EventRegistrationToken tokenTitle;
                                       EventRegistrationToken tokenFavicon;
@@ -184,7 +184,7 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
                     e->CreateCoreWebView2Controller(
                         hwnd,
                         Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                            [hwnd](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
+                            [&](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
                             {
                                 EventRegistrationToken tokenTitle;
                                 EventRegistrationToken tokenFavicon;
@@ -331,4 +331,66 @@ void Browser::Focus(State::Window& window)
     main->MoveFocus(COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 
     side->MoveFocus(COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+}
+
+void Browser::Messages(State::Window& window, ICoreWebView2WebMessageReceivedEventArgs* args)
+{
+    string splitKey{"F1"};
+    string swapKey{"F2"};
+    string hideMenuKey{"F4"};
+    string maximizeKey{"F6"};
+    string fullscreenKey{"F11"};
+    string onTopKey{"F9"};
+    string closeKey{"close"};
+
+    wil::unique_cotaskmem_string messageRaw;
+    if (SUCCEEDED(args->TryGetWebMessageAsString(&messageRaw)))
+    {
+        auto message = to_string(wstring(messageRaw.get()));
+
+        if (message.compare(0, 8, "mainUrl ") == 0)
+        {
+            window.mainUrl = message.substr(8);
+        }
+
+        if (message.compare(0, 8, "sideUrl ") == 0)
+        {
+            window.sideUrl = message.substr(8);
+        }
+
+        if (message == splitKey)
+        {
+            SendMessageW(window.hwnd, WM_KEYDOWN, VK_F1, 0);
+        }
+
+        if (message == swapKey)
+        {
+            SendMessageW(window.hwnd, WM_KEYDOWN, VK_F2, 0);
+        }
+
+        if (message == hideMenuKey)
+        {
+            SendMessageW(window.hwnd, WM_KEYDOWN, VK_F4, 0);
+        }
+
+        if (message == maximizeKey)
+        {
+            SendMessageW(window.hwnd, WM_KEYDOWN, VK_F6, 0);
+        }
+
+        if (message == fullscreenKey)
+        {
+            SendMessageW(window.hwnd, WM_KEYDOWN, VK_F11, 0);
+        }
+
+        if (message == onTopKey)
+        {
+            SendMessageW(window.hwnd, WM_KEYDOWN, VK_F9, 0);
+        }
+
+        if (message == closeKey)
+        {
+            SendMessageW(window.hwnd, WM_KEYDOWN, 0x57, 0);
+        }
+    }
 }

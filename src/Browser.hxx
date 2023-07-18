@@ -12,7 +12,7 @@ class Browser
     static std::unique_ptr<Browser> Create(State::Window&);
     void Bounds(State::Window&);
     void Focus(State::Window&);
-    void Navigate();
+    void Messages(State::Window&, ICoreWebView2WebMessageReceivedEventArgs* args);
 
   private:
     Browser(State::Window&);
