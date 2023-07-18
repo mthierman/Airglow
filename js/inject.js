@@ -9,6 +9,7 @@ document.onreadystatechange = () => {
             "light dark"
         );
     }
+
     if (document.readyState === "complete") {
         onkeydown = (e) => {
             if (e.key === "F1") {

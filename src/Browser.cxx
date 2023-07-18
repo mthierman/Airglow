@@ -35,8 +35,10 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
 
                                       if (Core19::main)
                                       {
+                                          //   Core19::main->AddScriptToExecuteOnDocumentCreated(
+                                          //       js_inject_embed().c_str(), nullptr);
                                           Core19::main->AddScriptToExecuteOnDocumentCreated(
-                                              js_inject_embed().c_str(), nullptr);
+                                              js_inject().c_str(), nullptr);
 
                                           Core19::main->get_Settings(&Settings::main);
 
@@ -121,8 +123,10 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
 
                                       if (Core19::side)
                                       {
+                                          //   Core19::side->AddScriptToExecuteOnDocumentCreated(
+                                          //       js_inject_embed().c_str(), nullptr);
                                           Core19::side->AddScriptToExecuteOnDocumentCreated(
-                                              js_inject_embed().c_str(), nullptr);
+                                              js_inject().c_str(), nullptr);
 
                                           Core19::side->get_Settings(&Settings::side);
 
@@ -224,10 +228,11 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
                                 }
 
                                 Core19::settings->SetVirtualHostNameToFolderMapping(
-                                    L"settings", path_settings().wstring().c_str(),
+                                    L"settings", path_portable().wstring().c_str(),
                                     COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
 
-                                Core19::settings->Navigate(L"https://settings/index.html");
+                                // Core19::settings->Navigate(L"https://settings/index.html");
+                                Core19::settings->Navigate(L"https://localhost:8000/");
 
                                 browser->Bounds(window);
                                 browser->Focus(window);
@@ -349,60 +354,53 @@ void Browser::Focus(State::Window& window)
 
 void Browser::Messages(State::Window& window, ICoreWebView2WebMessageReceivedEventArgs* args)
 {
-    string splitKey{"F1"};
-    string swapKey{"F2"};
-    string hideMenuKey{"F4"};
-    string maximizeKey{"F6"};
-    string fullscreenKey{"F11"};
-    string onTopKey{"F9"};
-    string closeKey{"close"};
-
     wil::unique_cotaskmem_string messageRaw;
+
     if (SUCCEEDED(args->TryGetWebMessageAsString(&messageRaw)))
     {
-        auto message = to_string(wstring(messageRaw.get()));
+        auto message = wstring(messageRaw.get());
 
-        if (message.compare(0, 8, "mainUrl ") == 0)
+        if (message.compare(0, 8, L"mainUrl ") == 0)
         {
-            window.mainUrl = message.substr(8);
+            to_wide(window.mainUrl) = message.substr(8);
         }
 
-        if (message.compare(0, 8, "sideUrl ") == 0)
+        if (message.compare(0, 8, L"sideUrl ") == 0)
         {
-            window.sideUrl = message.substr(8);
+            to_wide(window.sideUrl) = message.substr(8);
         }
 
-        if (message == splitKey)
+        if (message == L"split")
         {
             SendMessageW(window.hwnd, WM_KEYDOWN, VK_F1, 0);
         }
 
-        if (message == swapKey)
+        if (message == L"swapped")
         {
             SendMessageW(window.hwnd, WM_KEYDOWN, VK_F2, 0);
         }
 
-        if (message == hideMenuKey)
+        if (message == L"menu")
         {
             SendMessageW(window.hwnd, WM_KEYDOWN, VK_F4, 0);
         }
 
-        if (message == maximizeKey)
+        if (message == L"maximize")
         {
             SendMessageW(window.hwnd, WM_KEYDOWN, VK_F6, 0);
         }
 
-        if (message == fullscreenKey)
+        if (message == L"fullscreen")
         {
             SendMessageW(window.hwnd, WM_KEYDOWN, VK_F11, 0);
         }
 
-        if (message == onTopKey)
+        if (message == L"topmost")
         {
             SendMessageW(window.hwnd, WM_KEYDOWN, VK_F9, 0);
         }
 
-        if (message == closeKey)
+        if (message == L"close")
         {
             SendMessageW(window.hwnd, WM_KEYDOWN, 0x57, 0);
         }

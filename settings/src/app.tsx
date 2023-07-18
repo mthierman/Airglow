@@ -84,7 +84,7 @@ export default function App() {
     useEffect(() => {
         const getData = async () => {
             try {
-                const response = await fetch(`https://settings/config.json`);
+                const response = await fetch(`https://settings/Airglow.json`);
                 let data = await response.json();
                 setMainUrl(data.mainUrl);
                 setSideUrl(data.sideUrl);
