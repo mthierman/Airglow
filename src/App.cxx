@@ -339,45 +339,55 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
         browser->Bounds(window, settings);
         browser->Focus(window, settings);
         browser->Title(window, settings);
+        browser->Icon(window, settings);
         SaveSettings();
 
         return 0;
+
     case VK_F2:
         settings.swapped = bool_toggle(settings.swapped);
         browser->Bounds(window, settings);
         browser->Focus(window, settings);
         browser->Title(window, settings);
+        browser->Icon(window, settings);
         SaveSettings();
 
         return 0;
+
     case VK_F4:
         settings.menu = bool_toggle(settings.menu);
         browser->Bounds(window, settings);
         browser->Focus(window, settings);
         browser->Title(window, settings);
+        browser->Icon(window, settings);
         SaveSettings();
 
         return 0;
+
     case VK_F6:
         settings.maximized = window_maximize(hwnd);
         SaveSettings();
 
         return 0;
+
     case VK_F9:
         settings.topmost = window_topmost(hwnd);
         browser->Title(window, settings);
         SaveSettings();
 
         return 0;
+
     case VK_F11:
         settings.fullscreen = window_fullscreen(hwnd);
         SaveSettings();
 
         return 0;
+
     case 0x57:
         auto state = GetKeyState(VK_CONTROL);
         if (state & 0x8000)
             PostMessageW(hwnd, WM_CLOSE, 0, 0);
+
         return 0;
     }
 

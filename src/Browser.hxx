@@ -14,6 +14,7 @@ class Browser
     void Bounds(Window&, Settings&);
     void Focus(Window&, Settings&);
     void Title(Window&, Settings&);
+    void Icon(Window&, Settings&);
     void Messages(Window&, Settings&, ICoreWebView2WebMessageReceivedEventArgs* args);
 
   private:

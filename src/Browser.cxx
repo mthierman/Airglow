@@ -74,7 +74,7 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings)
                                           Callback<ICoreWebView2FaviconChangedEventHandler>(
                                               [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                               {
-                                                  // Icon();
+                                                  browser->Icon(window, settings);
 
                                                   return S_OK;
                                               })
@@ -159,7 +159,7 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings)
                                           Callback<ICoreWebView2FaviconChangedEventHandler>(
                                               [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                               {
-                                                  // Icon();
+                                                  browser->Icon(window, settings);
 
                                                   return S_OK;
                                               })
@@ -250,7 +250,7 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings)
                                           Callback<ICoreWebView2FaviconChangedEventHandler>(
                                               [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                               {
-                                                  // Icon();
+                                                  browser->Icon(window, settings);
 
                                                   return S_OK;
                                               })
@@ -400,103 +400,95 @@ void Browser::Title(Window& window, Settings& settings)
     }
 }
 
-// void WebView::SetWindowIcon()
-// {
+void Browser::Icon(Window& window, Settings& settings)
+{
+    if (!wv2main::wvBrowser || !wv2side::wvBrowser || !wv2settings::wvBrowser)
+        return;
 
-//     if (!pConfig || !Browsers::Settings::controller || !Browsers::Main::controller ||
-//         !Browsers::Side::controller)
-//         return;
+    if (settings.menu)
+    {
+        // #ifdef DEBUG_MSG
+        //         LPWSTR faviconUri;
+        //         Browsers::Settings::browser->get_FaviconUri(&faviconUri);
+        //         wprintln(wstring(faviconUri));
+        // #endif
+        wv2settings::wvBrowser->GetFavicon(
+            COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
+            Callback<ICoreWebView2GetFaviconCompletedHandler>(
+                [&](HRESULT result, IStream* iconStream) -> HRESULT
+                {
+                    if (iconStream)
+                    {
+                        Gdiplus::Bitmap iconBitmap(iconStream);
+                        wil::unique_hicon icon;
+                        if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
+                        {
+                            auto favicon = std::move(icon);
+                            SetClassLongPtrW(window.hwnd, GCLP_HICONSM, (LONG_PTR)favicon.get());
+                            SetClassLongPtrW(window.hwnd, GCLP_HICON, (LONG_PTR)window.icon);
+                        }
+                    }
+                    return S_OK;
+                })
+                .Get());
+    }
 
-//     if (pConfig->settings.menu)
-//     {
-//         // #ifdef DEBUG_MSG
-//         //         LPWSTR faviconUri;
-//         //         Browsers::Settings::browser->get_FaviconUri(&faviconUri);
-//         //         wprintln(wstring(faviconUri));
-//         // #endif
-//         Browsers::Settings::browser->GetFavicon(
-//             COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
-//             Callback<ICoreWebView2GetFaviconCompletedHandler>(
-//                 [&](HRESULT result, IStream* iconStream) -> HRESULT
-//                 {
-//                     if (iconStream)
-//                     {
-//                         Gdiplus::Bitmap iconBitmap(iconStream);
-//                         wil::unique_hicon icon;
-//                         if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
-//                         {
-//                             auto favicon = std::move(icon);
-//                             SetClassLongPtrW(pConfig->window.hwnd, GCLP_HICONSM,
-//                                              (LONG_PTR)favicon.get());
-//                             SetClassLongPtrW(pConfig->window.hwnd, GCLP_HICON,
-//                                              (LONG_PTR)pConfig->window.hIcon);
-//                         }
-//                     }
-//                     return S_OK;
-//                 })
-//                 .Get());
-//     }
+    if (!settings.swapped && !settings.menu)
+    {
+        // #ifdef DEBUG_MSG
+        //         LPWSTR faviconUri;
+        //         Browsers::Main::browser->get_FaviconUri(&faviconUri);
+        //         wprintln(wstring(faviconUri));
+        // #endif
+        wv2main::wvBrowser->GetFavicon(
+            COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
+            Callback<ICoreWebView2GetFaviconCompletedHandler>(
+                [&](HRESULT result, IStream* iconStream) -> HRESULT
+                {
+                    if (iconStream)
+                    {
+                        Gdiplus::Bitmap iconBitmap(iconStream);
+                        wil::unique_hicon icon;
+                        if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
+                        {
+                            auto favicon = std::move(icon);
+                            SetClassLongPtrW(window.hwnd, GCLP_HICONSM, (LONG_PTR)favicon.get());
+                            SetClassLongPtrW(window.hwnd, GCLP_HICON, (LONG_PTR)window.icon);
+                        }
+                    }
+                    return S_OK;
+                })
+                .Get());
+    }
 
-//     if (!pConfig->settings.swapped && !pConfig->settings.menu)
-//     {
-//         // #ifdef DEBUG_MSG
-//         //         LPWSTR faviconUri;
-//         //         Browsers::Main::browser->get_FaviconUri(&faviconUri);
-//         //         wprintln(wstring(faviconUri));
-//         // #endif
-//         Browsers::Main::browser->GetFavicon(
-//             COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
-//             Callback<ICoreWebView2GetFaviconCompletedHandler>(
-//                 [&](HRESULT result, IStream* iconStream) -> HRESULT
-//                 {
-//                     if (iconStream)
-//                     {
-//                         Gdiplus::Bitmap iconBitmap(iconStream);
-//                         wil::unique_hicon icon;
-//                         if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
-//                         {
-//                             auto favicon = std::move(icon);
-//                             SetClassLongPtrW(pConfig->window.hwnd, GCLP_HICONSM,
-//                                              (LONG_PTR)favicon.get());
-//                             SetClassLongPtrW(pConfig->window.hwnd, GCLP_HICON,
-//                                              (LONG_PTR)pConfig->window.hIcon);
-//                         }
-//                     }
-//                     return S_OK;
-//                 })
-//                 .Get());
-//     }
-
-//     if (pConfig->settings.swapped && !pConfig->settings.menu)
-//     {
-//         // #ifdef DEBUG_MSG
-//         //         LPWSTR faviconUri;
-//         //         Browsers::Side::browser->get_FaviconUri(&faviconUri);
-//         //         wprintln(wstring(faviconUri));
-//         // #endif
-//         Browsers::Side::browser->GetFavicon(
-//             COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
-//             Callback<ICoreWebView2GetFaviconCompletedHandler>(
-//                 [&](HRESULT result, IStream* iconStream) -> HRESULT
-//                 {
-//                     if (iconStream)
-//                     {
-//                         Gdiplus::Bitmap iconBitmap(iconStream);
-//                         wil::unique_hicon icon;
-//                         if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
-//                         {
-//                             auto favicon = std::move(icon);
-//                             SetClassLongPtrW(pConfig->window.hwnd, GCLP_HICONSM,
-//                                              (LONG_PTR)favicon.get());
-//                             SetClassLongPtrW(pConfig->window.hwnd, GCLP_HICON,
-//                                              (LONG_PTR)pConfig->window.hIcon);
-//                         }
-//                     }
-//                     return S_OK;
-//                 })
-//                 .Get());
-//     }
-// }
+    if (settings.swapped && !settings.menu)
+    {
+        // #ifdef DEBUG_MSG
+        //         LPWSTR faviconUri;
+        //         Browsers::Side::browser->get_FaviconUri(&faviconUri);
+        //         wprintln(wstring(faviconUri));
+        // #endif
+        wv2side::wvBrowser->GetFavicon(
+            COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
+            Callback<ICoreWebView2GetFaviconCompletedHandler>(
+                [&](HRESULT result, IStream* iconStream) -> HRESULT
+                {
+                    if (iconStream)
+                    {
+                        Gdiplus::Bitmap iconBitmap(iconStream);
+                        wil::unique_hicon icon;
+                        if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
+                        {
+                            auto favicon = std::move(icon);
+                            SetClassLongPtrW(window.hwnd, GCLP_HICONSM, (LONG_PTR)favicon.get());
+                            SetClassLongPtrW(window.hwnd, GCLP_HICON, (LONG_PTR)window.icon);
+                        }
+                    }
+                    return S_OK;
+                })
+                .Get());
+    }
+}
 
 void Browser::Messages(Window& window, Settings& settings,
                        ICoreWebView2WebMessageReceivedEventArgs* args)
