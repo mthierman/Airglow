@@ -68,45 +68,6 @@ void dberror(string in)
     MessageBoxW(nullptr, to_wide(in).c_str(), wstring(L"Airglow").c_str(), 0);
 };
 
-RECT window_bounds(HWND hwnd)
-{
-    RECT bounds{0, 0, 0, 0};
-    GetClientRect(hwnd, &bounds);
-
-    return bounds;
-}
-
-RECT left_panel(RECT bounds)
-{
-    return RECT{
-        bounds.left,
-        bounds.top,
-        bounds.right / 2,
-        bounds.bottom,
-    };
-}
-
-RECT right_panel(RECT bounds)
-{
-    return RECT{
-        bounds.right / 2,
-        bounds.top,
-        bounds.right,
-        bounds.bottom,
-    };
-}
-
-std::vector<int> rect_to_bounds(RECT rect)
-{
-    return std::vector<int>{rect.left, rect.top, (rect.right - rect.left),
-                            (rect.bottom - rect.top)};
-}
-
-RECT bounds_to_rect(std::vector<int> bounds)
-{
-    return RECT{bounds[0], bounds[1], (bounds[0] + bounds[2]), (bounds[1] + bounds[3])};
-}
-
 path path_appdata()
 {
     PWSTR buffer{};
@@ -188,42 +149,10 @@ string system_color(winrt::Windows::UI::ViewManagement::UIColorType colorType)
     UISettings settings{UISettings()};
     Color accent{settings.GetColorValue(colorType)};
 
-    // std::stringstream version, old implementation:
-    //
-    // std::stringstream buffer;
-    // buffer << "#";
-    // buffer << std::hex << std::setfill('0');
-    // buffer << std::hex << std::setw(2) << static_cast<int>(accent.R);
-    // buffer << std::hex << std::setw(2) << static_cast<int>(accent.G);
-    // buffer << std::hex << std::setw(2) << static_cast<int>(accent.B);
-    // buffer << std::hex << std::setw(2) << static_cast<int>(accent.A);
-    // return buffer.str();
-
-    // new std::format version:
-    //
     auto formatted{
         std::format("#{:0>2x}{:0>2x}{:0>2x}{:0>2x}", accent.R, accent.G, accent.B, accent.A)};
 
     return formatted;
-}
-
-State::Color system_colors()
-{
-    State::Color color;
-    color.accent = system_color(winrt::Windows::UI::ViewManagement::UIColorType::Accent);
-    color.accentDark1 = system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark1);
-    color.accentDark2 = system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark2);
-    color.accentDark3 = system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark3);
-    color.accentLight1 =
-        system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight1);
-    color.accentLight2 =
-        system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight2);
-    color.accentLight3 =
-        system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight3);
-    color.Background = system_color(winrt::Windows::UI::ViewManagement::UIColorType::Background);
-    color.Foreground = system_color(winrt::Windows::UI::ViewManagement::UIColorType::Foreground);
-
-    return color;
 }
 
 string system_theme()
@@ -500,6 +429,45 @@ wstring js_inject_embed()
     )"};
 }
 
+std::vector<int> rect_to_bounds(RECT rect)
+{
+    return std::vector<int>{rect.left, rect.top, (rect.right - rect.left),
+                            (rect.bottom - rect.top)};
+}
+
+RECT bounds_to_rect(std::vector<int> bounds)
+{
+    return RECT{bounds[0], bounds[1], (bounds[0] + bounds[2]), (bounds[1] + bounds[3])};
+}
+
+RECT window_bounds(HWND hwnd)
+{
+    RECT bounds{0, 0, 0, 0};
+    GetClientRect(hwnd, &bounds);
+
+    return bounds;
+}
+
+RECT left_panel(RECT bounds)
+{
+    return RECT{
+        bounds.left,
+        bounds.top,
+        bounds.right / 2,
+        bounds.bottom,
+    };
+}
+
+RECT right_panel(RECT bounds)
+{
+    return RECT{
+        bounds.right / 2,
+        bounds.top,
+        bounds.right,
+        bounds.bottom,
+    };
+}
+
 namespace State
 {
 json window_serialize(Window w)
@@ -579,6 +547,25 @@ void window_save_state(Path path, json j)
     {
         return;
     }
+}
+
+Color system_colors()
+{
+    Color color;
+    color.accent = system_color(winrt::Windows::UI::ViewManagement::UIColorType::Accent);
+    color.accentDark1 = system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark1);
+    color.accentDark2 = system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark2);
+    color.accentDark3 = system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark3);
+    color.accentLight1 =
+        system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight1);
+    color.accentLight2 =
+        system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight2);
+    color.accentLight3 =
+        system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight3);
+    color.Background = system_color(winrt::Windows::UI::ViewManagement::UIColorType::Background);
+    color.Foreground = system_color(winrt::Windows::UI::ViewManagement::UIColorType::Foreground);
+
+    return color;
 }
 } // namespace State
 } // namespace Utility
