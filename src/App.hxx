@@ -23,9 +23,10 @@ class App
     State::Path path{};
     State::Color color{};
 
-    void Show(HWND);
+    void Show();
     void Load();
     void Save();
+    void Debug();
 
     static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
     int _OnActivate(HWND, WPARAM, LPARAM);

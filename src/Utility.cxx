@@ -348,14 +348,14 @@ bool window_fullscreen(HWND hwnd)
 {
     window_cloak(hwnd);
 
-    static RECT position;
+    static RECT pos;
 
     auto style = GetWindowLongPtrW(hwnd, GWL_STYLE);
 
     if (style & WS_OVERLAPPEDWINDOW)
     {
         MONITORINFO mi = {sizeof(mi)};
-        GetWindowRect(hwnd, &position);
+        GetWindowRect(hwnd, &pos);
         if (GetMonitorInfoW(MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST), &mi))
         {
             SetWindowLongPtrW(hwnd, GWL_STYLE, style & ~WS_OVERLAPPEDWINDOW);
@@ -371,8 +371,8 @@ bool window_fullscreen(HWND hwnd)
     else
     {
         SetWindowLongPtrW(hwnd, GWL_STYLE, style | WS_OVERLAPPEDWINDOW);
-        SetWindowPos(hwnd, nullptr, position.left, position.top, (position.right - position.left),
-                     (position.bottom - position.top), SWP_FRAMECHANGED);
+        SetWindowPos(hwnd, nullptr, pos.left, pos.top, (pos.right - pos.left),
+                     (pos.bottom - pos.top), SWP_FRAMECHANGED);
         SendMessage(hwnd, WM_SETICON, 0, 0);
         window_uncloak(hwnd);
 

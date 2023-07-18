@@ -8,7 +8,8 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
 {
     auto app{std::unique_ptr<App>(new App(hinstance, ncs))};
 
-    app->Load();
+    // app->Load();
+    // app->Save();
 
     SetEnvironmentVariableW(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR", L"0");
 
@@ -42,7 +43,7 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
     if (!app->window.hwnd)
         return nullptr;
 
-    app->Show(app->window.hwnd);
+    app->Show();
 
     app->browser = Browser::Create(app->window);
 
@@ -52,37 +53,39 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
     return app;
 }
 
-void App::Show(HWND hwnd)
+void App::Show()
 {
-    window_cloak(hwnd);
+    window_cloak(window.hwnd);
     window_darktitle();
-    window.theme = window_theme(hwnd);
-    window_mica(hwnd);
+    window.theme = window_theme(window.hwnd);
+    window_mica(window.hwnd);
 
-    if (window.position[0] == 0 && window.position[1] == 0 && window.position[2] == 0 &&
-        window.position[3] == 0)
-        ShowWindow(hwnd, SW_SHOWDEFAULT);
+    ShowWindow(window.hwnd, SW_SHOWDEFAULT);
 
-    else
-    {
-        if (window.maximized)
-            ShowWindow(hwnd, SW_MAXIMIZE);
+    // if (window.position[0] == 0 && window.position[1] == 0 && window.position[2] == 0 &&
+    //     window.position[3] == 0)
+    //     ShowWindow(window.hwnd, SW_SHOWDEFAULT);
 
-        else
-        {
-            SetWindowPos(hwnd, nullptr, window.position[0], window.position[1], window.position[2],
-                         window.position[3], 0);
-            ShowWindow(hwnd, SW_SHOWNORMAL);
-        }
-    }
+    // else
+    // {
+    //     if (window.maximized)
+    //         ShowWindow(window.hwnd, SW_MAXIMIZE);
 
-    if (window.topmost)
-        window_topmost(hwnd);
+    //     else
+    //     {
+    //         SetWindowPos(window.hwnd, nullptr, window.position[0], window.position[1],
+    //                      window.position[2], window.position[3], 0);
+    //         ShowWindow(window.hwnd, SW_SHOWNORMAL);
+    //     }
+    // }
 
-    if (window.fullscreen)
-        window_fullscreen(hwnd);
+    // if (window.topmost)
+    //     window_topmost(window.hwnd);
 
-    window_uncloak(hwnd);
+    // if (window.fullscreen)
+    //     window_fullscreen(window.hwnd);
+
+    window_uncloak(window.hwnd);
 }
 
 void App::Load()
@@ -207,6 +210,8 @@ int App::_OnExitSizeMove(HWND hwnd, WPARAM wparam, LPARAM lparam)
         window.position = window_position(hwnd);
     Save();
 
+    Debug();
+
     return 0;
 }
 
@@ -224,13 +229,22 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
     switch (wparam)
     {
     case VK_F1:
-        // pConfig->settings.split = bool_toggle(pConfig->settings.split);
+        window.split = bool_toggle(window.split);
+        browser->Bounds(window);
+        Save();
+
         return 0;
     case VK_F2:
-        // pConfig->settings.swapped = bool_toggle(pConfig->settings.swapped);
+        window.swapped = bool_toggle(window.swapped);
+        browser->Bounds(window);
+        Save();
+
         return 0;
     case VK_F4:
-        // pConfig->settings.menu = bool_toggle(pConfig->settings.menu);
+        window.menu = bool_toggle(window.menu);
+        browser->Bounds(window);
+        Save();
+
         return 0;
     case VK_F6:
         window.maximized = window_maximize(hwnd);
@@ -271,16 +285,44 @@ int App::_OnSettingChange(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int App::_OnSize(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-    if (wparam != 2)
-        window.maximized = false;
+    browser->Bounds(window);
+
+    auto style = GetWindowLongPtrW(hwnd, GWL_STYLE);
+    auto exStyle = GetWindowLongPtrW(hwnd, GWL_EXSTYLE);
 
     if (wparam == 2)
-    {
         window.maximized = true;
-    }
-    Save();
+    else
+        window.maximized = false;
 
-    // browser->Bounds(window);
+    if (style & WS_OVERLAPPEDWINDOW)
+        window.fullscreen = false;
+    else
+        window.fullscreen = true;
+
+    if (exStyle & WS_EX_TOPMOST)
+        window.topmost = true;
+    else
+        window.topmost = false;
+
+    Debug();
 
     return 0;
+}
+
+void App::Debug()
+{
+    println("theme: " + window.theme);
+    println("mainUrl: " + window.mainUrl);
+    println("sideUrl: " + window.sideUrl);
+    println("menu: " + bool_to_string(window.menu));
+    println("split: " + bool_to_string(window.split));
+    println("swapped: " + bool_to_string(window.swapped));
+    println("maximized: " + bool_to_string(window.maximized));
+    println("fullscreen: " + bool_to_string(window.fullscreen));
+    println("topmost: " + bool_to_string(window.topmost));
+    println(std::to_string(window.position[0]));
+    println(std::to_string(window.position[1]));
+    println(std::to_string(window.position[2]));
+    println(std::to_string(window.position[3]));
 }

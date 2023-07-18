@@ -2,9 +2,9 @@
 
 using namespace WebView;
 
-Browser::Browser(State::Window window) {}
+Browser::Browser(State::Window& window) {}
 
-std::unique_ptr<Browser> Browser::Create(State::Window window)
+std::unique_ptr<Browser> Browser::Create(State::Window& window)
 {
     auto browser{std::unique_ptr<Browser>(new Browser(window))};
 
@@ -13,11 +13,11 @@ std::unique_ptr<Browser> Browser::Create(State::Window window)
     if (FAILED(CreateCoreWebView2EnvironmentWithOptions(
             nullptr, path_portable().wstring().c_str(), nullptr,
             Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
-                [=](HRESULT hr, ICoreWebView2Environment* e) -> HRESULT
+                [hwnd](HRESULT hr, ICoreWebView2Environment* e) -> HRESULT
                 {
                     e->CreateCoreWebView2Controller(
                         hwnd, Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                                  [=](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
+                                  [hwnd](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
                                   {
                                       EventRegistrationToken tokenTitle;
                                       EventRegistrationToken tokenFavicon;
@@ -55,6 +55,8 @@ std::unique_ptr<Browser> Browser::Create(State::Window window)
                                       //       Core19::main->Navigate(L"https://www.bing.com/");
 
                                       Core19::main->Navigate(L"https://www.bing.com/");
+
+                                      SendMessageW(hwnd, WM_SIZE, 0, 0);
 
                                       Core19::main->add_DocumentTitleChanged(
                                           Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
@@ -96,90 +98,91 @@ std::unique_ptr<Browser> Browser::Create(State::Window window)
                                   .Get());
 
                     e->CreateCoreWebView2Controller(
-                        window.hwnd,
-                        Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                            [=](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
-                            {
-                                EventRegistrationToken tokenTitle;
-                                EventRegistrationToken tokenFavicon;
-                                EventRegistrationToken tokenReceivedMsg;
-                                EventRegistrationToken tokenNavigationCompleted;
+                        hwnd, Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+                                  [hwnd](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
+                                  {
+                                      EventRegistrationToken tokenTitle;
+                                      EventRegistrationToken tokenFavicon;
+                                      EventRegistrationToken tokenReceivedMsg;
+                                      EventRegistrationToken tokenNavigationCompleted;
 
-                                if (c)
-                                {
-                                    Controller::side = c;
-                                    Controller::side->get_CoreWebView2(&Core::side);
-                                }
+                                      if (c)
+                                      {
+                                          Controller::side = c;
+                                          Controller::side->get_CoreWebView2(&Core::side);
+                                      }
 
-                                if (Core::side)
-                                    Core19::side = Core::side.try_query<ICoreWebView2_19>();
+                                      if (Core::side)
+                                          Core19::side = Core::side.try_query<ICoreWebView2_19>();
 
-                                if (Core19::side)
-                                {
-                                    Core19::side->get_Settings(&Settings::side);
+                                      if (Core19::side)
+                                      {
+                                          Core19::side->get_Settings(&Settings::side);
 
-                                    Settings::side->put_AreDefaultContextMenusEnabled(true);
-                                    Settings::side->put_AreDefaultScriptDialogsEnabled(true);
-                                    Settings::side->put_AreDevToolsEnabled(true);
-                                    Settings::side->put_AreHostObjectsAllowed(true);
-                                    Settings::side->put_IsBuiltInErrorPageEnabled(true);
-                                    Settings::side->put_IsScriptEnabled(true);
-                                    Settings::side->put_IsStatusBarEnabled(false);
-                                    Settings::side->put_IsWebMessageEnabled(true);
-                                    Settings::side->put_IsZoomControlEnabled(false);
-                                }
+                                          Settings::side->put_AreDefaultContextMenusEnabled(true);
+                                          Settings::side->put_AreDefaultScriptDialogsEnabled(true);
+                                          Settings::side->put_AreDevToolsEnabled(true);
+                                          Settings::side->put_AreHostObjectsAllowed(true);
+                                          Settings::side->put_IsBuiltInErrorPageEnabled(true);
+                                          Settings::side->put_IsScriptEnabled(true);
+                                          Settings::side->put_IsStatusBarEnabled(false);
+                                          Settings::side->put_IsWebMessageEnabled(true);
+                                          Settings::side->put_IsZoomControlEnabled(false);
+                                      }
 
-                                //   auto url{L"https://" + command_line().second};
-                                //   if (!url.empty())
-                                //       Core19::side->Navigate(url.c_str());
-                                //   else
-                                //       Core19::side->Navigate(L"https://www.google.com/");
+                                      //   auto url{L"https://" + command_line().second};
+                                      //   if (!url.empty())
+                                      //       Core19::side->Navigate(url.c_str());
+                                      //   else
+                                      //       Core19::side->Navigate(L"https://www.google.com/");
 
-                                Core19::side->Navigate(L"https://www.google.com/");
+                                      Core19::side->Navigate(L"https://www.google.com/");
 
-                                Core19::side->add_DocumentTitleChanged(
-                                    Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
-                                        [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
-                                        {
-                                            //   set_title();
+                                      SendMessageW(hwnd, WM_SIZE, 0, 0);
 
-                                            return S_OK;
-                                        })
-                                        .Get(),
-                                    &tokenTitle);
+                                      Core19::side->add_DocumentTitleChanged(
+                                          Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
+                                              [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                              {
+                                                  //   set_title();
 
-                                Core19::side->add_FaviconChanged(
-                                    Callback<ICoreWebView2FaviconChangedEventHandler>(
-                                        [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
-                                        {
-                                            //   set_icon();
+                                                  return S_OK;
+                                              })
+                                              .Get(),
+                                          &tokenTitle);
 
-                                            return S_OK;
-                                        })
-                                        .Get(),
-                                    &tokenFavicon);
+                                      Core19::side->add_FaviconChanged(
+                                          Callback<ICoreWebView2FaviconChangedEventHandler>(
+                                              [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                              {
+                                                  //   set_icon();
 
-                                Core19::side->add_WebMessageReceived(
-                                    Callback<ICoreWebView2WebMessageReceivedEventHandler>(
-                                        [](ICoreWebView2* webview,
-                                           ICoreWebView2WebMessageReceivedEventArgs* args)
-                                            -> HRESULT
-                                        {
-                                            //   messages();
+                                                  return S_OK;
+                                              })
+                                              .Get(),
+                                          &tokenFavicon);
 
-                                            return S_OK;
-                                        })
-                                        .Get(),
-                                    &tokenReceivedMsg);
+                                      Core19::side->add_WebMessageReceived(
+                                          Callback<ICoreWebView2WebMessageReceivedEventHandler>(
+                                              [](ICoreWebView2* webview,
+                                                 ICoreWebView2WebMessageReceivedEventArgs* args)
+                                                  -> HRESULT
+                                              {
+                                                  //   messages();
 
-                                return S_OK;
-                            })
-                            .Get());
+                                                  return S_OK;
+                                              })
+                                              .Get(),
+                                          &tokenReceivedMsg);
+
+                                      return S_OK;
+                                  })
+                                  .Get());
 
                     e->CreateCoreWebView2Controller(
-                        window.hwnd,
+                        hwnd,
                         Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                            [=](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
+                            [hwnd](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
                             {
                                 EventRegistrationToken tokenTitle;
                                 EventRegistrationToken tokenFavicon;
@@ -215,6 +218,8 @@ std::unique_ptr<Browser> Browser::Create(State::Window window)
                                     COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
 
                                 Core19::settings->Navigate(L"https://settings/index.html");
+
+                                SendMessageW(hwnd, WM_SIZE, 0, 0);
 
                                 Core19::settings->add_DocumentTitleChanged(
                                     Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
@@ -265,7 +270,7 @@ std::unique_ptr<Browser> Browser::Create(State::Window window)
     return browser;
 }
 
-void Browser::Bounds(State::Window window)
+void Browser::Bounds(State::Window& window)
 {
     using namespace Controller;
     if (!settings || !main || !side)
