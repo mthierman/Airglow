@@ -189,22 +189,6 @@ void App::LoadSettings()
 
 void App::SaveSettings() { SaveJson(SerializeJson(settings)); }
 
-Colors SystemColors()
-{
-    Colors c;
-    c.accent = system_color(winrt::Windows::UI::ViewManagement::UIColorType::Accent);
-    c.accentDark1 = system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark1);
-    c.accentDark2 = system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark2);
-    c.accentDark3 = system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark3);
-    c.accentLight1 = system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight1);
-    c.accentLight2 = system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight2);
-    c.accentLight3 = system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight3);
-    c.Background = system_color(winrt::Windows::UI::ViewManagement::UIColorType::Background);
-    c.Foreground = system_color(winrt::Windows::UI::ViewManagement::UIColorType::Foreground);
-
-    return c;
-}
-
 // void App::CreateDb()
 // {
 //     auto dbFile{(paths.db).string()};
@@ -449,7 +433,9 @@ int App::_OnSetFocus(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int App::_OnSettingChange(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
+    colors = colors.SystemColors();
     settings.theme = window_theme(hwnd);
+    browser->PostSettings(SerializeJson(settings));
     SaveSettings();
 
     return 0;

@@ -32,7 +32,6 @@ class App
     void SaveJson(json);
     void LoadSettings();
     void SaveSettings();
-    Colors SystemColors();
 
     // void App::CreateDb();
 

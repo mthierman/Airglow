@@ -49,11 +49,13 @@ document.onreadystatechange = () => {
 
 if (window.chrome.webview) {
     window.chrome.webview.addEventListener("message", (arg: any) => {
-        let settings = arg.data.settings;
-        document.documentElement.style.setProperty(
-            "--accentColor",
-            settings.accentColor,
-        );
+        console.log(arg);
+        // let settings = arg.data.settings;
+        // console.log(settings);
+        // document.documentElement.style.setProperty(
+        //     "--accentColor",
+        //     settings.accentColor,
+        // );
     });
 }
 
@@ -84,10 +86,11 @@ export default function App() {
     useEffect(() => {
         const getData = async () => {
             try {
-                const response = await fetch(`https://settings/Airglow.json`);
+                const response = await fetch(`https://airglow/Airglow.json`);
                 let data = await response.json();
-                setMainUrl(data.mainUrl);
-                setSideUrl(data.sideUrl);
+                let settings = data.settings;
+                setMainUrl(settings.mainUrl);
+                setSideUrl(settings.sideUrl);
             } catch (error) {
                 console.error("error", error);
             }

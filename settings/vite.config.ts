@@ -25,6 +25,7 @@ export default defineConfig(async ({ command, mode }) => {
         };
     } else {
         return {
+            base: "./",
             plugins: [react()],
         };
     }

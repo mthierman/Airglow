@@ -54,7 +54,8 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings)
                                       if (!command_line().first.empty())
                                           wvBrowser->Navigate(command_line().first.c_str());
                                       else
-                                          wvBrowser->Navigate(to_wide(settings.mainUrl).c_str());
+                                          wvBrowser->Navigate(
+                                              (L"https://" + to_wide(settings.mainUrl)).c_str());
 
                                       browser->Bounds(window, settings);
                                       browser->Focus(window, settings);
@@ -139,7 +140,8 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings)
                                       if (!command_line().second.empty())
                                           wvBrowser->Navigate(command_line().second.c_str());
                                       else
-                                          wvBrowser->Navigate(to_wide(settings.sideUrl).c_str());
+                                          wvBrowser->Navigate(
+                                              (L"https://" + to_wide(settings.sideUrl)).c_str());
 
                                       browser->Bounds(window, settings);
                                       browser->Focus(window, settings);
@@ -222,12 +224,15 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings)
                                       }
 
                                       wvBrowser->SetVirtualHostNameToFolderMapping(
-                                          L"settings", path_portable().wstring().c_str(),
+                                          L"airglow", path_portable().wstring().c_str(),
                                           COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
 
-                                      wvBrowser->Navigate(L"https://settings/index.html");
+                                      wvBrowser->Navigate(L"https://airglow/settings/index.html");
+
 #ifdef _DEBUG
+                                      // DEBUG
                                       wvBrowser->Navigate(L"https://localhost:8000/");
+                                      wvBrowser->OpenDevToolsWindow();
 #endif
 
                                       browser->Bounds(window, settings);
@@ -499,6 +504,10 @@ void Browser::Messages(Window& window, Settings& settings,
     {
         auto message = wstring(messageRaw.get());
 
+#ifdef _DEBUG
+        wprintln(message);
+#endif
+
         if (message.compare(0, 8, L"mainUrl ") == 0)
         {
             to_wide(settings.mainUrl) = message.substr(8);
@@ -546,15 +555,10 @@ void Browser::Messages(Window& window, Settings& settings,
     }
 }
 
-void Browser::PostConfig()
+void Browser::PostSettings(json j)
 {
-    // if (!pConfig || !Browsers::Settings::browser)
-    //     return;
+    if (!wv2settings::wvBrowser)
+        return;
 
-    // json j{{"settings",
-    //         {{"mainUrl", pConfig->settings.mainUrl},
-    //          {"sideUrl", pConfig->settings.sideUrl},
-    //          {"accentColor", pConfig->colors.accent}}}};
-
-    // Browsers::Settings::browser->PostWebMessageAsJson(to_wide(j.dump()).c_str());
+    wv2settings::wvBrowser->PostWebMessageAsJson(to_wide(j.dump()).c_str());
 }
