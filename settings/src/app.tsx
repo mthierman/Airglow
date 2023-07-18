@@ -49,9 +49,7 @@ document.onreadystatechange = () => {
 
 if (window.chrome.webview) {
     window.chrome.webview.addEventListener("message", (arg: any) => {
-        // console.log(arg);
         let colors = arg.data.colors;
-        console.log(colors);
         document.documentElement.style.setProperty(
             "--accentColor",
             colors.accent,

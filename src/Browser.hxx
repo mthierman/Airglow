@@ -10,7 +10,7 @@ using namespace Microsoft::WRL;
 class Browser
 {
   public:
-    static std::unique_ptr<Browser> Create(Window&, Settings&);
+    static std::unique_ptr<Browser> Create(Window&, Settings&, Colors&);
     void Bounds(Window&, Settings&);
     void Focus(Window&, Settings&);
     void Title(Window&, Settings&);
@@ -19,7 +19,7 @@ class Browser
     void PostSettings(json);
 
   private:
-    Browser(Window&, Settings&);
+    Browser(Window&, Settings&, Colors&);
 };
 
 namespace wv2main

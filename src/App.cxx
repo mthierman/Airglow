@@ -38,7 +38,7 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
 
     app->Show();
 
-    app->browser = Browser::Create(app->window, app->settings);
+    app->browser = Browser::Create(app->window, app->settings, app->colors);
 
     if (!app->browser)
         return nullptr;

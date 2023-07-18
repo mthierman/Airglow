@@ -1,10 +1,10 @@
 #include "Browser.hxx"
 
-Browser::Browser(Window& window, Settings& settings) {}
+Browser::Browser(Window& window, Settings& settings, Colors& colors) {}
 
-std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings)
+std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Colors& colors)
 {
-    auto browser{std::unique_ptr<Browser>(new Browser(window, settings))};
+    auto browser{std::unique_ptr<Browser>(new Browser(window, settings, colors))};
 
     auto hwnd{window.hwnd};
 
@@ -274,6 +274,19 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings)
                                               })
                                               .Get(),
                                           &tokenReceivedMsg);
+
+                                      wvBrowser->add_NavigationCompleted(
+                                          Callback<ICoreWebView2NavigationCompletedEventHandler>(
+                                              [&](ICoreWebView2* webview,
+                                                  ICoreWebView2NavigationCompletedEventArgs* args)
+                                                  -> HRESULT
+                                              {
+                                                  browser->PostSettings(colors.Serialize());
+
+                                                  return S_OK;
+                                              })
+                                              .Get(),
+                                          &tokenNavigationCompleted);
 
                                       return S_OK;
                                   })
