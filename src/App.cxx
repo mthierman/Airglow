@@ -8,8 +8,9 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
 {
     auto app{std::unique_ptr<App>(new App(hinstance, ncs))};
 
+    // app->Save();
     app->Load();
-    app->Save();
+    // app->Save();
 
     app->window.icon = (HICON)LoadImageW(hinstance, to_wide("PROGRAM_ICON").c_str(), IMAGE_ICON, 0,
                                          0, LR_DEFAULTCOLOR | LR_DEFAULTSIZE);
@@ -92,12 +93,13 @@ void App::Load()
 
     if (std::filesystem::exists(path.json) && !std::filesystem::is_empty(path.json))
     {
+        // println("path.json exists and isn't empty");
         auto load = window_load_state(path);
 
-        if (load.empty())
-            return;
+        // if (load.empty())
+        // return;
 
-        window = window_deserialize(load);
+        // window = window_deserialize(load);
     }
 }
 

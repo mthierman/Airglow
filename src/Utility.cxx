@@ -515,6 +515,8 @@ Window window_deserialize(json j)
     }
     catch (const std::exception& e)
     {
+        println("deserialize error");
+        println(e.what());
         return w;
     }
 }
@@ -531,6 +533,7 @@ json window_load_state(State::Path path)
     }
     catch (const std::exception& e)
     {
+        // println(e.what());
         return json{};
     }
 }
