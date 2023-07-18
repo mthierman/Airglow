@@ -59,15 +59,19 @@ int error(string in)
     return 0;
 };
 
-void errorw(wstring in)
+int errorw(wstring in)
 {
     wstring error = in + L". Error: " + std::to_wstring(GetLastError());
     MessageBoxW(nullptr, error.c_str(), wstring(L"Airglow").c_str(), 0);
+
+    return 0;
 };
 
-void dberror(string in)
+int dberror(string in)
 {
     MessageBoxW(nullptr, to_wide(in).c_str(), wstring(L"Airglow").c_str(), 0);
+
+    return 0;
 };
 
 path path_appdata()
@@ -404,33 +408,6 @@ wstring js_inject()
     return script;
 }
 
-wstring js_inject_embed()
-{
-    return wstring{LR"(
-        document.onreadystatechange = () => {
-            if (document.readyState === "interactive") {
-                let scheme = document.createElement("meta");
-                scheme.setAttribute("name", "color-scheme");
-                scheme.setAttribute("content", "light dark");
-                document.getElementsByTagName("head")[0].appendChild(scheme);
-                document.documentElement.style.setProperty(
-                    "color-scheme",
-                    "light dark"
-                );
-            }
-            if (document.readyState === "complete") {
-                onkeydown = (e) => {
-                    if (e.ctrlKey && e.key === "w") {
-                        window.chrome.webview.postMessage("close");
-                    } else {
-                        window.chrome.webview.postMessage(e.key);
-                    }
-                };
-            }
-        };
-    )"};
-}
-
 std::vector<int> rect_to_bounds(RECT rect)
 {
     return std::vector<int>{rect.left, rect.top, (rect.right - rect.left),
@@ -469,108 +446,4 @@ RECT right_panel(RECT bounds)
         bounds.bottom,
     };
 }
-
-namespace State
-{
-json window_serialize(Window w)
-{
-    try
-    {
-        return json{{"settings",
-                     {
-                         {"theme", w.theme},
-                         {"mainUrl", w.mainUrl},
-                         {"sideUrl", w.sideUrl},
-                         {"position", w.position},
-                         {"menu", w.menu},
-                         {"split", w.split},
-                         {"swapped", w.swapped},
-                         {"maximized", w.maximized},
-                         {"fullscreen", w.fullscreen},
-                         {"topmost", w.topmost},
-                     }}};
-    }
-    catch (const std::exception& e)
-    {
-        return json{};
-    }
-}
-
-Window window_deserialize(json j)
-{
-    Window w{};
-
-    try
-    {
-        w.theme = j["theme"].get<string>();
-        w.mainUrl = j["mainUrl"].get<string>();
-        w.sideUrl = j["sideUrl"].get<string>();
-        w.position = j["position"].get<std::vector<int>>();
-        w.menu = j["menu"].get<bool>();
-        w.split = j["split"].get<bool>();
-        w.swapped = j["swapped"].get<bool>();
-        w.maximized = j["maximized"].get<bool>();
-        w.fullscreen = j["fullscreen"].get<bool>();
-        w.topmost = j["topmost"].get<bool>();
-
-        return w;
-    }
-    catch (const std::exception& e)
-    {
-        println("deserialize error");
-        println(e.what());
-        return w;
-    }
-}
-
-json window_load_state(State::Path path)
-{
-    try
-    {
-        ifstream f(path.json);
-        json j{json::parse(f, nullptr, false, true)};
-        f.close();
-
-        return j;
-    }
-    catch (const std::exception& e)
-    {
-        // println(e.what());
-        return json{};
-    }
-}
-
-void window_save_state(Path path, json j)
-{
-    try
-    {
-        ofstream f(path.json);
-        f << std::setw(4) << j << "\n";
-        f.close();
-    }
-    catch (const std::exception& e)
-    {
-        return;
-    }
-}
-
-Color system_colors()
-{
-    Color color;
-    color.accent = system_color(winrt::Windows::UI::ViewManagement::UIColorType::Accent);
-    color.accentDark1 = system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark1);
-    color.accentDark2 = system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark2);
-    color.accentDark3 = system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark3);
-    color.accentLight1 =
-        system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight1);
-    color.accentLight2 =
-        system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight2);
-    color.accentLight3 =
-        system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight3);
-    color.Background = system_color(winrt::Windows::UI::ViewManagement::UIColorType::Background);
-    color.Foreground = system_color(winrt::Windows::UI::ViewManagement::UIColorType::Foreground);
-
-    return color;
-}
-} // namespace State
 } // namespace Utility

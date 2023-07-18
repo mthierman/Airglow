@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Utility.hxx"
+#include "Data.hxx"
 
 using namespace Utility;
 using namespace Gdiplus;
@@ -9,39 +10,35 @@ using namespace Microsoft::WRL;
 class Browser
 {
   public:
-    static std::unique_ptr<Browser> Create(State::Window&);
-    void Bounds(State::Window&);
-    void Focus(State::Window&);
-    void Messages(State::Window&, ICoreWebView2WebMessageReceivedEventArgs* args);
+    static std::unique_ptr<Browser> Create(Window&, Settings&);
+    void Bounds(Window&, Settings&);
+    void Focus(Window&, Settings&);
+    void Messages(Window&, Settings&, ICoreWebView2WebMessageReceivedEventArgs* args);
 
   private:
-    Browser(State::Window&);
+    Browser(Window&, Settings&);
 };
 
-namespace WebView
+namespace wv2main
 {
-namespace Controller
+static wil::com_ptr<ICoreWebView2Controller> wvController;
+static wil::com_ptr<ICoreWebView2> wvCore;
+static wil::com_ptr<ICoreWebView2_19> wvBrowser;
+static wil::com_ptr<ICoreWebView2Settings> wvSettings;
+} // namespace wv2main
+
+namespace wv2side
 {
-static wil::com_ptr<ICoreWebView2Controller> main;
-static wil::com_ptr<ICoreWebView2Controller> side;
-static wil::com_ptr<ICoreWebView2Controller> settings;
-} // namespace Controller
-namespace Core
+static wil::com_ptr<ICoreWebView2Controller> wvController;
+static wil::com_ptr<ICoreWebView2> wvCore;
+static wil::com_ptr<ICoreWebView2_19> wvBrowser;
+static wil::com_ptr<ICoreWebView2Settings> wvSettings;
+} // namespace wv2side
+
+namespace wv2settings
 {
-static wil::com_ptr<ICoreWebView2> main;
-static wil::com_ptr<ICoreWebView2> side;
-static wil::com_ptr<ICoreWebView2> settings;
-} // namespace Core
-namespace Core19
-{
-static wil::com_ptr<ICoreWebView2_19> main;
-static wil::com_ptr<ICoreWebView2_19> side;
-static wil::com_ptr<ICoreWebView2_19> settings;
-} // namespace Core19
-namespace Settings
-{
-static wil::com_ptr<ICoreWebView2Settings> main;
-static wil::com_ptr<ICoreWebView2Settings> side;
-static wil::com_ptr<ICoreWebView2Settings> settings;
-} // namespace Settings
-} // namespace WebView
+static wil::com_ptr<ICoreWebView2Controller> wvController;
+static wil::com_ptr<ICoreWebView2> wvCore;
+static wil::com_ptr<ICoreWebView2_19> wvBrowser;
+static wil::com_ptr<ICoreWebView2Settings> wvSettings;
+} // namespace wv2settings

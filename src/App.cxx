@@ -8,7 +8,7 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
 {
     auto app{std::unique_ptr<App>(new App(hinstance, ncs))};
 
-    // app->Load();
+    app->LoadSettings();
 
     app->window.icon = (HICON)LoadImageW(hinstance, to_wide("PROGRAM_ICON").c_str(), IMAGE_ICON, 0,
                                          0, LR_DEFAULTCOLOR | LR_DEFAULTSIZE);
@@ -38,7 +38,7 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
 
     app->Show();
 
-    app->browser = Browser::Create(app->window);
+    app->browser = Browser::Create(app->window, app->settings);
 
     if (!app->browser)
         return nullptr;
@@ -54,58 +54,155 @@ void App::Show()
 {
     window_cloak(window.hwnd);
     window_darktitle();
-    window.theme = window_theme(window.hwnd);
+    settings.theme = window_theme(window.hwnd);
     window_mica(window.hwnd);
 
-    // ShowWindow(window.hwnd, SW_SHOWDEFAULT);
-
-    if (window.position[0] == 0 && window.position[1] == 0 && window.position[2] == 0 &&
-        window.position[3] == 0)
+    if (settings.position[0] == 0 && settings.position[1] == 0 && settings.position[2] == 0 &&
+        settings.position[3] == 0)
         ShowWindow(window.hwnd, SW_SHOWDEFAULT);
 
     else
     {
-        if (window.maximized)
-            ShowWindow(window.hwnd, SW_MAXIMIZE);
+        if (settings.maximized)
+        {
+            SetWindowPos(window.hwnd, nullptr, settings.position[0], settings.position[1],
+                         settings.position[2], settings.position[3], 0);
+            ShowWindow(window.hwnd, SW_SHOWMAXIMIZED);
+        }
 
         else
         {
-            SetWindowPos(window.hwnd, nullptr, window.position[0], window.position[1],
-                         window.position[2], window.position[3], 0);
-            ShowWindow(window.hwnd, SW_SHOWNORMAL);
+            SetWindowPos(window.hwnd, nullptr, settings.position[0], settings.position[1],
+                         settings.position[2], settings.position[3], 0);
+            ShowWindow(window.hwnd, SW_SHOWDEFAULT);
         }
     }
 
-    if (window.topmost)
+    if (settings.topmost)
+    {
         window_topmost(window.hwnd);
-
-    if (window.fullscreen)
-        window_fullscreen(window.hwnd);
+    }
 
     window_uncloak(window.hwnd);
-}
 
-void App::Load()
-{
-    using namespace State;
-
-    if (std::filesystem::exists(path.json) && !std::filesystem::is_empty(path.json))
+    if (settings.fullscreen)
     {
-        // println("path.json exists and isn't empty");
-        auto load = window_load_state(path);
-
-        // if (load.empty())
-        // return;
-
-        // window = window_deserialize(load);
+        window_fullscreen(window.hwnd);
     }
 }
 
-void App::Save()
+json App::SerializeJson(Settings s)
 {
-    using namespace State;
+    try
+    {
+        return json{{"settings",
+                     {
+                         {"theme", s.theme},
+                         {"mainUrl", s.mainUrl},
+                         {"sideUrl", s.sideUrl},
+                         {"position", s.position},
+                         {"menu", s.menu},
+                         {"split", s.split},
+                         {"swapped", s.swapped},
+                         {"maximized", s.maximized},
+                         {"fullscreen", s.fullscreen},
+                         {"topmost", s.topmost},
+                     }}};
+    }
+    catch (const std::exception& e)
+    {
+        println(e.what());
+        return json{};
+    }
+}
 
-    window_save_state(path, json{window_serialize(window)});
+Settings App::DeserializeJson(json j)
+{
+    try
+    {
+        return Settings{j["settings"]["theme"].get<string>(),
+                        j["settings"]["mainUrl"].get<string>(),
+                        j["settings"]["sideUrl"].get<string>(),
+                        j["settings"]["position"].get<std::vector<int>>(),
+                        j["settings"]["menu"].get<bool>(),
+                        j["settings"]["split"].get<bool>(),
+                        j["settings"]["swapped"].get<bool>(),
+                        j["settings"]["maximized"].get<bool>(),
+                        j["settings"]["fullscreen"].get<bool>(),
+                        j["settings"]["topmost"].get<bool>()
+
+        };
+    }
+    catch (const std::exception& e)
+    {
+        println(e.what());
+        return Settings{};
+    }
+}
+
+json App::LoadJson()
+{
+    try
+    {
+        ifstream f(paths.json);
+        json j{json::parse(f, nullptr, false, true)};
+        f.close();
+
+        return j;
+    }
+    catch (const std::exception& e)
+    {
+        println(e.what());
+        return json{};
+    }
+}
+
+void App::SaveJson(json j)
+{
+    try
+    {
+        ofstream f(paths.json);
+        f << std::setw(4) << j << "\n";
+        f.close();
+    }
+    catch (const std::exception& e)
+    {
+        println(e.what());
+        return;
+    }
+}
+
+void App::LoadSettings()
+{
+    if (!std::filesystem::exists(paths.json))
+        SaveJson(SerializeJson(settings));
+
+    if (std::filesystem::exists(paths.json) && std::filesystem::is_empty(paths.json))
+        SaveJson(SerializeJson(settings));
+
+    if (std::filesystem::exists(paths.json))
+    {
+        auto j{LoadJson()};
+        settings = DeserializeJson(j);
+    }
+}
+
+void App::SaveSettings() { SaveJson(SerializeJson(settings)); }
+
+Colors SystemColors()
+{
+    Colors c;
+    c.accent = system_color(winrt::Windows::UI::ViewManagement::UIColorType::Accent);
+    c.accentDark1 = system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark1);
+    c.accentDark2 = system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark2);
+    c.accentDark3 = system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark3);
+    c.accentLight1 = system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight1);
+    c.accentLight2 = system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight2);
+    c.accentLight3 = system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight3);
+    c.Background = system_color(winrt::Windows::UI::ViewManagement::UIColorType::Background);
+    c.Foreground = system_color(winrt::Windows::UI::ViewManagement::UIColorType::Foreground);
+
+    return c;
 }
 
 template <class T> T* InstanceFromWndProc(HWND hwnd, UINT msg, LPARAM lparam)
@@ -163,16 +260,16 @@ __int64 __stdcall App::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
 
 int App::_OnActivate(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-    if (!window.maximized && !window.fullscreen)
-        window.position = window_position(hwnd);
-    // Save();
+    if (!settings.maximized && !settings.fullscreen)
+        settings.position = window_position(hwnd);
+    SaveSettings();
 
     return 0;
 }
 
 int App::_OnClose(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-    // Save();
+    SaveSettings();
     DestroyWindow(hwnd);
 
     return 0;
@@ -191,7 +288,7 @@ int App::_OnEraseBackground(HWND hwnd, WPARAM wparam, LPARAM lparam)
     PAINTSTRUCT ps{};
     HDC hdc = BeginPaint(hwnd, &ps);
 
-    if (window.theme == "dark")
+    if (settings.theme == "dark")
         FillRect(hdc, &ps.rcPaint, window.darkBrush);
 
     else
@@ -204,9 +301,9 @@ int App::_OnEraseBackground(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int App::_OnExitSizeMove(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-    if (!window.maximized && !window.fullscreen)
-        window.position = window_position(hwnd);
-    // Save();
+    if (!settings.maximized && !settings.fullscreen)
+        settings.position = window_position(hwnd);
+    SaveSettings();
 
     return 0;
 }
@@ -225,39 +322,45 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
     switch (wparam)
     {
     case VK_F1:
-        window.split = bool_toggle(window.split);
-        browser->Bounds(window);
-        browser->Focus(window);
-        // Save();
+        settings.split = bool_toggle(settings.split);
+        browser->Bounds(window, settings);
+        browser->Focus(window, settings);
+        println(bool_to_string(settings.split));
+        SaveSettings();
 
         return 0;
     case VK_F2:
-        window.swapped = bool_toggle(window.swapped);
-        browser->Bounds(window);
-        browser->Focus(window);
-        // Save();
+        settings.swapped = bool_toggle(settings.swapped);
+        browser->Bounds(window, settings);
+        browser->Focus(window, settings);
+        println(bool_to_string(settings.swapped));
+        SaveSettings();
 
         return 0;
     case VK_F4:
-        window.menu = bool_toggle(window.menu);
-        browser->Bounds(window);
-        browser->Focus(window);
-        // Save();
+        settings.menu = bool_toggle(settings.menu);
+        browser->Bounds(window, settings);
+        browser->Focus(window, settings);
+        println(bool_to_string(settings.menu));
+        SaveSettings();
 
         return 0;
     case VK_F6:
-        window.maximized = window_maximize(hwnd);
-        // Save();
+        settings.maximized = window_maximize(hwnd);
+        println(bool_to_string(settings.maximized));
+        SaveSettings();
 
         return 0;
     case VK_F9:
-        window.topmost = window_topmost(hwnd);
-        // Save();
+        settings.topmost = window_topmost(hwnd);
+        println(bool_to_string(settings.topmost));
+        SaveSettings();
 
         return 0;
     case VK_F11:
-        window.fullscreen = window_fullscreen(hwnd);
-        // Save();
+        settings.fullscreen = window_fullscreen(hwnd);
+        println(bool_to_string(settings.fullscreen));
+        SaveSettings();
 
         return 0;
     case 0x57:
@@ -274,59 +377,57 @@ int App::_OnSetIcon(HWND hwnd, WPARAM wparam, LPARAM lparam) { return 0; }
 
 int App::_OnSetFocus(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-    browser->Focus(window);
+    browser->Focus(window, settings);
 
     return 0;
 }
 
 int App::_OnSettingChange(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-    window.theme = window_theme(hwnd);
-    // Save();
+    settings.theme = window_theme(hwnd);
+    SaveSettings();
 
     return 0;
 }
 
 int App::_OnSize(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-    browser->Bounds(window);
+    browser->Bounds(window, settings);
 
     auto style = GetWindowLongPtrW(hwnd, GWL_STYLE);
     auto exStyle = GetWindowLongPtrW(hwnd, GWL_EXSTYLE);
 
     if (wparam == 2)
-        window.maximized = true;
+        settings.maximized = true;
     else
-        window.maximized = false;
+        settings.maximized = false;
 
-    if (style & WS_OVERLAPPEDWINDOW)
-        window.fullscreen = false;
-    else
-        window.fullscreen = true;
+    // if (style & WS_OVERLAPPEDWINDOW)
+    //     settings.fullscreen = false;
+    // else
+    //     settings.fullscreen = true;
 
-    if (exStyle & WS_EX_TOPMOST)
-        window.topmost = true;
-    else
-        window.topmost = false;
-
-    Debug();
+    // if (exStyle & WS_EX_TOPMOST)
+    //     settings.topmost = true;
+    // else
+    //     settings.topmost = false;
 
     return 0;
 }
 
 void App::Debug()
 {
-    println("theme: " + window.theme);
-    println("mainUrl: " + window.mainUrl);
-    println("sideUrl: " + window.sideUrl);
-    println("menu: " + bool_to_string(window.menu));
-    println("split: " + bool_to_string(window.split));
-    println("swapped: " + bool_to_string(window.swapped));
-    println("maximized: " + bool_to_string(window.maximized));
-    println("fullscreen: " + bool_to_string(window.fullscreen));
-    println("topmost: " + bool_to_string(window.topmost));
-    println(std::to_string(window.position[0]));
-    println(std::to_string(window.position[1]));
-    println(std::to_string(window.position[2]));
-    println(std::to_string(window.position[3]));
+    println("theme: " + settings.theme);
+    println("mainUrl: " + settings.mainUrl);
+    println("sideUrl: " + settings.sideUrl);
+    println("menu: " + bool_to_string(settings.menu));
+    println("split: " + bool_to_string(settings.split));
+    println("swapped: " + bool_to_string(settings.swapped));
+    println("maximized: " + bool_to_string(settings.maximized));
+    println("fullscreen: " + bool_to_string(settings.fullscreen));
+    println("topmost: " + bool_to_string(settings.topmost));
+    println(std::to_string(settings.position[0]));
+    println(std::to_string(settings.position[1]));
+    println(std::to_string(settings.position[2]));
+    println(std::to_string(settings.position[3]));
 }

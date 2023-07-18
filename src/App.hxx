@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Utility.hxx"
+#include "Data.hxx"
 #include "Browser.hxx"
 
 using namespace Utility;
@@ -19,14 +20,19 @@ class App
     std::unique_ptr<Browser> browser{nullptr};
     unsigned long long gdiplusToken{};
     GdiplusStartupInput gdiplusStartupInput{};
-    State::Window window{};
-    State::Path path{};
-    State::Color color{};
+    Window window{};
+    Settings settings{};
+    Paths paths{};
+    Colors colors{};
 
     void Show();
-    void Load();
-    void Save();
-    void Debug();
+    json SerializeJson(Settings);
+    Settings DeserializeJson(json);
+    json LoadJson();
+    void SaveJson(json);
+    void LoadSettings();
+    void SaveSettings();
+    Colors SystemColors();
 
     static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
     int _OnActivate(HWND, WPARAM, LPARAM);
@@ -55,4 +61,6 @@ class App
     int _OnSizing(HWND, WPARAM, LPARAM);
     int _OnWindowPosChanged(HWND, WPARAM, LPARAM);
     int _OnWindowPosChanging(HWND, WPARAM, LPARAM);
+
+    void Debug();
 };

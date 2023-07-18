@@ -1,12 +1,10 @@
 #include "Browser.hxx"
 
-using namespace WebView;
+Browser::Browser(Window& window, Settings& settings) {}
 
-Browser::Browser(State::Window& window) {}
-
-std::unique_ptr<Browser> Browser::Create(State::Window& window)
+std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings)
 {
-    auto browser{std::unique_ptr<Browser>(new Browser(window))};
+    auto browser{std::unique_ptr<Browser>(new Browser(window, settings))};
 
     auto hwnd{window.hwnd};
 
@@ -19,6 +17,8 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
                         hwnd, Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
                                   [&](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
                                   {
+                                      using namespace wv2main;
+
                                       EventRegistrationToken tokenTitle;
                                       EventRegistrationToken tokenFavicon;
                                       EventRegistrationToken tokenReceivedMsg;
@@ -26,40 +26,40 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
 
                                       if (c)
                                       {
-                                          Controller::main = c;
-                                          Controller::main->get_CoreWebView2(&Core::main);
+                                          wvController = c;
+                                          wvController->get_CoreWebView2(&wvCore);
                                       }
 
-                                      if (Core::main)
-                                          Core19::main = Core::main.try_query<ICoreWebView2_19>();
+                                      if (wvCore)
+                                          wvBrowser = wvCore.try_query<ICoreWebView2_19>();
 
-                                      if (Core19::main)
+                                      if (wvBrowser)
                                       {
-                                          Core19::main->AddScriptToExecuteOnDocumentCreated(
+                                          wvBrowser->AddScriptToExecuteOnDocumentCreated(
                                               js_inject().c_str(), nullptr);
 
-                                          Core19::main->get_Settings(&Settings::main);
+                                          wvBrowser->get_Settings(&wvSettings);
 
-                                          Settings::main->put_AreDefaultContextMenusEnabled(true);
-                                          Settings::main->put_AreDefaultScriptDialogsEnabled(true);
-                                          Settings::main->put_AreDevToolsEnabled(true);
-                                          Settings::main->put_AreHostObjectsAllowed(true);
-                                          Settings::main->put_IsBuiltInErrorPageEnabled(true);
-                                          Settings::main->put_IsScriptEnabled(true);
-                                          Settings::main->put_IsStatusBarEnabled(false);
-                                          Settings::main->put_IsWebMessageEnabled(true);
-                                          Settings::main->put_IsZoomControlEnabled(false);
+                                          wvSettings->put_AreDefaultContextMenusEnabled(true);
+                                          wvSettings->put_AreDefaultScriptDialogsEnabled(true);
+                                          wvSettings->put_AreDevToolsEnabled(true);
+                                          wvSettings->put_AreHostObjectsAllowed(true);
+                                          wvSettings->put_IsBuiltInErrorPageEnabled(true);
+                                          wvSettings->put_IsScriptEnabled(true);
+                                          wvSettings->put_IsStatusBarEnabled(false);
+                                          wvSettings->put_IsWebMessageEnabled(true);
+                                          wvSettings->put_IsZoomControlEnabled(false);
                                       }
 
                                       if (!command_line().first.empty())
-                                          Core19::main->Navigate(command_line().first.c_str());
+                                          wvBrowser->Navigate(command_line().first.c_str());
                                       else
-                                          Core19::main->Navigate(to_wide(window.mainUrl).c_str());
+                                          wvBrowser->Navigate(to_wide(settings.mainUrl).c_str());
 
-                                      browser->Bounds(window);
-                                      browser->Focus(window);
+                                      browser->Bounds(window, settings);
+                                      browser->Focus(window, settings);
 
-                                      Core19::main->add_DocumentTitleChanged(
+                                      wvBrowser->add_DocumentTitleChanged(
                                           Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
                                               [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                               {
@@ -70,7 +70,7 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
                                               .Get(),
                                           &tokenTitle);
 
-                                      Core19::main->add_FaviconChanged(
+                                      wvBrowser->add_FaviconChanged(
                                           Callback<ICoreWebView2FaviconChangedEventHandler>(
                                               [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                               {
@@ -81,13 +81,13 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
                                               .Get(),
                                           &tokenFavicon);
 
-                                      Core19::main->add_WebMessageReceived(
+                                      wvBrowser->add_WebMessageReceived(
                                           Callback<ICoreWebView2WebMessageReceivedEventHandler>(
                                               [&](ICoreWebView2* webview,
                                                   ICoreWebView2WebMessageReceivedEventArgs* args)
                                                   -> HRESULT
                                               {
-                                                  browser->Messages(window, args);
+                                                  browser->Messages(window, settings, args);
 
                                                   return S_OK;
                                               })
@@ -102,6 +102,8 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
                         hwnd, Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
                                   [&](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
                                   {
+                                      using namespace wv2side;
+
                                       EventRegistrationToken tokenTitle;
                                       EventRegistrationToken tokenFavicon;
                                       EventRegistrationToken tokenReceivedMsg;
@@ -109,42 +111,40 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
 
                                       if (c)
                                       {
-                                          Controller::side = c;
-                                          Controller::side->get_CoreWebView2(&Core::side);
+                                          wvController = c;
+                                          wvController->get_CoreWebView2(&wvCore);
                                       }
 
-                                      if (Core::side)
-                                          Core19::side = Core::side.try_query<ICoreWebView2_19>();
+                                      if (wvCore)
+                                          wvBrowser = wvCore.try_query<ICoreWebView2_19>();
 
-                                      if (Core19::side)
+                                      if (wvBrowser)
                                       {
-                                          Core19::side->AddScriptToExecuteOnDocumentCreated(
+                                          wvBrowser->AddScriptToExecuteOnDocumentCreated(
                                               js_inject().c_str(), nullptr);
 
-                                          Core19::side->get_Settings(&Settings::side);
+                                          wvBrowser->get_Settings(&wvSettings);
 
-                                          Settings::side->put_AreDefaultContextMenusEnabled(true);
-                                          Settings::side->put_AreDefaultScriptDialogsEnabled(true);
-                                          Settings::side->put_AreDevToolsEnabled(true);
-                                          Settings::side->put_AreHostObjectsAllowed(true);
-                                          Settings::side->put_IsBuiltInErrorPageEnabled(true);
-                                          Settings::side->put_IsScriptEnabled(true);
-                                          Settings::side->put_IsStatusBarEnabled(false);
-                                          Settings::side->put_IsWebMessageEnabled(true);
-                                          Settings::side->put_IsZoomControlEnabled(false);
+                                          wvSettings->put_AreDefaultContextMenusEnabled(true);
+                                          wvSettings->put_AreDefaultScriptDialogsEnabled(true);
+                                          wvSettings->put_AreDevToolsEnabled(true);
+                                          wvSettings->put_AreHostObjectsAllowed(true);
+                                          wvSettings->put_IsBuiltInErrorPageEnabled(true);
+                                          wvSettings->put_IsScriptEnabled(true);
+                                          wvSettings->put_IsStatusBarEnabled(false);
+                                          wvSettings->put_IsWebMessageEnabled(true);
+                                          wvSettings->put_IsZoomControlEnabled(false);
                                       }
 
                                       if (!command_line().second.empty())
-                                          Core19::side->Navigate(command_line().second.c_str());
+                                          wvBrowser->Navigate(command_line().second.c_str());
                                       else
-                                          Core19::side->Navigate(to_wide(window.sideUrl).c_str());
+                                          wvBrowser->Navigate(to_wide(settings.sideUrl).c_str());
 
-                                      browser->Bounds(window);
-                                      browser->Focus(window);
+                                      browser->Bounds(window, settings);
+                                      browser->Focus(window, settings);
 
-                                      SendMessageW(hwnd, WM_SETFOCUS, 0, 0);
-
-                                      Core19::side->add_DocumentTitleChanged(
+                                      wvBrowser->add_DocumentTitleChanged(
                                           Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
                                               [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                               {
@@ -155,7 +155,7 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
                                               .Get(),
                                           &tokenTitle);
 
-                                      Core19::side->add_FaviconChanged(
+                                      wvBrowser->add_FaviconChanged(
                                           Callback<ICoreWebView2FaviconChangedEventHandler>(
                                               [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                               {
@@ -166,13 +166,13 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
                                               .Get(),
                                           &tokenFavicon);
 
-                                      Core19::side->add_WebMessageReceived(
+                                      wvBrowser->add_WebMessageReceived(
                                           Callback<ICoreWebView2WebMessageReceivedEventHandler>(
                                               [&](ICoreWebView2* webview,
                                                   ICoreWebView2WebMessageReceivedEventArgs* args)
                                                   -> HRESULT
                                               {
-                                                  browser->Messages(window, args);
+                                                  browser->Messages(window, settings, args);
 
                                                   return S_OK;
                                               })
@@ -184,89 +184,93 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
                                   .Get());
 
                     e->CreateCoreWebView2Controller(
-                        hwnd,
-                        Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                            [&](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
-                            {
-                                EventRegistrationToken tokenTitle;
-                                EventRegistrationToken tokenFavicon;
-                                EventRegistrationToken tokenReceivedMsg;
-                                EventRegistrationToken tokenNavigationCompleted;
+                        hwnd, Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+                                  [&](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
+                                  {
+                                      using namespace wv2settings;
 
-                                if (c)
-                                {
-                                    Controller::settings = c;
-                                    Controller::settings->get_CoreWebView2(&Core::settings);
-                                }
+                                      EventRegistrationToken tokenTitle;
+                                      EventRegistrationToken tokenFavicon;
+                                      EventRegistrationToken tokenReceivedMsg;
+                                      EventRegistrationToken tokenNavigationCompleted;
 
-                                if (Core::settings)
-                                    Core19::settings = Core::settings.try_query<ICoreWebView2_19>();
+                                      if (c)
+                                      {
+                                          wvController = c;
+                                          wvController->get_CoreWebView2(&wvCore);
+                                      }
 
-                                if (Core19::settings)
-                                {
-                                    Core19::settings->get_Settings(&Settings::settings);
+                                      if (wvCore)
+                                          wvBrowser = wvCore.try_query<ICoreWebView2_19>();
 
-                                    Settings::settings->put_AreDefaultContextMenusEnabled(true);
-                                    Settings::settings->put_AreDefaultScriptDialogsEnabled(true);
-                                    Settings::settings->put_AreDevToolsEnabled(true);
-                                    Settings::settings->put_AreHostObjectsAllowed(true);
-                                    Settings::settings->put_IsBuiltInErrorPageEnabled(true);
-                                    Settings::settings->put_IsScriptEnabled(true);
-                                    Settings::settings->put_IsStatusBarEnabled(false);
-                                    Settings::settings->put_IsWebMessageEnabled(true);
-                                    Settings::settings->put_IsZoomControlEnabled(false);
-                                }
+                                      if (wvBrowser)
+                                      {
+                                          wvBrowser->AddScriptToExecuteOnDocumentCreated(
+                                              js_inject().c_str(), nullptr);
 
-                                Core19::settings->SetVirtualHostNameToFolderMapping(
-                                    L"settings", path_portable().wstring().c_str(),
-                                    COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
+                                          wvBrowser->get_Settings(&wvSettings);
 
-                                // Core19::settings->Navigate(L"https://settings/index.html");
-                                Core19::settings->Navigate(L"https://localhost:8000/");
+                                          wvSettings->put_AreDefaultContextMenusEnabled(true);
+                                          wvSettings->put_AreDefaultScriptDialogsEnabled(true);
+                                          wvSettings->put_AreDevToolsEnabled(true);
+                                          wvSettings->put_AreHostObjectsAllowed(true);
+                                          wvSettings->put_IsBuiltInErrorPageEnabled(true);
+                                          wvSettings->put_IsScriptEnabled(true);
+                                          wvSettings->put_IsStatusBarEnabled(false);
+                                          wvSettings->put_IsWebMessageEnabled(true);
+                                          wvSettings->put_IsZoomControlEnabled(false);
+                                      }
 
-                                browser->Bounds(window);
-                                browser->Focus(window);
+                                      wvBrowser->SetVirtualHostNameToFolderMapping(
+                                          L"settings", path_portable().wstring().c_str(),
+                                          COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
 
-                                SendMessageW(hwnd, WM_SETFOCUS, 0, 0);
+                                      // wvBrowser->Navigate(L"https://settings/index.html");
+                                      wvBrowser->Navigate(L"https://localhost:8000/");
 
-                                Core19::settings->add_DocumentTitleChanged(
-                                    Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
-                                        [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
-                                        {
-                                            // Title();
+                                      browser->Bounds(window, settings);
+                                      browser->Focus(window, settings);
 
-                                            return S_OK;
-                                        })
-                                        .Get(),
-                                    &tokenTitle);
+                                      SendMessageW(hwnd, WM_SETFOCUS, 0, 0);
 
-                                Core19::settings->add_FaviconChanged(
-                                    Callback<ICoreWebView2FaviconChangedEventHandler>(
-                                        [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
-                                        {
-                                            // Icon();
+                                      wvBrowser->add_DocumentTitleChanged(
+                                          Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
+                                              [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                              {
+                                                  // Title();
 
-                                            return S_OK;
-                                        })
-                                        .Get(),
-                                    &tokenFavicon);
+                                                  return S_OK;
+                                              })
+                                              .Get(),
+                                          &tokenTitle);
 
-                                Core19::settings->add_WebMessageReceived(
-                                    Callback<ICoreWebView2WebMessageReceivedEventHandler>(
-                                        [&](ICoreWebView2* webview,
-                                            ICoreWebView2WebMessageReceivedEventArgs* args)
-                                            -> HRESULT
-                                        {
-                                            browser->Messages(window, args);
+                                      wvBrowser->add_FaviconChanged(
+                                          Callback<ICoreWebView2FaviconChangedEventHandler>(
+                                              [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                              {
+                                                  // Icon();
 
-                                            return S_OK;
-                                        })
-                                        .Get(),
-                                    &tokenReceivedMsg);
+                                                  return S_OK;
+                                              })
+                                              .Get(),
+                                          &tokenFavicon);
 
-                                return S_OK;
-                            })
-                            .Get());
+                                      wvBrowser->add_WebMessageReceived(
+                                          Callback<ICoreWebView2WebMessageReceivedEventHandler>(
+                                              [&](ICoreWebView2* webview,
+                                                  ICoreWebView2WebMessageReceivedEventArgs* args)
+                                                  -> HRESULT
+                                              {
+                                                  browser->Messages(window, settings, args);
+
+                                                  return S_OK;
+                                              })
+                                              .Get(),
+                                          &tokenReceivedMsg);
+
+                                      return S_OK;
+                                  })
+                                  .Get());
 
                     return S_OK;
                 })
@@ -278,71 +282,70 @@ std::unique_ptr<Browser> Browser::Create(State::Window& window)
     return browser;
 }
 
-void Browser::Bounds(State::Window& window)
+void Browser::Bounds(Window& window, Settings& settings)
 {
-    using namespace Controller;
-    if (!settings || !main || !side)
+    if (!wv2main::wvController || !wv2side::wvController || !wv2settings::wvController)
         return;
 
     auto bounds{window_bounds(window.hwnd)};
 
-    if (window.menu)
+    if (settings.menu)
     {
-        main->put_Bounds(RECT{0, 0, 0, 0});
-        side->put_Bounds(RECT{0, 0, 0, 0});
-        settings->put_Bounds(bounds);
+        wv2main::wvController->put_Bounds(RECT{0, 0, 0, 0});
+        wv2side::wvController->put_Bounds(RECT{0, 0, 0, 0});
+        wv2settings::wvController->put_Bounds(bounds);
     }
 
     else
     {
-        settings->put_Bounds(RECT{0, 0, 0, 0});
+        wv2settings::wvController->put_Bounds(RECT{0, 0, 0, 0});
 
-        if (!window.split && !window.swapped)
+        if (!settings.split && !settings.swapped)
         {
-            main->put_Bounds(bounds);
-            side->put_Bounds(RECT{0, 0, 0, 0});
+            wv2main::wvController->put_Bounds(bounds);
+            wv2side::wvController->put_Bounds(RECT{0, 0, 0, 0});
         }
 
-        if (!window.split && window.swapped)
+        if (!settings.split && settings.swapped)
         {
-            main->put_Bounds(RECT{0, 0, 0, 0});
-            side->put_Bounds(bounds);
+            wv2main::wvController->put_Bounds(RECT{0, 0, 0, 0});
+            wv2side::wvController->put_Bounds(bounds);
         }
 
-        if (window.split && !window.swapped)
+        if (settings.split && !settings.swapped)
         {
-            main->put_Bounds(left_panel(bounds));
-            side->put_Bounds(right_panel(bounds));
+            wv2main::wvController->put_Bounds(left_panel(bounds));
+            wv2side::wvController->put_Bounds(right_panel(bounds));
         }
 
-        if (window.split && window.swapped)
+        if (settings.split && settings.swapped)
         {
-            main->put_Bounds(right_panel(bounds));
-            side->put_Bounds(left_panel(bounds));
+            wv2main::wvController->put_Bounds(right_panel(bounds));
+            wv2side::wvController->put_Bounds(left_panel(bounds));
         }
     }
 }
 
-void Browser::Focus(State::Window& window)
+void Browser::Focus(Window& window, Settings& settings)
 {
-    using namespace Controller;
-    if (!settings || !main || !side)
+    if (!wv2main::wvController || !wv2side::wvController || !wv2settings::wvController)
         return;
 
-    if (!window.menu && !window.swapped)
-        main->MoveFocus(
+    if (!settings.menu && !settings.swapped)
+        wv2main::wvController->MoveFocus(
             COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 
-    if (!window.menu && window.swapped)
-        side->MoveFocus(
+    if (!settings.menu && settings.swapped)
+        wv2side::wvController->MoveFocus(
             COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 
-    if (window.menu)
-        settings->MoveFocus(
+    if (settings.menu)
+        wv2settings::wvController->MoveFocus(
             COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 }
 
-void Browser::Messages(State::Window& window, ICoreWebView2WebMessageReceivedEventArgs* args)
+void Browser::Messages(Window& window, Settings& settings,
+                       ICoreWebView2WebMessageReceivedEventArgs* args)
 {
     wil::unique_cotaskmem_string messageRaw;
 
@@ -352,12 +355,12 @@ void Browser::Messages(State::Window& window, ICoreWebView2WebMessageReceivedEve
 
         if (message.compare(0, 8, L"mainUrl ") == 0)
         {
-            to_wide(window.mainUrl) = message.substr(8);
+            to_wide(settings.mainUrl) = message.substr(8);
         }
 
         if (message.compare(0, 8, L"sideUrl ") == 0)
         {
-            to_wide(window.sideUrl) = message.substr(8);
+            to_wide(settings.sideUrl) = message.substr(8);
         }
 
         if (message == L"split")
