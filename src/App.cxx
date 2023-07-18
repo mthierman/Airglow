@@ -414,20 +414,3 @@ int App::_OnSize(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
     return 0;
 }
-
-void App::Debug()
-{
-    println("theme: " + settings.theme);
-    println("mainUrl: " + settings.mainUrl);
-    println("sideUrl: " + settings.sideUrl);
-    println("menu: " + bool_to_string(settings.menu));
-    println("split: " + bool_to_string(settings.split));
-    println("swapped: " + bool_to_string(settings.swapped));
-    println("maximized: " + bool_to_string(settings.maximized));
-    println("fullscreen: " + bool_to_string(settings.fullscreen));
-    println("topmost: " + bool_to_string(settings.topmost));
-    println(std::to_string(settings.position[0]));
-    println(std::to_string(settings.position[1]));
-    println(std::to_string(settings.position[2]));
-    println(std::to_string(settings.position[3]));
-}

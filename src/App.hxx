@@ -61,6 +61,4 @@ class App
     int _OnSizing(HWND, WPARAM, LPARAM);
     int _OnWindowPosChanged(HWND, WPARAM, LPARAM);
     int _OnWindowPosChanging(HWND, WPARAM, LPARAM);
-
-    void Debug();
 };
