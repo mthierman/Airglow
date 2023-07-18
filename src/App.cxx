@@ -272,6 +272,8 @@ __int64 __stdcall App::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
             return app->_OnGetMinMaxInfo(hwnd, wparam, lparam);
         case WM_KEYDOWN:
             return app->_OnKeyDown(hwnd, wparam, lparam);
+        case WM_NOTIFY:
+            return app->_OnNotify(hwnd, wparam, lparam);
         case WM_SETICON:
             return app->_OnSetIcon(hwnd, wparam, lparam);
         case WM_SETFOCUS:
@@ -407,6 +409,7 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
     case VK_F11:
         settings.fullscreen = window_fullscreen(hwnd);
+        browser->Icon(window, settings);
         SaveSettings();
 
         return 0;
@@ -418,6 +421,14 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
         return 0;
     }
+
+    return 0;
+}
+
+int App::_OnNotify(HWND hwnd, WPARAM wparam, LPARAM lparam)
+{
+    println("WM_NOTIFY");
+    SaveSettings();
 
     return 0;
 }

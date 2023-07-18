@@ -500,22 +500,30 @@ void Browser::Messages(Window& window, Settings& settings,
 {
     wil::unique_cotaskmem_string messageRaw;
 
+    // args->get_WebMessageAsJson(LPWSTR *webMessageAsJson)
+
     if (SUCCEEDED(args->TryGetWebMessageAsString(&messageRaw)))
     {
         auto message = wstring(messageRaw.get());
 
-#ifdef _DEBUG
-        wprintln(message);
-#endif
+        // #ifdef _DEBUG
+        //         wprintln(message);
+        // #endif
 
         if (message.compare(0, 8, L"mainUrl ") == 0)
         {
-            to_wide(settings.mainUrl) = message.substr(8);
+            wprintln(message);
+            settings.mainUrl = to_string(message.substr(8));
+            println(settings.mainUrl);
+            SendMessageW(window.hwnd, WM_NOTIFY, VK_F1, 0);
         }
 
         if (message.compare(0, 8, L"sideUrl ") == 0)
         {
-            to_wide(settings.sideUrl) = message.substr(8);
+            wprintln(message);
+            settings.sideUrl = to_string(message.substr(8));
+            println(settings.sideUrl);
+            SendMessageW(window.hwnd, WM_NOTIFY, VK_F1, 0);
         }
 
         if (message == L"split")
