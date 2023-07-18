@@ -338,7 +338,7 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
         settings.split = bool_toggle(settings.split);
         browser->Bounds(window, settings);
         browser->Focus(window, settings);
-        println(bool_to_string(settings.split));
+        browser->Title(window, settings);
         SaveSettings();
 
         return 0;
@@ -346,7 +346,7 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
         settings.swapped = bool_toggle(settings.swapped);
         browser->Bounds(window, settings);
         browser->Focus(window, settings);
-        println(bool_to_string(settings.swapped));
+        browser->Title(window, settings);
         SaveSettings();
 
         return 0;
@@ -354,25 +354,23 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
         settings.menu = bool_toggle(settings.menu);
         browser->Bounds(window, settings);
         browser->Focus(window, settings);
-        println(bool_to_string(settings.menu));
+        browser->Title(window, settings);
         SaveSettings();
 
         return 0;
     case VK_F6:
         settings.maximized = window_maximize(hwnd);
-        println(bool_to_string(settings.maximized));
         SaveSettings();
 
         return 0;
     case VK_F9:
         settings.topmost = window_topmost(hwnd);
-        println(bool_to_string(settings.topmost));
+        browser->Title(window, settings);
         SaveSettings();
 
         return 0;
     case VK_F11:
         settings.fullscreen = window_fullscreen(hwnd);
-        println(bool_to_string(settings.fullscreen));
         SaveSettings();
 
         return 0;

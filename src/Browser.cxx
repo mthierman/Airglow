@@ -61,9 +61,9 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings)
 
                                       wvBrowser->add_DocumentTitleChanged(
                                           Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
-                                              [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                              [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                               {
-                                                  // Title();
+                                                  browser->Title(window, settings);
 
                                                   return S_OK;
                                               })
@@ -72,7 +72,7 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings)
 
                                       wvBrowser->add_FaviconChanged(
                                           Callback<ICoreWebView2FaviconChangedEventHandler>(
-                                              [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                              [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                               {
                                                   // Icon();
 
@@ -146,9 +146,9 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings)
 
                                       wvBrowser->add_DocumentTitleChanged(
                                           Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
-                                              [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                              [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                               {
-                                                  // Title();
+                                                  browser->Title(window, settings);
 
                                                   return S_OK;
                                               })
@@ -157,7 +157,7 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings)
 
                                       wvBrowser->add_FaviconChanged(
                                           Callback<ICoreWebView2FaviconChangedEventHandler>(
-                                              [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                              [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                               {
                                                   // Icon();
 
@@ -225,8 +225,10 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings)
                                           L"settings", path_portable().wstring().c_str(),
                                           COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
 
-                                      // wvBrowser->Navigate(L"https://settings/index.html");
+                                      wvBrowser->Navigate(L"https://settings/index.html");
+#ifdef _DEBUG
                                       wvBrowser->Navigate(L"https://localhost:8000/");
+#endif
 
                                       browser->Bounds(window, settings);
                                       browser->Focus(window, settings);
@@ -235,9 +237,9 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings)
 
                                       wvBrowser->add_DocumentTitleChanged(
                                           Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
-                                              [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                              [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                               {
-                                                  // Title();
+                                                  browser->Title(window, settings);
 
                                                   return S_OK;
                                               })
@@ -246,7 +248,7 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings)
 
                                       wvBrowser->add_FaviconChanged(
                                           Callback<ICoreWebView2FaviconChangedEventHandler>(
-                                              [](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                              [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
                                               {
                                                   // Icon();
 
@@ -343,6 +345,158 @@ void Browser::Focus(Window& window, Settings& settings)
         wv2settings::wvController->MoveFocus(
             COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 }
+
+void Browser::Title(Window& window, Settings& settings)
+{
+    if (!wv2main::wvController || !wv2side::wvController || !wv2settings::wvController)
+        return;
+
+    if (settings.menu)
+    {
+        wil::unique_cotaskmem_string s{};
+        wv2settings::wvBrowser->get_DocumentTitle(&s);
+        auto title = s.get();
+
+        if (!settings.topmost)
+            SetWindowTextW(window.hwnd, title);
+
+        if (settings.topmost)
+        {
+            wstring add = title + wstring(L" [On Top]");
+            SetWindowTextW(window.hwnd, add.c_str());
+        }
+    }
+
+    if (!settings.menu && !settings.swapped)
+    {
+        wil::unique_cotaskmem_string s{};
+        wv2main::wvBrowser->get_DocumentTitle(&s);
+        auto title = s.get();
+
+        if (!settings.topmost)
+            SetWindowTextW(window.hwnd, title);
+
+        if (settings.topmost)
+        {
+            wstring add = title + wstring(L" [On Top]");
+            SetWindowTextW(window.hwnd, add.c_str());
+        }
+    }
+
+    if (!settings.menu && settings.swapped)
+    {
+        wil::unique_cotaskmem_string s{};
+        wv2side::wvBrowser->get_DocumentTitle(&s);
+        auto title = s.get();
+
+        if (!settings.topmost)
+            SetWindowTextW(window.hwnd, title);
+
+        if (settings.topmost)
+        {
+            wstring add = title + wstring(L" [On Top]");
+            SetWindowTextW(window.hwnd, add.c_str());
+        }
+    }
+}
+
+// void WebView::SetWindowIcon()
+// {
+
+//     if (!pConfig || !Browsers::Settings::controller || !Browsers::Main::controller ||
+//         !Browsers::Side::controller)
+//         return;
+
+//     if (pConfig->settings.menu)
+//     {
+//         // #ifdef DEBUG_MSG
+//         //         LPWSTR faviconUri;
+//         //         Browsers::Settings::browser->get_FaviconUri(&faviconUri);
+//         //         wprintln(wstring(faviconUri));
+//         // #endif
+//         Browsers::Settings::browser->GetFavicon(
+//             COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
+//             Callback<ICoreWebView2GetFaviconCompletedHandler>(
+//                 [&](HRESULT result, IStream* iconStream) -> HRESULT
+//                 {
+//                     if (iconStream)
+//                     {
+//                         Gdiplus::Bitmap iconBitmap(iconStream);
+//                         wil::unique_hicon icon;
+//                         if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
+//                         {
+//                             auto favicon = std::move(icon);
+//                             SetClassLongPtrW(pConfig->window.hwnd, GCLP_HICONSM,
+//                                              (LONG_PTR)favicon.get());
+//                             SetClassLongPtrW(pConfig->window.hwnd, GCLP_HICON,
+//                                              (LONG_PTR)pConfig->window.hIcon);
+//                         }
+//                     }
+//                     return S_OK;
+//                 })
+//                 .Get());
+//     }
+
+//     if (!pConfig->settings.swapped && !pConfig->settings.menu)
+//     {
+//         // #ifdef DEBUG_MSG
+//         //         LPWSTR faviconUri;
+//         //         Browsers::Main::browser->get_FaviconUri(&faviconUri);
+//         //         wprintln(wstring(faviconUri));
+//         // #endif
+//         Browsers::Main::browser->GetFavicon(
+//             COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
+//             Callback<ICoreWebView2GetFaviconCompletedHandler>(
+//                 [&](HRESULT result, IStream* iconStream) -> HRESULT
+//                 {
+//                     if (iconStream)
+//                     {
+//                         Gdiplus::Bitmap iconBitmap(iconStream);
+//                         wil::unique_hicon icon;
+//                         if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
+//                         {
+//                             auto favicon = std::move(icon);
+//                             SetClassLongPtrW(pConfig->window.hwnd, GCLP_HICONSM,
+//                                              (LONG_PTR)favicon.get());
+//                             SetClassLongPtrW(pConfig->window.hwnd, GCLP_HICON,
+//                                              (LONG_PTR)pConfig->window.hIcon);
+//                         }
+//                     }
+//                     return S_OK;
+//                 })
+//                 .Get());
+//     }
+
+//     if (pConfig->settings.swapped && !pConfig->settings.menu)
+//     {
+//         // #ifdef DEBUG_MSG
+//         //         LPWSTR faviconUri;
+//         //         Browsers::Side::browser->get_FaviconUri(&faviconUri);
+//         //         wprintln(wstring(faviconUri));
+//         // #endif
+//         Browsers::Side::browser->GetFavicon(
+//             COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
+//             Callback<ICoreWebView2GetFaviconCompletedHandler>(
+//                 [&](HRESULT result, IStream* iconStream) -> HRESULT
+//                 {
+//                     if (iconStream)
+//                     {
+//                         Gdiplus::Bitmap iconBitmap(iconStream);
+//                         wil::unique_hicon icon;
+//                         if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
+//                         {
+//                             auto favicon = std::move(icon);
+//                             SetClassLongPtrW(pConfig->window.hwnd, GCLP_HICONSM,
+//                                              (LONG_PTR)favicon.get());
+//                             SetClassLongPtrW(pConfig->window.hwnd, GCLP_HICON,
+//                                              (LONG_PTR)pConfig->window.hIcon);
+//                         }
+//                     }
+//                     return S_OK;
+//                 })
+//                 .Get());
+//     }
+// }
 
 void Browser::Messages(Window& window, Settings& settings,
                        ICoreWebView2WebMessageReceivedEventArgs* args)
