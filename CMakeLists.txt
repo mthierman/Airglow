@@ -113,6 +113,7 @@ target_compile_definitions(
     UNICODE
     APP_NAME="${APP_NAME}"
     APP_VERSION="${APP_VERSION}"
+    NLOHMANN_JSON_NAMESPACE_NO_VERSION=1
 )
 
 target_precompile_headers(
