@@ -24,7 +24,6 @@
 
 #include <winrt/windows.foundation.h>
 #include <winrt/windows.ui.viewmanagement.h>
-#include <winrt/windows.data.json.h>
 
 #include <nlohmann/json.hpp>
 
