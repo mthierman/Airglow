@@ -93,13 +93,12 @@ path path_appdata()
 
 path path_portable()
 {
-    auto cmd = GetCommandLineW();
-    int count;
-    auto args = CommandLineToArgvW(cmd, &count);
-    path data{args[0]};
-    LocalFree(args);
+    wchar_t* wpgmptr;
+    _get_wpgmptr(&wpgmptr);
 
-    return std::filesystem::canonical(data.remove_filename());
+    path exe = wpgmptr;
+
+    return std::filesystem::canonical(path(wpgmptr).remove_filename());
 }
 
 path path_settings()
