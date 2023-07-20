@@ -256,8 +256,8 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
                                           L"airglow", path_portable().wstring().c_str(),
                                           COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
 
-                                      wvBrowser->Navigate(L"https://airglow/settings/index.html");
-                                      //   wvBrowser->Navigate(L"https://localhost:8000/");
+                                      // wvBrowser->Navigate(L"https://airglow/settings/index.html");
+                                      wvBrowser->Navigate(L"https://localhost:8000/");
 
                                       browser->Bounds(window, settings);
                                       browser->Focus(window, settings);
@@ -555,32 +555,56 @@ void Browser::Keys(Window& window, Settings& settings,
     {
         UINT key;
         args->get_VirtualKey(&key);
-        args->put_Handled(TRUE);
 
         println(std::to_string(key));
 
         switch (key)
         {
         case 87:
+            args->put_Handled(TRUE);
             SendMessageW(window.hwnd, WM_KEYDOWN, 0x57, 0);
+
             break;
+
         case 112:
+            args->put_Handled(TRUE);
             SendMessageW(window.hwnd, WM_KEYDOWN, VK_F1, 0);
+
             break;
+
         case 113:
+            args->put_Handled(TRUE);
             SendMessageW(window.hwnd, WM_KEYDOWN, VK_F2, 0);
+
             break;
-        case 115:
-            SendMessageW(window.hwnd, WM_KEYDOWN, VK_F4, 0);
-            break;
+
         case 117:
+            args->put_Handled(TRUE);
             SendMessageW(window.hwnd, WM_KEYDOWN, VK_F6, 0);
+
             break;
+
+        case 119:
+            args->put_Handled(TRUE);
+            SendMessageW(window.hwnd, WM_KEYDOWN, VK_F8, 0);
+
+            break;
+
         case 120:
+            args->put_Handled(TRUE);
             SendMessageW(window.hwnd, WM_KEYDOWN, VK_F9, 0);
+
             break;
+
+        case 121:
+            args->put_Handled(TRUE);
+
+            break;
+
         case 122:
+            args->put_Handled(TRUE);
             SendMessageW(window.hwnd, WM_KEYDOWN, VK_F11, 0);
+
             break;
         }
     }

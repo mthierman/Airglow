@@ -384,19 +384,19 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
         return 0;
 
-    case VK_F4:
+    case VK_F6:
+        settings.maximized = window_maximize(hwnd);
+        SaveSettings();
+
+        return 0;
+
+    case VK_F8:
         println("TEST");
         settings.menu = bool_toggle(settings.menu);
         browser->Bounds(window, settings);
         browser->Focus(window, settings);
         browser->Title(window, settings);
         browser->Icon(window, settings);
-        SaveSettings();
-
-        return 0;
-
-    case VK_F6:
-        settings.maximized = window_maximize(hwnd);
         SaveSettings();
 
         return 0;
