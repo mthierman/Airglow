@@ -385,6 +385,7 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
         return 0;
 
     case VK_F4:
+        println("TEST");
         settings.menu = bool_toggle(settings.menu);
         browser->Bounds(window, settings);
         browser->Focus(window, settings);

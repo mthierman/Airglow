@@ -23,6 +23,7 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
                                       EventRegistrationToken tokenFavicon;
                                       EventRegistrationToken tokenReceivedMsg;
                                       EventRegistrationToken tokenNavigationCompleted;
+                                      EventRegistrationToken tokenAcceleratorKeyPressed;
 
                                       if (c)
                                       {
@@ -95,6 +96,19 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
                                               .Get(),
                                           &tokenReceivedMsg);
 
+                                      wvController->add_AcceleratorKeyPressed(
+                                          Callback<ICoreWebView2AcceleratorKeyPressedEventHandler>(
+                                              [&](ICoreWebView2Controller* sender,
+                                                  ICoreWebView2AcceleratorKeyPressedEventArgs* args)
+                                                  -> HRESULT
+                                              {
+                                                  browser->Keys(window, settings, args);
+
+                                                  return S_OK;
+                                              })
+                                              .Get(),
+                                          &tokenAcceleratorKeyPressed);
+
                                       return S_OK;
                                   })
                                   .Get());
@@ -109,6 +123,7 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
                                       EventRegistrationToken tokenFavicon;
                                       EventRegistrationToken tokenReceivedMsg;
                                       EventRegistrationToken tokenNavigationCompleted;
+                                      EventRegistrationToken tokenAcceleratorKeyPressed;
 
                                       if (c)
                                       {
@@ -181,6 +196,19 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
                                               .Get(),
                                           &tokenReceivedMsg);
 
+                                      wvController->add_AcceleratorKeyPressed(
+                                          Callback<ICoreWebView2AcceleratorKeyPressedEventHandler>(
+                                              [&](ICoreWebView2Controller* sender,
+                                                  ICoreWebView2AcceleratorKeyPressedEventArgs* args)
+                                                  -> HRESULT
+                                              {
+                                                  browser->Keys(window, settings, args);
+
+                                                  return S_OK;
+                                              })
+                                              .Get(),
+                                          &tokenAcceleratorKeyPressed);
+
                                       return S_OK;
                                   })
                                   .Get());
@@ -195,6 +223,7 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
                                       EventRegistrationToken tokenFavicon;
                                       EventRegistrationToken tokenReceivedMsg;
                                       EventRegistrationToken tokenNavigationCompleted;
+                                      EventRegistrationToken tokenAcceleratorKeyPressed;
 
                                       if (c)
                                       {
@@ -282,6 +311,19 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
                                               })
                                               .Get(),
                                           &tokenNavigationCompleted);
+
+                                      wvController->add_AcceleratorKeyPressed(
+                                          Callback<ICoreWebView2AcceleratorKeyPressedEventHandler>(
+                                              [&](ICoreWebView2Controller* sender,
+                                                  ICoreWebView2AcceleratorKeyPressedEventArgs* args)
+                                                  -> HRESULT
+                                              {
+                                                  browser->Keys(window, settings, args);
+
+                                                  return S_OK;
+                                              })
+                                              .Get(),
+                                          &tokenAcceleratorKeyPressed);
 
                                       return S_OK;
                                   })
@@ -503,6 +545,47 @@ void Browser::Icon(Window& window, Settings& settings)
     }
 }
 
+void Browser::Keys(Window& window, Settings& settings,
+                   ICoreWebView2AcceleratorKeyPressedEventArgs* args)
+{
+    COREWEBVIEW2_KEY_EVENT_KIND kind;
+    auto keyCheck{args->get_KeyEventKind(&kind)};
+    if (kind == COREWEBVIEW2_KEY_EVENT_KIND_KEY_DOWN ||
+        kind == COREWEBVIEW2_KEY_EVENT_KIND_SYSTEM_KEY_DOWN)
+    {
+        UINT key;
+        args->get_VirtualKey(&key);
+        args->put_Handled(TRUE);
+
+        println(std::to_string(key));
+
+        switch (key)
+        {
+        case 87:
+            SendMessageW(window.hwnd, WM_KEYDOWN, 0x57, 0);
+            break;
+        case 112:
+            SendMessageW(window.hwnd, WM_KEYDOWN, VK_F1, 0);
+            break;
+        case 113:
+            SendMessageW(window.hwnd, WM_KEYDOWN, VK_F2, 0);
+            break;
+        case 115:
+            SendMessageW(window.hwnd, WM_KEYDOWN, VK_F4, 0);
+            break;
+        case 117:
+            SendMessageW(window.hwnd, WM_KEYDOWN, VK_F6, 0);
+            break;
+        case 120:
+            SendMessageW(window.hwnd, WM_KEYDOWN, VK_F9, 0);
+            break;
+        case 122:
+            SendMessageW(window.hwnd, WM_KEYDOWN, VK_F11, 0);
+            break;
+        }
+    }
+}
+
 void Browser::Messages(Window& window, Settings& settings,
                        ICoreWebView2WebMessageReceivedEventArgs* args)
 {
@@ -513,10 +596,6 @@ void Browser::Messages(Window& window, Settings& settings,
     if (SUCCEEDED(args->TryGetWebMessageAsString(&messageRaw)))
     {
         auto message = wstring(messageRaw.get());
-
-        // #ifdef _DEBUG
-        //         wprintln(message);
-        // #endif
 
         if (message.compare(0, 8, L"mainUrl ") == 0)
         {
@@ -532,41 +611,6 @@ void Browser::Messages(Window& window, Settings& settings,
             settings.sideUrl = to_string(message.substr(8));
             println(settings.sideUrl);
             SendMessageW(window.hwnd, WM_NOTIFY, VK_F1, 0);
-        }
-
-        if (message == L"split")
-        {
-            SendMessageW(window.hwnd, WM_KEYDOWN, VK_F1, 0);
-        }
-
-        if (message == L"swapped")
-        {
-            SendMessageW(window.hwnd, WM_KEYDOWN, VK_F2, 0);
-        }
-
-        if (message == L"menu")
-        {
-            SendMessageW(window.hwnd, WM_KEYDOWN, VK_F4, 0);
-        }
-
-        if (message == L"maximize")
-        {
-            SendMessageW(window.hwnd, WM_KEYDOWN, VK_F6, 0);
-        }
-
-        if (message == L"fullscreen")
-        {
-            SendMessageW(window.hwnd, WM_KEYDOWN, VK_F11, 0);
-        }
-
-        if (message == L"topmost")
-        {
-            SendMessageW(window.hwnd, WM_KEYDOWN, VK_F9, 0);
-        }
-
-        if (message == L"close")
-        {
-            SendMessageW(window.hwnd, WM_KEYDOWN, 0x57, 0);
         }
     }
 }

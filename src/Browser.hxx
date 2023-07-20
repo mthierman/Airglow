@@ -16,6 +16,7 @@ class Browser
     void Title(Window&, Settings&);
     void Icon(Window&, Settings&);
     void Messages(Window&, Settings&, ICoreWebView2WebMessageReceivedEventArgs* args);
+    void Keys(Window&, Settings&, ICoreWebView2AcceleratorKeyPressedEventArgs* args);
     void PostSettings(json);
 
   private:
