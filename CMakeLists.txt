@@ -1,9 +1,14 @@
 cmake_minimum_required(VERSION 3.26)
 set(APP_NAME "Airglow")
+set(APP_NAME_CONSOLE "Isochasm")
 set(APP_VERSION "1.2.1")
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${APP_NAME}")
+set(WEBVIEW "Microsoft.Web.WebView2")
+set(WEBVIEW_VERSION "1.0.1823.32")
+set(WIL "Microsoft.Windows.ImplementationLibrary")
+set(WIL_VERSION "1.0.230629.1")
 
 include(FetchContent)
 
@@ -20,19 +25,12 @@ message(STATUS "")
 math(EXPR BITNESS "${CMAKE_SIZEOF_VOID_P} * 8" OUTPUT_FORMAT DECIMAL)
 message(STATUS "${APP_NAME} v${APP_VERSION} (${BITNESS}-bit) [${CMAKE_BUILD_TYPE}]")
 message(STATUS "")
-
 file(WRITE "${CMAKE_BINARY_DIR}/app_version.txt" "v${APP_VERSION}")
-
 execute_process(
     COMMAND
     git --no-pager log -5 --oneline --no-decorate
     OUTPUT_FILE "${CMAKE_BINARY_DIR}/release_notes.txt"
 )
-
-set(WEBVIEW "Microsoft.Web.WebView2")
-set(WEBVIEW_VERSION "1.0.1823.32")
-set(WIL "Microsoft.Windows.ImplementationLibrary")
-set(WIL_VERSION "1.0.230629.1")
 
 if(ENV_LIBS)
     file(TO_CMAKE_PATH "$ENV{LIB_WEBVIEW}" WEBVIEW_PKG)
@@ -107,11 +105,17 @@ add_executable(
     "${MANIFEST_FILE}"
 )
 
+add_executable(
+    ${APP_NAME_CONSOLE}
+    "${CMAKE_SOURCE_DIR}/src/Console.cxx"
+)
+
 target_compile_definitions(
     ${APP_NAME}
     PRIVATE
     UNICODE
     APP_NAME="${APP_NAME}"
+    APP_NAME_CONSOLE="${APP_NAME_CONSOLE}"
     APP_VERSION="${APP_VERSION}"
     NLOHMANN_JSON_NAMESPACE_NO_VERSION=1
 )
