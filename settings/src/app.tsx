@@ -33,30 +33,6 @@ export default function App() {
     const [sideUrl, setSideUrl] = useState("");
     const [theme, setTheme] = useState("");
 
-    const handleForm = (e: any) => {
-        e.preventDefault();
-
-        const rawData = new FormData(e.target);
-        const data = Object.fromEntries(rawData.entries());
-
-        if (data.mainUrl.toString() != "") {
-            setMainUrl(data.mainUrl.toString());
-            window.chrome.webview.postMessage(
-                `mainUrl ${data.mainUrl.toString()}`,
-            );
-        }
-        if (data.sideUrl.toString() != "") {
-            setSideUrl(data.sideUrl.toString());
-            window.chrome.webview.postMessage(
-                `sideUrl ${data.sideUrl.toString()}`,
-            );
-        }
-        if (data.theme.toString() != "") {
-            setTheme(data.theme.toString());
-            window.chrome.webview.postMessage(`theme ${data.theme.toString()}`);
-        }
-    };
-
     useEffect(() => {
         const getData = async () => {
             try {
@@ -72,6 +48,30 @@ export default function App() {
         };
         getData();
     }, []);
+
+    useEffect(() => {
+        if (mainUrl && sideUrl && theme)
+            window.chrome.webview.postMessage({
+                mainUrl: mainUrl,
+                sideUrl: sideUrl,
+                theme: theme,
+            });
+    }, [mainUrl, sideUrl, theme]);
+
+    const handleForm = (e: any) => {
+        e.preventDefault();
+
+        const rawData = new FormData(e.target);
+        const data = Object.fromEntries(rawData.entries());
+
+        if (data.mainUrl.toString() != "") {
+            setMainUrl(data.mainUrl.toString());
+        }
+
+        if (data.sideUrl.toString() != "") {
+            setSideUrl(data.sideUrl.toString());
+        }
+    };
 
     return (
         <div>

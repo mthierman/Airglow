@@ -22,7 +22,7 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
 
                                       EventRegistrationToken tokenTitle;
                                       EventRegistrationToken tokenFavicon;
-                                      EventRegistrationToken tokenReceivedMsg;
+                                      // EventRegistrationToken tokenReceivedMsg;
                                       EventRegistrationToken tokenNavigationCompleted;
                                       EventRegistrationToken tokenAcceleratorKeyPressed;
 
@@ -84,18 +84,19 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
                                               .Get(),
                                           &tokenFavicon);
 
-                                      wvBrowser->add_WebMessageReceived(
-                                          Callback<ICoreWebView2WebMessageReceivedEventHandler>(
-                                              [&](ICoreWebView2* webview,
-                                                  ICoreWebView2WebMessageReceivedEventArgs* args)
-                                                  -> HRESULT
-                                              {
-                                                  browser->Messages(window, settings, args);
+                                      //   wvBrowser->add_WebMessageReceived(
+                                      //       Callback<ICoreWebView2WebMessageReceivedEventHandler>(
+                                      //           [&](ICoreWebView2* webview,
+                                      //               ICoreWebView2WebMessageReceivedEventArgs*
+                                      //               args)
+                                      //               -> HRESULT
+                                      //           {
+                                      //               browser->Messages(window, settings, args);
 
-                                                  return S_OK;
-                                              })
-                                              .Get(),
-                                          &tokenReceivedMsg);
+                                      //               return S_OK;
+                                      //           })
+                                      //           .Get(),
+                                      //       &tokenReceivedMsg);
 
                                       wvController->add_AcceleratorKeyPressed(
                                           Callback<ICoreWebView2AcceleratorKeyPressedEventHandler>(
@@ -123,7 +124,7 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
 
                                       EventRegistrationToken tokenTitle;
                                       EventRegistrationToken tokenFavicon;
-                                      EventRegistrationToken tokenReceivedMsg;
+                                      //   EventRegistrationToken tokenReceivedMsg;
                                       EventRegistrationToken tokenNavigationCompleted;
                                       EventRegistrationToken tokenAcceleratorKeyPressed;
 
@@ -185,18 +186,19 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
                                               .Get(),
                                           &tokenFavicon);
 
-                                      wvBrowser->add_WebMessageReceived(
-                                          Callback<ICoreWebView2WebMessageReceivedEventHandler>(
-                                              [&](ICoreWebView2* webview,
-                                                  ICoreWebView2WebMessageReceivedEventArgs* args)
-                                                  -> HRESULT
-                                              {
-                                                  browser->Messages(window, settings, args);
+                                      //   wvBrowser->add_WebMessageReceived(
+                                      //       Callback<ICoreWebView2WebMessageReceivedEventHandler>(
+                                      //           [&](ICoreWebView2* webview,
+                                      //               ICoreWebView2WebMessageReceivedEventArgs*
+                                      //               args)
+                                      //               -> HRESULT
+                                      //           {
+                                      //               browser->Messages(window, settings, args);
 
-                                                  return S_OK;
-                                              })
-                                              .Get(),
-                                          &tokenReceivedMsg);
+                                      //               return S_OK;
+                                      //           })
+                                      //           .Get(),
+                                      //       &tokenReceivedMsg);
 
                                       wvController->add_AcceleratorKeyPressed(
                                           Callback<ICoreWebView2AcceleratorKeyPressedEventHandler>(
@@ -620,29 +622,35 @@ void Browser::Messages(Window& window, Settings& settings,
                        ICoreWebView2WebMessageReceivedEventArgs* args)
 {
     wil::unique_cotaskmem_string messageRaw;
+    args->get_WebMessageAsJson(&messageRaw);
+    // wprintln(messageRaw.get());
 
-    // args->get_WebMessageAsJson(LPWSTR *webMessageAsJson)
+    auto j = json::parse(to_string(messageRaw.get()));
 
-    if (SUCCEEDED(args->TryGetWebMessageAsString(&messageRaw)))
-    {
-        auto message = wstring(messageRaw.get());
+    println(j["mainUrl"]);
+    println(j["sideUrl"]);
+    println(j["theme"]);
 
-        if (message.compare(0, 8, L"mainUrl ") == 0)
-        {
-            wprintln(message);
-            settings.mainUrl = to_string(message.substr(8));
-            println(settings.mainUrl);
-            SendMessageW(window.hwnd, WM_NOTIFY, VK_F1, 0);
-        }
+    // if (SUCCEEDED(args->TryGetWebMessageAsString(&messageRaw)))
+    // {
+    //     auto message = wstring(messageRaw.get());
 
-        if (message.compare(0, 8, L"sideUrl ") == 0)
-        {
-            wprintln(message);
-            settings.sideUrl = to_string(message.substr(8));
-            println(settings.sideUrl);
-            SendMessageW(window.hwnd, WM_NOTIFY, VK_F1, 0);
-        }
-    }
+    //     if (message.compare(0, 8, L"mainUrl ") == 0)
+    //     {
+    //         wprintln(message);
+    //         settings.mainUrl = to_string(message.substr(8));
+    //         println(settings.mainUrl);
+    //         SendMessageW(window.hwnd, WM_NOTIFY, VK_F1, 0);
+    //     }
+
+    //     if (message.compare(0, 8, L"sideUrl ") == 0)
+    //     {
+    //         wprintln(message);
+    //         settings.sideUrl = to_string(message.substr(8));
+    //         println(settings.sideUrl);
+    //         SendMessageW(window.hwnd, WM_NOTIFY, VK_F1, 0);
+    //     }
+    // }
 }
 
 void Browser::PostSettings(json j)
