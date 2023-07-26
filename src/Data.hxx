@@ -125,4 +125,27 @@ struct Colors
             return json{};
         }
     }
+
+    Colors Deserialize(json j)
+    {
+        try
+        {
+            return Colors{j["colors"]["accent"].get<string>(),
+                          j["colors"]["accentDark1"].get<string>(),
+                          j["colors"]["accentDark2"].get<string>(),
+                          j["colors"]["accentDark3"].get<string>(),
+                          j["colors"]["accentLight1"].get<string>(),
+                          j["colors"]["accentLight2"].get<string>(),
+                          j["colors"]["accentLight3"].get<string>(),
+                          j["colors"]["background"].get<string>(),
+                          j["colors"]["foreground"].get<string>()
+
+            };
+        }
+        catch (const std::exception& e)
+        {
+            println(e.what());
+            return Colors{};
+        }
+    }
 };
