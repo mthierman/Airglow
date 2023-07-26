@@ -26,8 +26,7 @@ class App
     Colors colors{};
 
     void Show();
-    json SerializeJson(Settings);
-    Settings DeserializeJson(json);
+    // Settings DeserializeJson(json);
     json LoadJson();
     void SaveJson(json);
     void LoadSettings();

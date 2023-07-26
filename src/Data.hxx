@@ -53,6 +53,30 @@ struct Settings
             return json{};
         }
     }
+
+    Settings Deserialize(json j)
+    {
+        try
+        {
+            return Settings{j["settings"]["theme"].get<string>(),
+                            j["settings"]["mainUrl"].get<string>(),
+                            j["settings"]["sideUrl"].get<string>(),
+                            j["settings"]["position"].get<std::vector<int>>(),
+                            j["settings"]["menu"].get<bool>(),
+                            j["settings"]["split"].get<bool>(),
+                            j["settings"]["swapped"].get<bool>(),
+                            j["settings"]["maximized"].get<bool>(),
+                            j["settings"]["fullscreen"].get<bool>(),
+                            j["settings"]["topmost"].get<bool>()
+
+            };
+        }
+        catch (const std::exception& e)
+        {
+            println(e.what());
+            return Settings{};
+        }
+    }
 };
 
 struct Paths

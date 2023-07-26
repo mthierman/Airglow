@@ -91,55 +91,6 @@ void App::Show()
     }
 }
 
-json App::SerializeJson(Settings s)
-{
-    try
-    {
-        return json{{"settings",
-                     {
-                         {"theme", s.theme},
-                         {"mainUrl", s.mainUrl},
-                         {"sideUrl", s.sideUrl},
-                         {"position", s.position},
-                         {"menu", s.menu},
-                         {"split", s.split},
-                         {"swapped", s.swapped},
-                         {"maximized", s.maximized},
-                         {"fullscreen", s.fullscreen},
-                         {"topmost", s.topmost},
-                     }}};
-    }
-    catch (const std::exception& e)
-    {
-        println(e.what());
-        return json{};
-    }
-}
-
-Settings App::DeserializeJson(json j)
-{
-    try
-    {
-        return Settings{j["settings"]["theme"].get<string>(),
-                        j["settings"]["mainUrl"].get<string>(),
-                        j["settings"]["sideUrl"].get<string>(),
-                        j["settings"]["position"].get<std::vector<int>>(),
-                        j["settings"]["menu"].get<bool>(),
-                        j["settings"]["split"].get<bool>(),
-                        j["settings"]["swapped"].get<bool>(),
-                        j["settings"]["maximized"].get<bool>(),
-                        j["settings"]["fullscreen"].get<bool>(),
-                        j["settings"]["topmost"].get<bool>()
-
-        };
-    }
-    catch (const std::exception& e)
-    {
-        println(e.what());
-        return Settings{};
-    }
-}
-
 json App::LoadJson()
 {
     try
@@ -175,19 +126,19 @@ void App::SaveJson(json j)
 void App::LoadSettings()
 {
     if (!std::filesystem::exists(paths.json))
-        SaveJson(SerializeJson(settings));
+        SaveJson(settings.Serialize());
 
     if (std::filesystem::exists(paths.json) && std::filesystem::is_empty(paths.json))
-        SaveJson(SerializeJson(settings));
+        SaveJson(settings.Serialize());
 
     if (std::filesystem::exists(paths.json))
     {
         auto j{LoadJson()};
-        settings = DeserializeJson(j);
+        settings = settings.Deserialize(j);
     }
 }
 
-void App::SaveSettings() { SaveJson(SerializeJson(settings)); }
+void App::SaveSettings() { SaveJson(settings.Serialize()); }
 
 // void App::CreateDb()
 // {
@@ -344,8 +295,16 @@ int App::_OnEraseBackground(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int App::_OnExitSizeMove(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
+    WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
+    GetWindowPlacement(hwnd, &wp);
+    if (wp.showCmd == 3)
+        settings.maximized = true;
+    else
+        settings.maximized = false;
+
     if (!settings.maximized && !settings.fullscreen)
         settings.position = window_position(hwnd);
+
     SaveSettings();
 
     return 0;
@@ -370,6 +329,7 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
         browser->Focus(window, settings);
         browser->Title(window, settings);
         browser->Icon(window, settings);
+
         SaveSettings();
 
         return 0;
@@ -380,23 +340,25 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
         browser->Focus(window, settings);
         browser->Title(window, settings);
         browser->Icon(window, settings);
+
         SaveSettings();
 
         return 0;
 
     case VK_F6:
         settings.maximized = window_maximize(hwnd);
+
         SaveSettings();
 
         return 0;
 
     case VK_F8:
-        println("TEST");
         settings.menu = bool_toggle(settings.menu);
         browser->Bounds(window, settings);
         browser->Focus(window, settings);
         browser->Title(window, settings);
         browser->Icon(window, settings);
+
         SaveSettings();
 
         return 0;
@@ -404,6 +366,7 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
     case VK_F9:
         settings.topmost = window_topmost(hwnd);
         browser->Title(window, settings);
+
         SaveSettings();
 
         return 0;
@@ -411,6 +374,7 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
     case VK_F11:
         settings.fullscreen = window_fullscreen(hwnd);
         browser->Icon(window, settings);
+
         SaveSettings();
 
         return 0;
@@ -448,6 +412,7 @@ int App::_OnSettingChange(HWND hwnd, WPARAM wparam, LPARAM lparam)
     colors = Colors{};
     browser->PostSettings(settings.Serialize());
     browser->PostSettings(colors.Serialize());
+
     SaveSettings();
 
     return 0;
@@ -456,11 +421,6 @@ int App::_OnSettingChange(HWND hwnd, WPARAM wparam, LPARAM lparam)
 int App::_OnSize(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
     browser->Bounds(window, settings);
-
-    if (wparam == 2)
-        settings.maximized = true;
-    else
-        settings.maximized = false;
 
     return 0;
 }
