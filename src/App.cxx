@@ -225,8 +225,6 @@ __int64 __stdcall App::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
             return app->_OnKeyDown(hwnd, wparam, lparam);
         case WM_NOTIFY:
             return app->_OnNotify(hwnd, wparam, lparam);
-        case WM_SETICON:
-            return app->_OnSetIcon(hwnd, wparam, lparam);
         case WM_SETFOCUS:
             return app->_OnSetFocus(hwnd, wparam, lparam);
         case WM_SETTINGCHANGE:
@@ -377,8 +375,6 @@ int App::_OnNotify(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
     return 0;
 }
-
-int App::_OnSetIcon(HWND hwnd, WPARAM wparam, LPARAM lparam) { return 0; }
 
 int App::_OnSetFocus(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {

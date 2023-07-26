@@ -42,7 +42,6 @@ class App
     int _OnGetMinMaxInfo(HWND, WPARAM, LPARAM);
     int _OnKeyDown(HWND, WPARAM, LPARAM);
     int _OnNotify(HWND, WPARAM, LPARAM);
-    int _OnSetIcon(HWND, WPARAM, LPARAM);
     int _OnSetFocus(HWND, WPARAM, LPARAM);
     int _OnSettingChange(HWND, WPARAM, LPARAM);
     int _OnWindowPosChanged(HWND, WPARAM, LPARAM);
