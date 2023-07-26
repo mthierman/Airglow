@@ -13,6 +13,7 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
             Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
                 [&](HRESULT hr, ICoreWebView2Environment* e) -> HRESULT
                 {
+                    // MAIN BROWSER
                     e->CreateCoreWebView2Controller(
                         hwnd, Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
                                   [&](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
@@ -113,6 +114,7 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
                                   })
                                   .Get());
 
+                    // SIDE BROWSER
                     e->CreateCoreWebView2Controller(
                         hwnd, Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
                                   [&](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
@@ -213,6 +215,7 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
                                   })
                                   .Get());
 
+                    // SETTINGS BROWSER
                     e->CreateCoreWebView2Controller(
                         hwnd, Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
                                   [&](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
@@ -264,6 +267,8 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
 
                                       SendMessageW(hwnd, WM_SETFOCUS, 0, 0);
 
+                                      wvBrowser->OpenDevToolsWindow();
+
                                       wvBrowser->add_DocumentTitleChanged(
                                           Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
                                               [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
@@ -305,6 +310,7 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
                                                   ICoreWebView2NavigationCompletedEventArgs* args)
                                                   -> HRESULT
                                               {
+                                                  browser->PostSettings(settings.Serialize());
                                                   browser->PostSettings(colors.Serialize());
 
                                                   return S_OK;

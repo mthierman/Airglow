@@ -13,17 +13,25 @@ document.onreadystatechange = () => {
 
 if (window.chrome.webview) {
     window.chrome.webview.addEventListener("message", (arg: any) => {
-        let colors = arg.data.colors;
-        document.documentElement.style.setProperty(
-            "--accentColor",
-            colors.accent,
-        );
+        if (arg.data.colors) {
+            let colors = arg.data.colors;
+            console.log(colors);
+            document.documentElement.style.setProperty(
+                "--accentColor",
+                colors.accent,
+            );
+        }
+        if (arg.data.settings) {
+            let settings = arg.data.settings;
+            console.log(settings);
+        }
     });
 }
 
 export default function App() {
     const [mainUrl, setMainUrl] = useState("");
     const [sideUrl, setSideUrl] = useState("");
+    const [theme, setTheme] = useState("");
 
     const handleForm = (e: any) => {
         e.preventDefault();
@@ -43,6 +51,10 @@ export default function App() {
                 `sideUrl ${data.sideUrl.toString()}`,
             );
         }
+        if (data.theme.toString() != "") {
+            setTheme(data.theme.toString());
+            window.chrome.webview.postMessage(`theme ${data.theme.toString()}`);
+        }
     };
 
     useEffect(() => {
@@ -53,6 +65,7 @@ export default function App() {
                 let settings = data.settings;
                 setMainUrl(settings.mainUrl);
                 setSideUrl(settings.sideUrl);
+                setTheme(settings.theme);
             } catch (error) {
                 console.error("error", error);
             }
@@ -93,6 +106,7 @@ export default function App() {
                             placeholder={sideUrl}
                             pattern=".*[.].*"></input>
                     </label>
+                    <div>Theme: {theme}</div>
                 </div>
 
                 <button id="submitUrl" type="submit">

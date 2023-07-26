@@ -446,7 +446,7 @@ int App::_OnSettingChange(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
     settings.theme = window_theme(hwnd);
     colors = Colors{};
-    browser->PostSettings(SerializeJson(settings));
+    browser->PostSettings(settings.Serialize());
     browser->PostSettings(colors.Serialize());
     SaveSettings();
 

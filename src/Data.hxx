@@ -28,6 +28,31 @@ struct Settings
     bool maximized{false};
     bool fullscreen{false};
     bool topmost{false};
+
+    json Serialize()
+    {
+        try
+        {
+            return json{{"settings",
+                         {
+                             {"theme", theme},
+                             {"mainUrl", mainUrl},
+                             {"sideUrl", sideUrl},
+                             {"position", position},
+                             {"menu", menu},
+                             {"split", split},
+                             {"swapped", swapped},
+                             {"maximized", maximized},
+                             {"fullscreen", fullscreen},
+                             {"topmost", topmost},
+                         }}};
+        }
+        catch (const std::exception& e)
+        {
+            println(e.what());
+            return json{};
+        }
+    }
 };
 
 struct Paths

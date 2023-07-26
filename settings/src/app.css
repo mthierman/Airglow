@@ -29,7 +29,7 @@
         @apply border-gray-400;
     }
     button[type="submit"] {
-        @apply scale-100  self-end rounded border-2 border-black bg-black p-2 text-2xl font-semibold text-white shadow-2xl shadow-accent duration-100 ease-linear hover:border-accent hover:bg-accent active:scale-95;
+        @apply scale-100  self-end rounded border-2 border-black bg-black p-2 text-2xl font-semibold text-white duration-100 ease-linear hover:text-accent active:scale-95;
     }
 }
 
