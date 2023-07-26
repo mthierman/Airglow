@@ -231,8 +231,8 @@ __int64 __stdcall App::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
             return app->_OnSetFocus(hwnd, wparam, lparam);
         case WM_SETTINGCHANGE:
             return app->_OnSettingChange(hwnd, wparam, lparam);
-        case WM_SIZE:
-            return app->_OnSize(hwnd, wparam, lparam);
+        case WM_WINDOWPOSCHANGED:
+            return app->_OnWindowPosChanged(hwnd, wparam, lparam);
         }
     }
 
@@ -250,20 +250,8 @@ int App::_OnActivate(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int App::_OnClose(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-    auto style = GetWindowLongPtrW(hwnd, GWL_STYLE);
-    auto exStyle = GetWindowLongPtrW(hwnd, GWL_EXSTYLE);
-
-    // if (style & WS_OVERLAPPEDWINDOW)
-    //     settings.fullscreen = false;
-    // else
-    //     settings.fullscreen = true;
-
-    // if (exStyle & WS_EX_TOPMOST)
-    //     settings.topmost = true;
-    // else
-    //     settings.topmost = false;
-
     SaveSettings();
+
     DestroyWindow(hwnd);
 
     return 0;
@@ -295,13 +283,6 @@ int App::_OnEraseBackground(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int App::_OnExitSizeMove(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-    WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
-    GetWindowPlacement(hwnd, &wp);
-    if (wp.showCmd == 3)
-        settings.maximized = true;
-    else
-        settings.maximized = false;
-
     if (!settings.maximized && !settings.fullscreen)
         settings.position = window_position(hwnd);
 
@@ -418,9 +399,18 @@ int App::_OnSettingChange(HWND hwnd, WPARAM wparam, LPARAM lparam)
     return 0;
 }
 
-int App::_OnSize(HWND hwnd, WPARAM wparam, LPARAM lparam)
+int App::_OnWindowPosChanged(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
     browser->Bounds(window, settings);
+
+    WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
+    GetWindowPlacement(hwnd, &wp);
+    if (wp.showCmd == 3)
+        settings.maximized = true;
+    else
+        settings.maximized = false;
+
+    SaveSettings();
 
     return 0;
 }

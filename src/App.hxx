@@ -26,7 +26,6 @@ class App
     Colors colors{};
 
     void Show();
-    // Settings DeserializeJson(json);
     json LoadJson();
     void SaveJson(json);
     void LoadSettings();
@@ -46,5 +45,5 @@ class App
     int _OnSetIcon(HWND, WPARAM, LPARAM);
     int _OnSetFocus(HWND, WPARAM, LPARAM);
     int _OnSettingChange(HWND, WPARAM, LPARAM);
-    int _OnSize(HWND, WPARAM, LPARAM);
+    int _OnWindowPosChanged(HWND, WPARAM, LPARAM);
 };
