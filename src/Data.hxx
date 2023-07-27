@@ -19,8 +19,8 @@ struct Window
 struct Settings
 {
     string theme{"dark"};
-    string mainUrl{"www.google.com"};
-    string sideUrl{"www.bing.com"};
+    string mainUrl{"google.com"};
+    string sideUrl{"google.com"};
     std::vector<int> position{0, 0, 0, 0};
     bool menu{false};
     bool split{false};

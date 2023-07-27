@@ -326,6 +326,24 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
         return 0;
 
+    case VK_F4:
+        if (GetKeyState(VK_MENU) & 0x8000)
+        {
+            SendMessageW(hwnd, WM_CLOSE, 0, 0);
+
+            SaveSettings();
+        }
+
+        else
+        {
+            settings.horizontal = bool_toggle(settings.horizontal);
+            browser->Bounds(window, settings);
+
+            SaveSettings();
+        }
+
+        return 0;
+
     case VK_F6:
         settings.maximized = window_maximize(hwnd);
 
@@ -352,14 +370,6 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
         return 0;
 
-    case VK_F10:
-        settings.horizontal = bool_toggle(settings.horizontal);
-        browser->Bounds(window, settings);
-
-        SaveSettings();
-
-        return 0;
-
     case VK_F11:
         settings.fullscreen = window_fullscreen(hwnd);
         browser->Icon(window, settings);
@@ -369,8 +379,7 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
         return 0;
 
     case 0x57:
-        auto state = GetKeyState(VK_CONTROL);
-        if (state & 0x8000)
+        if (GetKeyState(VK_CONTROL) & 0x8000)
             PostMessageW(hwnd, WM_CLOSE, 0, 0);
 
         return 0;
