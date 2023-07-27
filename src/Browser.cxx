@@ -229,8 +229,11 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
                                           L"airglow", path_portable().wstring().c_str(),
                                           COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
 
-                                      // wvBrowser->Navigate(L"https://airglow/settings/index.html");
+                                      wvBrowser->Navigate(L"https://airglow/settings/index.html");
+
+#ifdef _DEBUG
                                       wvBrowser->Navigate(L"https://localhost:8000/");
+#endif
 
                                       browser->Bounds(window, settings);
                                       browser->Focus(window, settings);

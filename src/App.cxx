@@ -408,8 +408,6 @@ int App::_OnWindowPosChanged(HWND hwnd, WPARAM wparam, LPARAM lparam)
     else
         settings.maximized = false;
 
-    // browser->PostSettings(settings.Serialize());
-
     SaveSettings();
 
     return 0;
