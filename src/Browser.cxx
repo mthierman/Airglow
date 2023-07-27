@@ -597,7 +597,6 @@ void Browser::Messages(Window& window, Settings& settings,
 
         settings.mainUrl = j["mainUrl"].get<string>();
         settings.sideUrl = j["sideUrl"].get<string>();
-        settings.theme = j["theme"].get<string>();
 
         SendMessageW(window.hwnd, WM_NOTIFY, 0, 0);
     };

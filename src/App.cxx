@@ -284,6 +284,8 @@ int App::_OnExitSizeMove(HWND hwnd, WPARAM wparam, LPARAM lparam)
     if (!settings.maximized && !settings.fullscreen)
         settings.position = window_position(hwnd);
 
+    browser->PostSettings(settings.Serialize());
+
     SaveSettings();
 
     return 0;
@@ -405,6 +407,8 @@ int App::_OnWindowPosChanged(HWND hwnd, WPARAM wparam, LPARAM lparam)
         settings.maximized = true;
     else
         settings.maximized = false;
+
+    // browser->PostSettings(settings.Serialize());
 
     SaveSettings();
 

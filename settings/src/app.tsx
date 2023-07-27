@@ -11,52 +11,36 @@ document.onreadystatechange = () => {
     }
 };
 
-if (window.chrome.webview) {
-    window.chrome.webview.addEventListener("message", (arg: any) => {
-        if (arg.data.colors) {
-            let colors = arg.data.colors;
-            console.log(colors);
-            document.documentElement.style.setProperty(
-                "--accentColor",
-                colors.accent,
-            );
-        }
-        if (arg.data.settings) {
-            let settings = arg.data.settings;
-            console.log(settings);
-        }
-    });
-}
-
 export default function App() {
     const [mainUrl, setMainUrl] = useState("");
     const [sideUrl, setSideUrl] = useState("");
     const [theme, setTheme] = useState("");
+    const [position, setPosition] = useState("");
 
-    useEffect(() => {
-        const getData = async () => {
-            try {
-                const response = await fetch(`https://airglow/Airglow.json`);
-                let data = await response.json();
-                let settings = data.settings;
-                setMainUrl(settings.mainUrl);
-                setSideUrl(settings.sideUrl);
-                setTheme(settings.theme);
-            } catch (error) {
-                console.error("error", error);
+    if (window.chrome.webview) {
+        window.chrome.webview.addEventListener("message", (arg: any) => {
+            if (arg.data.colors) {
+                document.documentElement.style.setProperty(
+                    "--accentColor",
+                    arg.data.colors.accent,
+                );
             }
-        };
-        getData();
-    }, []);
+            if (arg.data.settings) {
+                setMainUrl(arg.data.settings.mainUrl);
+                setSideUrl(arg.data.settings.sideUrl);
+                setTheme(arg.data.settings.theme);
+                setPosition(arg.data.settings.position);
+            }
+        });
+    }
 
     useEffect(() => {
-        if (mainUrl && sideUrl && theme)
+        if (mainUrl && sideUrl)
             window.chrome.webview.postMessage({
                 mainUrl: mainUrl,
                 sideUrl: sideUrl,
-                theme: theme,
             });
-    }, [mainUrl, sideUrl, theme]);
+    }, [mainUrl, sideUrl]);
 
     const handleForm = (e: any) => {
         e.preventDefault();
@@ -107,6 +91,12 @@ export default function App() {
                             pattern=".*[.].*"></input>
                     </label>
                     <div>Theme: {theme}</div>
+                    <div>
+                        <h1>Position</h1>
+                        {position[2]} x {position[3]}
+                        <br />
+                        x: {position[0]} y: {position[1]}
+                    </div>
                 </div>
 
                 <button id="submitUrl" type="submit">
