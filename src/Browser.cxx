@@ -573,6 +573,12 @@ void Browser::Keys(Window& window, Settings& settings,
 
             break;
 
+        case 115:
+            args->put_Handled(TRUE);
+            SendMessageW(window.hwnd, WM_KEYDOWN, VK_F4, 0);
+
+            break;
+
         case 117:
             args->put_Handled(TRUE);
             SendMessageW(window.hwnd, WM_KEYDOWN, VK_F6, 0);
@@ -588,12 +594,6 @@ void Browser::Keys(Window& window, Settings& settings,
         case 120:
             args->put_Handled(TRUE);
             SendMessageW(window.hwnd, WM_KEYDOWN, VK_F9, 0);
-
-            break;
-
-        case 115:
-            args->put_Handled(TRUE);
-            SendMessageW(window.hwnd, WM_KEYDOWN, VK_F4, 0);
 
             break;
 
