@@ -25,6 +25,7 @@ struct Settings
     bool menu{false};
     bool split{false};
     bool swapped{false};
+    bool horizontal{false};
     bool maximized{false};
     bool fullscreen{false};
     bool topmost{false};
@@ -42,6 +43,7 @@ struct Settings
                              {"menu", menu},
                              {"split", split},
                              {"swapped", swapped},
+                             {"horizontal", horizontal},
                              {"maximized", maximized},
                              {"fullscreen", fullscreen},
                              {"topmost", topmost},
@@ -65,6 +67,7 @@ struct Settings
                             j["settings"]["menu"].get<bool>(),
                             j["settings"]["split"].get<bool>(),
                             j["settings"]["swapped"].get<bool>(),
+                            j["settings"]["horizontal"].get<bool>(),
                             j["settings"]["maximized"].get<bool>(),
                             j["settings"]["fullscreen"].get<bool>(),
                             j["settings"]["topmost"].get<bool>()

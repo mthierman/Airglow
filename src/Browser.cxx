@@ -340,37 +340,49 @@ void Browser::Bounds(Window& window, Settings& settings)
         {
             wv2main::wvController->put_Bounds(bounds);
             wv2side::wvController->put_Bounds(RECT{0, 0, 0, 0});
+
+            return;
         }
 
         if (!settings.split && settings.swapped)
         {
             wv2main::wvController->put_Bounds(RECT{0, 0, 0, 0});
             wv2side::wvController->put_Bounds(bounds);
+
+            return;
         }
 
-        if (settings.split && !settings.swapped)
+        if (!settings.horizontal && settings.split && !settings.swapped)
         {
             wv2main::wvController->put_Bounds(left_panel(bounds));
             wv2side::wvController->put_Bounds(right_panel(bounds));
+
+            return;
         }
 
-        if (settings.split && settings.swapped)
+        if (!settings.horizontal && settings.split && settings.swapped)
         {
             wv2main::wvController->put_Bounds(right_panel(bounds));
             wv2side::wvController->put_Bounds(left_panel(bounds));
+
+            return;
         }
 
-        // if (settings.split && !settings.swapped)
-        // {
-        //     wv2main::wvController->put_Bounds(top_panel(bounds));
-        //     wv2side::wvController->put_Bounds(bottom_panel(bounds));
-        // }
+        if (settings.horizontal && settings.split && !settings.swapped)
+        {
+            wv2main::wvController->put_Bounds(top_panel(bounds));
+            wv2side::wvController->put_Bounds(bottom_panel(bounds));
 
-        // if (settings.split && settings.swapped)
-        // {
-        //     wv2main::wvController->put_Bounds(bottom_panel(bounds));
-        //     wv2side::wvController->put_Bounds(top_panel(bounds));
-        // }
+            return;
+        }
+
+        if (settings.horizontal && settings.split && settings.swapped)
+        {
+            wv2main::wvController->put_Bounds(bottom_panel(bounds));
+            wv2side::wvController->put_Bounds(top_panel(bounds));
+
+            return;
+        }
     }
 }
 
@@ -581,6 +593,7 @@ void Browser::Keys(Window& window, Settings& settings,
 
         case 121:
             args->put_Handled(TRUE);
+            SendMessageW(window.hwnd, WM_KEYDOWN, VK_F10, 0);
 
             break;
 

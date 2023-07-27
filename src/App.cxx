@@ -352,6 +352,14 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
         return 0;
 
+    case VK_F10:
+        settings.horizontal = bool_toggle(settings.horizontal);
+        browser->Bounds(window, settings);
+
+        SaveSettings();
+
+        return 0;
+
     case VK_F11:
         settings.fullscreen = window_fullscreen(hwnd);
         browser->Icon(window, settings);
