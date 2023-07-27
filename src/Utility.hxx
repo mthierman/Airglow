@@ -56,4 +56,6 @@ RECT bounds_to_rect(std::vector<int>);
 RECT window_bounds(HWND);
 RECT left_panel(RECT);
 RECT right_panel(RECT);
+RECT top_panel(RECT);
+RECT bottom_panel(RECT);
 } // namespace Utility

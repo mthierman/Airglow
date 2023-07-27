@@ -359,6 +359,18 @@ void Browser::Bounds(Window& window, Settings& settings)
             wv2main::wvController->put_Bounds(right_panel(bounds));
             wv2side::wvController->put_Bounds(left_panel(bounds));
         }
+
+        // if (settings.split && !settings.swapped)
+        // {
+        //     wv2main::wvController->put_Bounds(top_panel(bounds));
+        //     wv2side::wvController->put_Bounds(bottom_panel(bounds));
+        // }
+
+        // if (settings.split && settings.swapped)
+        // {
+        //     wv2main::wvController->put_Bounds(bottom_panel(bounds));
+        //     wv2side::wvController->put_Bounds(top_panel(bounds));
+        // }
     }
 }
 

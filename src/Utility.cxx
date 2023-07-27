@@ -445,4 +445,24 @@ RECT right_panel(RECT bounds)
         bounds.bottom,
     };
 }
+
+RECT top_panel(RECT bounds)
+{
+    return RECT{
+        bounds.left,
+        bounds.top,
+        bounds.right,
+        bounds.bottom / 2,
+    };
+}
+
+RECT bottom_panel(RECT bounds)
+{
+    return RECT{
+        bounds.left,
+        bounds.bottom / 2,
+        bounds.right,
+        bounds.bottom,
+    };
+}
 } // namespace Utility
