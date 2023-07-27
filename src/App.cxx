@@ -294,8 +294,8 @@ int App::_OnExitSizeMove(HWND hwnd, WPARAM wparam, LPARAM lparam)
 int App::_OnGetMinMaxInfo(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
     LPMINMAXINFO minmax = (LPMINMAXINFO)lparam;
-    minmax->ptMinTrackSize.x = 400;
-    minmax->ptMinTrackSize.y = 450;
+    minmax->ptMinTrackSize.x = 800;
+    minmax->ptMinTrackSize.y = 800;
 
     return 0;
 }

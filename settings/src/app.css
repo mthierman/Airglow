@@ -11,13 +11,10 @@
         @apply text-xl;
     }
     #root {
-        @apply grid min-h-full p-4;
+        @apply grid min-h-full;
     }
-    #settings {
-        @apply grid h-full gap-6;
-    }
-    #url {
-        @apply grid gap-4 self-start;
+    form {
+        @apply p-6;
     }
     label {
         @apply grid gap-2 whitespace-nowrap font-semibold;
@@ -29,7 +26,7 @@
         @apply border-gray-400;
     }
     button[type="submit"] {
-        @apply scale-100  self-end rounded border-2 border-black bg-black p-2 text-2xl font-semibold text-white duration-100 ease-linear hover:text-accent active:scale-95;
+        @apply scale-100 rounded border-2 border-black bg-black p-2 text-2xl font-semibold text-white duration-100 ease-linear hover:text-accent active:scale-95;
     }
 }
 

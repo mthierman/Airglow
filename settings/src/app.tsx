@@ -15,6 +15,7 @@ export default function App() {
     const [mainUrl, setMainUrl] = useState("");
     const [sideUrl, setSideUrl] = useState("");
     const [theme, setTheme] = useState("");
+    const [themeIcon, setThemeIcon] = useState("");
     const [position, setPosition] = useState("");
 
     if (window.chrome.webview) {
@@ -42,6 +43,17 @@ export default function App() {
             });
     }, [mainUrl, sideUrl]);
 
+    useEffect(() => {
+        if (theme) {
+            if (theme === "dark") {
+                setThemeIcon("🌙");
+            }
+            if (theme === "light") {
+                setThemeIcon("🔆");
+            }
+        }
+    }, [theme]);
+
     const handleForm = (e: any) => {
         e.preventDefault();
 
@@ -62,9 +74,10 @@ export default function App() {
             <form
                 autoComplete="on"
                 id="settings"
+                className="grid h-full content-between gap-6"
                 method="post"
                 onSubmit={handleForm}>
-                <div id="url">
+                <div className="grid gap-6 self-start">
                     <label>
                         <h1>
                             <span className="select-none">🏠 https://</span>
@@ -90,9 +103,9 @@ export default function App() {
                             placeholder={sideUrl}
                             pattern=".*[.].*"></input>
                     </label>
-                    <div>Theme: {theme}</div>
+
                     <div>
-                        <h1>Position</h1>
+                        <h1>{themeIcon} Position</h1>
                         {position[2]} x {position[3]}
                         <br />
                         x: {position[0]} y: {position[1]}
