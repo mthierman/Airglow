@@ -2,7 +2,7 @@
 
 int __stdcall wWinMain(HINSTANCE hinstance, HINSTANCE hpinstance, PWSTR pcl, int ncs)
 {
-    SetEnvironmentVariableW(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR", L"0");
+
 
     auto app{App::Create(hinstance, ncs)};
 
