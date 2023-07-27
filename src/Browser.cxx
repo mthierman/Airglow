@@ -441,11 +441,9 @@ void Browser::Icon(Window& window, Settings& settings)
 
     if (settings.menu)
     {
-        // #ifdef DEBUG_MSG
-        //         LPWSTR faviconUri;
-        //         Browsers::Settings::browser->get_FaviconUri(&faviconUri);
-        //         wprintln(wstring(faviconUri));
-        // #endif
+        LPWSTR faviconUri;
+        wv2settings::wvBrowser->get_FaviconUri(&faviconUri);
+
         wv2settings::wvBrowser->GetFavicon(
             COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
             Callback<ICoreWebView2GetFaviconCompletedHandler>(
@@ -469,11 +467,9 @@ void Browser::Icon(Window& window, Settings& settings)
 
     if (!settings.swapped && !settings.menu)
     {
-        // #ifdef DEBUG_MSG
-        //         LPWSTR faviconUri;
-        //         Browsers::Main::browser->get_FaviconUri(&faviconUri);
-        //         wprintln(wstring(faviconUri));
-        // #endif
+        LPWSTR faviconUri;
+        wv2main::wvBrowser->get_FaviconUri(&faviconUri);
+
         wv2main::wvBrowser->GetFavicon(
             COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
             Callback<ICoreWebView2GetFaviconCompletedHandler>(
@@ -497,11 +493,9 @@ void Browser::Icon(Window& window, Settings& settings)
 
     if (settings.swapped && !settings.menu)
     {
-        // #ifdef DEBUG_MSG
-        //         LPWSTR faviconUri;
-        //         Browsers::Side::browser->get_FaviconUri(&faviconUri);
-        //         wprintln(wstring(faviconUri));
-        // #endif
+        LPWSTR faviconUri;
+        wv2side::wvBrowser->get_FaviconUri(&faviconUri);
+
         wv2side::wvBrowser->GetFavicon(
             COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
             Callback<ICoreWebView2GetFaviconCompletedHandler>(
@@ -534,8 +528,6 @@ void Browser::Keys(Window& window, Settings& settings,
     {
         UINT key;
         args->get_VirtualKey(&key);
-
-        println(std::to_string(key));
 
         switch (key)
         {
