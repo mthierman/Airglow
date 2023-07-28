@@ -23,7 +23,7 @@
         @apply rounded border-2 border-black bg-black p-2 font-medium text-white shadow-md shadow-black outline-none;
     }
     input:focus {
-        @apply border-gray-400;
+        @apply border-accent text-accent;
     }
     button[type="submit"] {
         @apply scale-100 rounded border-2 border-black bg-black p-2 text-2xl font-semibold text-white duration-100 ease-linear hover:text-accent active:scale-95;

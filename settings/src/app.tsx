@@ -57,6 +57,10 @@ export default function App() {
     const handleForm = (e: any) => {
         e.preventDefault();
 
+        const form = document.getElementsByName(
+            "settings",
+        )[0] as HTMLFormElement;
+
         const rawData = new FormData(e.target);
         const data = Object.fromEntries(rawData.entries());
 
@@ -67,22 +71,37 @@ export default function App() {
         if (data.sideUrl.toString() != "") {
             setSideUrl(data.sideUrl.toString());
         }
+
+        form.reset();
     };
 
     return (
         <div>
             <form
-                autoComplete="on"
+                name="settings"
+                spellCheck="false"
                 id="settings"
                 className="grid h-full content-between gap-6"
                 method="post"
                 onSubmit={handleForm}>
                 <div className="grid gap-6 self-start">
+                    <div className="text-accent">
+                        <span className="capitalize">
+                            {themeIcon} {theme} mode
+                        </span>
+                        <div>
+                            <span>Dimensions: </span>
+                            {position[2]} x {position[3]}
+                            <br />
+                            <span>Position: </span>
+                            x: {position[0]} y: {position[1]}
+                        </div>
+                    </div>
                     <label>
-                        <h1>
-                            <span className="select-none">🏠 https://</span>
-                            {mainUrl}
-                        </h1>
+                        <div className="grid grid-flow-col justify-between gap-6">
+                            <div className="select-none">🏠 Home</div>
+                            <div className="select-text text-sm">{mainUrl}</div>
+                        </div>
                         <input
                             type="text"
                             name="mainUrl"
@@ -92,10 +111,10 @@ export default function App() {
                     </label>
 
                     <label>
-                        <h1>
-                            <span className="select-none">🔧 https://</span>
-                            {sideUrl}
-                        </h1>
+                        <div className="grid grid-flow-col justify-between gap-6">
+                            <span className="select-none">🔧 Sidebar</span>
+                            <div className="select-text text-sm">{sideUrl}</div>
+                        </div>
                         <input
                             type="text"
                             name="sideUrl"
@@ -103,13 +122,6 @@ export default function App() {
                             placeholder={sideUrl}
                             pattern=".*[.].*"></input>
                     </label>
-
-                    <div>
-                        <h1>{themeIcon} Position</h1>
-                        {position[2]} x {position[3]}
-                        <br />
-                        x: {position[0]} y: {position[1]}
-                    </div>
                 </div>
 
                 <button id="submitUrl" type="submit">
