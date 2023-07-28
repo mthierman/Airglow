@@ -20,7 +20,7 @@
         @apply grid gap-2 whitespace-nowrap font-semibold;
     }
     input {
-        @apply rounded border-2 border-black bg-black p-2 font-medium text-white shadow-md shadow-black outline-none;
+        @apply rounded border-2 border-black bg-black p-2 font-medium text-accent shadow-md shadow-black outline-none;
     }
     input:focus {
         @apply border-accent text-accent;

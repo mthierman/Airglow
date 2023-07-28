@@ -444,12 +444,52 @@ RECT window_bounds(HWND hwnd)
     return bounds;
 }
 
+// RECT left_panel(RECT bounds)
+// {
+//     return RECT{
+//         bounds.left,
+//         bounds.top,
+//         bounds.right / 2,
+//         bounds.bottom,
+//     };
+// }
+
+// RECT right_panel(RECT bounds)
+// {
+//     return RECT{
+//         bounds.right / 2,
+//         bounds.top,
+//         bounds.right,
+//         bounds.bottom,
+//     };
+// }
+
+// RECT top_panel(RECT bounds)
+// {
+//     return RECT{
+//         bounds.left,
+//         bounds.top,
+//         bounds.right,
+//         bounds.bottom / 2,
+//     };
+// }
+
+// RECT bottom_panel(RECT bounds)
+// {
+//     return RECT{
+//         bounds.left,
+//         bounds.bottom / 2,
+//         bounds.right,
+//         bounds.bottom,
+//     };
+// }
+
 RECT left_panel(RECT bounds)
 {
     return RECT{
         bounds.left,
         bounds.top,
-        bounds.right / 2,
+        (bounds.right / 2) - 1,
         bounds.bottom,
     };
 }
@@ -457,7 +497,7 @@ RECT left_panel(RECT bounds)
 RECT right_panel(RECT bounds)
 {
     return RECT{
-        bounds.right / 2,
+        (bounds.right / 2) + 1,
         bounds.top,
         bounds.right,
         bounds.bottom,
