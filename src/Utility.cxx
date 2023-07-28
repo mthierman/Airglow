@@ -407,6 +407,24 @@ wstring js_inject()
     return script;
 }
 
+wstring js_inject_script()
+{
+    return wstring{LR"(
+        document.onreadystatechange = () => {
+            if (document.readyState === "interactive") {
+                let scheme = document.createElement("meta");
+                scheme.setAttribute("name", "color-scheme");
+                scheme.setAttribute("content", "light dark");
+                document.getElementsByTagName("head")[0].appendChild(scheme);
+                document.documentElement.style.setProperty(
+                    "color-scheme",
+                    "light dark"
+                );
+            }
+        };
+    )"};
+}
+
 std::vector<int> rect_to_bounds(RECT rect)
 {
     return std::vector<int>{rect.left, rect.top, (rect.right - rect.left),

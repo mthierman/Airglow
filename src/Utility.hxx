@@ -48,7 +48,7 @@ std::vector<int> window_position(HWND);
 
 std::pair<wstring, wstring> command_line();
 wstring js_inject();
-wstring js_inject_embed();
+wstring js_inject_script();
 
 std::vector<int> rect_to_bounds(RECT);
 RECT bounds_to_rect(std::vector<int>);

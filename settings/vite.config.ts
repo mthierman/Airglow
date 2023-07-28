@@ -7,7 +7,13 @@ export default defineConfig(async ({ command, mode }) => {
         const cert = path.resolve("../../.cert/localhost.pfx");
         const passphrase = "localhost";
         return {
+            root: "./src",
+            base: "./",
             plugins: [react()],
+            build: {
+                outDir: "../dist",
+                assetsDir: "./",
+            },
             server: {
                 port: 8000,
                 https: {
@@ -25,8 +31,13 @@ export default defineConfig(async ({ command, mode }) => {
         };
     } else {
         return {
+            root: "./src",
             base: "./",
             plugins: [react()],
+            build: {
+                outDir: "../dist",
+                assetsDir: "./",
+            },
         };
     }
 });

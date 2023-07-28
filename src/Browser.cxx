@@ -35,9 +35,6 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
 
                                   if (wvBrowser)
                                   {
-                                      wvBrowser->AddScriptToExecuteOnDocumentCreated(
-                                          js_inject().c_str(), nullptr);
-
                                       wvBrowser->get_Settings(&wvSettings);
 
                                       wvSettings->put_AreDefaultContextMenusEnabled(true);
@@ -121,9 +118,6 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
 
                                   if (wvBrowser)
                                   {
-                                      wvBrowser->AddScriptToExecuteOnDocumentCreated(
-                                          js_inject().c_str(), nullptr);
-
                                       wvBrowser->get_Settings(&wvSettings);
 
                                       wvSettings->put_AreDefaultContextMenusEnabled(true);
