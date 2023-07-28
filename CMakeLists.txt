@@ -5,15 +5,11 @@ set(APP_VERSION "1.2.2")
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${APP_NAME}")
-set(WEBVIEW "Microsoft.Web.WebView2")
-set(WEBVIEW_VERSION "1.0.1901.177")
-set(WIL "Microsoft.Windows.ImplementationLibrary")
-set(WIL_VERSION "1.0.230629.1")
 
 include(FetchContent)
 
 option(ENV_LIBS OFF)
-option(WEBVIEW_EXPERIMENTAL OFF)
+option(EXPERIMENTAL_LIBS OFF)
 option(INSTALL OFF)
 
 project(
@@ -33,13 +29,24 @@ execute_process(
     OUTPUT_FILE "${CMAKE_BINARY_DIR}/release_notes.txt"
 )
 
+if(EXPERIMENTAL_LIBS)
+    set(WEBVIEW "Microsoft.Web.WebView2")
+    set(WEBVIEW_VERSION "1.0.1988-prerelease")
+else()
+    set(WEBVIEW "Microsoft.Web.WebView2")
+    set(WEBVIEW_VERSION "1.0.1901.177")
+endif()
+
+set(WIL "Microsoft.Windows.ImplementationLibrary")
+set(WIL_VERSION "1.0.230629.1")
+
 if(ENV_LIBS)
-    file(TO_CMAKE_PATH "$ENV{LIB_WEBVIEW}" WEBVIEW_PKG)
-    file(TO_CMAKE_PATH "$ENV{LIB_WIL}" WIL_PKG)
-    file(TO_CMAKE_PATH "$ENV{LIB_CHOC}" CHOC_PKG)
-    file(TO_CMAKE_PATH "$ENV{LIB_JSON}" JSON_PKG)
-    file(TO_CMAKE_PATH "$ENV{LIB_SQLITE}" SQLITE_PKG)
-    file(TO_CMAKE_PATH "$ENV{LIB_CURL}" CURL_PKG)
+    file(TO_CMAKE_PATH "$ENV{LIBRARIES}/${WEBVIEW}.${WEBVIEW_VERSION}" WEBVIEW_PKG)
+    file(TO_CMAKE_PATH "$ENV{LIBRARIES}/${WIL}.${WIL_VERSION}" WIL_PKG)
+    file(TO_CMAKE_PATH "$ENV{LIBRARIES}/choc" CHOC_PKG)
+    file(TO_CMAKE_PATH "$ENV{LIBRARIES}/nlohmann/json/single_include" JSON_PKG)
+    file(TO_CMAKE_PATH "$ENV{LIBRARIES}/sqlite-amalgamation-3420000" SQLITE_PKG)
+    file(TO_CMAKE_PATH "$ENV{LIBRARIES}/curl" CURL_PKG)
 else()
     execute_process(
         COMMAND
@@ -76,7 +83,7 @@ else()
 
     FetchContent_Declare(
         curl
-        URL https://github.com/curl/curl/releases/download/curl-8_1_2/curl-8.1.2.zip
+        URL https://github.com/curl/curl/releases/download/curl-8_2_1/curl-8.2.1.zip
     )
     FetchContent_Populate(curl)
     file(TO_CMAKE_PATH "${curl_SOURCE_DIR}" CURL_PKG)
