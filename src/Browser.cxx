@@ -13,6 +13,124 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
         Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
             [&](HRESULT hr, ICoreWebView2Environment* e) -> HRESULT
             {
+                // SETTINGS BROWSER
+                e->CreateCoreWebView2Controller(
+                    hwnd,
+                    Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+                        [&](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
+                        {
+                            using namespace wv2settings;
+
+                            EventRegistrationToken tokenTitle;
+                            EventRegistrationToken tokenFavicon;
+                            EventRegistrationToken tokenReceivedMsg;
+                            EventRegistrationToken tokenNavigationCompleted;
+                            EventRegistrationToken tokenAcceleratorKeyPressed;
+
+                            if (c)
+                            {
+                                wvController = c;
+                                wvController->get_CoreWebView2(&wvCore);
+                            }
+
+                            if (wvCore)
+                                wvBrowser = wvCore.try_query<ICoreWebView2_19>();
+
+                            if (wvBrowser)
+                            {
+                                wvBrowser->SetVirtualHostNameToFolderMapping(
+                                    L"airglow", path_portable().wstring().c_str(),
+                                    COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
+
+                                wvBrowser->get_Settings(&wvSettings);
+
+                                wvSettings->put_AreDefaultContextMenusEnabled(true);
+                                wvSettings->put_AreDefaultScriptDialogsEnabled(true);
+                                wvSettings->put_AreDevToolsEnabled(true);
+                                wvSettings->put_AreHostObjectsAllowed(true);
+                                wvSettings->put_IsBuiltInErrorPageEnabled(true);
+                                wvSettings->put_IsScriptEnabled(true);
+                                wvSettings->put_IsStatusBarEnabled(true);
+                                wvSettings->put_IsWebMessageEnabled(true);
+                                wvSettings->put_IsZoomControlEnabled(true);
+                            }
+
+#ifdef _DEBUG
+                            wvBrowser->Navigate(L"https://localhost:8000/");
+                            wvBrowser->OpenDevToolsWindow();
+#else
+                            wvBrowser->Navigate(L"https://airglow/settings/index.html");
+#endif
+
+                            browser->Bounds(window, settings);
+                            browser->Focus(window, settings);
+
+                            SendMessageW(hwnd, WM_SETFOCUS, 0, 0);
+
+                            wvBrowser->add_DocumentTitleChanged(
+                                Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
+                                    [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                    {
+                                        browser->Title(window, settings);
+
+                                        return S_OK;
+                                    })
+                                    .Get(),
+                                &tokenTitle);
+
+                            wvBrowser->add_FaviconChanged(
+                                Callback<ICoreWebView2FaviconChangedEventHandler>(
+                                    [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                    {
+                                        browser->Icon(window, settings);
+
+                                        return S_OK;
+                                    })
+                                    .Get(),
+                                &tokenFavicon);
+
+                            wvBrowser->add_WebMessageReceived(
+                                Callback<ICoreWebView2WebMessageReceivedEventHandler>(
+                                    [&](ICoreWebView2* webview,
+                                        ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT
+                                    {
+                                        browser->Messages(window, settings, args);
+
+                                        return S_OK;
+                                    })
+                                    .Get(),
+                                &tokenReceivedMsg);
+
+                            wvBrowser->add_NavigationCompleted(
+                                Callback<ICoreWebView2NavigationCompletedEventHandler>(
+                                    [&](ICoreWebView2* webview,
+                                        ICoreWebView2NavigationCompletedEventArgs* args) -> HRESULT
+                                    {
+                                        browser->PostSettings(settings.Serialize());
+                                        browser->PostSettings(colors.Serialize());
+
+                                        return S_OK;
+                                    })
+                                    .Get(),
+                                &tokenNavigationCompleted);
+
+                            wvController->add_AcceleratorKeyPressed(
+                                Callback<ICoreWebView2AcceleratorKeyPressedEventHandler>(
+                                    [&](ICoreWebView2Controller* sender,
+                                        ICoreWebView2AcceleratorKeyPressedEventArgs* args)
+                                        -> HRESULT
+                                    {
+                                        browser->Keys(window, settings, args);
+
+                                        return S_OK;
+                                    })
+                                    .Get(),
+                                &tokenAcceleratorKeyPressed);
+
+                            return S_OK;
+                        })
+                        .Get());
+
                 // MAIN BROWSER
                 e->CreateCoreWebView2Controller(
                     hwnd, Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
@@ -178,127 +296,6 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
                                   return S_OK;
                               })
                               .Get());
-
-                // SETTINGS BROWSER
-                e->CreateCoreWebView2Controller(
-                    hwnd,
-                    Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                        [&](HRESULT hr, ICoreWebView2Controller* c) -> HRESULT
-                        {
-                            using namespace wv2settings;
-
-                            EventRegistrationToken tokenTitle;
-                            EventRegistrationToken tokenFavicon;
-                            EventRegistrationToken tokenReceivedMsg;
-                            EventRegistrationToken tokenNavigationCompleted;
-                            EventRegistrationToken tokenAcceleratorKeyPressed;
-
-                            if (c)
-                            {
-                                wvController = c;
-                                wvController->get_CoreWebView2(&wvCore);
-                            }
-
-                            if (wvCore)
-                                wvBrowser = wvCore.try_query<ICoreWebView2_19>();
-
-                            if (wvBrowser)
-                            {
-                                wvBrowser->AddScriptToExecuteOnDocumentCreated(js_inject().c_str(),
-                                                                               nullptr);
-
-                                wvBrowser->get_Settings(&wvSettings);
-
-                                wvSettings->put_AreDefaultContextMenusEnabled(true);
-                                wvSettings->put_AreDefaultScriptDialogsEnabled(true);
-                                wvSettings->put_AreDevToolsEnabled(true);
-                                wvSettings->put_AreHostObjectsAllowed(true);
-                                wvSettings->put_IsBuiltInErrorPageEnabled(true);
-                                wvSettings->put_IsScriptEnabled(true);
-                                wvSettings->put_IsStatusBarEnabled(true);
-                                wvSettings->put_IsWebMessageEnabled(true);
-                                wvSettings->put_IsZoomControlEnabled(true);
-                            }
-
-                            wvBrowser->SetVirtualHostNameToFolderMapping(
-                                L"airglow", path_portable().wstring().c_str(),
-                                COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
-
-#ifdef _DEBUG
-                            wvBrowser->Navigate(L"https://localhost:8000/");
-                            wvBrowser->OpenDevToolsWindow();
-#else
-                            wvBrowser->Navigate(L"https://airglow/settings/index.html");
-#endif
-
-                            browser->Bounds(window, settings);
-                            browser->Focus(window, settings);
-
-                            SendMessageW(hwnd, WM_SETFOCUS, 0, 0);
-
-                            wvBrowser->add_DocumentTitleChanged(
-                                Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
-                                    [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
-                                    {
-                                        browser->Title(window, settings);
-
-                                        return S_OK;
-                                    })
-                                    .Get(),
-                                &tokenTitle);
-
-                            wvBrowser->add_FaviconChanged(
-                                Callback<ICoreWebView2FaviconChangedEventHandler>(
-                                    [&](ICoreWebView2* sender, IUnknown* args) -> HRESULT
-                                    {
-                                        browser->Icon(window, settings);
-
-                                        return S_OK;
-                                    })
-                                    .Get(),
-                                &tokenFavicon);
-
-                            wvBrowser->add_WebMessageReceived(
-                                Callback<ICoreWebView2WebMessageReceivedEventHandler>(
-                                    [&](ICoreWebView2* webview,
-                                        ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT
-                                    {
-                                        browser->Messages(window, settings, args);
-
-                                        return S_OK;
-                                    })
-                                    .Get(),
-                                &tokenReceivedMsg);
-
-                            wvBrowser->add_NavigationCompleted(
-                                Callback<ICoreWebView2NavigationCompletedEventHandler>(
-                                    [&](ICoreWebView2* webview,
-                                        ICoreWebView2NavigationCompletedEventArgs* args) -> HRESULT
-                                    {
-                                        browser->PostSettings(settings.Serialize());
-                                        browser->PostSettings(colors.Serialize());
-
-                                        return S_OK;
-                                    })
-                                    .Get(),
-                                &tokenNavigationCompleted);
-
-                            wvController->add_AcceleratorKeyPressed(
-                                Callback<ICoreWebView2AcceleratorKeyPressedEventHandler>(
-                                    [&](ICoreWebView2Controller* sender,
-                                        ICoreWebView2AcceleratorKeyPressedEventArgs* args)
-                                        -> HRESULT
-                                    {
-                                        browser->Keys(window, settings, args);
-
-                                        return S_OK;
-                                    })
-                                    .Get(),
-                                &tokenAcceleratorKeyPressed);
-
-                            return S_OK;
-                        })
-                        .Get());
 
                 return S_OK;
             })
