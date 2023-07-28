@@ -22,8 +22,32 @@ export default function App() {
         window.chrome.webview.addEventListener("message", (arg: any) => {
             if (arg.data.colors) {
                 document.documentElement.style.setProperty(
-                    "--accentColor",
+                    "--accent",
                     arg.data.colors.accent,
+                );
+                document.documentElement.style.setProperty(
+                    "--accentDark1",
+                    arg.data.colors.accentDark1,
+                );
+                document.documentElement.style.setProperty(
+                    "--accentDark2",
+                    arg.data.colors.accentDark2,
+                );
+                document.documentElement.style.setProperty(
+                    "--accentDark3",
+                    arg.data.colors.accentDark2,
+                );
+                document.documentElement.style.setProperty(
+                    "--accentLight1",
+                    arg.data.colors.accentLight1,
+                );
+                document.documentElement.style.setProperty(
+                    "--accentLight2",
+                    arg.data.colors.accentLight2,
+                );
+                document.documentElement.style.setProperty(
+                    "--accentLight3",
+                    arg.data.colors.accentLight3,
                 );
             }
             if (arg.data.settings) {
@@ -78,18 +102,18 @@ export default function App() {
     return (
         <div>
             <form
+                autoComplete="off"
                 name="settings"
                 spellCheck="false"
                 id="settings"
-                className="grid h-full content-between gap-6"
                 method="post"
                 onSubmit={handleForm}>
                 <div className="grid gap-6 self-start">
-                    <div className="text-accent">
-                        <span className="capitalize">
+                    <div className="grid grid-flow-col justify-between">
+                        <div className="select-none capitalize text-accentDark2">
                             {themeIcon} {theme} mode
-                        </span>
-                        <div>
+                        </div>
+                        <div className="select-none text-accentDark2">
                             <span>Dimensions: </span>
                             {position[2]} x {position[3]}
                             <br />
@@ -97,10 +121,15 @@ export default function App() {
                             x: {position[0]} y: {position[1]}
                         </div>
                     </div>
+
                     <label>
-                        <div className="grid grid-flow-col justify-between gap-6">
-                            <div className="select-none">🏠 Home</div>
-                            <div className="select-text text-sm">{mainUrl}</div>
+                        <div className="grid grid-flow-col justify-between gap-6 truncate">
+                            <div className="select-none text-accent">
+                                🏠 Home
+                            </div>
+                            <div className="select-text text-sm text-accentDark1">
+                                {mainUrl}
+                            </div>
                         </div>
                         <input
                             type="text"
@@ -111,9 +140,13 @@ export default function App() {
                     </label>
 
                     <label>
-                        <div className="grid grid-flow-col justify-between gap-6">
-                            <span className="select-none">🔧 Sidebar</span>
-                            <div className="select-text text-sm">{sideUrl}</div>
+                        <div className="grid grid-flow-col justify-between gap-6 truncate">
+                            <span className="select-none text-accent">
+                                🔧 Sidebar
+                            </span>
+                            <div className="select-text text-sm text-accentDark1">
+                                {sideUrl}
+                            </div>
                         </div>
                         <input
                             type="text"

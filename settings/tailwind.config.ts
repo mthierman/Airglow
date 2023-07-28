@@ -7,7 +7,13 @@ export default {
     theme: {
         extend: {
             colors: {
-                accent: "var(--accentColor)",
+                accent: "var(--accent)",
+                accentDark1: "var(--accentDark1)",
+                accentDark2: "var(--accentDark2)",
+                accentDark3: "var(--accentDark3)",
+                accentLight1: "var(--accentLight1)",
+                accentLight2: "var(--accentLight2)",
+                accentLight3: "var(--accentLight3)",
             },
         },
         // fontFamily: {
