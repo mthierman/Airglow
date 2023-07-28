@@ -6,13 +6,14 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${APP_NAME}")
 set(WEBVIEW "Microsoft.Web.WebView2")
-set(WEBVIEW_VERSION "1.0.1823.32")
+set(WEBVIEW_VERSION "1.0.1901.177")
 set(WIL "Microsoft.Windows.ImplementationLibrary")
 set(WIL_VERSION "1.0.230629.1")
 
 include(FetchContent)
 
 option(ENV_LIBS OFF)
+option(WEBVIEW_EXPERIMENTAL OFF)
 option(INSTALL OFF)
 
 project(
@@ -107,7 +108,7 @@ add_executable(
 
 add_executable(
     ${APP_NAME_CONSOLE}
-    "${CMAKE_SOURCE_DIR}/src/Console.cxx"
+    "${CMAKE_SOURCE_DIR}/src/console/Main.cxx"
 )
 
 target_compile_definitions(
