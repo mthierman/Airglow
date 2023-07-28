@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import icon from "../../data/icons/icon.svg?raw";
+import icon from "../../data/icons/new.svg?raw";
 
 document.onreadystatechange = () => {
     if (document.readyState === "complete") {
@@ -109,25 +109,10 @@ export default function App() {
                 method="post"
                 onSubmit={handleForm}>
                 <div className="grid gap-6 self-start">
-                    <div className="grid grid-flow-col justify-between">
-                        <div className="select-none capitalize text-accentDark2">
-                            {themeIcon} {theme} mode
-                        </div>
-                        <div className="select-none text-accentDark2">
-                            <span>Dimensions: </span>
-                            {position[2]} x {position[3]}
-                            <br />
-                            <span>Position: </span>
-                            x: {position[0]} y: {position[1]}
-                        </div>
-                    </div>
-
                     <label>
                         <div className="grid grid-flow-col justify-between gap-6 truncate">
-                            <div className="select-none text-accent">
-                                🏠 Home
-                            </div>
-                            <div className="select-text text-sm text-accentDark1">
+                            <div className="select-none">🏠 Home</div>
+                            <div className="select-text text-sm text-accent">
                                 {mainUrl}
                             </div>
                         </div>
@@ -141,10 +126,8 @@ export default function App() {
 
                     <label>
                         <div className="grid grid-flow-col justify-between gap-6 truncate">
-                            <span className="select-none text-accent">
-                                🔧 Sidebar
-                            </span>
-                            <div className="select-text text-sm text-accentDark1">
+                            <span className="select-none">🔧 Sidebar</span>
+                            <div className="select-text text-sm text-accent">
                                 {sideUrl}
                             </div>
                         </div>
@@ -157,9 +140,24 @@ export default function App() {
                     </label>
                 </div>
 
-                <button id="submitUrl" type="submit">
-                    Save
-                </button>
+                <div className="grid grid-flow-col justify-stretch gap-6">
+                    <div className="select-none font-black text-neutral-400">
+                        <div>
+                            <div className="text-2xl capitalize">
+                                {themeIcon} {theme} mode
+                            </div>
+                            <div>
+                                {position[2]} x {position[3]} - x: {position[0]}{" "}
+                                y: {position[1]}
+                            </div>
+                            <div></div>
+                        </div>
+                    </div>
+
+                    <button id="submitUrl" type="submit">
+                        Save
+                    </button>
+                </div>
             </form>
         </div>
     );

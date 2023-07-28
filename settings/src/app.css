@@ -23,7 +23,7 @@
         @apply rounded-lg bg-[#0000001A] p-2 shadow-lg outline-none dark:bg-[#00000040];
     }
     button[type="submit"] {
-        @apply scale-100 rounded-lg bg-[#0000001A] p-2 text-xl shadow-lg duration-100 ease-linear hover:text-accent active:scale-95 active:text-current dark:bg-[#00000040];
+        @apply scale-100 rounded-lg bg-[#0000001A] p-2 text-xl text-accent shadow-lg duration-100 ease-linear hover:text-accent active:scale-95 active:text-green-400 dark:bg-[#00000040];
     }
 }
 
