@@ -110,9 +110,11 @@ export default function App() {
                 onSubmit={handleForm}>
                 <div className="grid gap-6 self-start">
                     <label>
-                        <div className="grid grid-flow-col justify-between gap-6 truncate">
-                            <div className="select-none">🏠 Home</div>
-                            <div className="select-text text-sm text-neutral-400">
+                        <div className="grid grid-flow-col items-end justify-between gap-6 truncate">
+                            <div className="select-none text-3xl font-light">
+                                🏠 Home
+                            </div>
+                            <div className="select-text rounded-lg bg-neutral-50 px-2 py-1 text-sm text-neutral-400 dark:bg-neutral-800">
                                 {mainUrl}
                             </div>
                         </div>
@@ -125,9 +127,11 @@ export default function App() {
                     </label>
 
                     <label>
-                        <div className="grid grid-flow-col justify-between gap-6 truncate">
-                            <span className="select-none">🔧 Sidebar</span>
-                            <div className="select-text text-sm text-neutral-400">
+                        <div className="grid grid-flow-col items-end justify-between gap-6 truncate">
+                            <div className="select-none text-3xl font-light">
+                                🔧 Sidebar
+                            </div>
+                            <div className="select-text rounded-lg bg-neutral-50 px-2 py-1 text-sm text-neutral-400 dark:bg-neutral-800">
                                 {sideUrl}
                             </div>
                         </div>
@@ -141,9 +145,9 @@ export default function App() {
                 </div>
 
                 <div className="grid grid-flow-col justify-stretch gap-6">
-                    <div className="select-none font-black text-neutral-400">
+                    <div className="select-none">
                         <div>
-                            <div className="text-2xl capitalize">
+                            <div className="capitalize">
                                 {themeIcon} {theme} mode
                             </div>
                             <div>
