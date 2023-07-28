@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html,
+    body {
+        @apply h-full bg-transparent;
+    }
+    #root {
+        @apply grid min-h-full;
+    }
+    form {
+        @apply grid h-full grid-flow-col content-end gap-1 p-1;
+    }
+    label {
+        @apply grid gap-2 whitespace-nowrap;
+    }
+    input {
+        @apply rounded-lg bg-neutral-50 p-2 shadow-lg outline-none dark:bg-neutral-800;
+    }
+}
+
+input:-webkit-autofill {
+    transition: all 5000s ease-in-out 0s;
+    transition-property: background-color, color;
+}

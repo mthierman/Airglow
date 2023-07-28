@@ -37,6 +37,12 @@ export default defineConfig(async ({ command, mode }) => {
             build: {
                 outDir: "../dist",
                 assetsDir: "./",
+                rollupOptions: {
+                    input: {
+                        main: path.resolve(__dirname, "index.html"),
+                        bar: path.resolve(__dirname, "bar/index.html"),
+                    },
+                },
             },
         };
     }

@@ -102,12 +102,12 @@ export default function App() {
     return (
         <div>
             <form
-                autoComplete="off"
                 name="settings"
-                spellCheck="false"
                 id="settings"
                 method="post"
-                onSubmit={handleForm}>
+                onSubmit={handleForm}
+                autoComplete="off"
+                spellCheck="false">
                 <div className="grid gap-6 self-start">
                     <label>
                         <div className="grid grid-flow-col items-end justify-between gap-6 truncate">
