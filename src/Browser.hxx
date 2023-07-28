@@ -18,6 +18,7 @@ class Browser
     void Messages(Window&, Settings&, ICoreWebView2WebMessageReceivedEventArgs* args);
     void Keys(Window&, Settings&, ICoreWebView2AcceleratorKeyPressedEventArgs* args);
     void PostSettings(json);
+    void NavigateHome(Settings& settings);
 
   private:
     Browser(Window&, Settings&, Colors&);

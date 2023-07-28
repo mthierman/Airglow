@@ -262,8 +262,8 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
     switch (wparam)
     {
-    case VK_F1:
-        settings.split = bool_toggle(settings.split);
+    case VK_PAUSE:
+        settings.menu = bool_toggle(settings.menu);
         browser->Bounds(window, settings);
         browser->Focus(window, settings);
         browser->Title(window, settings);
@@ -273,7 +273,13 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
         return 0;
 
-    case VK_F2:
+    case 0x57:
+        if (GetKeyState(VK_CONTROL) & 0x8000)
+            PostMessageW(hwnd, WM_CLOSE, 0, 0);
+
+        return 0;
+
+    case VK_F1:
         settings.swapped = bool_toggle(settings.swapped);
         browser->Bounds(window, settings);
         browser->Focus(window, settings);
@@ -284,7 +290,18 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
         return 0;
 
-    case VK_F4:
+    case VK_F2:
+        settings.split = bool_toggle(settings.split);
+        browser->Bounds(window, settings);
+        browser->Focus(window, settings);
+        browser->Title(window, settings);
+        browser->Icon(window, settings);
+
+        SaveSettings();
+
+        return 0;
+
+    case VK_F3:
         if (GetKeyState(VK_MENU) & 0x8000)
         {
             SendMessageW(hwnd, WM_CLOSE, 0, 0);
@@ -302,6 +319,14 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
         return 0;
 
+    case VK_F4:
+        settings.topmost = window_topmost(hwnd);
+        browser->Title(window, settings);
+
+        SaveSettings();
+
+        return 0;
+
     case VK_F6:
         settings.maximized = window_maximize(hwnd);
 
@@ -310,21 +335,7 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
         return 0;
 
     case VK_F8:
-        settings.menu = bool_toggle(settings.menu);
-        browser->Bounds(window, settings);
-        browser->Focus(window, settings);
-        browser->Title(window, settings);
-        browser->Icon(window, settings);
-
-        SaveSettings();
-
-        return 0;
-
-    case VK_F9:
-        settings.topmost = window_topmost(hwnd);
-        browser->Title(window, settings);
-
-        SaveSettings();
+        browser->NavigateHome(settings);
 
         return 0;
 
@@ -333,12 +344,6 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
         browser->Icon(window, settings);
 
         SaveSettings();
-
-        return 0;
-
-    case 0x57:
-        if (GetKeyState(VK_CONTROL) & 0x8000)
-            PostMessageW(hwnd, WM_CLOSE, 0, 0);
 
         return 0;
     }

@@ -112,7 +112,7 @@ export default function App() {
                     <label>
                         <div className="grid grid-flow-col justify-between gap-6 truncate">
                             <div className="select-none">🏠 Home</div>
-                            <div className="select-text text-sm text-accent">
+                            <div className="select-text text-sm text-neutral-400">
                                 {mainUrl}
                             </div>
                         </div>
@@ -127,7 +127,7 @@ export default function App() {
                     <label>
                         <div className="grid grid-flow-col justify-between gap-6 truncate">
                             <span className="select-none">🔧 Sidebar</span>
-                            <div className="select-text text-sm text-accent">
+                            <div className="select-text text-sm text-neutral-400">
                                 {sideUrl}
                             </div>
                         </div>

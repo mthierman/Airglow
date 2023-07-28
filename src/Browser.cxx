@@ -542,8 +542,16 @@ void Browser::Keys(Window& window, Settings& settings,
         UINT key;
         args->get_VirtualKey(&key);
 
+        println(std::to_string(key));
+
         switch (key)
         {
+        case 19:
+            args->put_Handled(TRUE);
+            SendMessageW(window.hwnd, WM_KEYDOWN, VK_PAUSE, 0);
+
+            break;
+
         case 87:
             args->put_Handled(TRUE);
             SendMessageW(window.hwnd, WM_KEYDOWN, 0x57, 0);
@@ -562,6 +570,12 @@ void Browser::Keys(Window& window, Settings& settings,
 
             break;
 
+        case 114:
+            args->put_Handled(TRUE);
+            SendMessageW(window.hwnd, WM_KEYDOWN, VK_F3, 0);
+
+            break;
+
         case 115:
             args->put_Handled(TRUE);
             SendMessageW(window.hwnd, WM_KEYDOWN, VK_F4, 0);
@@ -574,6 +588,12 @@ void Browser::Keys(Window& window, Settings& settings,
 
             break;
 
+        case 118:
+            args->put_Handled(TRUE);
+            SendMessageW(window.hwnd, WM_KEYDOWN, VK_F7, 0);
+
+            break;
+
         case 119:
             args->put_Handled(TRUE);
             SendMessageW(window.hwnd, WM_KEYDOWN, VK_F8, 0);
@@ -583,6 +603,12 @@ void Browser::Keys(Window& window, Settings& settings,
         case 120:
             args->put_Handled(TRUE);
             SendMessageW(window.hwnd, WM_KEYDOWN, VK_F9, 0);
+
+            break;
+
+        case 121:
+            args->put_Handled(TRUE);
+            SendMessageW(window.hwnd, WM_KEYDOWN, VK_F10, 0);
 
             break;
 
@@ -617,4 +643,13 @@ void Browser::PostSettings(json j)
         return;
 
     wv2settings::wvBrowser->PostWebMessageAsJson(to_wide(j.dump()).c_str());
+}
+
+void Browser::NavigateHome(Settings& settings)
+{
+    if (!wv2main::wvBrowser || !wv2side::wvBrowser)
+        return;
+
+    wv2main::wvBrowser->Navigate((L"https://" + to_wide(settings.mainUrl)).c_str());
+    wv2side::wvBrowser->Navigate((L"https://" + to_wide(settings.sideUrl)).c_str());
 }
