@@ -484,6 +484,16 @@ RECT window_bounds(HWND hwnd)
 //     };
 // }
 
+RECT full_panel(RECT bounds)
+{
+    return RECT{
+        bounds.left,
+        bounds.top,
+        bounds.right,
+        (bounds.bottom - 50),
+    };
+}
+
 RECT left_panel(RECT bounds)
 {
     return RECT{

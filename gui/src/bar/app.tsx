@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 
 export default function App() {
-    const [homepageMain, setHomepageMain] = useState("");
-    const [homepageSide, setHomepageSide] = useState("");
+    // const [homepageMain, setHomepageMain] = useState("");
+    // const [homepageSide, setHomepageSide] = useState("");
     const [currentPageMain, setCurrentPageMain] = useState("");
     const [currentPageSide, setCurrentPageSide] = useState("");
     const [split, setSplit] = useState(false);
@@ -41,8 +41,8 @@ export default function App() {
                 );
             }
             if (arg.data.settings) {
-                setHomepageMain(arg.data.settings.homepageMain);
-                setHomepageSide(arg.data.settings.homepageSide);
+                // setHomepageMain(arg.data.settings.homepageMain);
+                // setHomepageSide(arg.data.settings.homepageSide);
                 setCurrentPageMain(arg.data.settings.currentPageMain);
                 setCurrentPageSide(arg.data.settings.currentPageSide);
                 setSplit(arg.data.settings.split);

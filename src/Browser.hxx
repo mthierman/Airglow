@@ -11,6 +11,7 @@ class Browser
 {
   public:
     static std::unique_ptr<Browser> Create(Window&, Settings&, Colors&);
+    void Navigate(Settings& settings);
     void Bounds(Window&, Settings&);
     void Focus(Window&, Settings&);
     void Title(Window&, Settings&);

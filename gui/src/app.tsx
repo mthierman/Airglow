@@ -16,7 +16,7 @@ export default function App() {
     const [homepageSide, setHomepageSide] = useState("");
     const [theme, setTheme] = useState("");
     const [themeIcon, setThemeIcon] = useState("");
-    const [position, setPosition] = useState("");
+    // const [position, setPosition] = useState("");
 
     if (window.chrome.webview) {
         window.chrome.webview.addEventListener("message", (arg: any) => {
@@ -54,7 +54,7 @@ export default function App() {
                 setHomepageMain(arg.data.settings.homepageMain);
                 setHomepageSide(arg.data.settings.homepageSide);
                 setTheme(arg.data.settings.theme);
-                setPosition(arg.data.settings.position);
+                // setPosition(arg.data.settings.position);
             }
         });
     }
@@ -154,10 +154,10 @@ export default function App() {
                             <div className="capitalize">
                                 {themeIcon} {theme} mode
                             </div>
-                            <div>
+                            {/* <div>
                                 {position[2]} x {position[3]} - x: {position[0]}{" "}
                                 y: {position[1]}
-                            </div>
+                            </div> */}
                             <div></div>
                         </div>
                     </div>

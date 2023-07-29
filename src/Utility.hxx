@@ -54,6 +54,7 @@ std::vector<int> rect_to_bounds(RECT);
 RECT bounds_to_rect(std::vector<int>);
 
 RECT window_bounds(HWND);
+RECT full_panel(RECT);
 RECT left_panel(RECT);
 RECT right_panel(RECT);
 RECT top_panel(RECT);

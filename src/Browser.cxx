@@ -33,32 +33,29 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
                                 wvController->get_CoreWebView2(&wvCore);
                             }
 
-                            if (wvCore)
-                                wvBrowser = wvCore.try_query<ICoreWebView2_19>();
+                            wvBrowser = wvCore.try_query<ICoreWebView2_19>();
 
-                            if (wvBrowser)
-                            {
-                                wvBrowser->SetVirtualHostNameToFolderMapping(
-                                    L"airglow", path_portable().wstring().c_str(),
-                                    COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
+                            wvBrowser->SetVirtualHostNameToFolderMapping(
+                                L"airglow", path_portable().wstring().c_str(),
+                                COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
 
-                                wvBrowser->get_Settings(&wvSettings);
+                            wvBrowser->get_Settings(&wvSettings);
 
-                                wvSettings->put_AreDefaultContextMenusEnabled(true);
-                                wvSettings->put_AreDefaultScriptDialogsEnabled(true);
-                                wvSettings->put_AreDevToolsEnabled(true);
-                                wvSettings->put_AreHostObjectsAllowed(true);
-                                wvSettings->put_IsBuiltInErrorPageEnabled(true);
-                                wvSettings->put_IsScriptEnabled(true);
-                                wvSettings->put_IsStatusBarEnabled(false);
-                                wvSettings->put_IsWebMessageEnabled(true);
-                                wvSettings->put_IsZoomControlEnabled(true);
-                            }
+                            wvSettings->put_AreDefaultContextMenusEnabled(true);
+                            wvSettings->put_AreDefaultScriptDialogsEnabled(true);
+                            wvSettings->put_AreHostObjectsAllowed(true);
+                            wvSettings->put_IsBuiltInErrorPageEnabled(true);
+                            wvSettings->put_IsScriptEnabled(true);
+                            wvSettings->put_IsStatusBarEnabled(false);
+                            wvSettings->put_IsWebMessageEnabled(true);
+                            wvSettings->put_IsZoomControlEnabled(false);
 
 #ifdef _DEBUG
+                            wvSettings->put_AreDevToolsEnabled(true);
                             wvBrowser->Navigate(L"https://localhost:8000/");
             // wvBrowser->OpenDevToolsWindow();
 #else
+                            wvSettings->put_AreDevToolsEnabled(false);
                             wvBrowser->Navigate(L"https://airglow/gui/index.html");
 #endif
 
@@ -149,32 +146,29 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
                                 wvController->get_CoreWebView2(&wvCore);
                             }
 
-                            if (wvCore)
-                                wvBrowser = wvCore.try_query<ICoreWebView2_19>();
+                            wvBrowser = wvCore.try_query<ICoreWebView2_19>();
 
-                            if (wvBrowser)
-                            {
-                                wvBrowser->SetVirtualHostNameToFolderMapping(
-                                    L"airglow", path_portable().wstring().c_str(),
-                                    COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
+                            wvBrowser->SetVirtualHostNameToFolderMapping(
+                                L"airglow", path_portable().wstring().c_str(),
+                                COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
 
-                                wvBrowser->get_Settings(&wvSettings);
+                            wvBrowser->get_Settings(&wvSettings);
 
-                                wvSettings->put_AreDefaultContextMenusEnabled(true);
-                                wvSettings->put_AreDefaultScriptDialogsEnabled(true);
-                                wvSettings->put_AreDevToolsEnabled(true);
-                                wvSettings->put_AreHostObjectsAllowed(true);
-                                wvSettings->put_IsBuiltInErrorPageEnabled(true);
-                                wvSettings->put_IsScriptEnabled(true);
-                                wvSettings->put_IsStatusBarEnabled(false);
-                                wvSettings->put_IsWebMessageEnabled(true);
-                                wvSettings->put_IsZoomControlEnabled(true);
-                            }
+                            wvSettings->put_AreDefaultContextMenusEnabled(true);
+                            wvSettings->put_AreDefaultScriptDialogsEnabled(true);
+                            wvSettings->put_AreHostObjectsAllowed(true);
+                            wvSettings->put_IsBuiltInErrorPageEnabled(true);
+                            wvSettings->put_IsScriptEnabled(true);
+                            wvSettings->put_IsStatusBarEnabled(false);
+                            wvSettings->put_IsWebMessageEnabled(true);
+                            wvSettings->put_IsZoomControlEnabled(false);
 
 #ifdef _DEBUG
+                            wvSettings->put_AreDevToolsEnabled(true);
                             wvBrowser->Navigate(L"https://localhost:8000/bar/");
             // wvBrowser->OpenDevToolsWindow();
 #else
+                            wvSettings->put_AreDevToolsEnabled(false);
                             wvBrowser->Navigate(L"https://airglow/gui/bar/index.html");
 #endif
 
@@ -254,6 +248,7 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
 
                                   EventRegistrationToken tokenTitle;
                                   EventRegistrationToken tokenFavicon;
+                                  EventRegistrationToken tokenSourceChanged;
                                   EventRegistrationToken tokenAcceleratorKeyPressed;
 
                                   if (c)
@@ -262,30 +257,21 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
                                       wvController->get_CoreWebView2(&wvCore);
                                   }
 
-                                  if (wvCore)
-                                      wvBrowser = wvCore.try_query<ICoreWebView2_19>();
+                                  wvBrowser = wvCore.try_query<ICoreWebView2_19>();
 
-                                  if (wvBrowser)
-                                  {
-                                      wvBrowser->get_Settings(&wvSettings);
+                                  wvBrowser->get_Settings(&wvSettings);
 
-                                      wvSettings->put_AreDefaultContextMenusEnabled(true);
-                                      wvSettings->put_AreDefaultScriptDialogsEnabled(true);
-                                      wvSettings->put_AreDevToolsEnabled(true);
-                                      wvSettings->put_AreHostObjectsAllowed(true);
-                                      wvSettings->put_IsBuiltInErrorPageEnabled(true);
-                                      wvSettings->put_IsScriptEnabled(true);
-                                      wvSettings->put_IsStatusBarEnabled(false);
-                                      wvSettings->put_IsWebMessageEnabled(true);
-                                      wvSettings->put_IsZoomControlEnabled(true);
-                                  }
+                                  wvSettings->put_AreDefaultContextMenusEnabled(true);
+                                  wvSettings->put_AreDefaultScriptDialogsEnabled(true);
+                                  wvSettings->put_AreDevToolsEnabled(true);
+                                  wvSettings->put_AreHostObjectsAllowed(true);
+                                  wvSettings->put_IsBuiltInErrorPageEnabled(true);
+                                  wvSettings->put_IsScriptEnabled(true);
+                                  wvSettings->put_IsStatusBarEnabled(false);
+                                  wvSettings->put_IsWebMessageEnabled(true);
+                                  wvSettings->put_IsZoomControlEnabled(true);
 
-                                  if (!command_line().first.empty())
-                                      wvBrowser->Navigate(command_line().first.c_str());
-                                  else
-                                      wvBrowser->Navigate(
-                                          (L"https://" + to_wide(settings.homepageMain)).c_str());
-
+                                  browser->Navigate(settings);
                                   browser->Bounds(window, settings);
                                   browser->Focus(window, settings);
 
@@ -310,6 +296,23 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
                                           })
                                           .Get(),
                                       &tokenFavicon);
+
+                                  wvBrowser->add_SourceChanged(
+                                      Callback<ICoreWebView2SourceChangedEventHandler>(
+                                          [&](ICoreWebView2* sender,
+                                              ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
+                                          {
+                                              wil::unique_cotaskmem_string uri;
+                                              sender->get_Source(&uri);
+
+                                              settings.currentPageMain = to_string(uri.get());
+
+                                              browser->PostSettings(settings.Serialize());
+
+                                              return S_OK;
+                                          })
+                                          .Get(),
+                                      &tokenSourceChanged);
 
                                   wvController->add_AcceleratorKeyPressed(
                                       Callback<ICoreWebView2AcceleratorKeyPressedEventHandler>(
@@ -337,6 +340,7 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
 
                                   EventRegistrationToken tokenTitle;
                                   EventRegistrationToken tokenFavicon;
+                                  EventRegistrationToken tokenSourceChanged;
                                   EventRegistrationToken tokenAcceleratorKeyPressed;
 
                                   if (c)
@@ -345,30 +349,21 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
                                       wvController->get_CoreWebView2(&wvCore);
                                   }
 
-                                  if (wvCore)
-                                      wvBrowser = wvCore.try_query<ICoreWebView2_19>();
+                                  wvBrowser = wvCore.try_query<ICoreWebView2_19>();
 
-                                  if (wvBrowser)
-                                  {
-                                      wvBrowser->get_Settings(&wvSettings);
+                                  wvBrowser->get_Settings(&wvSettings);
 
-                                      wvSettings->put_AreDefaultContextMenusEnabled(true);
-                                      wvSettings->put_AreDefaultScriptDialogsEnabled(true);
-                                      wvSettings->put_AreDevToolsEnabled(true);
-                                      wvSettings->put_AreHostObjectsAllowed(true);
-                                      wvSettings->put_IsBuiltInErrorPageEnabled(true);
-                                      wvSettings->put_IsScriptEnabled(true);
-                                      wvSettings->put_IsStatusBarEnabled(false);
-                                      wvSettings->put_IsWebMessageEnabled(true);
-                                      wvSettings->put_IsZoomControlEnabled(true);
-                                  }
+                                  wvSettings->put_AreDefaultContextMenusEnabled(true);
+                                  wvSettings->put_AreDefaultScriptDialogsEnabled(true);
+                                  wvSettings->put_AreDevToolsEnabled(true);
+                                  wvSettings->put_AreHostObjectsAllowed(true);
+                                  wvSettings->put_IsBuiltInErrorPageEnabled(true);
+                                  wvSettings->put_IsScriptEnabled(true);
+                                  wvSettings->put_IsStatusBarEnabled(false);
+                                  wvSettings->put_IsWebMessageEnabled(true);
+                                  wvSettings->put_IsZoomControlEnabled(true);
 
-                                  if (!command_line().second.empty())
-                                      wvBrowser->Navigate(command_line().second.c_str());
-                                  else
-                                      wvBrowser->Navigate(
-                                          (L"https://" + to_wide(settings.homepageSide)).c_str());
-
+                                  browser->Navigate(settings);
                                   browser->Bounds(window, settings);
                                   browser->Focus(window, settings);
 
@@ -393,6 +388,23 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
                                           })
                                           .Get(),
                                       &tokenFavicon);
+
+                                  wvBrowser->add_SourceChanged(
+                                      Callback<ICoreWebView2SourceChangedEventHandler>(
+                                          [&](ICoreWebView2* sender,
+                                              ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
+                                          {
+                                              wil::unique_cotaskmem_string uri;
+                                              sender->get_Source(&uri);
+
+                                              settings.currentPageSide = to_string(uri.get());
+
+                                              browser->PostSettings(settings.Serialize());
+
+                                              return S_OK;
+                                          })
+                                          .Get(),
+                                      &tokenSourceChanged);
 
                                   wvController->add_AcceleratorKeyPressed(
                                       Callback<ICoreWebView2AcceleratorKeyPressedEventHandler>(
@@ -421,6 +433,22 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
     return browser;
 }
 
+void Browser::Navigate(Settings& settings)
+{
+    if (!wv2main::wvBrowser || !wv2side::wvBrowser)
+        return;
+
+    if (!command_line().first.empty())
+        wv2main::wvBrowser->Navigate(command_line().first.c_str());
+    else
+        wv2main::wvBrowser->Navigate((to_wide(settings.homepageMain)).c_str());
+
+    if (!command_line().second.empty())
+        wv2side::wvBrowser->Navigate(command_line().second.c_str());
+    else
+        wv2side::wvBrowser->Navigate((to_wide(settings.homepageSide)).c_str());
+}
+
 void Browser::Bounds(Window& window, Settings& settings)
 {
     if (!wv2main::wvController || !wv2side::wvController || !wv2settings::wvController ||
@@ -445,7 +473,7 @@ void Browser::Bounds(Window& window, Settings& settings)
 
         if (!settings.split && !settings.swapped)
         {
-            wv2main::wvController->put_Bounds(bounds);
+            wv2main::wvController->put_Bounds(full_panel(bounds));
             wv2side::wvController->put_Bounds(RECT{0, 0, 0, 0});
 
             return;
@@ -454,7 +482,7 @@ void Browser::Bounds(Window& window, Settings& settings)
         if (!settings.split && settings.swapped)
         {
             wv2main::wvController->put_Bounds(RECT{0, 0, 0, 0});
-            wv2side::wvController->put_Bounds(bounds);
+            wv2side::wvController->put_Bounds(full_panel(bounds));
 
             return;
         }
@@ -779,13 +807,23 @@ void Browser::BarMessages(Window& window, Settings& settings,
         if (!j["currentPageMain"].empty())
         {
             settings.currentPageMain = j["currentPageMain"].get<string>();
-            wv2main::wvBrowser->Navigate((L"https://" + to_wide(settings.currentPageMain)).c_str());
+            if (settings.currentPageMain.starts_with("https://"))
+                wv2main::wvBrowser->Navigate((to_wide(settings.currentPageMain)).c_str());
+
+            else
+                wv2main::wvBrowser->Navigate(
+                    (L"https://" + to_wide(settings.currentPageMain)).c_str());
         }
 
         if (!j["currentPageSide"].empty())
         {
             settings.currentPageSide = j["currentPageSide"].get<string>();
-            wv2side::wvBrowser->Navigate((L"https://" + to_wide(settings.currentPageSide)).c_str());
+            if (settings.currentPageSide.starts_with("https://"))
+                wv2side::wvBrowser->Navigate((to_wide(settings.currentPageSide)).c_str());
+
+            else
+                wv2side::wvBrowser->Navigate(
+                    (L"https://" + to_wide(settings.currentPageSide)).c_str());
         }
 
         SendMessageW(window.hwnd, WM_NOTIFY, 0, 0);
@@ -806,6 +844,6 @@ void Browser::NavigateHome(Settings& settings)
     if (!wv2main::wvBrowser || !wv2side::wvBrowser)
         return;
 
-    wv2main::wvBrowser->Navigate((L"https://" + to_wide(settings.homepageMain)).c_str());
-    wv2side::wvBrowser->Navigate((L"https://" + to_wide(settings.homepageSide)).c_str());
+    wv2main::wvBrowser->Navigate((to_wide(settings.homepageMain)).c_str());
+    wv2side::wvBrowser->Navigate((to_wide(settings.homepageSide)).c_str());
 }

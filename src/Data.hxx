@@ -19,10 +19,10 @@ struct Window
 struct Settings
 {
     string theme{"dark"};
-    string homepageMain{"google.com"};
-    string homepageSide{"google.com"};
-    string currentPageMain{"google.com"};
-    string currentPageSide{"google.com"};
+    string homepageMain{"https://www.google.com/"};
+    string homepageSide{"https://www.google.com/"};
+    string currentPageMain{"https://www.google.com/"};
+    string currentPageSide{"https://www.google.com/"};
     std::vector<int> position{0, 0, 0, 0};
     bool menu{false};
     bool split{false};
