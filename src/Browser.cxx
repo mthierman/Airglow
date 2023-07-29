@@ -8,7 +8,7 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
 
     auto hwnd{window.hwnd};
 
-    auto hr = CreateCoreWebView2EnvironmentWithOptions(
+    auto env{CreateCoreWebView2EnvironmentWithOptions(
         nullptr, path_portable().wstring().c_str(), nullptr,
         Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
             [&](HRESULT hr, ICoreWebView2Environment* e) -> HRESULT
@@ -92,7 +92,7 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
                                     [&](ICoreWebView2* webview,
                                         ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT
                                     {
-                                        browser->Messages(window, settings, args);
+                                        browser->SettingsMessages(window, settings, args);
 
                                         return S_OK;
                                     })
@@ -208,7 +208,7 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
                                     [&](ICoreWebView2* webview,
                                         ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT
                                     {
-                                        browser->Messages(window, settings, args);
+                                        browser->BarMessages(window, settings, args);
 
                                         return S_OK;
                                     })
@@ -284,7 +284,7 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
                                       wvBrowser->Navigate(command_line().first.c_str());
                                   else
                                       wvBrowser->Navigate(
-                                          (L"https://" + to_wide(settings.mainUrl)).c_str());
+                                          (L"https://" + to_wide(settings.homepageMain)).c_str());
 
                                   browser->Bounds(window, settings);
                                   browser->Focus(window, settings);
@@ -367,7 +367,7 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
                                       wvBrowser->Navigate(command_line().second.c_str());
                                   else
                                       wvBrowser->Navigate(
-                                          (L"https://" + to_wide(settings.sideUrl)).c_str());
+                                          (L"https://" + to_wide(settings.homepageSide)).c_str());
 
                                   browser->Bounds(window, settings);
                                   browser->Focus(window, settings);
@@ -413,9 +413,9 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
 
                 return S_OK;
             })
-            .Get());
+            .Get())};
 
-    if (hr != S_OK)
+    if (env != S_OK)
         return nullptr;
 
     return browser;
@@ -741,8 +741,8 @@ void Browser::Keys(Window& window, Settings& settings,
     }
 }
 
-void Browser::Messages(Window& window, Settings& settings,
-                       ICoreWebView2WebMessageReceivedEventArgs* args)
+void Browser::SettingsMessages(Window& window, Settings& settings,
+                               ICoreWebView2WebMessageReceivedEventArgs* args)
 {
     wil::unique_cotaskmem_string messageRaw;
 
@@ -750,8 +750,43 @@ void Browser::Messages(Window& window, Settings& settings,
     {
         auto j = json::parse(to_string(messageRaw.get()));
 
-        settings.mainUrl = j["mainUrl"].get<string>();
-        settings.sideUrl = j["sideUrl"].get<string>();
+        if (!j["homepageMain"].empty())
+        {
+            settings.homepageMain = j["homepageMain"].get<string>();
+        }
+
+        if (!j["homepageSide"].empty())
+        {
+            settings.homepageSide = j["homepageSide"].get<string>();
+        }
+
+        SendMessageW(window.hwnd, WM_NOTIFY, 0, 0);
+    };
+}
+
+void Browser::BarMessages(Window& window, Settings& settings,
+                          ICoreWebView2WebMessageReceivedEventArgs* args)
+{
+    if (!wv2main::wvBrowser || !wv2side::wvBrowser)
+        return;
+
+    wil::unique_cotaskmem_string messageRaw;
+
+    if (SUCCEEDED(args->get_WebMessageAsJson(&messageRaw)))
+    {
+        auto j = json::parse(to_string(messageRaw.get()));
+
+        if (!j["currentPageMain"].empty())
+        {
+            settings.currentPageMain = j["currentPageMain"].get<string>();
+            wv2main::wvBrowser->Navigate((L"https://" + to_wide(settings.currentPageMain)).c_str());
+        }
+
+        if (!j["currentPageSide"].empty())
+        {
+            settings.currentPageSide = j["currentPageSide"].get<string>();
+            wv2side::wvBrowser->Navigate((L"https://" + to_wide(settings.currentPageSide)).c_str());
+        }
 
         SendMessageW(window.hwnd, WM_NOTIFY, 0, 0);
     };
@@ -771,6 +806,6 @@ void Browser::NavigateHome(Settings& settings)
     if (!wv2main::wvBrowser || !wv2side::wvBrowser)
         return;
 
-    wv2main::wvBrowser->Navigate((L"https://" + to_wide(settings.mainUrl)).c_str());
-    wv2side::wvBrowser->Navigate((L"https://" + to_wide(settings.sideUrl)).c_str());
+    wv2main::wvBrowser->Navigate((L"https://" + to_wide(settings.homepageMain)).c_str());
+    wv2side::wvBrowser->Navigate((L"https://" + to_wide(settings.homepageSide)).c_str());
 }

@@ -19,8 +19,10 @@ struct Window
 struct Settings
 {
     string theme{"dark"};
-    string mainUrl{"google.com"};
-    string sideUrl{"google.com"};
+    string homepageMain{"google.com"};
+    string homepageSide{"google.com"};
+    string currentPageMain{"google.com"};
+    string currentPageSide{"google.com"};
     std::vector<int> position{0, 0, 0, 0};
     bool menu{false};
     bool split{false};
@@ -37,8 +39,10 @@ struct Settings
             return json{{"settings",
                          {
                              {"theme", theme},
-                             {"mainUrl", mainUrl},
-                             {"sideUrl", sideUrl},
+                             {"homepageMain", homepageMain},
+                             {"homepageSide", homepageSide},
+                             {"currentPageMain", currentPageMain},
+                             {"currentPageSide", currentPageSide},
                              {"position", position},
                              {"menu", menu},
                              {"split", split},
@@ -61,8 +65,10 @@ struct Settings
         try
         {
             return Settings{j["settings"]["theme"].get<string>(),
-                            j["settings"]["mainUrl"].get<string>(),
-                            j["settings"]["sideUrl"].get<string>(),
+                            j["settings"]["homepageMain"].get<string>(),
+                            j["settings"]["homepageSide"].get<string>(),
+                            j["settings"]["currentPageMain"].get<string>(),
+                            j["settings"]["currentPageSide"].get<string>(),
                             j["settings"]["position"].get<std::vector<int>>(),
                             j["settings"]["menu"].get<bool>(),
                             j["settings"]["split"].get<bool>(),

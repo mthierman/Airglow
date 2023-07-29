@@ -12,8 +12,8 @@ document.onreadystatechange = () => {
 };
 
 export default function App() {
-    const [mainUrl, setMainUrl] = useState("");
-    const [sideUrl, setSideUrl] = useState("");
+    const [homepageMain, setHomepageMain] = useState("");
+    const [homepageSide, setHomepageSide] = useState("");
     const [theme, setTheme] = useState("");
     const [themeIcon, setThemeIcon] = useState("");
     const [position, setPosition] = useState("");
@@ -51,8 +51,8 @@ export default function App() {
                 );
             }
             if (arg.data.settings) {
-                setMainUrl(arg.data.settings.mainUrl);
-                setSideUrl(arg.data.settings.sideUrl);
+                setHomepageMain(arg.data.settings.homepageMain);
+                setHomepageSide(arg.data.settings.homepageSide);
                 setTheme(arg.data.settings.theme);
                 setPosition(arg.data.settings.position);
             }
@@ -60,12 +60,16 @@ export default function App() {
     }
 
     useEffect(() => {
-        if (mainUrl && sideUrl)
-            window.chrome.webview.postMessage({
-                mainUrl: mainUrl,
-                sideUrl: sideUrl,
-            });
-    }, [mainUrl, sideUrl]);
+        window.chrome.webview.postMessage({
+            homepageMain: homepageMain,
+        });
+    }, [homepageMain]);
+
+    useEffect(() => {
+        window.chrome.webview.postMessage({
+            homepageSide: homepageSide,
+        });
+    }, [homepageSide]);
 
     useEffect(() => {
         if (theme) {
@@ -88,12 +92,12 @@ export default function App() {
         const rawData = new FormData(e.target);
         const data = Object.fromEntries(rawData.entries());
 
-        if (data.mainUrl.toString() != "") {
-            setMainUrl(data.mainUrl.toString());
+        if (data.homepageMain.toString() != "") {
+            setHomepageMain(data.homepageMain.toString());
         }
 
-        if (data.sideUrl.toString() != "") {
-            setSideUrl(data.sideUrl.toString());
+        if (data.homepageSide.toString() != "") {
+            setHomepageSide(data.homepageSide.toString());
         }
 
         form.reset();
@@ -115,14 +119,14 @@ export default function App() {
                                 🏠 Home
                             </div>
                             <div className="select-text rounded-lg bg-neutral-50 px-2 py-1 text-sm text-neutral-400 dark:bg-neutral-800">
-                                {mainUrl}
+                                {homepageMain}
                             </div>
                         </div>
                         <input
                             type="text"
-                            name="mainUrl"
-                            id="mainUrl"
-                            placeholder={mainUrl}
+                            name="homepageMain"
+                            id="homepageMain"
+                            placeholder={homepageMain}
                             pattern=".*[.].*"></input>
                     </label>
 
@@ -132,14 +136,14 @@ export default function App() {
                                 🔧 Sidebar
                             </div>
                             <div className="select-text rounded-lg bg-neutral-50 px-2 py-1 text-sm text-neutral-400 dark:bg-neutral-800">
-                                {sideUrl}
+                                {homepageSide}
                             </div>
                         </div>
                         <input
                             type="text"
-                            name="sideUrl"
-                            id="sideUrl"
-                            placeholder={sideUrl}
+                            name="homepageSide"
+                            id="homepageSide"
+                            placeholder={homepageSide}
                             pattern=".*[.].*"></input>
                     </label>
                 </div>

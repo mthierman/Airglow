@@ -15,7 +15,8 @@ class Browser
     void Focus(Window&, Settings&);
     void Title(Window&, Settings&);
     void Icon(Window&, Settings&);
-    void Messages(Window&, Settings&, ICoreWebView2WebMessageReceivedEventArgs* args);
+    void SettingsMessages(Window&, Settings&, ICoreWebView2WebMessageReceivedEventArgs* args);
+    void BarMessages(Window&, Settings&, ICoreWebView2WebMessageReceivedEventArgs* args);
     void Keys(Window&, Settings&, ICoreWebView2AcceleratorKeyPressedEventArgs* args);
     void PostSettings(json);
     void NavigateHome(Settings& settings);

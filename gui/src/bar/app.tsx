@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 
 export default function App() {
-    const [mainUrl, setMainUrl] = useState("");
-    const [sideUrl, setSideUrl] = useState("");
+    const [homepageMain, setHomepageMain] = useState("");
+    const [homepageSide, setHomepageSide] = useState("");
+    const [currentPageMain, setCurrentPageMain] = useState("");
+    const [currentPageSide, setCurrentPageSide] = useState("");
     const [split, setSplit] = useState(false);
     const [swapped, setSwapped] = useState(false);
 
@@ -39,8 +41,10 @@ export default function App() {
                 );
             }
             if (arg.data.settings) {
-                setMainUrl(arg.data.settings.mainUrl);
-                setSideUrl(arg.data.settings.sideUrl);
+                setHomepageMain(arg.data.settings.homepageMain);
+                setHomepageSide(arg.data.settings.homepageSide);
+                setCurrentPageMain(arg.data.settings.currentPageMain);
+                setCurrentPageSide(arg.data.settings.currentPageSide);
                 setSplit(arg.data.settings.split);
                 setSwapped(arg.data.settings.swapped);
             }
@@ -48,12 +52,16 @@ export default function App() {
     }
 
     useEffect(() => {
-        if (mainUrl && sideUrl)
-            window.chrome.webview.postMessage({
-                mainUrl: mainUrl,
-                sideUrl: sideUrl,
-            });
-    }, [mainUrl, sideUrl]);
+        window.chrome.webview.postMessage({
+            currentPageMain: currentPageMain,
+        });
+    }, [currentPageMain]);
+
+    useEffect(() => {
+        window.chrome.webview.postMessage({
+            currentPageSide: currentPageSide,
+        });
+    }, [currentPageSide]);
 
     const handleForm = (e: any) => {
         e.preventDefault();
@@ -63,12 +71,12 @@ export default function App() {
         const rawData = new FormData(e.target);
         const data = Object.fromEntries(rawData.entries());
 
-        if (data.mainUrl.toString() != "") {
-            setMainUrl(data.mainUrl.toString());
+        if (data.currentPageMain.toString() != "") {
+            setCurrentPageMain(data.currentPageMain.toString());
         }
 
-        if (data.sideUrl.toString() != "") {
-            setSideUrl(data.sideUrl.toString());
+        if (data.currentPageSide.toString() != "") {
+            setCurrentPageSide(data.currentPageSide.toString());
         }
 
         form.reset();
@@ -86,17 +94,15 @@ export default function App() {
                     spellCheck="false">
                     <input
                         type="text"
-                        name="mainUrl"
-                        id="mainUrl"
-                        placeholder={mainUrl}
-                        pattern=".*[.].*"></input>
+                        name="currentPageMain"
+                        id="currentPageMain"
+                        placeholder={currentPageMain}></input>
 
                     <input
                         type="text"
-                        name="sideUrl"
-                        id="sideUrl"
-                        placeholder={sideUrl}
-                        pattern=".*[.].*"></input>
+                        name="currentPageSide"
+                        id="currentPageSide"
+                        placeholder={currentPageSide}></input>
 
                     <input type="submit" hidden />
                 </form>
@@ -116,17 +122,15 @@ export default function App() {
                     spellCheck="false">
                     <input
                         type="text"
-                        name="sideUrl"
-                        id="sideUrl"
-                        placeholder={sideUrl}
-                        pattern=".*[.].*"></input>
+                        name="currentPageSide"
+                        id="currentPageSide"
+                        placeholder={currentPageSide}></input>
 
                     <input
                         type="text"
-                        name="mainUrl"
-                        id="mainUrl"
-                        placeholder={mainUrl}
-                        pattern=".*[.].*"></input>
+                        name="currentPageMain"
+                        id="currentPageMain"
+                        placeholder={currentPageMain}></input>
 
                     <input type="submit" hidden />
                 </form>
@@ -146,17 +150,15 @@ export default function App() {
                     spellCheck="false">
                     <input
                         type="text"
-                        name="mainUrl"
-                        id="mainUrl"
-                        placeholder={mainUrl}
-                        pattern=".*[.].*"></input>
+                        name="currentPageMain"
+                        id="currentPageMain"
+                        placeholder={currentPageMain}></input>
 
                     <input
                         type="text"
-                        name="sideUrl"
-                        id="sideUrl"
-                        placeholder={sideUrl}
-                        pattern=".*[.].*"
+                        name="currentPageSide"
+                        id="currentPageSide"
+                        placeholder={currentPageSide}
                         hidden></input>
 
                     <input type="submit" hidden />
@@ -177,18 +179,16 @@ export default function App() {
                     spellCheck="false">
                     <input
                         type="text"
-                        name="mainUrl"
-                        id="mainUrl"
-                        placeholder={mainUrl}
-                        pattern=".*[.].*"
-                        hidden></input>
+                        name="currentPageSide"
+                        id="currentPageSide"
+                        placeholder={currentPageSide}></input>
 
                     <input
                         type="text"
-                        name="sideUrl"
-                        id="sideUrl"
-                        placeholder={sideUrl}
-                        pattern=".*[.].*"></input>
+                        name="currentPageMain"
+                        id="currentPageMain"
+                        placeholder={currentPageMain}
+                        hidden></input>
 
                     <input type="submit" hidden />
                 </form>
