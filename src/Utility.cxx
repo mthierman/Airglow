@@ -489,18 +489,18 @@ RECT left_panel(RECT bounds)
     return RECT{
         bounds.left,
         bounds.top,
-        (bounds.right / 2) - 1,
-        bounds.bottom,
+        (bounds.right / 2),
+        (bounds.bottom - 50),
     };
 }
 
 RECT right_panel(RECT bounds)
 {
     return RECT{
-        (bounds.right / 2) + 1,
+        (bounds.right / 2),
         bounds.top,
         bounds.right,
-        bounds.bottom,
+        (bounds.bottom - 50),
     };
 }
 
@@ -510,7 +510,7 @@ RECT top_panel(RECT bounds)
         bounds.left,
         bounds.top,
         bounds.right,
-        (bounds.bottom / 2) - 1,
+        ((bounds.bottom / 2) - 25),
     };
 }
 
@@ -518,9 +518,9 @@ RECT bottom_panel(RECT bounds)
 {
     return RECT{
         bounds.left,
-        (bounds.bottom / 2) + 1,
+        ((bounds.bottom / 2) - 25),
         bounds.right,
-        bounds.bottom,
+        (bounds.bottom - 50),
     };
 }
 
@@ -528,7 +528,7 @@ RECT bar_panel(RECT bounds)
 {
     return RECT{
         bounds.left,
-        bounds.bottom - 50,
+        (bounds.bottom - 50),
         bounds.right,
         bounds.bottom,
     };
