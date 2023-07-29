@@ -1,22 +1,10 @@
 import { useEffect, useState } from "react";
-import icon from "../../../data/icons/new.svg?raw";
-
-document.onreadystatechange = () => {
-    if (document.readyState === "complete") {
-        const favicon = document.createElement("link");
-        favicon.type = "image/svg+xml";
-        favicon.rel = "icon";
-        favicon.href = `data:image/svg+xml,${encodeURIComponent(icon)}`;
-        document.head.appendChild(favicon);
-    }
-};
 
 export default function App() {
     const [mainUrl, setMainUrl] = useState("");
     const [sideUrl, setSideUrl] = useState("");
-    const [theme, setTheme] = useState("");
-    const [themeIcon, setThemeIcon] = useState("");
-    const [position, setPosition] = useState("");
+    const [split, setSplit] = useState(false);
+    const [swapped, setSwapped] = useState(false);
 
     if (window.chrome.webview) {
         window.chrome.webview.addEventListener("message", (arg: any) => {
@@ -53,8 +41,8 @@ export default function App() {
             if (arg.data.settings) {
                 setMainUrl(arg.data.settings.mainUrl);
                 setSideUrl(arg.data.settings.sideUrl);
-                setTheme(arg.data.settings.theme);
-                setPosition(arg.data.settings.position);
+                setSplit(arg.data.settings.split);
+                setSwapped(arg.data.settings.swapped);
             }
         });
     }
@@ -66,17 +54,6 @@ export default function App() {
                 sideUrl: sideUrl,
             });
     }, [mainUrl, sideUrl]);
-
-    useEffect(() => {
-        if (theme) {
-            if (theme === "dark") {
-                setThemeIcon("🌙");
-            }
-            if (theme === "light") {
-                setThemeIcon("🔆");
-            }
-        }
-    }, [theme]);
 
     const handleForm = (e: any) => {
         e.preventDefault();
@@ -97,33 +74,109 @@ export default function App() {
         form.reset();
     };
 
-    return (
-        <div>
-            <form
-                name="url"
-                id="url"
-                method="post"
-                onSubmit={handleForm}
-                autoComplete="off"
-                spellCheck="false">
-                <label>
+    if (split && !swapped) {
+        return (
+            <div>
+                <form
+                    name="url"
+                    id="url"
+                    method="post"
+                    onSubmit={handleForm}
+                    autoComplete="off"
+                    spellCheck="false">
                     <input
                         type="text"
                         name="mainUrl"
                         id="mainUrl"
                         placeholder={mainUrl}
                         pattern=".*[.].*"></input>
-                </label>
 
-                <label>
                     <input
                         type="text"
                         name="sideUrl"
                         id="sideUrl"
                         placeholder={sideUrl}
                         pattern=".*[.].*"></input>
-                </label>
-            </form>
-        </div>
-    );
+
+                    <input type="submit" hidden />
+                </form>
+            </div>
+        );
+    }
+
+    if (split && swapped) {
+        return (
+            <div>
+                <form
+                    name="url"
+                    id="url"
+                    method="post"
+                    onSubmit={handleForm}
+                    autoComplete="off"
+                    spellCheck="false">
+                    <input
+                        type="text"
+                        name="sideUrl"
+                        id="sideUrl"
+                        placeholder={sideUrl}
+                        pattern=".*[.].*"></input>
+
+                    <input
+                        type="text"
+                        name="mainUrl"
+                        id="mainUrl"
+                        placeholder={mainUrl}
+                        pattern=".*[.].*"></input>
+
+                    <input type="submit" hidden />
+                </form>
+            </div>
+        );
+    }
+
+    if (!split && !swapped) {
+        return (
+            <div>
+                <form
+                    name="url"
+                    id="url"
+                    method="post"
+                    onSubmit={handleForm}
+                    autoComplete="off"
+                    spellCheck="false">
+                    <input
+                        type="text"
+                        name="mainUrl"
+                        id="mainUrl"
+                        placeholder={mainUrl}
+                        pattern=".*[.].*"></input>
+
+                    <input type="submit" hidden />
+                </form>
+            </div>
+        );
+    }
+
+    if (!split && swapped) {
+        return (
+            <div>
+                <form
+                    name="url"
+                    id="url"
+                    method="post"
+                    onSubmit={handleForm}
+                    autoComplete="off"
+                    spellCheck="false">
+                    <input
+                        type="text"
+                        name="sideUrl"
+                        id="sideUrl"
+                        placeholder={sideUrl}
+                        pattern=".*[.].*"></input>
+
+                    <input type="submit" hidden />
+                </form>
+            </div>
+        );
+    }
 }

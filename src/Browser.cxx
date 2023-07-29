@@ -57,15 +57,13 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
 
 #ifdef _DEBUG
                             wvBrowser->Navigate(L"https://localhost:8000/");
-                            wvBrowser->OpenDevToolsWindow();
+            // wvBrowser->OpenDevToolsWindow();
 #else
                             wvBrowser->Navigate(L"https://airglow/gui/index.html");
 #endif
 
                             browser->Bounds(window, settings);
                             browser->Focus(window, settings);
-
-                            SendMessageW(hwnd, WM_SETFOCUS, 0, 0);
 
                             wvBrowser->add_DocumentTitleChanged(
                                 Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
@@ -175,15 +173,13 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
 
 #ifdef _DEBUG
                             wvBrowser->Navigate(L"https://localhost:8000/bar/");
-                            wvBrowser->OpenDevToolsWindow();
+            // wvBrowser->OpenDevToolsWindow();
 #else
                             wvBrowser->Navigate(L"https://airglow/gui/bar/index.html");
 #endif
 
                             browser->Bounds(window, settings);
                             browser->Focus(window, settings);
-
-                            SendMessageW(hwnd, WM_SETFOCUS, 0, 0);
 
                             wvBrowser->add_DocumentTitleChanged(
                                 Callback<ICoreWebView2DocumentTitleChangedEventHandler>(

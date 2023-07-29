@@ -288,6 +288,8 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
         SaveSettings();
 
+        browser->PostSettings(settings.Serialize());
+
         return 0;
 
     case VK_F2:
@@ -298,6 +300,8 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
         browser->Icon(window, settings);
 
         SaveSettings();
+
+        browser->PostSettings(settings.Serialize());
 
         return 0;
 
@@ -316,6 +320,8 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
             SaveSettings();
         }
+
+        browser->PostSettings(settings.Serialize());
 
         return 0;
 
