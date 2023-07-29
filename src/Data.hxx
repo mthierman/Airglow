@@ -85,7 +85,7 @@ struct Settings
 struct Paths
 {
     path data{path_portable()};
-    path settings{path_settings()};
+    path gui{path_gui()};
     path json{path_json()};
     path db{path_db()};
     path js{path_js()};

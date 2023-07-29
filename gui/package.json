@@ -2,7 +2,7 @@
     "name": "settings",
     "scripts": {
         "dev": "vite",
-        "build": "vite build && node -e \"fs.cp('dist', '../build/Airglow/settings', { recursive: true }, err => {})\"",
+        "build": "vite build && node -e \"fs.cp('dist', '../build/Airglow/gui', { recursive: true }, err => {})\"",
         "watch": "vite build --watch",
         "preview": "vite preview"
     },

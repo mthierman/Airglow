@@ -176,12 +176,12 @@ configure_file("${CMAKE_SOURCE_DIR}/tools/install.ps1" "${CMAKE_BINARY_DIR}/inst
 
 add_custom_command(
     TARGET ${APP_NAME} PRE_BUILD
-    COMMAND cd "${CMAKE_SOURCE_DIR}/settings" && pnpm build
+    COMMAND cd "${CMAKE_SOURCE_DIR}/gui" && pnpm build
 )
 
 add_custom_command(
     TARGET ${APP_NAME} POST_BUILD
-    COMMAND 7z a "${CMAKE_BINARY_DIR}/Airglow.zip" "${CMAKE_BINARY_DIR}/${APP_NAME}/${APP_NAME}.exe" "${CMAKE_BINARY_DIR}/${APP_NAME}/settings"
+    COMMAND 7z a "${CMAKE_BINARY_DIR}/Airglow.zip" "${CMAKE_BINARY_DIR}/${APP_NAME}/${APP_NAME}.exe" "${CMAKE_BINARY_DIR}/${APP_NAME}/gui"
 )
 
 if(INSTALL)

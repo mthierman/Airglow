@@ -10,10 +10,6 @@ export default defineConfig(async ({ command, mode }) => {
             root: "./src",
             base: "./",
             plugins: [react()],
-            build: {
-                outDir: "../dist",
-                assetsDir: "./",
-            },
             server: {
                 port: 8000,
                 https: {
@@ -36,11 +32,11 @@ export default defineConfig(async ({ command, mode }) => {
             plugins: [react()],
             build: {
                 outDir: "../dist",
-                assetsDir: "./",
+                // assetsDir: "./",
                 rollupOptions: {
                     input: {
-                        main: path.resolve(__dirname, "index.html"),
-                        bar: path.resolve(__dirname, "bar/index.html"),
+                        settings: path.resolve(__dirname, "src/index.html"),
+                        bar: path.resolve(__dirname, "src/bar/index.html"),
                     },
                 },
             },

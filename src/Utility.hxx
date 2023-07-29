@@ -27,7 +27,7 @@ int dberror(string);
 
 path path_appdata();
 path path_portable();
-path path_settings();
+path path_gui();
 path path_json();
 path path_db();
 path path_js();
@@ -58,4 +58,5 @@ RECT left_panel(RECT);
 RECT right_panel(RECT);
 RECT top_panel(RECT);
 RECT bottom_panel(RECT);
+RECT bar_panel(RECT);
 } // namespace Utility

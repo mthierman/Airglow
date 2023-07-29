@@ -101,13 +101,13 @@ path path_portable()
     return std::filesystem::canonical(path(wpgmptr).remove_filename());
 }
 
-path path_settings()
+path path_gui()
 {
     auto data = path_portable();
     if (!std::filesystem::exists(data))
         return path{};
 
-    return (data.wstring() + path::preferred_separator + to_wide("settings"));
+    return (data.wstring() + path::preferred_separator + to_wide("gui"));
 }
 
 path path_json()
@@ -519,6 +519,16 @@ RECT bottom_panel(RECT bounds)
     return RECT{
         bounds.left,
         (bounds.bottom / 2) + 1,
+        bounds.right,
+        bounds.bottom,
+    };
+}
+
+RECT bar_panel(RECT bounds)
+{
+    return RECT{
+        bounds.left,
+        bounds.bottom - 50,
         bounds.right,
         bounds.bottom,
     };

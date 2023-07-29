@@ -47,3 +47,11 @@ static wil::com_ptr<ICoreWebView2> wvCore;
 static wil::com_ptr<ICoreWebView2_19> wvBrowser;
 static wil::com_ptr<ICoreWebView2Settings> wvSettings;
 } // namespace wv2settings
+
+namespace wv2bar
+{
+static wil::com_ptr<ICoreWebView2Controller> wvController;
+static wil::com_ptr<ICoreWebView2> wvCore;
+static wil::com_ptr<ICoreWebView2_19> wvBrowser;
+static wil::com_ptr<ICoreWebView2Settings> wvSettings;
+} // namespace wv2bar
