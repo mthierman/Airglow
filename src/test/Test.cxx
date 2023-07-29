@@ -1,5 +1,3 @@
-#include "Config.hxx"
-
 void Test(HWND hwnd)
 {
     // println(get_system_color(winrt::Windows::UI::ViewManagement::UIColorType::Foreground));
