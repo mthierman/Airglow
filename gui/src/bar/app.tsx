@@ -151,6 +151,14 @@ export default function App() {
                         placeholder={mainUrl}
                         pattern=".*[.].*"></input>
 
+                    <input
+                        type="text"
+                        name="sideUrl"
+                        id="sideUrl"
+                        placeholder={sideUrl}
+                        pattern=".*[.].*"
+                        hidden></input>
+
                     <input type="submit" hidden />
                 </form>
             </div>
@@ -167,6 +175,14 @@ export default function App() {
                     onSubmit={handleForm}
                     autoComplete="off"
                     spellCheck="false">
+                    <input
+                        type="text"
+                        name="mainUrl"
+                        id="mainUrl"
+                        placeholder={mainUrl}
+                        pattern=".*[.].*"
+                        hidden></input>
+
                     <input
                         type="text"
                         name="sideUrl"

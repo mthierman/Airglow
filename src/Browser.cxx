@@ -50,7 +50,7 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
                                 wvSettings->put_AreHostObjectsAllowed(true);
                                 wvSettings->put_IsBuiltInErrorPageEnabled(true);
                                 wvSettings->put_IsScriptEnabled(true);
-                                wvSettings->put_IsStatusBarEnabled(true);
+                                wvSettings->put_IsStatusBarEnabled(false);
                                 wvSettings->put_IsWebMessageEnabled(true);
                                 wvSettings->put_IsZoomControlEnabled(true);
                             }
@@ -166,7 +166,7 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
                                 wvSettings->put_AreHostObjectsAllowed(true);
                                 wvSettings->put_IsBuiltInErrorPageEnabled(true);
                                 wvSettings->put_IsScriptEnabled(true);
-                                wvSettings->put_IsStatusBarEnabled(true);
+                                wvSettings->put_IsStatusBarEnabled(false);
                                 wvSettings->put_IsWebMessageEnabled(true);
                                 wvSettings->put_IsZoomControlEnabled(true);
                             }
@@ -275,7 +275,7 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
                                       wvSettings->put_AreHostObjectsAllowed(true);
                                       wvSettings->put_IsBuiltInErrorPageEnabled(true);
                                       wvSettings->put_IsScriptEnabled(true);
-                                      wvSettings->put_IsStatusBarEnabled(true);
+                                      wvSettings->put_IsStatusBarEnabled(false);
                                       wvSettings->put_IsWebMessageEnabled(true);
                                       wvSettings->put_IsZoomControlEnabled(true);
                                   }
@@ -358,7 +358,7 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
                                       wvSettings->put_AreHostObjectsAllowed(true);
                                       wvSettings->put_IsBuiltInErrorPageEnabled(true);
                                       wvSettings->put_IsScriptEnabled(true);
-                                      wvSettings->put_IsStatusBarEnabled(true);
+                                      wvSettings->put_IsStatusBarEnabled(false);
                                       wvSettings->put_IsWebMessageEnabled(true);
                                       wvSettings->put_IsZoomControlEnabled(true);
                                   }
