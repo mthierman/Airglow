@@ -110,6 +110,15 @@ path path_gui()
     return (data.wstring() + path::preferred_separator + to_wide("gui"));
 }
 
+path path_home()
+{
+    auto data = path_gui();
+    if (!std::filesystem::exists(data))
+        return path{};
+
+    return (L"file:///" + data.wstring() + path::preferred_separator + to_wide("index.html"));
+}
+
 path path_settings()
 {
     auto data = path_gui();

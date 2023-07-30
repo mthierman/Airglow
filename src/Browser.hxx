@@ -11,7 +11,6 @@ class Browser
 {
   public:
     static std::unique_ptr<Browser> Create(Window&, Settings&, Colors&);
-    void Navigate(Settings& settings);
     void Bounds(Window&, Settings&);
     void Focus(Window&, Settings&);
     void Title(Window&, Settings&);
@@ -21,6 +20,8 @@ class Browser
     void Keys(Window&, Settings&, ICoreWebView2AcceleratorKeyPressedEventArgs* args);
     void PostSettings(json);
     void NavigateHome(Settings& settings);
+    void NavigateMain(Settings& settings);
+    void NavigateSide(Settings& settings);
     void FocusBar();
     void EscapeFocusBar(Settings& settings);
 

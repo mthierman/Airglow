@@ -264,7 +264,7 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
                                   wvSettings->put_IsWebMessageEnabled(true);
                                   wvSettings->put_IsZoomControlEnabled(true);
 
-                                  browser->Navigate(settings);
+                                  browser->NavigateMain(settings);
                                   browser->Bounds(window, settings);
                                   browser->Focus(window, settings);
 
@@ -356,7 +356,7 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
                                   wvSettings->put_IsWebMessageEnabled(true);
                                   wvSettings->put_IsZoomControlEnabled(true);
 
-                                  browser->Navigate(settings);
+                                  browser->NavigateSide(settings);
                                   browser->Bounds(window, settings);
                                   browser->Focus(window, settings);
 
@@ -424,22 +424,6 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
         return nullptr;
 
     return browser;
-}
-
-void Browser::Navigate(Settings& settings)
-{
-    if (!wv2main::wvBrowser || !wv2side::wvBrowser)
-        return;
-
-    if (!command_line().first.empty())
-        wv2main::wvBrowser->Navigate(command_line().first.c_str());
-    else
-        wv2main::wvBrowser->Navigate((to_wide(settings.homepageMain)).c_str());
-
-    if (!command_line().second.empty())
-        wv2side::wvBrowser->Navigate(command_line().second.c_str());
-    else
-        wv2side::wvBrowser->Navigate((to_wide(settings.homepageSide)).c_str());
 }
 
 void Browser::Bounds(Window& window, Settings& settings)
@@ -838,6 +822,44 @@ void Browser::NavigateHome(Settings& settings)
 
     wv2main::wvBrowser->Navigate((to_wide(settings.homepageMain)).c_str());
     wv2side::wvBrowser->Navigate((to_wide(settings.homepageSide)).c_str());
+}
+
+void Browser::NavigateMain(Settings& settings)
+{
+    if (!wv2main::wvBrowser)
+        return;
+
+    if (!command_line().first.empty())
+        wv2main::wvBrowser->Navigate(command_line().first.c_str());
+
+    if (settings.homepageMain == "")
+#ifdef _DEBUG
+        wv2main::wvBrowser->Navigate(L"https://localhost:8000/");
+#else
+        wv2main::wvBrowser->Navigate(path_home().wstring().c_str());
+#endif
+
+    else
+        wv2main::wvBrowser->Navigate((to_wide(settings.homepageMain)).c_str());
+}
+
+void Browser::NavigateSide(Settings& settings)
+{
+    if (!wv2side::wvBrowser)
+        return;
+
+    if (!command_line().second.empty())
+        wv2side::wvBrowser->Navigate(command_line().second.c_str());
+
+    if (settings.homepageSide == "")
+#ifdef _DEBUG
+        wv2side::wvBrowser->Navigate(L"https://localhost:8000/");
+#else
+        wv2side::wvBrowser->Navigate(path_home().wstring().c_str());
+#endif
+
+    else
+        wv2side::wvBrowser->Navigate((to_wide(settings.homepageSide)).c_str());
 }
 
 void Browser::FocusBar()

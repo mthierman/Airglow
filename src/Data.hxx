@@ -18,11 +18,11 @@ struct Window
 
 struct Settings
 {
-    string theme{"dark"};
-    string homepageMain{"about:blank"};
-    string homepageSide{"about:blank"};
-    string currentPageMain{"about:blank"};
-    string currentPageSide{"about:blank"};
+    string theme{system_theme()};
+    string homepageMain{""};
+    string homepageSide{""};
+    string currentPageMain{""};
+    string currentPageSide{""};
     std::vector<int> position{0, 0, 0, 0};
     bool menu{false};
     bool split{false};
