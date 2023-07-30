@@ -94,8 +94,6 @@ struct Paths
     path gui{path_gui()};
     path json{path_json()};
     path db{path_db()};
-    path js{path_js()};
-    path inject{path_inject()};
 };
 
 struct Colors
