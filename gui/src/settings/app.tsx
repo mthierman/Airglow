@@ -138,13 +138,9 @@ export default function App() {
                     </label>
                 </div>
 
-                <div className="grid grid-flow-col justify-stretch gap-6">
-                    <div className="select-none">
-                        <div>
-                            <div className="capitalize">
-                                {themeIcon} {theme} mode
-                            </div>
-                        </div>
+                <div className="grid grid-flow-col justify-between">
+                    <div className="select-none capitalize self-end">
+                        {themeIcon} {theme} mode
                     </div>
 
                     <button id="submitUrl" type="submit">
