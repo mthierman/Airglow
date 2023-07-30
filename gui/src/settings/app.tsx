@@ -106,9 +106,9 @@ export default function App() {
                     <label>
                         <div className="grid grid-flow-col items-end justify-between gap-6 truncate">
                             <div className="select-none text-3xl font-light">
-                                🏠 Home
+                                🌌 Home
                             </div>
-                            <div className="select-text rounded-lg bg-neutral-50 px-2 py-1 text-sm text-neutral-400 dark:bg-neutral-800">
+                            <div className="select-text text-neutral-400">
                                 {homepageMain}
                             </div>
                         </div>
@@ -123,9 +123,9 @@ export default function App() {
                     <label>
                         <div className="grid grid-flow-col items-end justify-between gap-6 truncate">
                             <div className="select-none text-3xl font-light">
-                                🔧 Sidebar
+                                🛰️ Sidebar
                             </div>
-                            <div className="select-text rounded-lg bg-neutral-50 px-2 py-1 text-sm text-neutral-400 dark:bg-neutral-800">
+                            <div className="select-text text-neutral-400">
                                 {homepageSide}
                             </div>
                         </div>
@@ -139,7 +139,7 @@ export default function App() {
                 </div>
 
                 <div className="grid grid-flow-col justify-between">
-                    <div className="select-none capitalize self-end">
+                    <div className="select-none self-end capitalize">
                         {themeIcon} {theme} mode
                     </div>
 
