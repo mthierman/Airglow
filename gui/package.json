@@ -9,7 +9,6 @@
     "devDependencies": {
         "@tailwindcss/typography": "latest",
         "@types/node": "latest",
-        "@types/prettier": "latest",
         "@types/react-dom": "latest",
         "@types/react": "latest",
         "@vitejs/plugin-react-swc": "latest",
