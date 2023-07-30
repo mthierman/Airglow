@@ -615,7 +615,8 @@ void Browser::Icon(Window& window, Settings& settings)
                         if (iconBitmap.GetHICON(&icon) == Gdiplus::Status::Ok)
                         {
                             auto favicon = std::move(icon);
-                            SetClassLongPtrW(window.hwnd, GCLP_HICONSM, (LONG_PTR)favicon.get());
+                            // SetClassLongPtrW(window.hwnd, GCLP_HICONSM, (LONG_PTR)favicon.get());
+                            SetClassLongPtrW(window.hwnd, GCLP_HICONSM, (LONG_PTR)window.icon);
                             SetClassLongPtrW(window.hwnd, GCLP_HICON, (LONG_PTR)window.icon);
                         }
                     }
