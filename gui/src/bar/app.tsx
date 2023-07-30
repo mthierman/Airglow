@@ -70,13 +70,18 @@ export default function App() {
         form.reset();
     };
 
-    let mainType = "text";
-    let sideType = "text";
     let formStyle = "flex";
+    let mainLabelStyle = "";
+    let sideLabelStyle = "";
 
     if (swapped) formStyle = "flex flex-row-reverse";
-    if (!split && !swapped) sideType = "hidden";
-    if (!split && swapped) mainType = "hidden";
+
+    if (!split && !swapped) {
+        sideLabelStyle = "hidden";
+    }
+    if (!split && swapped) {
+        mainLabelStyle = "hidden";
+    }
 
     return (
         <div>
@@ -88,17 +93,21 @@ export default function App() {
                 onSubmit={handleForm}
                 autoComplete="off"
                 spellCheck="false">
-                <input
-                    type={mainType}
-                    name="currentPageMain"
-                    id="currentPageMain"
-                    placeholder={currentPageMain}></input>
+                <label className={mainLabelStyle}>
+                    <input
+                        type="text"
+                        name="currentPageMain"
+                        id="currentPageMain"></input>
+                    <address>{currentPageMain}</address>
+                </label>
 
-                <input
-                    type={sideType}
-                    name="currentPageSide"
-                    id="currentPageSide"
-                    placeholder={currentPageSide}></input>
+                <label className={sideLabelStyle}>
+                    <input
+                        type="text"
+                        name="currentPageSide"
+                        id="currentPageSide"></input>
+                    <address>{currentPageSide}</address>
+                </label>
 
                 <input type="submit" hidden />
             </form>

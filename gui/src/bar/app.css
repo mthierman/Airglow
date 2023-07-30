@@ -5,12 +5,15 @@
 @layer base {
     html,
     body {
-        @apply bg-transparent;
+        @apply bg-transparent leading-none;
+    }
+    label {
+        @apply grid min-h-screen w-full grid-flow-col grid-cols-2 items-center truncate border-t-[1px] border-neutral-600 bg-transparent;
     }
     input {
-        @apply min-h-screen flex-grow truncate bg-transparent px-6 leading-none outline-none;
+        @apply truncate rounded-md bg-transparent px-4 text-base outline-none;
     }
-    input::placeholder {
-        @apply text-right;
+    address {
+        @apply truncate bg-transparent text-xs text-neutral-400 text-end self-start p-1;
     }
 }
