@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import icon from "../../data/icons/icon.svg?raw";
+import icon from "../../../data/icons/icon.svg?raw";
 
 document.onreadystatechange = () => {
     if (document.readyState === "complete") {

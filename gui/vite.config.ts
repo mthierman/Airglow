@@ -32,10 +32,13 @@ export default defineConfig(async ({ command, mode }) => {
             plugins: [react()],
             build: {
                 outDir: "../dist",
-                // assetsDir: "./",
                 rollupOptions: {
                     input: {
-                        settings: path.resolve(__dirname, "src/index.html"),
+                        main: path.resolve(__dirname, "src/index.html"),
+                        settings: path.resolve(
+                            __dirname,
+                            "src/settings/index.html",
+                        ),
                         bar: path.resolve(__dirname, "src/bar/index.html"),
                     },
                 },

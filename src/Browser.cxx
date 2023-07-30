@@ -52,7 +52,7 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
 #ifdef _DEBUG
                             wvSettings->put_AreDevToolsEnabled(true);
                             // wvBrowser->OpenDevToolsWindow();
-                            wvBrowser->Navigate(L"https://localhost:8000/");
+                            wvBrowser->Navigate(L"https://localhost:8000/settings/");
 #else
                             wvSettings->put_AreDevToolsEnabled(false);
                             wvBrowser->Navigate(path_settings().wstring().c_str());

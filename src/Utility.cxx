@@ -116,7 +116,8 @@ path path_settings()
     if (!std::filesystem::exists(data))
         return path{};
 
-    return (L"file:///" + data.wstring() + path::preferred_separator + L"index.html");
+    return (L"file:///" + data.wstring() + path::preferred_separator + to_wide("settings") +
+            path::preferred_separator + to_wide("index.html"));
 }
 
 path path_bar()
