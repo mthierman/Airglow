@@ -70,117 +70,156 @@ export default function App() {
         form.reset();
     };
 
-    if (split && !swapped) {
-        return (
-            <div>
-                <form
-                    name="url"
-                    id="url"
-                    method="post"
-                    onSubmit={handleForm}
-                    autoComplete="off"
-                    spellCheck="false">
-                    <input
-                        type="text"
-                        name="currentPageMain"
-                        id="currentPageMain"
-                        placeholder={currentPageMain}></input>
-
-                    <input
-                        type="text"
-                        name="currentPageSide"
-                        id="currentPageSide"
-                        placeholder={currentPageSide}></input>
-
-                    <input type="submit" hidden />
-                </form>
-            </div>
-        );
-    }
-
-    if (split && swapped) {
-        return (
-            <div>
-                <form
-                    name="url"
-                    id="url"
-                    method="post"
-                    onSubmit={handleForm}
-                    autoComplete="off"
-                    spellCheck="false">
-                    <input
-                        type="text"
-                        name="currentPageSide"
-                        id="currentPageSide"
-                        placeholder={currentPageSide}></input>
-
-                    <input
-                        type="text"
-                        name="currentPageMain"
-                        id="currentPageMain"
-                        placeholder={currentPageMain}></input>
-
-                    <input type="submit" hidden />
-                </form>
-            </div>
-        );
-    }
+    let mainType = "text";
+    let sideType = "text";
 
     if (!split && !swapped) {
-        return (
-            <div>
-                <form
-                    name="url"
-                    id="url"
-                    method="post"
-                    onSubmit={handleForm}
-                    autoComplete="off"
-                    spellCheck="false">
-                    <input
-                        type="text"
-                        name="currentPageMain"
-                        id="currentPageMain"
-                        placeholder={currentPageMain}></input>
-
-                    <input
-                        type="text"
-                        name="currentPageSide"
-                        id="currentPageSide"
-                        placeholder={currentPageSide}
-                        hidden></input>
-
-                    <input type="submit" hidden />
-                </form>
-            </div>
-        );
+        mainType = "text";
+        sideType = "hidden";
     }
 
     if (!split && swapped) {
-        return (
-            <div>
-                <form
-                    name="url"
-                    id="url"
-                    method="post"
-                    onSubmit={handleForm}
-                    autoComplete="off"
-                    spellCheck="false">
-                    <input
-                        type="text"
-                        name="currentPageSide"
-                        id="currentPageSide"
-                        placeholder={currentPageSide}></input>
-
-                    <input
-                        type="text"
-                        name="currentPageMain"
-                        id="currentPageMain"
-                        placeholder={currentPageMain}
-                        hidden></input>
-
-                    <input type="submit" hidden />
-                </form>
-            </div>
-        );
+        mainType = "hidden";
+        sideType = "text";
     }
+
+    return (
+        <div>
+            <form
+                name="url"
+                id="url"
+                method="post"
+                onSubmit={handleForm}
+                autoComplete="off"
+                spellCheck="false">
+                <input
+                    type={mainType}
+                    name="currentPageMain"
+                    id="currentPageMain"
+                    placeholder={currentPageMain}></input>
+
+                <input
+                    type={sideType}
+                    name="currentPageSide"
+                    id="currentPageSide"
+                    placeholder={currentPageSide}></input>
+
+                <input type="submit" hidden />
+            </form>
+        </div>
+    );
+
+    // if (split && !swapped) {
+    //     return (
+    //         <div>
+    //             <form
+    //                 name="url"
+    //                 id="url"
+    //                 method="post"
+    //                 onSubmit={handleForm}
+    //                 autoComplete="off"
+    //                 spellCheck="false">
+    //                 <input
+    //                     type="text"
+    //                     name="currentPageMain"
+    //                     id="currentPageMain"
+    //                     placeholder={currentPageMain}></input>
+
+    //                 <input
+    //                     type="text"
+    //                     name="currentPageSide"
+    //                     id="currentPageSide"
+    //                     placeholder={currentPageSide}></input>
+
+    //                 <input type="submit" hidden />
+    //             </form>
+    //         </div>
+    //     );
+    // }
+
+    // if (split && swapped) {
+    //     return (
+    //         <div>
+    //             <form
+    //                 name="url"
+    //                 id="url"
+    //                 method="post"
+    //                 onSubmit={handleForm}
+    //                 autoComplete="off"
+    //                 spellCheck="false">
+    //                 <input
+    //                     type="text"
+    //                     name="currentPageSide"
+    //                     id="currentPageSide"
+    //                     placeholder={currentPageSide}></input>
+
+    //                 <input
+    //                     type="text"
+    //                     name="currentPageMain"
+    //                     id="currentPageMain"
+    //                     placeholder={currentPageMain}></input>
+
+    //                 <input type="submit" hidden />
+    //             </form>
+    //         </div>
+    //     );
+    // }
+
+    // if (!split && !swapped) {
+    //     return (
+    //         <div>
+    //             <form
+    //                 name="url"
+    //                 id="url"
+    //                 method="post"
+    //                 onSubmit={handleForm}
+    //                 autoComplete="off"
+    //                 spellCheck="false">
+    //                 <input
+    //                     type="text"
+    //                     name="currentPageMain"
+    //                     id="currentPageMain"
+    //                     placeholder={currentPageMain}></input>
+
+    //                 <input
+    //                     type="text"
+    //                     name="currentPageSide"
+    //                     id="currentPageSide"
+    //                     placeholder={currentPageSide}
+    //                     hidden></input>
+
+    //                 <input type="submit" hidden />
+    //             </form>
+    //         </div>
+    //     );
+    // }
+
+    // if (!split && swapped) {
+    //     return (
+    //         <div>
+    //             <form
+    //                 name="url"
+    //                 id="url"
+    //                 method="post"
+    //                 onSubmit={handleForm}
+    //                 autoComplete="off"
+    //                 spellCheck="false">
+    //                 <input
+    //                     type="text"
+    //                     name="currentPageSide"
+    //                     id="currentPageSide"
+    //                     placeholder={currentPageSide}></input>
+
+    //                 <input
+    //                     type="text"
+    //                     name="currentPageMain"
+    //                     id="currentPageMain"
+    //                     placeholder={currentPageMain}
+    //                     hidden></input>
+
+    //                 <input type="submit" hidden />
+    //             </form>
+    //         </div>
+    //     );
+    // }
 }
