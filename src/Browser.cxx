@@ -791,6 +791,9 @@ void Browser::BarMessages(Window& window, Settings& settings,
 
             else
                 wv2main::wvBrowser->Navigate((L"https://" + to_wide(s)).c_str());
+
+            wv2main::wvController->MoveFocus(
+                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
         }
 
         if (!j["currentPageSide"].empty())
@@ -802,6 +805,9 @@ void Browser::BarMessages(Window& window, Settings& settings,
 
             else
                 wv2side::wvBrowser->Navigate((L"https://" + to_wide(s)).c_str());
+
+            wv2side::wvController->MoveFocus(
+                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
         }
 
         SendMessageW(window.hwnd, WM_NOTIFY, 0, 0);

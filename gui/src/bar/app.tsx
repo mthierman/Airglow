@@ -97,7 +97,8 @@ export default function App() {
                     <input
                         type="text"
                         name="currentPageMain"
-                        id="currentPageMain"></input>
+                        id="currentPageMain"
+                        placeholder="🔭"></input>
                     <address>{currentPageMain}</address>
                 </label>
 
@@ -105,7 +106,8 @@ export default function App() {
                     <input
                         type="text"
                         name="currentPageSide"
-                        id="currentPageSide"></input>
+                        id="currentPageSide"
+                        placeholder="🔭"></input>
                     <address>{currentPageSide}</address>
                 </label>
 

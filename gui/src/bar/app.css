@@ -11,7 +11,10 @@
         @apply grid min-h-screen w-full grid-flow-col grid-cols-2 items-center truncate border-t-[1px] border-neutral-600 bg-transparent px-2;
     }
     input {
-        @apply truncate rounded-md bg-transparent text-base outline-none;
+        @apply truncate rounded-md bg-transparent text-2xl outline-none;
+    }
+    input::placeholder {
+        @apply text-neutral-400;
     }
     address {
         @apply self-center truncate bg-transparent text-end text-xs text-neutral-400;
