@@ -14,6 +14,6 @@
         @apply truncate rounded-md bg-transparent px-4 text-base outline-none;
     }
     address {
-        @apply truncate bg-transparent text-xs text-neutral-400 text-end self-start p-1;
+        @apply self-start truncate bg-transparent p-1 text-end text-xs text-neutral-400;
     }
 }
