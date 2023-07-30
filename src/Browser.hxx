@@ -32,7 +32,8 @@ class Browser
 
 namespace wv2main
 {
-static wil::com_ptr<ICoreWebView2Controller> wvController;
+static wil::com_ptr<ICoreWebView2Controller> wvCoreController;
+static wil::com_ptr<ICoreWebView2Controller4> wvController;
 static wil::com_ptr<ICoreWebView2> wvCore;
 static wil::com_ptr<ICoreWebView2_19> wvBrowser;
 static wil::com_ptr<ICoreWebView2Settings> wvSettings;
@@ -40,7 +41,8 @@ static wil::com_ptr<ICoreWebView2Settings> wvSettings;
 
 namespace wv2side
 {
-static wil::com_ptr<ICoreWebView2Controller> wvController;
+static wil::com_ptr<ICoreWebView2Controller> wvCoreController;
+static wil::com_ptr<ICoreWebView2Controller4> wvController;
 static wil::com_ptr<ICoreWebView2> wvCore;
 static wil::com_ptr<ICoreWebView2_19> wvBrowser;
 static wil::com_ptr<ICoreWebView2Settings> wvSettings;
@@ -48,7 +50,8 @@ static wil::com_ptr<ICoreWebView2Settings> wvSettings;
 
 namespace wv2settings
 {
-static wil::com_ptr<ICoreWebView2Controller> wvController;
+static wil::com_ptr<ICoreWebView2Controller> wvCoreController;
+static wil::com_ptr<ICoreWebView2Controller4> wvController;
 static wil::com_ptr<ICoreWebView2> wvCore;
 static wil::com_ptr<ICoreWebView2_19> wvBrowser;
 static wil::com_ptr<ICoreWebView2Settings> wvSettings;
@@ -56,7 +59,8 @@ static wil::com_ptr<ICoreWebView2Settings> wvSettings;
 
 namespace wv2bar
 {
-static wil::com_ptr<ICoreWebView2Controller> wvController;
+static wil::com_ptr<ICoreWebView2Controller> wvCoreController;
+static wil::com_ptr<ICoreWebView2Controller4> wvController;
 static wil::com_ptr<ICoreWebView2> wvCore;
 static wil::com_ptr<ICoreWebView2_19> wvBrowser;
 static wil::com_ptr<ICoreWebView2Settings> wvSettings;

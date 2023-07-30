@@ -32,7 +32,14 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
 
                             if (c)
                             {
-                                wvController = c;
+                                wvCoreController = c;
+
+                                wvController =
+                                    wvCoreController.try_query<ICoreWebView2Controller4>();
+
+                                COREWEBVIEW2_COLOR color{0, 0, 0, 0};
+                                wvController->put_DefaultBackgroundColor(color);
+
                                 wvController->get_CoreWebView2(&wvCore);
                             }
 
@@ -140,7 +147,14 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
 
                             if (c)
                             {
-                                wvController = c;
+                                wvCoreController = c;
+
+                                wvController =
+                                    wvCoreController.try_query<ICoreWebView2Controller4>();
+
+                                COREWEBVIEW2_COLOR color{0, 0, 0, 0};
+                                wvController->put_DefaultBackgroundColor(color);
+
                                 wvController->get_CoreWebView2(&wvCore);
                             }
 
@@ -246,7 +260,14 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
 
                                   if (c)
                                   {
-                                      wvController = c;
+                                      wvCoreController = c;
+
+                                      wvController =
+                                          wvCoreController.try_query<ICoreWebView2Controller4>();
+
+                                      //   COREWEBVIEW2_COLOR color{0, 0, 0, 0};
+                                      //   wvController->put_DefaultBackgroundColor(color);
+
                                       wvController->get_CoreWebView2(&wvCore);
                                   }
 
@@ -338,7 +359,14 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
 
                                   if (c)
                                   {
-                                      wvController = c;
+                                      wvCoreController = c;
+
+                                      wvController =
+                                          wvCoreController.try_query<ICoreWebView2Controller4>();
+
+                                      //   COREWEBVIEW2_COLOR color{0, 0, 0, 0};
+                                      //   wvController->put_DefaultBackgroundColor(color);
+
                                       wvController->get_CoreWebView2(&wvCore);
                                   }
 

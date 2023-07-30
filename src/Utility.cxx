@@ -517,4 +517,64 @@ RECT bar_panel(RECT bounds)
         bounds.bottom,
     };
 }
+
+// RECT full_panel(RECT bounds)
+// {
+//     return RECT{
+//         bounds.left,
+//         bounds.top,
+//         bounds.right,
+//         (bounds.bottom - 100),
+//     };
+// }
+
+// RECT left_panel(RECT bounds)
+// {
+//     return RECT{
+//         bounds.left,
+//         bounds.top,
+//         (bounds.right / 2),
+//         (bounds.bottom - 100),
+//     };
+// }
+
+// RECT right_panel(RECT bounds)
+// {
+//     return RECT{
+//         (bounds.right / 2),
+//         bounds.top,
+//         bounds.right,
+//         (bounds.bottom - 100),
+//     };
+// }
+
+// RECT top_panel(RECT bounds)
+// {
+//     return RECT{
+//         bounds.left,
+//         bounds.top,
+//         bounds.right,
+//         ((bounds.bottom / 2) - 50),
+//     };
+// }
+
+// RECT bottom_panel(RECT bounds)
+// {
+//     return RECT{
+//         bounds.left,
+//         ((bounds.bottom / 2) - 50),
+//         bounds.right,
+//         (bounds.bottom - 100),
+//     };
+// }
+
+// RECT bar_panel(RECT bounds)
+// {
+//     return RECT{
+//         bounds.left,
+//         (bounds.bottom - 100),
+//         bounds.right,
+//         bounds.bottom,
+//     };
+// }
 } // namespace Utility
