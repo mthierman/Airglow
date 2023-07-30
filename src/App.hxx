@@ -16,6 +16,7 @@ class App
 
   private:
     App(HINSTANCE, int);
+    void Show();
 
     std::unique_ptr<Browser> browser{nullptr};
     unsigned long long gdiplusToken{};
@@ -24,9 +25,6 @@ class App
     Settings settings{};
     Paths paths{};
     Colors colors{};
-
-    void Show();
-    void SaveSettings();
 
     static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
     int _OnActivate(HWND, WPARAM, LPARAM);

@@ -11,10 +11,10 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
     SetEnvironmentVariableW(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR", L"0");
 
     if (!std::filesystem::exists(app->paths.json))
-        app->SaveSettings();
+        app->settings.Save();
 
     if (std::filesystem::exists(app->paths.json) && std::filesystem::is_empty(app->paths.json))
-        app->SaveSettings();
+        app->settings.Save();
 
     if (std::filesystem::exists(app->paths.json))
     {
@@ -103,8 +103,6 @@ void App::Show()
     }
 }
 
-void App::SaveSettings() { settings.Save(settings.Serialize()); }
-
 template <class T> T* InstanceFromWndProc(HWND hwnd, UINT msg, LPARAM lparam)
 {
     T* pInstance;
@@ -170,7 +168,7 @@ int App::_OnActivate(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int App::_OnClose(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-    SaveSettings();
+    settings.Save();
 
     DestroyWindow(hwnd);
 
@@ -301,7 +299,7 @@ int App::_OnNotify(HWND hwnd, WPARAM wparam, LPARAM lparam)
     browser->Title(window, settings);
     browser->Icon(window, settings);
 
-    SaveSettings();
+    settings.Save();
 
     return 0;
 }
@@ -333,7 +331,7 @@ int App::_OnWindowPosChanged(HWND hwnd, WPARAM wparam, LPARAM lparam)
     else
         settings.maximized = false;
 
-    SaveSettings();
+    settings.Save();
 
     return 0;
 }

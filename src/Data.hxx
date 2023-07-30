@@ -104,8 +104,9 @@ struct Settings
         }
     }
 
-    void Save(json j)
+    void Save()
     {
+        auto j{Serialize()};
         try
         {
             ofstream f(path_json());
@@ -118,6 +119,21 @@ struct Settings
             return;
         }
     }
+
+    // void Save(json j)
+    // {
+    //     try
+    //     {
+    //         ofstream f(path_json());
+    //         f << std::setw(4) << j << "\n";
+    //         f.close();
+    //     }
+    //     catch (const std::exception& e)
+    //     {
+    //         println(e.what());
+    //         return;
+    //     }
+    // }
 };
 
 struct Paths
