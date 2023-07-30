@@ -10,7 +10,17 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
 
     SetEnvironmentVariableW(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR", L"0");
 
-    app->LoadSettings();
+    if (!std::filesystem::exists(app->paths.json))
+        app->SaveSettings();
+
+    if (std::filesystem::exists(app->paths.json) && std::filesystem::is_empty(app->paths.json))
+        app->SaveSettings();
+
+    if (std::filesystem::exists(app->paths.json))
+    {
+        auto j{app->settings.Load()};
+        app->settings = app->settings.Deserialize(j);
+    }
 
     app->window.icon = (HICON)LoadImageW(hinstance, to_wide("PROGRAM_ICON").c_str(), IMAGE_ICON, 0,
                                          0, LR_DEFAULTCOLOR | LR_DEFAULTSIZE);
@@ -93,54 +103,7 @@ void App::Show()
     }
 }
 
-json App::LoadJson()
-{
-    try
-    {
-        ifstream f(paths.json);
-        json j{json::parse(f, nullptr, false, true)};
-        f.close();
-
-        return j;
-    }
-    catch (const std::exception& e)
-    {
-        println(e.what());
-        return json{};
-    }
-}
-
-void App::SaveJson(json j)
-{
-    try
-    {
-        ofstream f(paths.json);
-        f << std::setw(4) << j << "\n";
-        f.close();
-    }
-    catch (const std::exception& e)
-    {
-        println(e.what());
-        return;
-    }
-}
-
-void App::LoadSettings()
-{
-    if (!std::filesystem::exists(paths.json))
-        SaveJson(settings.Serialize());
-
-    if (std::filesystem::exists(paths.json) && std::filesystem::is_empty(paths.json))
-        SaveJson(settings.Serialize());
-
-    if (std::filesystem::exists(paths.json))
-    {
-        auto j{LoadJson()};
-        settings = settings.Deserialize(j);
-    }
-}
-
-void App::SaveSettings() { SaveJson(settings.Serialize()); }
+void App::SaveSettings() { settings.Save(settings.Serialize()); }
 
 template <class T> T* InstanceFromWndProc(HWND hwnd, UINT msg, LPARAM lparam)
 {

@@ -26,9 +26,6 @@ class App
     Colors colors{};
 
     void Show();
-    json LoadJson();
-    void SaveJson(json);
-    void LoadSettings();
     void SaveSettings();
 
     static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);

@@ -86,6 +86,38 @@ struct Settings
             return Settings{};
         }
     }
+
+    json Load()
+    {
+        try
+        {
+            ifstream f(path_json());
+            json j{json::parse(f, nullptr, false, true)};
+            f.close();
+
+            return j;
+        }
+        catch (const std::exception& e)
+        {
+            println(e.what());
+            return json{};
+        }
+    }
+
+    void Save(json j)
+    {
+        try
+        {
+            ofstream f(path_json());
+            f << std::setw(4) << j << "\n";
+            f.close();
+        }
+        catch (const std::exception& e)
+        {
+            println(e.what());
+            return;
+        }
+    }
 };
 
 struct Paths
