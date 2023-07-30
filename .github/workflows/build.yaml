@@ -18,12 +18,12 @@ jobs:
       - uses: pnpm/action-setup@v2
         with:
           version: latest
-      - uses: actions/setup-node@v3.6.0
+      - uses: actions/setup-node@v3
         with:
           node-version: "*"
           check-latest: true
           cache: "pnpm"
-          cache-dependency-path: settings/pnpm-lock.yaml
+          cache-dependency-path: gui/pnpm-lock.yaml
       - run: |
           Push-Location
           Set-Location settings
