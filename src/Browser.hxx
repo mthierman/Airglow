@@ -21,6 +21,8 @@ class Browser
     void Keys(Window&, Settings&, ICoreWebView2AcceleratorKeyPressedEventArgs* args);
     void PostSettings(json);
     void NavigateHome(Settings& settings);
+    void FocusBar();
+    void EscapeFocusBar(Settings& settings);
 
   private:
     Browser(Window&, Settings&, Colors&);

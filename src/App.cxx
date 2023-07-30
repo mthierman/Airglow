@@ -228,6 +228,14 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
         return 0;
 
+    case 0x4C:
+        if (GetKeyState(VK_CONTROL) & 0x8000)
+        {
+            browser->FocusBar();
+        }
+
+        return 0;
+
     case 0x57:
         if (GetKeyState(VK_CONTROL) & 0x8000)
             PostMessageW(hwnd, WM_CLOSE, 0, 0);

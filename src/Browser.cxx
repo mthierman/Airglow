@@ -663,11 +663,19 @@ void Browser::Keys(Window& window, Settings& settings,
         UINT key;
         args->get_VirtualKey(&key);
 
+        println(std::to_string(key));
+
         switch (key)
         {
         case 19:
             args->put_Handled(TRUE);
             SendMessageW(window.hwnd, WM_KEYDOWN, VK_PAUSE, 0);
+
+            break;
+
+        case 76:
+            args->put_Handled(TRUE);
+            SendMessageW(window.hwnd, WM_KEYDOWN, 0x4C, 0);
 
             break;
 
@@ -830,4 +838,25 @@ void Browser::NavigateHome(Settings& settings)
 
     wv2main::wvBrowser->Navigate((to_wide(settings.homepageMain)).c_str());
     wv2side::wvBrowser->Navigate((to_wide(settings.homepageSide)).c_str());
+}
+
+void Browser::FocusBar()
+{
+    wv2bar::wvController->MoveFocus(
+        COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+}
+
+void Browser::EscapeFocusBar(Settings& settings)
+{
+    if (!settings.menu && !settings.swapped)
+        wv2main::wvController->MoveFocus(
+            COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+
+    if (!settings.menu && settings.swapped)
+        wv2side::wvController->MoveFocus(
+            COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+
+    if (settings.menu)
+        wv2settings::wvController->MoveFocus(
+            COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 }
