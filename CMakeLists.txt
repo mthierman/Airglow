@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.26)
 set(APP_NAME "Airglow")
 set(APP_NAME_CONSOLE "Isochasm")
-set(APP_VERSION "1.2.2")
+set(APP_VERSION "1.3.0")
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${APP_NAME}")
