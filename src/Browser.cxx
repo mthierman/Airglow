@@ -857,18 +857,29 @@ void Browser::NavigateMain(Settings& settings)
     if (!wv2main::wvBrowser)
         return;
 
-    if (!command_line().first.empty())
-        wv2main::wvBrowser->Navigate(command_line().first.c_str());
+    auto args{command_line()};
+
+    if (!args.first.empty())
+    {
+        if (args.first.starts_with(L"https://") || args.first.starts_with(L"http://"))
+            wv2main::wvBrowser->Navigate(args.first.c_str());
+
+        else
+            wv2main::wvBrowser->Navigate((L"https://" + args.first).c_str());
+        return;
+    }
 
     if (settings.homepageMain == "")
+    {
 #ifdef _DEBUG
         wv2main::wvBrowser->Navigate(L"https://localhost:8000/");
 #else
         wv2main::wvBrowser->Navigate(path_home().wstring().c_str());
 #endif
+        return;
+    }
 
-    else
-        wv2main::wvBrowser->Navigate((to_wide(settings.homepageMain)).c_str());
+    wv2main::wvBrowser->Navigate((to_wide(settings.homepageMain)).c_str());
 }
 
 void Browser::NavigateSide(Settings& settings)
@@ -876,18 +887,29 @@ void Browser::NavigateSide(Settings& settings)
     if (!wv2side::wvBrowser)
         return;
 
-    if (!command_line().second.empty())
-        wv2side::wvBrowser->Navigate(command_line().second.c_str());
+    auto args{command_line()};
+
+    if (!args.second.empty())
+    {
+        if (args.second.starts_with(L"https://") || args.second.starts_with(L"http://"))
+            wv2side::wvBrowser->Navigate(args.second.c_str());
+
+        else
+            wv2side::wvBrowser->Navigate((L"https://" + args.second).c_str());
+        return;
+    }
 
     if (settings.homepageSide == "")
+    {
 #ifdef _DEBUG
         wv2side::wvBrowser->Navigate(L"https://localhost:8000/");
 #else
         wv2side::wvBrowser->Navigate(path_home().wstring().c_str());
 #endif
+        return;
+    }
 
-    else
-        wv2side::wvBrowser->Navigate((to_wide(settings.homepageSide)).c_str());
+    wv2side::wvBrowser->Navigate((to_wide(settings.homepageSide)).c_str());
 }
 
 void Browser::FocusBar()
