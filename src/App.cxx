@@ -289,8 +289,6 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int App::_OnNotify(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
-    println("OnNotify");
-
     browser->PostSettings(settings.Serialize());
     browser->PostSettings(colors.Serialize());
 
