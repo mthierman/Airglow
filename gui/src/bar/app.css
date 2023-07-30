@@ -7,11 +7,8 @@
     body {
         @apply bg-transparent;
     }
-    form {
-        @apply grid grid-flow-col;
-    }
     input {
-        @apply min-h-screen truncate bg-transparent px-6 leading-none outline-none;
+        @apply min-h-screen flex-grow truncate bg-transparent px-6 leading-none outline-none;
     }
     input::placeholder {
         @apply text-right;

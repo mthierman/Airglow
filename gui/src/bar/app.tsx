@@ -72,20 +72,16 @@ export default function App() {
 
     let mainType = "text";
     let sideType = "text";
+    let formStyle = "flex";
 
-    if (!split && !swapped) {
-        mainType = "text";
-        sideType = "hidden";
-    }
-
-    if (!split && swapped) {
-        mainType = "hidden";
-        sideType = "text";
-    }
+    if (swapped) formStyle = "flex flex-row-reverse";
+    if (!split && !swapped) sideType = "hidden";
+    if (!split && swapped) mainType = "hidden";
 
     return (
         <div>
             <form
+                className={formStyle}
                 name="url"
                 id="url"
                 method="post"
