@@ -147,24 +147,6 @@ path path_db()
     return (data.wstring() + path::preferred_separator + to_wide("Database.sqlite"));
 }
 
-path path_js()
-{
-    auto data = path_portable();
-    if (!std::filesystem::exists(data))
-        return path{};
-
-    return (data.wstring() + path::preferred_separator + to_wide("js"));
-}
-
-path path_inject()
-{
-    auto data = path_js();
-    if (!std::filesystem::exists(data))
-        return path{};
-
-    return (data.wstring() + path::preferred_separator + to_wide("inject.js"));
-}
-
 string system_color(winrt::Windows::UI::ViewManagement::UIColorType colorType)
 {
     using namespace winrt::Windows::UI;
@@ -405,43 +387,6 @@ std::pair<wstring, wstring> command_line()
     }
 
     return commands;
-}
-
-wstring js_inject()
-{
-    stringstream buffer{};
-    wstring script{};
-
-    if (std::filesystem::exists(path_inject()))
-    {
-        ifstream f(path_inject());
-        if (!std::filesystem::is_empty(path_inject()))
-        {
-            buffer << f.rdbuf();
-            script = to_wide(buffer.str());
-        }
-        f.close();
-    }
-
-    return script;
-}
-
-wstring js_inject_script()
-{
-    return wstring{LR"(
-        document.onreadystatechange = () => {
-            if (document.readyState === "interactive") {
-                let scheme = document.createElement("meta");
-                scheme.setAttribute("name", "color-scheme");
-                scheme.setAttribute("content", "light dark");
-                document.getElementsByTagName("head")[0].appendChild(scheme);
-                document.documentElement.style.setProperty(
-                    "color-scheme",
-                    "light dark"
-                );
-            }
-        };
-    )"};
 }
 
 std::vector<int> rect_to_bounds(RECT rect)

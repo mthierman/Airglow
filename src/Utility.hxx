@@ -32,8 +32,6 @@ path path_settings();
 path path_bar();
 path path_json();
 path path_db();
-path path_js();
-path path_inject();
 
 string system_color(winrt::Windows::UI::ViewManagement::UIColorType);
 string system_theme();
