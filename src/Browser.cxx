@@ -773,7 +773,7 @@ void Browser::SettingsMessages(Window& window, Settings& settings,
         {
             auto s{j["homepageMain"].get<string>()};
 
-            if (s.starts_with("https://"))
+            if (s.starts_with("https://") || s.starts_with("http://"))
                 settings.homepageMain = s;
             else
                 settings.homepageMain = "https://" + s;
@@ -783,7 +783,7 @@ void Browser::SettingsMessages(Window& window, Settings& settings,
         {
             auto s{j["homepageSide"].get<string>()};
 
-            if (s.starts_with("https://"))
+            if (s.starts_with("https://") || s.starts_with("http://"))
                 settings.homepageSide = s;
             else
                 settings.homepageSide = "https://" + s;
