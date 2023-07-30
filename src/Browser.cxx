@@ -516,21 +516,21 @@ void Browser::Bounds(Window& window, Settings& settings)
 
 void Browser::Focus(Window& window, Settings& settings)
 {
-    if (!wv2main::wvController || !wv2side::wvController || !wv2settings::wvController ||
-        !wv2bar::wvController)
-        return;
+    // if (!wv2main::wvController || !wv2side::wvController || !wv2settings::wvController ||
+    //     !wv2bar::wvController)
+    //     return;
 
-    if (!settings.menu && !settings.swapped)
-        wv2main::wvController->MoveFocus(
-            COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+    // if (!settings.menu && !settings.swapped)
+    //     wv2main::wvController->MoveFocus(
+    //         COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 
-    if (!settings.menu && settings.swapped)
-        wv2side::wvController->MoveFocus(
-            COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+    // if (!settings.menu && settings.swapped)
+    //     wv2side::wvController->MoveFocus(
+    //         COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 
-    if (settings.menu)
-        wv2settings::wvController->MoveFocus(
-            COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+    // if (settings.menu)
+    //     wv2settings::wvController->MoveFocus(
+    //         COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 }
 
 void Browser::Title(Window& window, Settings& settings)

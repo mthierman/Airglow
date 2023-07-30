@@ -8,12 +8,12 @@
         @apply bg-transparent leading-none;
     }
     label {
-        @apply grid min-h-screen w-full grid-flow-col grid-cols-2 items-center truncate border-t-[1px] border-neutral-600 bg-transparent;
+        @apply grid min-h-screen w-full grid-flow-col grid-cols-2 items-center truncate border-t-[1px] border-neutral-600 bg-transparent px-2;
     }
     input {
-        @apply truncate rounded-md bg-transparent px-4 text-base outline-none;
+        @apply truncate rounded-md bg-transparent text-base outline-none;
     }
     address {
-        @apply self-start truncate bg-transparent p-1 text-end text-xs text-neutral-400;
+        @apply self-center truncate bg-transparent text-end text-xs text-neutral-400;
     }
 }
