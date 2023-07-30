@@ -868,6 +868,12 @@ void Browser::FocusBar()
         COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
 }
 
+void Browser::FocusSettings()
+{
+    wv2settings::wvController->MoveFocus(
+        COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+}
+
 void Browser::EscapeFocusBar(Settings& settings)
 {
     if (!settings.menu && !settings.swapped)

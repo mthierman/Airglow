@@ -23,6 +23,7 @@ class Browser
     void NavigateMain(Settings& settings);
     void NavigateSide(Settings& settings);
     void FocusBar();
+    void FocusSettings();
     void EscapeFocusBar(Settings& settings);
 
   private:

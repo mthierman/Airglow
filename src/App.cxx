@@ -8,7 +8,7 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
 {
     auto app{std::unique_ptr<App>(new App(hinstance, ncs))};
 
-    SetEnvironmentVariableW(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR", L"0");
+    // SetEnvironmentVariableW(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR", L"0");
 
     if (!std::filesystem::exists(app->paths.json))
         app->settings.Save();
@@ -225,6 +225,7 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
     case VK_PAUSE:
         settings.menu = bool_toggle(settings.menu);
         SendMessageW(window.hwnd, WM_NOTIFY, 0, 0);
+        browser->FocusSettings();
 
         return 0;
 
