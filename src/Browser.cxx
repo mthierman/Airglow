@@ -38,9 +38,9 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
 
                             wvBrowser = wvCore.try_query<ICoreWebView2_19>();
 
-                            wvBrowser->SetVirtualHostNameToFolderMapping(
-                                L"airglow", path_portable().wstring().c_str(),
-                                COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
+                            // wvBrowser->SetVirtualHostNameToFolderMapping(
+                            //     L"airglow", path_portable().wstring().c_str(),
+                            //     COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
 
                             wvBrowser->get_Settings(&wvSettings);
 
@@ -57,13 +57,16 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
                             wvSettings->put_AreDevToolsEnabled(true);
                             // wvBrowser->OpenDevToolsWindow();
 
-                            // wvBrowser->Navigate(L"https://localhost:8000/");
-                            wvBrowser->Navigate(
-                                L"file:///D:/GitHub/Airglow/build/Airglow/gui/index.html");
+                            wprintln(path_settings().wstring());
+                            wprintln(path_bar().wstring());
 
+                            // wvBrowser->Navigate(L"https://localhost:8000/");
+                            wvBrowser->Navigate(path_settings().wstring().c_str());
 #else
                             wvSettings->put_AreDevToolsEnabled(false);
-                            wvBrowser->Navigate(L"https://airglow/gui/index.html");
+                            // wvBrowser->Navigate(L"https://airglow/gui/index.html");
+                            wvBrowser->Navigate(
+                                L"file:///D:/GitHub/Airglow/build/Airglow/gui/index.html");
 #endif
 
                             browser->Bounds(window, settings);
@@ -154,9 +157,9 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
 
                             wvBrowser = wvCore.try_query<ICoreWebView2_19>();
 
-                            wvBrowser->SetVirtualHostNameToFolderMapping(
-                                L"airglow", path_portable().wstring().c_str(),
-                                COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
+                            // wvBrowser->SetVirtualHostNameToFolderMapping(
+                            //     L"airglow", path_portable().wstring().c_str(),
+                            //     COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_ALLOW);
 
                             wvBrowser->get_Settings(&wvSettings);
 
@@ -174,11 +177,12 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
                             // wvBrowser->OpenDevToolsWindow();
 
                             // wvBrowser->Navigate(L"https://localhost:8000/bar/");
-                            wvBrowser->Navigate(
-                                L"file:///D:/GitHub/Airglow/build/Airglow/gui/bar/index.html");
+                            wvBrowser->Navigate(path_bar().wstring().c_str());
 #else
                             wvSettings->put_AreDevToolsEnabled(false);
-                            wvBrowser->Navigate(L"https://airglow/gui/bar/index.html");
+                            // wvBrowser->Navigate(L"https://airglow/gui/bar/index.html");
+                            wvBrowser->Navigate(
+                                L"file:///D:/GitHub/Airglow/build/Airglow/gui/bar/index.html");
 #endif
 
                             browser->Bounds(window, settings);

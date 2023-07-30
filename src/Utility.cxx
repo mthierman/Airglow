@@ -110,6 +110,27 @@ path path_gui()
     return (data.wstring() + path::preferred_separator + to_wide("gui"));
 }
 
+path path_settings()
+{
+    auto data = path_portable();
+    if (!std::filesystem::exists(data))
+        return path{};
+
+    return (L"file:///" + data.wstring() + path::preferred_separator + to_wide("gui") +
+            path::preferred_separator + L"index.html");
+}
+
+path path_bar()
+{
+    auto data = path_portable();
+    if (!std::filesystem::exists(data))
+        return path{};
+
+    return (to_wide("file:///") + data.wstring() + path::preferred_separator + to_wide("gui") +
+            path::preferred_separator + to_wide("bar") + path::preferred_separator +
+            to_wide("index.html"));
+}
+
 path path_json()
 {
     auto data = path_portable();

@@ -28,6 +28,8 @@ int dberror(string);
 path path_appdata();
 path path_portable();
 path path_gui();
+path path_settings();
+path path_bar();
 path path_json();
 path path_db();
 path path_js();
