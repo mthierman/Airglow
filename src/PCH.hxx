@@ -15,6 +15,7 @@
 #include <libloaderapi.h>
 
 #include <WebView2.h>
+#include <WebView2EnvironmentOptions.h>
 
 #include <wil/cppwinrt.h>
 #include <wil/com.h>

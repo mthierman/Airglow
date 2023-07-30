@@ -8,8 +8,11 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
 
     auto hwnd{window.hwnd};
 
+    auto options{Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>()};
+    options->put_AdditionalBrowserArguments(L"--allow-file-access-from-files");
+
     auto env{CreateCoreWebView2EnvironmentWithOptions(
-        nullptr, path_portable().wstring().c_str(), nullptr,
+        nullptr, path_portable().wstring().c_str(), options.Get(),
         Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
             [&](HRESULT hr, ICoreWebView2Environment* e) -> HRESULT
             {
@@ -52,8 +55,12 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
 
 #ifdef _DEBUG
                             wvSettings->put_AreDevToolsEnabled(true);
-                            wvBrowser->Navigate(L"https://localhost:8000/");
-            // wvBrowser->OpenDevToolsWindow();
+                            // wvBrowser->OpenDevToolsWindow();
+
+                            // wvBrowser->Navigate(L"https://localhost:8000/");
+                            wvBrowser->Navigate(
+                                L"file:///D:/GitHub/Airglow/build/Airglow/gui/index.html");
+
 #else
                             wvSettings->put_AreDevToolsEnabled(false);
                             wvBrowser->Navigate(L"https://airglow/gui/index.html");
@@ -164,8 +171,11 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
 
 #ifdef _DEBUG
                             wvSettings->put_AreDevToolsEnabled(true);
-                            wvBrowser->Navigate(L"https://localhost:8000/bar/");
-            // wvBrowser->OpenDevToolsWindow();
+                            // wvBrowser->OpenDevToolsWindow();
+
+                            // wvBrowser->Navigate(L"https://localhost:8000/bar/");
+                            wvBrowser->Navigate(
+                                L"file:///D:/GitHub/Airglow/build/Airglow/gui/bar/index.html");
 #else
                             wvSettings->put_AreDevToolsEnabled(false);
                             wvBrowser->Navigate(L"https://airglow/gui/bar/index.html");
