@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 
 export default function App() {
-    // const [homepageMain, setHomepageMain] = useState("");
-    // const [homepageSide, setHomepageSide] = useState("");
     const [currentPageMain, setCurrentPageMain] = useState("");
     const [currentPageSide, setCurrentPageSide] = useState("");
     const [split, setSplit] = useState(false);
@@ -41,8 +39,6 @@ export default function App() {
                 );
             }
             if (arg.data.settings) {
-                // setHomepageMain(arg.data.settings.homepageMain);
-                // setHomepageSide(arg.data.settings.homepageSide);
                 setCurrentPageMain(arg.data.settings.currentPageMain);
                 setCurrentPageSide(arg.data.settings.currentPageSide);
                 setSplit(arg.data.settings.split);
@@ -50,18 +46,6 @@ export default function App() {
             }
         });
     }
-
-    useEffect(() => {
-        window.chrome.webview.postMessage({
-            currentPageMain: currentPageMain,
-        });
-    }, [currentPageMain]);
-
-    useEffect(() => {
-        window.chrome.webview.postMessage({
-            currentPageSide: currentPageSide,
-        });
-    }, [currentPageSide]);
 
     const handleForm = (e: any) => {
         e.preventDefault();
@@ -72,11 +56,15 @@ export default function App() {
         const data = Object.fromEntries(rawData.entries());
 
         if (data.currentPageMain.toString() != "") {
-            setCurrentPageMain(data.currentPageMain.toString());
+            window.chrome.webview.postMessage({
+                currentPageMain: data.currentPageMain,
+            });
         }
 
         if (data.currentPageSide.toString() != "") {
-            setCurrentPageSide(data.currentPageSide.toString());
+            window.chrome.webview.postMessage({
+                currentPageSide: data.currentPageSide,
+            });
         }
 
         form.reset();

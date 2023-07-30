@@ -8,6 +8,8 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
 {
     auto app{std::unique_ptr<App>(new App(hinstance, ncs))};
 
+    SetEnvironmentVariableW(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR", L"0");
+
     app->LoadSettings();
 
     app->window.icon = (HICON)LoadImageW(hinstance, to_wide("PROGRAM_ICON").c_str(), IMAGE_ICON, 0,
@@ -125,8 +127,6 @@ void App::SaveJson(json j)
 
 void App::LoadSettings()
 {
-    SetEnvironmentVariableW(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR", L"0");
-
     if (!std::filesystem::exists(paths.json))
         SaveJson(settings.Serialize());
 
@@ -199,7 +199,8 @@ int App::_OnActivate(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
     if (!settings.maximized && !settings.fullscreen)
         settings.position = window_position(hwnd);
-    SaveSettings();
+
+    SendMessageW(window.hwnd, WM_NOTIFY, 0, 0);
 
     return 0;
 }
@@ -242,7 +243,7 @@ int App::_OnExitSizeMove(HWND hwnd, WPARAM wparam, LPARAM lparam)
     if (!settings.maximized && !settings.fullscreen)
         settings.position = window_position(hwnd);
 
-    SaveSettings();
+    SendMessageW(window.hwnd, WM_NOTIFY, 0, 0);
 
     return 0;
 }
@@ -262,12 +263,7 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
     {
     case VK_PAUSE:
         settings.menu = bool_toggle(settings.menu);
-        browser->Bounds(window, settings);
-        browser->Focus(window, settings);
-        browser->Title(window, settings);
-        browser->Icon(window, settings);
-
-        SaveSettings();
+        SendMessageW(window.hwnd, WM_NOTIFY, 0, 0);
 
         return 0;
 
@@ -279,60 +275,39 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
     case VK_F1:
         settings.swapped = bool_toggle(settings.swapped);
-        browser->Bounds(window, settings);
-        browser->Focus(window, settings);
-        browser->Title(window, settings);
-        browser->Icon(window, settings);
-
-        SaveSettings();
-
-        browser->PostSettings(settings.Serialize());
+        SendMessageW(window.hwnd, WM_NOTIFY, 0, 0);
 
         return 0;
 
     case VK_F2:
         settings.split = bool_toggle(settings.split);
-        browser->Bounds(window, settings);
-        browser->Focus(window, settings);
-        browser->Title(window, settings);
-        browser->Icon(window, settings);
-
-        SaveSettings();
-
-        browser->PostSettings(settings.Serialize());
+        SendMessageW(window.hwnd, WM_NOTIFY, 0, 0);
 
         return 0;
 
     case VK_F3:
-        if (GetKeyState(VK_MENU) & 0x8000)
-        {
-            SendMessageW(hwnd, WM_CLOSE, 0, 0);
-
-            SaveSettings();
-        }
-
-        else
-        {
-            settings.horizontal = bool_toggle(settings.horizontal);
-            browser->Bounds(window, settings);
-
-            SaveSettings();
-        }
+        settings.horizontal = bool_toggle(settings.horizontal);
+        SendMessageW(window.hwnd, WM_NOTIFY, 0, 0);
 
         return 0;
 
     case VK_F4:
-        settings.topmost = window_topmost(hwnd);
-        browser->Title(window, settings);
+        if (GetKeyState(VK_MENU) & 0x8000)
+        {
+            SendMessageW(hwnd, WM_CLOSE, 0, 0);
+        }
 
-        SaveSettings();
+        else
+        {
+            settings.topmost = window_topmost(hwnd);
+            SendMessageW(window.hwnd, WM_NOTIFY, 0, 0);
+        }
 
         return 0;
 
     case VK_F6:
         settings.maximized = window_maximize(hwnd);
-
-        SaveSettings();
+        SendMessageW(window.hwnd, WM_NOTIFY, 0, 0);
 
         return 0;
 
@@ -343,9 +318,7 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
     case VK_F11:
         settings.fullscreen = window_fullscreen(hwnd);
-        browser->Icon(window, settings);
-
-        SaveSettings();
+        SendMessageW(window.hwnd, WM_NOTIFY, 0, 0);
 
         return 0;
     }
@@ -355,6 +328,16 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
 int App::_OnNotify(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
+    println("OnNotify");
+
+    browser->PostSettings(settings.Serialize());
+    browser->PostSettings(colors.Serialize());
+
+    browser->Bounds(window, settings);
+    browser->Focus(window, settings);
+    browser->Title(window, settings);
+    browser->Icon(window, settings);
+
     SaveSettings();
 
     return 0;
@@ -371,10 +354,7 @@ int App::_OnSettingChange(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
     settings.theme = window_theme(hwnd);
     colors = Colors{};
-    browser->PostSettings(settings.Serialize());
-    browser->PostSettings(colors.Serialize());
-
-    SaveSettings();
+    SendMessageW(window.hwnd, WM_NOTIFY, 0, 0);
 
     return 0;
 }

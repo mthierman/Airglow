@@ -16,7 +16,6 @@ export default function App() {
     const [homepageSide, setHomepageSide] = useState("");
     const [theme, setTheme] = useState("");
     const [themeIcon, setThemeIcon] = useState("");
-    // const [position, setPosition] = useState("");
 
     if (window.chrome.webview) {
         window.chrome.webview.addEventListener("message", (arg: any) => {
@@ -54,22 +53,9 @@ export default function App() {
                 setHomepageMain(arg.data.settings.homepageMain);
                 setHomepageSide(arg.data.settings.homepageSide);
                 setTheme(arg.data.settings.theme);
-                // setPosition(arg.data.settings.position);
             }
         });
     }
-
-    useEffect(() => {
-        window.chrome.webview.postMessage({
-            homepageMain: homepageMain,
-        });
-    }, [homepageMain]);
-
-    useEffect(() => {
-        window.chrome.webview.postMessage({
-            homepageSide: homepageSide,
-        });
-    }, [homepageSide]);
 
     useEffect(() => {
         if (theme) {
@@ -93,11 +79,15 @@ export default function App() {
         const data = Object.fromEntries(rawData.entries());
 
         if (data.homepageMain.toString() != "") {
-            setHomepageMain(data.homepageMain.toString());
+            window.chrome.webview.postMessage({
+                homepageMain: data.homepageMain,
+            });
         }
 
         if (data.homepageSide.toString() != "") {
-            setHomepageSide(data.homepageSide.toString());
+            window.chrome.webview.postMessage({
+                homepageSide: data.homepageSide,
+            });
         }
 
         form.reset();
@@ -154,11 +144,6 @@ export default function App() {
                             <div className="capitalize">
                                 {themeIcon} {theme} mode
                             </div>
-                            {/* <div>
-                                {position[2]} x {position[3]} - x: {position[0]}{" "}
-                                y: {position[1]}
-                            </div> */}
-                            <div></div>
                         </div>
                     </div>
 
