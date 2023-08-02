@@ -8,7 +8,7 @@ struct Window
 {
     HWND hwnd;
     wstring name{to_wide(APP_NAME)};
-    wstring version{to_wide(APP_NAME)};
+    wstring version{to_wide(APP_VERSION)};
     HBRUSH darkBrush{(HBRUSH)GetStockObject(BLACK_BRUSH)};
     HBRUSH lightBrush{(HBRUSH)GetStockObject(WHITE_BRUSH)};
     HCURSOR cursor{(HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED)};

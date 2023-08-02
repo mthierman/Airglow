@@ -9,6 +9,8 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
     auto app{std::unique_ptr<App>(new App(hinstance, ncs))};
 
     // SetEnvironmentVariableW(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR", L"0");
+    // SetEnvironmentVariableW(L"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
+    // L"--allow-file-access-from-files");
 
     if (!std::filesystem::exists(app->paths.json))
         app->settings.Save();

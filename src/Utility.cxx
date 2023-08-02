@@ -98,7 +98,7 @@ path path_portable()
 
     path exe = wpgmptr;
 
-    return std::filesystem::canonical(path(wpgmptr).remove_filename());
+    return std::filesystem::canonical(exe.remove_filename());
 }
 
 path path_gui()

@@ -94,19 +94,19 @@ export default function App() {
                 autoComplete="off"
                 spellCheck="false">
                 <label className={mainLabelStyle}>
-                    <address>{currentPageMain}</address>
                     <input
                         type="text"
                         name="currentPageMain"
                         id="currentPageMain"></input>
+                    <address>{currentPageMain}</address>
                 </label>
 
                 <label className={sideLabelStyle}>
-                    <address>{currentPageSide}</address>
                     <input
                         type="text"
                         name="currentPageSide"
                         id="currentPageSide"></input>
+                    <address>{currentPageSide}</address>
                 </label>
 
                 <input type="submit" hidden />

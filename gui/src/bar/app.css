@@ -5,7 +5,7 @@
 @layer base {
     html,
     body {
-        @apply h-full;
+        @apply h-full overflow-x-hidden overflow-y-auto;
     }
     #root {
         @apply grid min-h-full;
@@ -17,9 +17,9 @@
         @apply flex h-full w-full flex-grow flex-col;
     }
     input {
-        @apply flex-grow bg-transparent px-2 text-xl outline-none;
+        @apply flex-grow bg-transparent px-2 outline-none;
     }
     address {
-        @apply px-2 text-sm text-neutral-400;
+        @apply px-2 text-sm text-neutral-400 truncate;
     }
 }
