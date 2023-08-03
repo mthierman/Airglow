@@ -2,24 +2,51 @@
 
 namespace Utility
 {
-string to_string(wstring in)
+std::string to_string(std::wstring in)
 {
-    int size = WideCharToMultiByte(CP_UTF8, 0, in.c_str(), in.size(), nullptr, 0, nullptr, nullptr);
-    string out{};
-    out.resize(size);
-    WideCharToMultiByte(CP_UTF8, 0, in.c_str(), in.size(), out.data(), size, nullptr, nullptr);
+    if (!in.empty())
+    {
+        auto inSize{static_cast<int>(in.size())};
 
-    return out;
+        auto outSize{WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS,
+                                         in.data(), inSize, nullptr, 0, nullptr, nullptr)};
+
+        if (outSize > 0)
+        {
+            std::string out;
+            out.resize(static_cast<size_t>(outSize));
+
+            if (WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS, in.data(),
+                                    inSize, out.data(), outSize, nullptr, nullptr) > 0)
+                return out;
+        }
+    }
+
+    return {};
 }
 
-wstring to_wide(string in)
+std::wstring to_wide(std::string in)
 {
-    int size = MultiByteToWideChar(CP_UTF8, 0, in.c_str(), in.size(), nullptr, 0);
-    wstring out{};
-    out.resize(size);
-    MultiByteToWideChar(CP_UTF8, 0, in.c_str(), in.size(), out.data(), size);
 
-    return out;
+    if (!in.empty())
+    {
+        auto inSize{static_cast<int>(in.size())};
+
+        auto outSize{
+            MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, in.data(), inSize, nullptr, 0)};
+
+        if (outSize > 0)
+        {
+            std::wstring out;
+            out.resize(static_cast<size_t>(outSize));
+
+            if (MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, in.data(), inSize, out.data(),
+                                    outSize) > 0)
+                return out;
+        }
+    }
+
+    return {};
 }
 
 string bool_to_string(bool in) { return in ? string("true") : string("false"); }
