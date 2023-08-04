@@ -128,6 +128,12 @@ target_compile_definitions(
     NLOHMANN_JSON_NAMESPACE_NO_VERSION=1
 )
 
+target_compile_options(
+    ${APP_NAME}
+    PRIVATE
+    /Zc:__cplusplus
+)
+
 target_precompile_headers(
     ${APP_NAME}
     PRIVATE
