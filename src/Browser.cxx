@@ -4,6 +4,10 @@ Browser::Browser(Window& window, Settings& settings, Colors& colors) {}
 
 std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Colors& colors)
 {
+    // SetEnvironmentVariableW(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR", L"0");
+    // SetEnvironmentVariableW(L"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
+    // L"--allow-file-access-from-files");
+
     auto browser{std::unique_ptr<Browser>(new Browser(window, settings, colors))};
 
     auto hwnd{window.hwnd};
@@ -37,8 +41,8 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
                                 wvController =
                                     wvCoreController.try_query<ICoreWebView2Controller4>();
 
-                                COREWEBVIEW2_COLOR color{0, 0, 0, 0};
-                                wvController->put_DefaultBackgroundColor(color);
+                                // COREWEBVIEW2_COLOR color{0, 0, 0, 0};
+                                // wvController->put_DefaultBackgroundColor(color);
 
                                 wvController->get_CoreWebView2(&wvCore);
                             }
@@ -152,8 +156,8 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
                                 wvController =
                                     wvCoreController.try_query<ICoreWebView2Controller4>();
 
-                                COREWEBVIEW2_COLOR color{0, 0, 0, 0};
-                                wvController->put_DefaultBackgroundColor(color);
+                                // COREWEBVIEW2_COLOR color{0, 0, 0, 0};
+                                // wvController->put_DefaultBackgroundColor(color);
 
                                 wvController->get_CoreWebView2(&wvCore);
                             }

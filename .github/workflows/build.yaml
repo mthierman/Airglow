@@ -51,15 +51,11 @@ jobs:
           $commit = git rev-parse --short HEAD
 
           if ("${{ github.ref_name }}" -eq "main") {
-            gh release delete stable -y
-            git tag -f stable $commit
-            git push --tags --force
-            gh release create stable $zip $installer -F $notes -t "Airglow $version"
+            gh release delete $version -y
+            gh release create $version $zip $installer -F $notes -t "Airglow $version"
           }
 
           if ("${{ github.ref_name }}" -eq "dev") {
-            gh release delete nightly -y
-            git tag -f nightly $commit
-            git push --tags --force
-            gh release create nightly $zip -F $notes -t "Airglow Nightly" -p
+            gh release delete $version -y
+            gh release create $version $zip -F $notes -t "Airglow Nightly ($commit)" -p
           }
