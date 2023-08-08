@@ -11,6 +11,7 @@ include(FetchContent)
 option(ENV_LIBS OFF)
 option(EXPERIMENTAL_LIBS OFF)
 option(INSTALL OFF)
+option(CREATE_SYMLINKS OFF)
 
 project(
     ${APP_NAME}
@@ -18,10 +19,8 @@ project(
     LANGUAGES C CXX ASM
 )
 
-message(STATUS "")
 math(EXPR BITNESS "${CMAKE_SIZEOF_VOID_P} * 8" OUTPUT_FORMAT DECIMAL)
 message(STATUS "${APP_NAME} v${APP_VERSION} (${BITNESS}-bit) [${CMAKE_BUILD_TYPE}]")
-message(STATUS "")
 file(WRITE "${CMAKE_BINARY_DIR}/app_version.txt" "v${APP_VERSION}")
 execute_process(
     COMMAND
@@ -43,7 +42,6 @@ set(WIL_VERSION "1.0.230629.1")
 if(ENV_LIBS)
     file(TO_CMAKE_PATH "$ENV{LIBRARIES}/${WEBVIEW}.${WEBVIEW_VERSION}" WEBVIEW_PKG)
     file(TO_CMAKE_PATH "$ENV{LIBRARIES}/${WIL}.${WIL_VERSION}" WIL_PKG)
-    file(TO_CMAKE_PATH "$ENV{LIBRARIES}/choc" CHOC_PKG)
     file(TO_CMAKE_PATH "$ENV{LIBRARIES}/nlohmann/json/single_include" JSON_PKG)
     file(TO_CMAKE_PATH "$ENV{LIBRARIES}/sqlite-amalgamation-3420000" SQLITE_PKG)
     file(TO_CMAKE_PATH "$ENV{LIBRARIES}/curl" CURL_PKG)
@@ -59,13 +57,6 @@ else()
         nuget install "${WIL}" -Version "${WIL_VERSION}" -OutputDirectory "${CMAKE_BINARY_DIR}/_deps"
     )
     file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/_deps/${WIL}.${WIL_VERSION}" WIL_PKG)
-
-    FetchContent_Declare(
-        choc
-        URL https://github.com/Tracktion/choc/archive/refs/heads/main.zip
-    )
-    FetchContent_Populate(choc)
-    file(TO_CMAKE_PATH "${choc_SOURCE_DIR}" CHOC_PKG)
 
     FetchContent_Declare(
         json
@@ -89,13 +80,11 @@ else()
     file(TO_CMAKE_PATH "${curl_SOURCE_DIR}" CURL_PKG)
 endif()
 
-message(STATUS "Libraries found:\n")
-message(STATUS "${WEBVIEW}.${WEBVIEW_VERSION}: ${WEBVIEW_PKG}\n")
-message(STATUS "${WIL}.${WIL_VERSION}: ${WIL_PKG}\n")
-message(STATUS "choc: ${CHOC_PKG}\n")
-message(STATUS "nlohmann/json: ${JSON_PKG}\n")
-message(STATUS "SQLite3: ${SQLITE_PKG}\n")
-message(STATUS "curl: ${CURL_PKG}\n")
+message(STATUS "WebView2 ${WEBVIEW_PKG}")
+message(STATUS "WIL ${WIL_PKG}")
+message(STATUS "json ${JSON_PKG}")
+message(STATUS "SQLite3 ${SQLITE_PKG}")
+message(STATUS "curl ${CURL_PKG}")
 
 add_library(sqlite "${SQLITE_PKG}/sqlite3.c" "${SQLITE_PKG}/sqlite3.h")
 set_target_properties(sqlite PROPERTIES LINKER_LANGUAGE C)
@@ -128,11 +117,13 @@ target_compile_definitions(
     NLOHMANN_JSON_NAMESPACE_NO_VERSION=1
 )
 
-target_compile_options(
-    ${APP_NAME}
-    PRIVATE
-    /Zc:__cplusplus
-)
+if(MSVC)
+    target_compile_options(
+        ${APP_NAME}
+        PRIVATE
+        /Zc:__cplusplus
+    )
+endif()
 
 target_precompile_headers(
     ${APP_NAME}
@@ -145,15 +136,6 @@ target_include_directories(
     PRIVATE
     "${WEBVIEW_PKG}/build/native/include"
     "${WIL_PKG}/include"
-    "${CHOC_PKG}/audio"
-    "${CHOC_PKG}/containers"
-    "${CHOC_PKG}/gui"
-    "${CHOC_PKG}/javascript"
-    "${CHOC_PKG}/math"
-    "${CHOC_PKG}/memory"
-    "${CHOC_PKG}/platform"
-    "${CHOC_PKG}/text"
-    "${CHOC_PKG}/threading"
     "${JSON_PKG}"
     "${SQLITE_PKG}"
     "${CURL_PKG}/include/curl"
@@ -172,9 +154,9 @@ target_link_libraries(
     dwmapi.lib
     gdiplus.lib
     Uxtheme.lib
-    Urlmon.lib
+    Urlmon.Lib
     Kernel32.lib
-    User32.lib
+    User32.Lib
     sqlite
 )
 
@@ -194,5 +176,12 @@ if(INSTALL)
     add_custom_command(
         TARGET ${APP_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_BINARY_DIR}/${APP_NAME}" "$ENV{LocalAppData}/${APP_NAME}"
+    )
+endif()
+
+if(CREATE_SYMLINKS)
+    add_custom_command(
+        TARGET ${APP_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E create_symlink "${CMAKE_BINARY_DIR}/${APP_NAME}" "$ENV{LocalAppData}/${APP_NAME}"
     )
 endif()
