@@ -7,6 +7,7 @@
 #include <memory>
 #include <sstream>
 #include <ios>
+#include <print>
 
 #include <dwmapi.h>
 #include <gdiplus.h>

@@ -8,8 +8,6 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
 {
     auto app{std::unique_ptr<App>(new App(hinstance, ncs))};
 
-
-
     if (!std::filesystem::exists(app->paths.json))
         app->settings.Save();
 
