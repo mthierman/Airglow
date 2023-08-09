@@ -1,12 +1,9 @@
 #pragma once
 
 #include <filesystem>
-#include <format>
 #include <fstream>
 #include <iostream>
 #include <memory>
-#include <sstream>
-#include <ios>
 #include <print>
 
 #include <dwmapi.h>
@@ -16,7 +13,6 @@
 #include <libloaderapi.h>
 
 #include <WebView2.h>
-#include <WebView2EnvironmentOptions.h>
 
 #include <wil/cppwinrt.h>
 #include <wil/com.h>
@@ -28,7 +24,5 @@
 #include <winrt/windows.ui.viewmanagement.h>
 
 #include <nlohmann/json.hpp>
-
 #include <sqlite3.h>
-
 #include <curl.h>

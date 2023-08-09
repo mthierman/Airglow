@@ -14,10 +14,6 @@ class App
     static std::unique_ptr<App> Create(HINSTANCE, int);
     ~App();
 
-  private:
-    App(HINSTANCE, int);
-    void Show();
-
     std::unique_ptr<Browser> browser{nullptr};
     unsigned long long gdiplusToken{};
     GdiplusStartupInput gdiplusStartupInput{};
@@ -25,6 +21,10 @@ class App
     Settings settings{};
     Paths paths{};
     Colors colors{};
+
+  private:
+    App(HINSTANCE, int);
+    void Show();
 
     static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
     int _OnActivate(HWND, WPARAM, LPARAM);

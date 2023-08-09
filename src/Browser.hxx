@@ -7,6 +7,15 @@ using namespace Utility;
 using namespace Gdiplus;
 using namespace Microsoft::WRL;
 
+struct WebView2
+{
+    winrt::com_ptr<ICoreWebView2Controller> wvCoreController;
+    winrt::com_ptr<ICoreWebView2Controller4> wvController;
+    winrt::com_ptr<ICoreWebView2> wvCore;
+    winrt::com_ptr<ICoreWebView2_19> wvBrowser;
+    winrt::com_ptr<ICoreWebView2Settings> wvSettings;
+};
+
 class Browser
 {
   public:
@@ -32,36 +41,36 @@ class Browser
 
 namespace wv2main
 {
-static wil::com_ptr<ICoreWebView2Controller> wvCoreController;
-static wil::com_ptr<ICoreWebView2Controller4> wvController;
-static wil::com_ptr<ICoreWebView2> wvCore;
-static wil::com_ptr<ICoreWebView2_19> wvBrowser;
-static wil::com_ptr<ICoreWebView2Settings> wvSettings;
+static winrt::com_ptr<ICoreWebView2Controller> wvCoreController;
+static winrt::com_ptr<ICoreWebView2Controller4> wvController;
+static winrt::com_ptr<ICoreWebView2> wvCore;
+static winrt::com_ptr<ICoreWebView2_19> wvBrowser;
+static winrt::com_ptr<ICoreWebView2Settings> wvSettings;
 } // namespace wv2main
 
 namespace wv2side
 {
-static wil::com_ptr<ICoreWebView2Controller> wvCoreController;
-static wil::com_ptr<ICoreWebView2Controller4> wvController;
-static wil::com_ptr<ICoreWebView2> wvCore;
-static wil::com_ptr<ICoreWebView2_19> wvBrowser;
-static wil::com_ptr<ICoreWebView2Settings> wvSettings;
+static winrt::com_ptr<ICoreWebView2Controller> wvCoreController;
+static winrt::com_ptr<ICoreWebView2Controller4> wvController;
+static winrt::com_ptr<ICoreWebView2> wvCore;
+static winrt::com_ptr<ICoreWebView2_19> wvBrowser;
+static winrt::com_ptr<ICoreWebView2Settings> wvSettings;
 } // namespace wv2side
 
 namespace wv2settings
 {
-static wil::com_ptr<ICoreWebView2Controller> wvCoreController;
-static wil::com_ptr<ICoreWebView2Controller4> wvController;
-static wil::com_ptr<ICoreWebView2> wvCore;
-static wil::com_ptr<ICoreWebView2_19> wvBrowser;
-static wil::com_ptr<ICoreWebView2Settings> wvSettings;
+static winrt::com_ptr<ICoreWebView2Controller> wvCoreController;
+static winrt::com_ptr<ICoreWebView2Controller4> wvController;
+static winrt::com_ptr<ICoreWebView2> wvCore;
+static winrt::com_ptr<ICoreWebView2_19> wvBrowser;
+static winrt::com_ptr<ICoreWebView2Settings> wvSettings;
 } // namespace wv2settings
 
 namespace wv2bar
 {
-static wil::com_ptr<ICoreWebView2Controller> wvCoreController;
-static wil::com_ptr<ICoreWebView2Controller4> wvController;
-static wil::com_ptr<ICoreWebView2> wvCore;
-static wil::com_ptr<ICoreWebView2_19> wvBrowser;
-static wil::com_ptr<ICoreWebView2Settings> wvSettings;
+static winrt::com_ptr<ICoreWebView2Controller> wvCoreController;
+static winrt::com_ptr<ICoreWebView2Controller4> wvController;
+static winrt::com_ptr<ICoreWebView2> wvCore;
+static winrt::com_ptr<ICoreWebView2_19> wvBrowser;
+static winrt::com_ptr<ICoreWebView2Settings> wvSettings;
 } // namespace wv2bar

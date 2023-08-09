@@ -8,6 +8,21 @@ std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
 {
     auto app{std::unique_ptr<App>(new App(hinstance, ncs))};
 
+#ifdef _DEBUG
+    AllocConsole();
+    app->window.hwndDebug = GetConsoleWindow();
+    SetConsoleTitleW(L"Debug");
+    window_mica(app->window.hwndDebug);
+    window_topmost(app->window.hwndDebug);
+    freopen_s(&app->window.dummyFile, "CONOUT$", "w", stdout);
+    freopen_s(&app->window.dummyFile, "CONOUT$", "w", stderr);
+    freopen_s(&app->window.dummyFile, "CONIN$", "r", stdin);
+    std::cout.clear();
+    std::clog.clear();
+    std::cerr.clear();
+    std::cin.clear();
+#endif
+
     if (!std::filesystem::exists(app->paths.json))
         app->settings.Save();
 
@@ -167,6 +182,11 @@ int App::_OnActivate(HWND hwnd, WPARAM wparam, LPARAM lparam)
 int App::_OnClose(HWND hwnd, WPARAM wparam, LPARAM lparam)
 {
     settings.Save();
+
+#ifdef _DEBUG
+    fclose(window.dummyFile);
+    FreeConsole();
+#endif
 
     DestroyWindow(hwnd);
 

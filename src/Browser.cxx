@@ -5,18 +5,15 @@ Browser::Browser(Window& window, Settings& settings, Colors& colors) {}
 std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Colors& colors)
 {
     // SetEnvironmentVariableW(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR", L"0");
-    // SetEnvironmentVariableW(L"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
-    // L"--allow-file-access-from-files");
+    SetEnvironmentVariableW(L"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
+                            L"--allow-file-access-from-files");
 
     auto browser{std::unique_ptr<Browser>(new Browser(window, settings, colors))};
 
     auto hwnd{window.hwnd};
 
-    auto options{Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>()};
-    options->put_AdditionalBrowserArguments(L"--allow-file-access-from-files");
-
     auto env{CreateCoreWebView2EnvironmentWithOptions(
-        nullptr, path_portable().wstring().c_str(), options.Get(),
+        nullptr, path_portable().wstring().c_str(), nullptr,
         Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
             [&](HRESULT hr, ICoreWebView2Environment* e) -> HRESULT
             {
@@ -36,20 +33,19 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
 
                             if (c)
                             {
-                                wvCoreController = c;
+                                wvCoreController.attach(c);
 
-                                wvController =
-                                    wvCoreController.try_query<ICoreWebView2Controller4>();
+                                wvController = wvCoreController.as<ICoreWebView2Controller4>();
 
                                 // COREWEBVIEW2_COLOR color{0, 0, 0, 0};
                                 // wvController->put_DefaultBackgroundColor(color);
 
-                                wvController->get_CoreWebView2(&wvCore);
+                                wvController->get_CoreWebView2(wvCore.put());
                             }
 
-                            wvBrowser = wvCore.try_query<ICoreWebView2_19>();
+                            wvBrowser = wvCore.as<ICoreWebView2_19>();
 
-                            wvBrowser->get_Settings(&wvSettings);
+                            wvBrowser->get_Settings(wvSettings.put());
 
                             wvSettings->put_AreDefaultContextMenusEnabled(true);
                             wvSettings->put_AreDefaultScriptDialogsEnabled(true);
@@ -151,20 +147,19 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
 
                             if (c)
                             {
-                                wvCoreController = c;
+                                wvCoreController.attach(c);
 
-                                wvController =
-                                    wvCoreController.try_query<ICoreWebView2Controller4>();
+                                wvController = wvCoreController.as<ICoreWebView2Controller4>();
 
                                 // COREWEBVIEW2_COLOR color{0, 0, 0, 0};
                                 // wvController->put_DefaultBackgroundColor(color);
 
-                                wvController->get_CoreWebView2(&wvCore);
+                                wvController->get_CoreWebView2(wvCore.put());
                             }
 
-                            wvBrowser = wvCore.try_query<ICoreWebView2_19>();
+                            wvBrowser = wvCore.as<ICoreWebView2_19>();
 
-                            wvBrowser->get_Settings(&wvSettings);
+                            wvBrowser->get_Settings(wvSettings.put());
 
                             wvSettings->put_AreDefaultContextMenusEnabled(true);
                             wvSettings->put_AreDefaultScriptDialogsEnabled(true);
@@ -264,20 +259,20 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
 
                                   if (c)
                                   {
-                                      wvCoreController = c;
+                                      wvCoreController.attach(c);
 
                                       wvController =
-                                          wvCoreController.try_query<ICoreWebView2Controller4>();
+                                          wvCoreController.as<ICoreWebView2Controller4>();
 
-                                      //   COREWEBVIEW2_COLOR color{0, 0, 0, 0};
-                                      //   wvController->put_DefaultBackgroundColor(color);
+                                      // COREWEBVIEW2_COLOR color{0, 0, 0, 0};
+                                      // wvController->put_DefaultBackgroundColor(color);
 
-                                      wvController->get_CoreWebView2(&wvCore);
+                                      wvController->get_CoreWebView2(wvCore.put());
                                   }
 
-                                  wvBrowser = wvCore.try_query<ICoreWebView2_19>();
+                                  wvBrowser = wvCore.as<ICoreWebView2_19>();
 
-                                  wvBrowser->get_Settings(&wvSettings);
+                                  wvBrowser->get_Settings(wvSettings.put());
 
                                   wvSettings->put_AreDefaultContextMenusEnabled(true);
                                   wvSettings->put_AreDefaultScriptDialogsEnabled(true);
@@ -363,20 +358,20 @@ std::unique_ptr<Browser> Browser::Create(Window& window, Settings& settings, Col
 
                                   if (c)
                                   {
-                                      wvCoreController = c;
+                                      wvCoreController.attach(c);
 
                                       wvController =
-                                          wvCoreController.try_query<ICoreWebView2Controller4>();
+                                          wvCoreController.as<ICoreWebView2Controller4>();
 
-                                      //   COREWEBVIEW2_COLOR color{0, 0, 0, 0};
-                                      //   wvController->put_DefaultBackgroundColor(color);
+                                      // COREWEBVIEW2_COLOR color{0, 0, 0, 0};
+                                      // wvController->put_DefaultBackgroundColor(color);
 
-                                      wvController->get_CoreWebView2(&wvCore);
+                                      wvController->get_CoreWebView2(wvCore.put());
                                   }
 
-                                  wvBrowser = wvCore.try_query<ICoreWebView2_19>();
+                                  wvBrowser = wvCore.as<ICoreWebView2_19>();
 
-                                  wvBrowser->get_Settings(&wvSettings);
+                                  wvBrowser->get_Settings(wvSettings.put());
 
                                   wvSettings->put_AreDefaultContextMenusEnabled(true);
                                   wvSettings->put_AreDefaultScriptDialogsEnabled(true);

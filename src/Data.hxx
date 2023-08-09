@@ -6,7 +6,9 @@ using namespace Utility;
 
 struct Window
 {
-    HWND hwnd;
+    HWND hwnd{};
+    HWND hwndDebug{};
+    FILE* dummyFile{};
     wstring name{to_wide(APP_NAME)};
     wstring version{to_wide(APP_VERSION)};
     HBRUSH darkBrush{(HBRUSH)GetStockObject(BLACK_BRUSH)};
