@@ -34,10 +34,10 @@ if(EXPERIMENTAL_LIBS)
 else()
     set(WEBVIEW "Microsoft.Web.WebView2")
     set(WEBVIEW_VERSION "1.0.1901.177")
-endif()
 
-set(WIL "Microsoft.Windows.ImplementationLibrary")
-set(WIL_VERSION "1.0.230629.1")
+    set(WIL "Microsoft.Windows.ImplementationLibrary")
+    set(WIL_VERSION "1.0.230629.1")
+endif()
 
 if(ENV_LIBS)
     file(TO_CMAKE_PATH "$ENV{LIBRARIES}/${WEBVIEW}.${WEBVIEW_VERSION}" WEBVIEW_PKG)
@@ -80,14 +80,14 @@ else()
     file(TO_CMAKE_PATH "${curl_SOURCE_DIR}" CURL_PKG)
 endif()
 
+add_library(sqlite "${SQLITE_PKG}/sqlite3.c" "${SQLITE_PKG}/sqlite3.h")
+set_target_properties(sqlite PROPERTIES LINKER_LANGUAGE C)
+
 message(STATUS "WebView2 ${WEBVIEW_PKG}")
 message(STATUS "WIL ${WIL_PKG}")
 message(STATUS "json ${JSON_PKG}")
 message(STATUS "SQLite3 ${SQLITE_PKG}")
 message(STATUS "curl ${CURL_PKG}")
-
-add_library(sqlite "${SQLITE_PKG}/sqlite3.c" "${SQLITE_PKG}/sqlite3.h")
-set_target_properties(sqlite PROPERTIES LINKER_LANGUAGE C)
 
 file(GLOB SOURCES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/src/*.cxx")
 file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/res$<$<CONFIG:Debug>:_debug>$<$<CONFIG:Release>:_release>.rc" RC_FILE)
@@ -107,9 +107,7 @@ add_executable(
     "${CMAKE_SOURCE_DIR}/src/console/Main.cxx"
 )
 
-target_compile_definitions(
-    ${APP_NAME}
-    PRIVATE
+add_compile_definitions(
     UNICODE
     APP_NAME="${APP_NAME}"
     APP_NAME_CONSOLE="${APP_NAME_CONSOLE}"
@@ -118,9 +116,7 @@ target_compile_definitions(
 )
 
 if(MSVC)
-    target_compile_options(
-        ${APP_NAME}
-        PRIVATE
+    add_compile_options(
         /Zc:__cplusplus
     )
 endif()
@@ -129,6 +125,12 @@ target_precompile_headers(
     ${APP_NAME}
     PRIVATE
     "${PCH_FILE}"
+)
+
+target_precompile_headers(
+    ${APP_NAME_CONSOLE}
+    REUSE_FROM
+    ${APP_NAME}
 )
 
 target_include_directories(
@@ -141,13 +143,12 @@ target_include_directories(
     "${CURL_PKG}/include/curl"
 )
 
-target_link_directories(
-    ${APP_NAME}
-    PRIVATE
+link_directories(
+    BEFORE
     "${WEBVIEW_PKG}/build/native/x64"
 )
 
-target_link_libraries(
+link_libraries(
     ${APP_NAME}
     PRIVATE
     WebView2LoaderStatic.lib
