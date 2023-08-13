@@ -4,7 +4,6 @@
 #include <fstream>
 #include <iostream>
 #include <memory>
-#include <print>
 
 #include <dwmapi.h>
 #include <gdiplus.h>

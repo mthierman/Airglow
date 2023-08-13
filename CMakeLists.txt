@@ -34,10 +34,10 @@ if(EXPERIMENTAL_LIBS)
 else()
     set(WEBVIEW "Microsoft.Web.WebView2")
     set(WEBVIEW_VERSION "1.0.1901.177")
-
-    set(WIL "Microsoft.Windows.ImplementationLibrary")
-    set(WIL_VERSION "1.0.230629.1")
 endif()
+
+set(WIL "Microsoft.Windows.ImplementationLibrary")
+set(WIL_VERSION "1.0.230629.1")
 
 if(ENV_LIBS)
     file(TO_CMAKE_PATH "$ENV{LIBRARIES}/${WEBVIEW}.${WEBVIEW_VERSION}" WEBVIEW_PKG)
@@ -143,12 +143,13 @@ target_include_directories(
     "${CURL_PKG}/include/curl"
 )
 
-link_directories(
-    BEFORE
+target_link_directories(
+    ${APP_NAME}
+    PRIVATE
     "${WEBVIEW_PKG}/build/native/x64"
 )
 
-link_libraries(
+target_link_libraries(
     ${APP_NAME}
     PRIVATE
     WebView2LoaderStatic.lib
