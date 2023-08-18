@@ -461,6 +461,13 @@ RECT bounds(HWND hwnd)
     return bounds;
 }
 
+winrt::Windows::Foundation::Rect panel_bar(RECT bounds)
+{
+    return winrt::Windows::Foundation::Rect{
+        static_cast<float>(bounds.left), static_cast<float>(bounds.bottom - 50),
+        static_cast<float>(bounds.right - bounds.left), static_cast<float>(50)};
+}
+
 winrt::Windows::Foundation::Rect panel_full(RECT bounds)
 {
     return winrt::Windows::Foundation::Rect{static_cast<float>(bounds.left),

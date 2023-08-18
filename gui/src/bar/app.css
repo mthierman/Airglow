@@ -5,7 +5,7 @@
 @layer base {
     html,
     body {
-        @apply h-full overflow-x-hidden overflow-y-auto;
+        @apply h-full overflow-x-hidden overflow-y-auto bg-red-400;
     }
     #root {
         @apply grid min-h-full;

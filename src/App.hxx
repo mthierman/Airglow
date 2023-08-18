@@ -21,6 +21,7 @@ class App
     int wm_activate(HWND, UINT, WPARAM, LPARAM);
     int wm_close(HWND, UINT, WPARAM, LPARAM);
     int wm_destroy(HWND, UINT, WPARAM, LPARAM);
+    int wm_dpichanged(HWND, UINT, WPARAM, LPARAM);
     int wm_erasebkgnd(HWND, UINT, WPARAM, LPARAM);
     int wm_exitsizemove(HWND, UINT, WPARAM, LPARAM);
     int wm_getminmaxinfo(HWND, UINT, WPARAM, LPARAM);
@@ -34,6 +35,7 @@ class App
     HWND appHwnd{nullptr};
 
     std::unique_ptr<WebView> webviewGui;
+    std::unique_ptr<WebView> webviewBar;
     std::unique_ptr<WebView> webviewMain;
     std::unique_ptr<WebView> webviewSide;
 };

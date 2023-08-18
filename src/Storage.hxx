@@ -12,6 +12,7 @@ struct Application
     HBRUSH darkBrush{(HBRUSH)GetStockObject(BLACK_BRUSH)};
     HBRUSH lightBrush{(HBRUSH)GetStockObject(WHITE_BRUSH)};
     HBRUSH nullBrush{(HBRUSH)GetStockObject(NULL_BRUSH)};
+    float scale{1};
 };
 
 struct Settings

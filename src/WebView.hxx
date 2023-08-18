@@ -33,6 +33,7 @@ class WebView
 
   private:
     void gui_web_message_received(winrt::CoreWebView2WebMessageReceivedEventArgs const&);
+    void bar_web_message_received(winrt::CoreWebView2WebMessageReceivedEventArgs const&);
     void accelerator_key_pressed(winrt::CoreWebView2AcceleratorKeyPressedEventArgs const&);
 
     Storage* storage;

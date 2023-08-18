@@ -5,18 +5,21 @@ App::App(Storage* s, HINSTANCE hInstance, PWSTR pCmdLine, int nCmdShow)
 {
     show_window();
 
-#ifdef _DEBUG
-    webviewGui =
-        std::make_unique<WebView>(storage, appHwnd, "gui", "https://localhost:8000/settings/");
-#else
-    webviewGui = std::make_unique<WebView>(storage, appHwnd, "gui", util::path_settings().string());
-#endif
-
     webviewMain =
         std::make_unique<WebView>(storage, appHwnd, "main", storage->settings.mainHomepage);
 
     webviewSide =
         std::make_unique<WebView>(storage, appHwnd, "side", storage->settings.sideHomepage);
+
+#ifdef _DEBUG
+    webviewGui =
+        std::make_unique<WebView>(storage, appHwnd, "gui", "https://localhost:8000/settings/");
+    webviewBar = std::make_unique<WebView>(storage, appHwnd, "bar", "https://localhost:8000/bar/");
+    // webviewBar = std::make_unique<WebView>(storage, appHwnd, "bar", "https://www.example.com/");
+#else
+    webviewGui = std::make_unique<WebView>(storage, appHwnd, "gui", util::path_settings().string());
+    webviewBar = std::make_unique<WebView>(storage, appHwnd, "bar", util::path_bar().string());
+#endif
 }
 
 App::~App() {}
@@ -51,6 +54,9 @@ HWND App::create_window(HINSTANCE hInstance)
 
     if (!hwnd)
         util::error("Window failed to initialize");
+
+    storage->application.scale =
+        static_cast<float>(GetDpiForWindow(hwnd)) / static_cast<float>(USER_DEFAULT_SCREEN_DPI);
 
     return hwnd;
 }
@@ -108,62 +114,65 @@ void App::resized()
 
     auto emptyRect{winrt::Rect{0, 0, 0, 0}};
 
-    if (!webviewGui->controller || !webviewMain->controller || !webviewSide->controller)
+    if (!webviewGui->controller || !webviewBar->controller || !webviewMain->controller ||
+        !webviewSide->controller)
         return;
 
-    if (storage->settings.webviewGui)
-    {
-        webviewGui->controller.Bounds(util::panel_full(bounds));
-        webviewMain->controller.Bounds(emptyRect);
-        webviewMain->controller.Bounds(emptyRect);
-    }
+    // if (storage->settings.webviewGui)
+    // {
+    //     webviewGui->controller.Bounds(util::panel_full(bounds));
+    //     webviewMain->controller.Bounds(emptyRect);
+    //     webviewMain->controller.Bounds(emptyRect);
+    // }
 
-    else
-    {
-        webviewGui->controller.Bounds(emptyRect);
+    // else
+    // {
+    //     webviewGui->controller.Bounds(emptyRect);
 
-        if (!storage->settings.webviewSplit && !storage->settings.webviewSwapped)
-        {
-            webviewMain->controller.Bounds(util::panel_full(bounds));
-            webviewSide->controller.Bounds(emptyRect);
-        }
+    //     if (!storage->settings.webviewSplit && !storage->settings.webviewSwapped)
+    //     {
+    //         webviewMain->controller.Bounds(util::panel_full(bounds));
+    //         webviewSide->controller.Bounds(emptyRect);
+    //     }
 
-        if (!storage->settings.webviewSplit && storage->settings.webviewSwapped)
-        {
-            webviewMain->controller.Bounds(emptyRect);
-            webviewSide->controller.Bounds(util::panel_full(bounds));
-        }
+    //     if (!storage->settings.webviewSplit && storage->settings.webviewSwapped)
+    //     {
+    //         webviewMain->controller.Bounds(emptyRect);
+    //         webviewSide->controller.Bounds(util::panel_full(bounds));
+    //     }
 
-        if (!storage->settings.webviewHorizontal)
-        {
-            if (storage->settings.webviewSplit && !storage->settings.webviewSwapped)
-            {
-                webviewMain->controller.Bounds(util::panel_left(bounds));
-                webviewSide->controller.Bounds(util::panel_right(bounds));
-            }
+    //     if (!storage->settings.webviewHorizontal)
+    //     {
+    //         if (storage->settings.webviewSplit && !storage->settings.webviewSwapped)
+    //         {
+    //             webviewMain->controller.Bounds(util::panel_left(bounds));
+    //             webviewSide->controller.Bounds(util::panel_right(bounds));
+    //         }
 
-            if (storage->settings.webviewSplit && storage->settings.webviewSwapped)
-            {
-                webviewMain->controller.Bounds(util::panel_right(bounds));
-                webviewSide->controller.Bounds(util::panel_left(bounds));
-            }
-        }
+    //         if (storage->settings.webviewSplit && storage->settings.webviewSwapped)
+    //         {
+    //             webviewMain->controller.Bounds(util::panel_right(bounds));
+    //             webviewSide->controller.Bounds(util::panel_left(bounds));
+    //         }
+    //     }
 
-        if (storage->settings.webviewHorizontal)
-        {
-            if (storage->settings.webviewSplit && !storage->settings.webviewSwapped)
-            {
-                webviewMain->controller.Bounds(util::panel_top(bounds));
-                webviewSide->controller.Bounds(util::panel_bot(bounds));
-            }
+    //     if (storage->settings.webviewHorizontal)
+    //     {
+    //         if (storage->settings.webviewSplit && !storage->settings.webviewSwapped)
+    //         {
+    //             webviewMain->controller.Bounds(util::panel_top(bounds));
+    //             webviewSide->controller.Bounds(util::panel_bot(bounds));
+    //         }
 
-            if (storage->settings.webviewSplit && storage->settings.webviewSwapped)
-            {
-                webviewMain->controller.Bounds(util::panel_bot(bounds));
-                webviewSide->controller.Bounds(util::panel_top(bounds));
-            }
-        }
-    }
+    //         if (storage->settings.webviewSplit && storage->settings.webviewSwapped)
+    //         {
+    //             webviewMain->controller.Bounds(util::panel_bot(bounds));
+    //             webviewSide->controller.Bounds(util::panel_top(bounds));
+    //         }
+    //     }
+    // }
+
+    webviewBar->controller.Bounds(util::panel_bar(bounds));
 }
 
 __int64 __stdcall App::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
@@ -180,6 +189,8 @@ __int64 __stdcall App::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
             return app->wm_close(hwnd, msg, wparam, lparam);
         case WM_DESTROY:
             return app->wm_destroy(hwnd, msg, wparam, lparam);
+        case WM_DPICHANGED:
+            return app->wm_dpichanged(hwnd, msg, wparam, lparam);
         case WM_ERASEBKGND:
             return app->wm_erasebkgnd(hwnd, msg, wparam, lparam);
         case WM_EXITSIZEMOVE:
@@ -224,6 +235,14 @@ int App::wm_close(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 int App::wm_destroy(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
     PostQuitMessage(0);
+
+    return 0;
+}
+
+int App::wm_dpichanged(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+{
+    storage->application.scale =
+        static_cast<float>(GetDpiForWindow(hwnd)) / static_cast<float>(USER_DEFAULT_SCREEN_DPI);
 
     return 0;
 }
@@ -399,7 +418,7 @@ int App::wm_windowposchanged(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     wp.showCmd == 3 ? storage->settings.windowMaximized = true
                     : storage->settings.windowMaximized = false;
 
-    if (webviewGui && webviewMain && webviewSide)
+    if (webviewGui && webviewBar && webviewMain && webviewSide)
         resized();
 
     storage->save();

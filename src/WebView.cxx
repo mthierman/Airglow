@@ -50,6 +50,14 @@ winrt::IAsyncAction WebView::create_webview()
             {[=, this](auto const&, auto const& args) { gui_web_message_received(args); }});
     }
 
+    if (name == "bar")
+    {
+        core.Navigate(url);
+
+        core.WebMessageReceived(
+            {[=, this](auto const&, auto const& args) { bar_web_message_received(args); }});
+    }
+
     if (name == "main")
     {
         auto args{util::command_line()};
@@ -155,6 +163,11 @@ void WebView::gui_web_message_received(winrt::CoreWebView2WebMessageReceivedEven
 
         SendMessageW(appHwnd, WM_NOTIFY, 0, 0);
     };
+}
+
+void WebView::bar_web_message_received(winrt::CoreWebView2WebMessageReceivedEventArgs const& args)
+{
+    return;
 }
 
 void WebView::accelerator_key_pressed(winrt::CoreWebView2AcceleratorKeyPressedEventArgs const& args)

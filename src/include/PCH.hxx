@@ -9,6 +9,7 @@
 #include <objidl.h>
 #include <shcore.h>
 #include <combaseapi.h>
+#include <WinUser.h>
 
 #include <filesystem>
 #include <fstream>
