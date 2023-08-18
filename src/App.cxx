@@ -1,5 +1,8 @@
 #include "App.hxx"
 
+#define WM_NAVIGATEMAIN (WM_APP + 0)
+#define WM_NAVIGATESIDE (WM_APP + 1)
+
 App::App(Storage* s, HINSTANCE hInstance, PWSTR pCmdLine, int nCmdShow)
     : storage(s), appHwnd(create_window(hInstance))
 {
@@ -260,6 +263,10 @@ __int64 __stdcall App::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
             return app->wm_getminmaxinfo(hwnd, msg, wparam, lparam);
         case WM_KEYDOWN:
             return app->wm_keydown(hwnd, msg, wparam, lparam);
+        case WM_NAVIGATEMAIN:
+            return app->wm_navigatemain(hwnd, msg, wparam, lparam);
+        case WM_NAVIGATESIDE:
+            return app->wm_navigateside(hwnd, msg, wparam, lparam);
         case WM_NOTIFY:
             return app->wm_notify(hwnd, msg, wparam, lparam);
         case WM_SETFOCUS:
@@ -419,6 +426,22 @@ int App::wm_keydown(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
         return 0;
     }
+
+    return 0;
+}
+
+int App::wm_navigatemain(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+{
+    if (webviewMain->core)
+        webviewMain->core.Navigate(winrt::to_hstring(storage->settings.mainCurrentPage));
+
+    return 0;
+}
+
+int App::wm_navigateside(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+{
+    if (webviewSide->core)
+        webviewSide->core.Navigate(winrt::to_hstring(storage->settings.sideCurrentPage));
 
     return 0;
 }

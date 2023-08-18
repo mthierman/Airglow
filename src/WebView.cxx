@@ -1,5 +1,8 @@
 #include "WebView.hxx"
 
+#define WM_NAVIGATEMAIN (WM_APP + 0)
+#define WM_NAVIGATESIDE (WM_APP + 1)
+
 WebView::WebView(Storage* s, HWND h, std::string n, std::string u)
     : storage(s), appHwnd(h), name(n), url(winrt::to_hstring(u))
 {
@@ -81,6 +84,9 @@ winrt::IAsyncAction WebView::create_webview()
             else
                 core.Navigate(url);
         }
+
+        core.NavigationCompleted(
+            {[=, this](auto const&, auto const& args) { main_nav_completed(args); }});
     }
 
     if (name == "side")
@@ -102,6 +108,9 @@ winrt::IAsyncAction WebView::create_webview()
             else
                 core.Navigate(url);
         }
+
+        core.NavigationCompleted(
+            {[=, this](auto const&, auto const& args) { side_nav_completed(args); }});
     }
 
     controller.AcceleratorKeyPressed(
@@ -166,6 +175,8 @@ void WebView::bar_web_message_received(winrt::CoreWebView2WebMessageReceivedEven
 
             else
                 storage->settings.mainCurrentPage = "https://" + s;
+
+            SendMessageW(appHwnd, WM_NAVIGATEMAIN, 0, 0);
         }
 
         if (!j["sideCurrentPage"].empty())
@@ -177,6 +188,8 @@ void WebView::bar_web_message_received(winrt::CoreWebView2WebMessageReceivedEven
 
             else
                 storage->settings.sideCurrentPage = "https://" + s;
+
+            SendMessageW(appHwnd, WM_NAVIGATESIDE, 0, 0);
         }
     };
 
