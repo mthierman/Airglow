@@ -1,6 +1,6 @@
 #include "Utility.hxx"
 
-namespace Utility
+namespace util
 {
 std::string to_string(std::wstring in)
 {
@@ -49,66 +49,64 @@ std::wstring to_wide(std::string in)
     return {};
 }
 
-string bool_to_string(bool in) { return in ? string("true") : string("false"); }
+std::string bool_to_string(bool in) { return in ? std::string("true") : std::string("false"); }
 
-wstring bool_to_wide(bool in) { return in ? wstring(L"true") : wstring(L"false"); }
+std::wstring bool_to_wide(bool in) { return in ? std::wstring(L"true") : std::wstring(L"false"); }
 
 bool bool_toggle(bool b) { return b ? false : true; }
 
-void print(string in) { OutputDebugStringW(to_wide(in).c_str()); }
+void print(std::string in) { OutputDebugStringW(to_wide(in).c_str()); }
 
-void println(string in)
+void println(std::string in)
 {
     OutputDebugStringW(to_wide(in).c_str());
     OutputDebugStringW(L"\n");
 }
 
-void wprint(wstring in) { OutputDebugStringW(in.c_str()); }
+void wprint(std::wstring in) { OutputDebugStringW(in.c_str()); }
 
-void wprintln(wstring in)
+void wprintln(std::wstring in)
 {
     OutputDebugStringW(in.c_str());
     OutputDebugStringW(L"\n");
 }
 
-void msgbox(string in)
-{
-    MessageBoxW(nullptr, to_wide(in).c_str(), wstring(L"Airglow").c_str(), 0);
-};
+void msgbox(std::string in) { MessageBoxW(nullptr, to_wide(in).c_str(), L"Message", 0); };
 
-void msgboxw(wstring in) { MessageBoxW(nullptr, in.c_str(), wstring(L"Airglow").c_str(), 0); };
+void wmsgbox(std::wstring in) { MessageBoxW(nullptr, in.c_str(), L"Message", 0); };
 
-int error(string in)
+int error(std::string in)
 {
-    wstring error = to_wide(in + ". Error: " + std::to_string(GetLastError()));
-    MessageBoxW(nullptr, error.c_str(), wstring(L"Airglow").c_str(), 0);
+    std::wstring error = to_wide(in + ". Error: " + std::to_string(GetLastError()));
+    MessageBoxW(nullptr, error.c_str(), L"Error", 0);
 
     return 0;
 };
 
-int errorw(wstring in)
+int werror(std::wstring in)
 {
-    wstring error = in + L". Error: " + std::to_wstring(GetLastError());
-    MessageBoxW(nullptr, error.c_str(), wstring(L"Airglow").c_str(), 0);
+    std::wstring error = in + L". Error: " + std::to_wstring(GetLastError());
+    MessageBoxW(nullptr, error.c_str(), L"Error", 0);
 
     return 0;
 };
 
-int dberror(string in)
+int dberror(std::string in)
 {
-    MessageBoxW(nullptr, to_wide(in).c_str(), wstring(L"Airglow").c_str(), 0);
+    MessageBoxW(nullptr, to_wide(in).c_str(), L"Error", 0);
 
     return 0;
 };
 
-path path_appdata()
+std::filesystem::path path_appdata()
 {
     PWSTR buffer{};
 
     if (FAILED(SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &buffer)))
-        return path{};
+        return std::filesystem::path{};
 
-    path data = wstring(buffer) + path::preferred_separator + to_wide("Airglow");
+    std::filesystem::path data =
+        std::wstring(buffer) + std::filesystem::path::preferred_separator + to_wide("Airglow");
 
     CoTaskMemFree(buffer);
 
@@ -118,79 +116,143 @@ path path_appdata()
     return data;
 }
 
-path path_portable()
+std::filesystem::path path_portable()
 {
     wchar_t* wpgmptr;
     _get_wpgmptr(&wpgmptr);
 
-    path exe = wpgmptr;
+    std::filesystem::path exe = wpgmptr;
 
     return std::filesystem::canonical(exe.remove_filename());
 }
 
-path path_gui()
+std::filesystem::path path_gui()
 {
     auto data = path_portable();
     if (!std::filesystem::exists(data))
-        return path{};
+        return std::filesystem::path{};
 
-    return (data.wstring() + path::preferred_separator + to_wide("gui"));
+    return (data.wstring() + std::filesystem::path::preferred_separator + to_wide("gui"));
 }
 
-path path_home()
+std::filesystem::path path_home()
 {
     auto data = path_gui();
     if (!std::filesystem::exists(data))
-        return path{};
+        return std::filesystem::path{};
 
-    return (L"file:///" + data.wstring() + path::preferred_separator + to_wide("index.html"));
+    return (L"file:///" + data.wstring() + std::filesystem::path::preferred_separator +
+            to_wide("index.html"));
 }
 
-path path_settings()
+std::filesystem::path path_settings()
 {
     auto data = path_gui();
     if (!std::filesystem::exists(data))
-        return path{};
+        return std::filesystem::path{};
 
-    return (L"file:///" + data.wstring() + path::preferred_separator + to_wide("settings") +
-            path::preferred_separator + to_wide("index.html"));
+    return (L"file:///" + data.wstring() + std::filesystem::path::preferred_separator +
+            to_wide("settings") + std::filesystem::path::preferred_separator +
+            to_wide("index.html"));
 }
 
-path path_bar()
+std::filesystem::path path_bar()
 {
     auto data = path_gui();
     if (!std::filesystem::exists(data))
-        return path{};
+        return std::filesystem::path{};
 
-    return (to_wide("file:///") + data.wstring() + path::preferred_separator + to_wide("bar") +
-            path::preferred_separator + to_wide("index.html"));
+    return (to_wide("file:///") + data.wstring() + std::filesystem::path::preferred_separator +
+            to_wide("bar") + std::filesystem::path::preferred_separator + to_wide("index.html"));
 }
 
-path path_json()
+std::filesystem::path path_json()
 {
     auto data = path_portable();
     if (!std::filesystem::exists(data))
-        return path{};
+        return std::filesystem::path{};
 
-    return (data.wstring() + path::preferred_separator + to_wide("Airglow.json"));
+    return (data.wstring() + std::filesystem::path::preferred_separator + to_wide("Airglow.json"));
 }
 
-path path_db()
+std::filesystem::path path_db()
 {
     auto data = path_portable();
     if (!std::filesystem::exists(data))
-        return path{};
+        return std::filesystem::path{};
 
-    return (data.wstring() + path::preferred_separator + to_wide("Database.sqlite"));
+    return (data.wstring() + std::filesystem::path::preferred_separator +
+            to_wide("Database.sqlite"));
 }
 
-string system_color(winrt::Windows::UI::ViewManagement::UIColorType colorType)
+std::pair<winrt::hstring, winrt::hstring> command_line()
 {
-    using namespace winrt::Windows::UI;
-    using namespace winrt::Windows::UI::ViewManagement;
+    std::pair<winrt::hstring, winrt::hstring> commands;
 
-    UISettings settings{UISettings()};
-    Color accent{settings.GetColorValue(colorType)};
+    auto cmd{GetCommandLineW()};
+    int count;
+
+    auto args{CommandLineToArgvW(cmd, &count)};
+
+    if (count == 2)
+    {
+        commands.first = args[1];
+        commands.second = winrt::hstring{};
+    }
+
+    if (count == 3)
+    {
+        commands.first = args[1];
+        commands.second = args[2];
+    }
+
+    LocalFree(args);
+
+    if (!commands.first.empty())
+    {
+        if (!commands.first.starts_with(L"http") || !commands.first.starts_with(L"https"))
+            commands.first = L"https://" + commands.first;
+    }
+
+    if (!commands.second.empty())
+    {
+        if (!commands.second.starts_with(L"http") || !commands.second.starts_with(L"https"))
+            commands.second = L"https://" + commands.second;
+    }
+
+    return commands;
+}
+
+std::pair<HWND, FILE*> create_console(HWND hwnd)
+{
+    FILE* dummyFile{};
+    AllocConsole();
+    hwnd = GetConsoleWindow();
+    SetConsoleTitleW(L"Debug");
+    window_mica(hwnd);
+    SetWindowPos(hwnd, nullptr, 0, 0, 400, 400, SWP_SHOWWINDOW);
+    // window_topmost(hwnd);
+    freopen_s(&dummyFile, "CONOUT$", "w", stdout);
+    freopen_s(&dummyFile, "CONOUT$", "w", stderr);
+    freopen_s(&dummyFile, "CONIN$", "r", stdin);
+    std::cout.clear();
+    std::clog.clear();
+    std::cerr.clear();
+    std::cin.clear();
+
+    return std::make_pair(hwnd, dummyFile);
+}
+
+void remove_console(std::pair<HWND, FILE*> console)
+{
+    fclose(console.second);
+    FreeConsole();
+}
+
+std::string system_color(winrt::Windows::UI::ViewManagement::UIColorType colorType)
+{
+    auto settings{winrt::Windows::UI::ViewManagement::UISettings()};
+    auto accent{settings.GetColorValue(colorType)};
 
     auto formatted{
         std::format("#{:0>2x}{:0>2x}{:0>2x}{:0>2x}", accent.R, accent.G, accent.B, accent.A)};
@@ -198,13 +260,10 @@ string system_color(winrt::Windows::UI::ViewManagement::UIColorType colorType)
     return formatted;
 }
 
-string system_theme()
+std::string system_theme()
 {
-    using namespace winrt::Windows::UI;
-    using namespace winrt::Windows::UI::ViewManagement;
-
-    UISettings settings{UISettings()};
-    Color fg{settings.GetColorValue(UIColorType::Foreground)};
+    auto settings{winrt::Windows::UI::ViewManagement::UISettings()};
+    auto fg{settings.GetColorValue(winrt::Windows::UI::ViewManagement::UIColorType::Foreground)};
 
     if (((5 * fg.G) + (2 * fg.R) + fg.B) > (8 * 128))
         return "dark";
@@ -212,7 +271,7 @@ string system_theme()
     return "light";
 }
 
-string window_theme(HWND hwnd)
+std::string window_theme(HWND hwnd)
 {
     auto dark{TRUE};
     auto light{FALSE};
@@ -282,7 +341,7 @@ bool window_uncloak(HWND hwnd)
 bool window_mica(HWND hwnd)
 {
     MARGINS m{0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
-    auto backdrop = DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW;
+    auto backdrop{DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW};
 
     if (FAILED(DwmExtendFrameIntoClientArea(hwnd, &m)))
         return false;
@@ -296,7 +355,7 @@ bool window_mica(HWND hwnd)
 
 bool window_maximize(HWND hwnd)
 {
-    auto style = GetWindowLongPtrW(hwnd, GWL_STYLE);
+    auto style{GetWindowLongPtrW(hwnd, GWL_STYLE)};
 
     WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
     GetWindowPlacement(hwnd, &wp);
@@ -322,7 +381,7 @@ bool window_fullscreen(HWND hwnd)
 
     static RECT pos;
 
-    auto style = GetWindowLongPtrW(hwnd, GWL_STYLE);
+    auto style{GetWindowLongPtrW(hwnd, GWL_STYLE)};
 
     if (style & WS_OVERLAPPEDWINDOW)
     {
@@ -360,7 +419,7 @@ bool window_topmost(HWND hwnd)
     fwi.uCount = 1;
     fwi.dwTimeout = 100;
 
-    auto style = GetWindowLongPtrW(hwnd, GWL_EXSTYLE);
+    auto style{GetWindowLongPtrW(hwnd, GWL_EXSTYLE)};
 
     if (style & WS_EX_TOPMOST)
     {
@@ -385,59 +444,16 @@ std::vector<int> window_position(HWND hwnd)
     RECT rect{0, 0, 0, 0};
     GetWindowPlacement(hwnd, &wp);
     GetWindowRect(hwnd, &rect);
-    return rect_to_bounds(rect);
+    return bounds_to_position(rect);
 }
 
-std::pair<wstring, wstring> command_line()
-{
-    std::pair<wstring, wstring> commands;
-
-    auto cmd = GetCommandLineW();
-    int count;
-
-    auto args = CommandLineToArgvW(cmd, &count);
-
-    if (count == 2)
-    {
-        commands.first = args[1];
-        commands.second = wstring{};
-    }
-
-    if (count == 3)
-    {
-        commands.first = args[1];
-        commands.second = args[2];
-    }
-
-    LocalFree(args);
-
-    if (!commands.first.empty())
-    {
-        if (!commands.first.starts_with(L"http") || !commands.first.starts_with(L"https"))
-            commands.first = L"https://" + commands.first;
-    }
-
-    if (!commands.second.empty())
-    {
-        if (!commands.second.starts_with(L"http") || !commands.second.starts_with(L"https"))
-            commands.second = L"https://" + commands.second;
-    }
-
-    return commands;
-}
-
-std::vector<int> rect_to_bounds(RECT rect)
+std::vector<int> bounds_to_position(RECT rect)
 {
     return std::vector<int>{rect.left, rect.top, (rect.right - rect.left),
                             (rect.bottom - rect.top)};
 }
 
-RECT bounds_to_rect(std::vector<int> bounds)
-{
-    return RECT{bounds[0], bounds[1], (bounds[0] + bounds[2]), (bounds[1] + bounds[3])};
-}
-
-RECT window_bounds(HWND hwnd)
+RECT bounds(HWND hwnd)
 {
     RECT bounds{0, 0, 0, 0};
     GetClientRect(hwnd, &bounds);
@@ -445,63 +461,59 @@ RECT window_bounds(HWND hwnd)
     return bounds;
 }
 
-RECT full_panel(RECT bounds)
+winrt::Windows::Foundation::Rect panel_full(RECT bounds)
 {
-    return RECT{
-        bounds.left,
-        bounds.top,
-        bounds.right,
-        (bounds.bottom - 50),
-    };
+    return winrt::Windows::Foundation::Rect{static_cast<float>(bounds.left),
+                                            static_cast<float>(bounds.top),
+                                            static_cast<float>(bounds.right - bounds.left),
+                                            static_cast<float>(bounds.bottom - bounds.top)};
 }
 
-RECT left_panel(RECT bounds)
+winrt::Windows::Foundation::Rect panel_left(RECT bounds)
 {
-    return RECT{
-        bounds.left,
-        bounds.top,
-        (bounds.right / 2),
-        (bounds.bottom - 50),
-    };
+    return winrt::Windows::Foundation::Rect{
+        static_cast<float>(bounds.left), static_cast<float>(bounds.top),
+        static_cast<float>(bounds.right / 2), static_cast<float>(bounds.bottom - bounds.top)};
 }
 
-RECT right_panel(RECT bounds)
+winrt::Windows::Foundation::Rect panel_right(RECT bounds)
 {
-    return RECT{
-        (bounds.right / 2),
-        bounds.top,
-        bounds.right,
-        (bounds.bottom - 50),
-    };
+    return winrt::Windows::Foundation::Rect{
+        static_cast<float>(bounds.right / 2), static_cast<float>(bounds.top),
+        static_cast<float>(bounds.right / 2), static_cast<float>(bounds.bottom - bounds.top)};
 }
 
-RECT top_panel(RECT bounds)
+winrt::Windows::Foundation::Rect panel_top(RECT bounds)
 {
-    return RECT{
-        bounds.left,
-        bounds.top,
-        bounds.right,
-        ((bounds.bottom / 2) - 25),
-    };
+    return winrt::Windows::Foundation::Rect{
+        static_cast<float>(bounds.left), static_cast<float>(bounds.top),
+        static_cast<float>(bounds.right), static_cast<float>(bounds.bottom / 2)};
 }
 
-RECT bottom_panel(RECT bounds)
+winrt::Windows::Foundation::Rect panel_bot(RECT bounds)
 {
-    return RECT{
-        bounds.left,
-        ((bounds.bottom / 2) - 25),
-        bounds.right,
-        (bounds.bottom - 50),
-    };
+    return winrt::Windows::Foundation::Rect{
+        static_cast<float>(bounds.left), static_cast<float>(bounds.bottom / 2),
+        static_cast<float>(bounds.right), static_cast<float>(bounds.bottom)};
 }
 
-RECT bar_panel(RECT bounds)
-{
-    return RECT{
-        bounds.left,
-        (bounds.bottom - 50),
-        bounds.right,
-        bounds.bottom,
-    };
-}
-} // namespace Utility
+// RECT position_to_rect(std::vector<int> bounds)
+// {
+//     return RECT{bounds[0], bounds[1], (bounds[0] + bounds[2]), (bounds[1] + bounds[3])};
+// }
+
+// winrt::Windows::Foundation::Rect winrt_bounds_to_rect(RECT bounds)
+// {
+//     return winrt::Windows::Foundation::Rect{static_cast<float>(bounds.left),
+//                                             static_cast<float>(bounds.top),
+//                                             static_cast<float>(bounds.right - bounds.left),
+//                                             static_cast<float>(bounds.bottom - bounds.top)};
+// }
+
+// RECT winrt_rect(winrt::Windows::Foundation::Rect rect)
+// {
+//     return RECT{static_cast<long>(rect.X), static_cast<long>(rect.Y),
+//     static_cast<long>(rect.Width),
+//                 static_cast<long>(rect.Height)};
+// }
+} // namespace util

@@ -1,48 +1,18 @@
 import { useEffect, useState } from "react";
 
 export default function App() {
-    const [currentPageMain, setCurrentPageMain] = useState("");
-    const [currentPageSide, setCurrentPageSide] = useState("");
-    const [split, setSplit] = useState(false);
-    const [swapped, setSwapped] = useState(false);
+    const [mainCurrentPage, setMainCurrentPage] = useState("");
+    const [sideCurrentPage, setSideCurrentPage] = useState("");
+    const [webviewSplit, setWebviewSplit] = useState(false);
+    const [webviewSwapped, setWebviewSwapped] = useState(false);
 
     if (window.chrome.webview) {
         window.chrome.webview.addEventListener("message", (arg: any) => {
-            if (arg.data.colors) {
-                document.documentElement.style.setProperty(
-                    "--accent",
-                    arg.data.colors.accent,
-                );
-                document.documentElement.style.setProperty(
-                    "--accentDark1",
-                    arg.data.colors.accentDark1,
-                );
-                document.documentElement.style.setProperty(
-                    "--accentDark2",
-                    arg.data.colors.accentDark2,
-                );
-                document.documentElement.style.setProperty(
-                    "--accentDark3",
-                    arg.data.colors.accentDark2,
-                );
-                document.documentElement.style.setProperty(
-                    "--accentLight1",
-                    arg.data.colors.accentLight1,
-                );
-                document.documentElement.style.setProperty(
-                    "--accentLight2",
-                    arg.data.colors.accentLight2,
-                );
-                document.documentElement.style.setProperty(
-                    "--accentLight3",
-                    arg.data.colors.accentLight3,
-                );
-            }
             if (arg.data.settings) {
-                setCurrentPageMain(arg.data.settings.currentPageMain);
-                setCurrentPageSide(arg.data.settings.currentPageSide);
-                setSplit(arg.data.settings.split);
-                setSwapped(arg.data.settings.swapped);
+                setMainCurrentPage(arg.data.settings.mainCurrentPage);
+                setSideCurrentPage(arg.data.settings.sideCurrentPage);
+                setWebviewSplit(arg.data.settings.webviewSplit);
+                setWebviewSwapped(arg.data.settings.webviewSwapped);
             }
         });
     }
@@ -55,15 +25,15 @@ export default function App() {
         const rawData = new FormData(e.target);
         const data = Object.fromEntries(rawData.entries());
 
-        if (data.currentPageMain.toString() != "") {
+        if (data.mainCurrentPage.toString() != "") {
             window.chrome.webview.postMessage({
-                currentPageMain: data.currentPageMain,
+                mainCurrentPage: data.mainCurrentPage,
             });
         }
 
-        if (data.currentPageSide.toString() != "") {
+        if (data.sideCurrentPage.toString() != "") {
             window.chrome.webview.postMessage({
-                currentPageSide: data.currentPageSide,
+                sideCurrentPage: data.sideCurrentPage,
             });
         }
 
@@ -74,12 +44,12 @@ export default function App() {
     let mainLabelStyle = "";
     let sideLabelStyle = "";
 
-    if (swapped) formStyle = "flex flex-row-reverse";
+    if (webviewSwapped) formStyle = "flex flex-row-reverse";
 
-    if (!split && !swapped) {
+    if (!webviewSplit && !webviewSwapped) {
         sideLabelStyle = "hidden";
     }
-    if (!split && swapped) {
+    if (!webviewSplit && webviewSwapped) {
         mainLabelStyle = "hidden";
     }
 
@@ -96,17 +66,17 @@ export default function App() {
                 <label className={mainLabelStyle}>
                     <input
                         type="text"
-                        name="currentPageMain"
-                        id="currentPageMain"></input>
-                    <address>{currentPageMain}</address>
+                        name="mainCurrentPage"
+                        id="mainCurrentPage"></input>
+                    <address>{mainCurrentPage}</address>
                 </label>
 
                 <label className={sideLabelStyle}>
                     <input
                         type="text"
-                        name="currentPageSide"
-                        id="currentPageSide"></input>
-                    <address>{currentPageSide}</address>
+                        name="sideCurrentPage"
+                        id="sideCurrentPage"></input>
+                    <address>{sideCurrentPage}</address>
                 </label>
 
                 <input type="submit" hidden />

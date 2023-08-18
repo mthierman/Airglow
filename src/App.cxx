@@ -1,136 +1,169 @@
 #include "App.hxx"
 
-App::App(HINSTANCE hinstance, int ncs) {}
-
-App::~App() { GdiplusShutdown(gdiplusToken); }
-
-std::unique_ptr<App> App::Create(HINSTANCE hinstance, int ncs)
+App::App(Storage* s, HINSTANCE hInstance, PWSTR pCmdLine, int nCmdShow)
+    : storage(s), appHwnd(create_window(hInstance))
 {
-    auto app{std::unique_ptr<App>(new App(hinstance, ncs))};
+    show_window();
 
 #ifdef _DEBUG
-    AllocConsole();
-    app->window.hwndDebug = GetConsoleWindow();
-    SetConsoleTitleW(L"Debug");
-    window_mica(app->window.hwndDebug);
-    window_topmost(app->window.hwndDebug);
-    freopen_s(&app->window.dummyFile, "CONOUT$", "w", stdout);
-    freopen_s(&app->window.dummyFile, "CONOUT$", "w", stderr);
-    freopen_s(&app->window.dummyFile, "CONIN$", "r", stdin);
-    std::cout.clear();
-    std::clog.clear();
-    std::cerr.clear();
-    std::cin.clear();
+    webviewGui =
+        std::make_unique<WebView>(storage, appHwnd, "gui", "https://localhost:8000/settings/");
+#else
+    webviewGui = std::make_unique<WebView>(storage, appHwnd, "gui", util::path_settings().string());
 #endif
 
-    if (!std::filesystem::exists(app->paths.json))
-        app->settings.Save();
+    webviewMain =
+        std::make_unique<WebView>(storage, appHwnd, "main", storage->settings.mainHomepage);
 
-    if (std::filesystem::exists(app->paths.json) && std::filesystem::is_empty(app->paths.json))
-        app->settings.Save();
+    webviewSide =
+        std::make_unique<WebView>(storage, appHwnd, "side", storage->settings.sideHomepage);
+}
 
-    if (std::filesystem::exists(app->paths.json))
-    {
-        auto j{app->settings.Load()};
-        app->settings = app->settings.Deserialize(j);
-    }
+App::~App() {}
 
-    app->window.icon = (HICON)LoadImageW(hinstance, to_wide("PROGRAM_ICON").c_str(), IMAGE_ICON, 0,
-                                         0, LR_DEFAULTCOLOR | LR_DEFAULTSIZE);
+HWND App::create_window(HINSTANCE hInstance)
+{
+    storage->application.hIcon = (HICON)LoadImageW(hInstance, util::to_wide(APP_NAME).c_str(),
+                                                   IMAGE_ICON, 0, 0, LR_DEFAULTSIZE);
 
     WNDCLASSEXW wcex{sizeof(WNDCLASSEX)};
-    wcex.lpszClassName = app->window.name.c_str();
-    wcex.lpszMenuName = app->window.name.c_str();
+    wcex.lpszClassName = storage->application.appName.c_str();
+    wcex.lpszMenuName = storage->application.appName.c_str();
     wcex.lpfnWndProc = App::_WndProc;
     wcex.style = CS_HREDRAW | CS_VREDRAW;
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
-    wcex.hInstance = hinstance;
+    wcex.hInstance = hInstance;
     wcex.hbrBackground = 0;
-    wcex.hCursor = app->window.cursor;
-    wcex.hIcon = app->window.icon;
-    wcex.hIconSm = app->window.icon;
+    wcex.hCursor = storage->application.hCursor;
+    wcex.hIcon = storage->application.hIcon;
+    wcex.hIconSm = storage->application.hIcon;
 
-    if (!RegisterClassExW(&wcex))
-        return nullptr;
+    auto atom{RegisterClassExW(&wcex)};
 
-    app->window.hwnd = CreateWindowExW(
-        0, app->window.name.c_str(), app->window.name.c_str(), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT,
-        CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, hinstance, app.get());
+    if (atom == 0)
+        util::error("Window failed to register");
 
-    if (!app->window.hwnd)
-        return nullptr;
+    auto hwnd{CreateWindowExW(0, storage->application.appName.c_str(),
+                              storage->application.appName.c_str(), WS_OVERLAPPEDWINDOW,
+                              CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
+                              nullptr, hInstance, this)};
 
-    app->Show();
+    if (!hwnd)
+        util::error("Window failed to initialize");
 
-    app->browser = Browser::Create(app->window, app->settings, app->colors);
-
-    if (!app->browser)
-        return nullptr;
-
-    if (GdiplusStartup(&app->gdiplusToken, &app->gdiplusStartupInput, nullptr) !=
-        Gdiplus::Status::Ok)
-        return nullptr;
-
-    return app;
+    return hwnd;
 }
 
-void App::Show()
-{
-    window_cloak(window.hwnd);
-    window_darktitle();
-    settings.theme = window_theme(window.hwnd);
-    window_mica(window.hwnd);
+HWND App::get_hwnd() { return appHwnd; }
 
-    if (settings.position[0] == 0 && settings.position[1] == 0 && settings.position[2] == 0 &&
-        settings.position[3] == 0)
-        ShowWindow(window.hwnd, SW_SHOWDEFAULT);
+void App::show_window()
+{
+    util::window_darktitle();
+    storage->settings.appTheme = util::window_theme(appHwnd);
+
+    auto mica{util::window_mica(appHwnd)};
+
+    if (!mica)
+        util::window_cloak(appHwnd);
+
+    if (storage->settings.windowTopmost)
+        util::window_topmost(appHwnd);
+
+    if (storage->settings.windowPosition[0] == 0 && storage->settings.windowPosition[1] == 0 &&
+        storage->settings.windowPosition[2] == 0 && storage->settings.windowPosition[3] == 0)
+    {
+        ShowWindow(appHwnd, SW_SHOWDEFAULT);
+
+        if (!mica)
+            util::window_uncloak(appHwnd);
+
+        return;
+    }
 
     else
     {
-        if (settings.maximized)
-        {
-            SetWindowPos(window.hwnd, nullptr, settings.position[0], settings.position[1],
-                         settings.position[2], settings.position[3], 0);
-            ShowWindow(window.hwnd, SW_SHOWMAXIMIZED);
-        }
-
-        else
-        {
-            SetWindowPos(window.hwnd, nullptr, settings.position[0], settings.position[1],
-                         settings.position[2], settings.position[3], 0);
-            ShowWindow(window.hwnd, SW_SHOWDEFAULT);
-        }
+        SetWindowPos(appHwnd, nullptr, storage->settings.windowPosition[0],
+                     storage->settings.windowPosition[1], storage->settings.windowPosition[2],
+                     storage->settings.windowPosition[3], 0);
     }
 
-    if (settings.topmost)
-    {
-        window_topmost(window.hwnd);
-    }
+    if (storage->settings.windowMaximized)
+        ShowWindow(appHwnd, SW_SHOWMAXIMIZED);
 
-    window_uncloak(window.hwnd);
+    else
+        ShowWindow(appHwnd, SW_SHOWNORMAL);
 
-    if (settings.fullscreen)
-    {
-        window_fullscreen(window.hwnd);
-    }
+    if (storage->settings.windowFullscreen)
+        util::window_fullscreen(appHwnd);
+
+    if (!mica)
+        util::window_uncloak(appHwnd);
 }
 
-template <class T> T* InstanceFromWndProc(HWND hwnd, UINT msg, LPARAM lparam)
+void App::resized()
 {
-    T* pInstance;
+    RECT bounds{0, 0, 0, 0};
+    GetClientRect(appHwnd, &bounds);
 
-    if (msg == WM_NCCREATE)
+    auto emptyRect{winrt::Rect{0, 0, 0, 0}};
+
+    if (!webviewGui->controller || !webviewMain->controller || !webviewSide->controller)
+        return;
+
+    if (storage->settings.webviewGui)
     {
-        LPCREATESTRUCTW pCreateStruct = reinterpret_cast<LPCREATESTRUCTW>(lparam);
-        pInstance = reinterpret_cast<T*>(pCreateStruct->lpCreateParams);
-        SetWindowLongPtrW(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pInstance));
+        webviewGui->controller.Bounds(util::panel_full(bounds));
+        webviewMain->controller.Bounds(emptyRect);
+        webviewMain->controller.Bounds(emptyRect);
     }
 
     else
-        pInstance = reinterpret_cast<T*>(GetWindowLongPtrW(hwnd, GWLP_USERDATA));
+    {
+        webviewGui->controller.Bounds(emptyRect);
 
-    return pInstance;
+        if (!storage->settings.webviewSplit && !storage->settings.webviewSwapped)
+        {
+            webviewMain->controller.Bounds(util::panel_full(bounds));
+            webviewSide->controller.Bounds(emptyRect);
+        }
+
+        if (!storage->settings.webviewSplit && storage->settings.webviewSwapped)
+        {
+            webviewMain->controller.Bounds(emptyRect);
+            webviewSide->controller.Bounds(util::panel_full(bounds));
+        }
+
+        if (!storage->settings.webviewHorizontal)
+        {
+            if (storage->settings.webviewSplit && !storage->settings.webviewSwapped)
+            {
+                webviewMain->controller.Bounds(util::panel_left(bounds));
+                webviewSide->controller.Bounds(util::panel_right(bounds));
+            }
+
+            if (storage->settings.webviewSplit && storage->settings.webviewSwapped)
+            {
+                webviewMain->controller.Bounds(util::panel_right(bounds));
+                webviewSide->controller.Bounds(util::panel_left(bounds));
+            }
+        }
+
+        if (storage->settings.webviewHorizontal)
+        {
+            if (storage->settings.webviewSplit && !storage->settings.webviewSwapped)
+            {
+                webviewMain->controller.Bounds(util::panel_top(bounds));
+                webviewSide->controller.Bounds(util::panel_bot(bounds));
+            }
+
+            if (storage->settings.webviewSplit && storage->settings.webviewSwapped)
+            {
+                webviewMain->controller.Bounds(util::panel_bot(bounds));
+                webviewSide->controller.Bounds(util::panel_top(bounds));
+            }
+        }
+    }
 }
 
 __int64 __stdcall App::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
@@ -142,115 +175,110 @@ __int64 __stdcall App::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
         switch (msg)
         {
         case WM_ACTIVATE:
-            return app->_OnActivate(hwnd, wparam, lparam);
+            return app->wm_activate(hwnd, msg, wparam, lparam);
         case WM_CLOSE:
-            return app->_OnClose(hwnd, wparam, lparam);
+            return app->wm_close(hwnd, msg, wparam, lparam);
         case WM_DESTROY:
-            return app->_OnDestroy(hwnd, wparam, lparam);
+            return app->wm_destroy(hwnd, msg, wparam, lparam);
         case WM_ERASEBKGND:
-            return app->_OnEraseBackground(hwnd, wparam, lparam);
+            return app->wm_erasebkgnd(hwnd, msg, wparam, lparam);
         case WM_EXITSIZEMOVE:
-            return app->_OnExitSizeMove(hwnd, wparam, lparam);
+            return app->wm_exitsizemove(hwnd, msg, wparam, lparam);
         case WM_GETMINMAXINFO:
-            return app->_OnGetMinMaxInfo(hwnd, wparam, lparam);
+            return app->wm_getminmaxinfo(hwnd, msg, wparam, lparam);
         case WM_KEYDOWN:
-            return app->_OnKeyDown(hwnd, wparam, lparam);
+            return app->wm_keydown(hwnd, msg, wparam, lparam);
         case WM_NOTIFY:
-            return app->_OnNotify(hwnd, wparam, lparam);
+            return app->wm_notify(hwnd, msg, wparam, lparam);
         case WM_SETFOCUS:
-            return app->_OnSetFocus(hwnd, wparam, lparam);
+            return app->wm_setfocus(hwnd, msg, wparam, lparam);
         case WM_SETTINGCHANGE:
-            return app->_OnSettingChange(hwnd, wparam, lparam);
+            return app->wm_settingchange(hwnd, msg, wparam, lparam);
         case WM_WINDOWPOSCHANGED:
-            return app->_OnWindowPosChanged(hwnd, wparam, lparam);
+            return app->wm_windowposchanged(hwnd, msg, wparam, lparam);
         }
     }
 
     return DefWindowProcW(hwnd, msg, wparam, lparam);
 }
 
-int App::_OnActivate(HWND hwnd, WPARAM wparam, LPARAM lparam)
+int App::wm_activate(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-    if (!settings.maximized && !settings.fullscreen)
-        settings.position = window_position(hwnd);
+    if (!storage->settings.windowMaximized && !storage->settings.windowFullscreen)
+        storage->settings.windowPosition = util::window_position(hwnd);
 
-    SendMessageW(window.hwnd, WM_NOTIFY, 0, 0);
+    SendMessageW(hwnd, WM_NOTIFY, 0, 0);
 
     return 0;
 }
 
-int App::_OnClose(HWND hwnd, WPARAM wparam, LPARAM lparam)
+int App::wm_close(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-    settings.Save();
-
-#ifdef _DEBUG
-    fclose(window.dummyFile);
-    FreeConsole();
-#endif
+    storage->save();
 
     DestroyWindow(hwnd);
 
     return 0;
 }
 
-int App::_OnDestroy(HWND hwnd, WPARAM wparam, LPARAM lparam)
+int App::wm_destroy(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
     PostQuitMessage(0);
 
     return 0;
 }
 
-int App::_OnEraseBackground(HWND hwnd, WPARAM wparam, LPARAM lparam)
+int App::wm_erasebkgnd(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
     InvalidateRect(hwnd, nullptr, true);
     PAINTSTRUCT ps{};
     HDC hdc = BeginPaint(hwnd, &ps);
 
-    if (settings.theme == "dark")
-        FillRect(hdc, &ps.rcPaint, window.darkBrush);
+    if (storage->settings.appTheme == "dark")
+        FillRect(hdc, &ps.rcPaint, storage->application.darkBrush);
 
     else
-        FillRect(hdc, &ps.rcPaint, window.lightBrush);
+        FillRect(hdc, &ps.rcPaint, storage->application.lightBrush);
 
     EndPaint(hwnd, &ps);
 
     return 1;
 }
 
-int App::_OnExitSizeMove(HWND hwnd, WPARAM wparam, LPARAM lparam)
+int App::wm_exitsizemove(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-    if (!settings.maximized && !settings.fullscreen)
-        settings.position = window_position(hwnd);
+    if (!storage->settings.windowMaximized && !storage->settings.windowFullscreen)
+        storage->settings.windowPosition = util::window_position(hwnd);
 
-    SendMessageW(window.hwnd, WM_NOTIFY, 0, 0);
+    SendMessageW(hwnd, WM_NOTIFY, 0, 0);
 
     return 0;
 }
 
-int App::_OnGetMinMaxInfo(HWND hwnd, WPARAM wparam, LPARAM lparam)
+int App::wm_getminmaxinfo(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-    LPMINMAXINFO minmax = (LPMINMAXINFO)lparam;
+    LPMINMAXINFO minmax{(LPMINMAXINFO)lparam};
     minmax->ptMinTrackSize.x = 500;
     minmax->ptMinTrackSize.y = 500;
 
     return 0;
 }
 
-int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
+int App::wm_keydown(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
     switch (wparam)
     {
     case VK_PAUSE:
-        settings.menu = bool_toggle(settings.menu);
-        SendMessageW(window.hwnd, WM_NOTIFY, 0, 0);
-        browser->FocusSettings();
+        storage->settings.webviewGui = storage->settings.webviewGui ? false : true;
+        SendMessageW(hwnd, WM_NOTIFY, 0, 0);
+        // browser->FocusSettings();
 
         return 0;
 
     case 0x4C:
         if (GetKeyState(VK_CONTROL) & 0x8000)
         {
-            browser->FocusBar();
+            // browser->FocusBar();
         }
 
         return 0;
@@ -262,20 +290,20 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
         return 0;
 
     case VK_F1:
-        settings.swapped = bool_toggle(settings.swapped);
-        SendMessageW(window.hwnd, WM_NOTIFY, 0, 0);
+        storage->settings.webviewSwapped = storage->settings.webviewSwapped ? false : true;
+        SendMessageW(hwnd, WM_NOTIFY, 0, 0);
 
         return 0;
 
     case VK_F2:
-        settings.split = bool_toggle(settings.split);
-        SendMessageW(window.hwnd, WM_NOTIFY, 0, 0);
+        storage->settings.webviewSplit = storage->settings.webviewSplit ? false : true;
+        SendMessageW(hwnd, WM_NOTIFY, 0, 0);
 
         return 0;
 
     case VK_F3:
-        settings.horizontal = bool_toggle(settings.horizontal);
-        SendMessageW(window.hwnd, WM_NOTIFY, 0, 0);
+        storage->settings.webviewHorizontal = storage->settings.webviewHorizontal ? false : true;
+        SendMessageW(hwnd, WM_NOTIFY, 0, 0);
 
         return 0;
 
@@ -287,26 +315,27 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
 
         else
         {
-            settings.topmost = window_topmost(hwnd);
-            SendMessageW(window.hwnd, WM_NOTIFY, 0, 0);
+            storage->settings.windowTopmost = util::window_topmost(hwnd);
+            SendMessageW(hwnd, WM_NOTIFY, 0, 0);
         }
 
         return 0;
 
     case VK_F6:
-        settings.maximized = window_maximize(hwnd);
-        SendMessageW(window.hwnd, WM_NOTIFY, 0, 0);
+        storage->settings.windowMaximized = util::window_maximize(hwnd);
+        SendMessageW(hwnd, WM_NOTIFY, 0, 0);
 
         return 0;
 
     case VK_F8:
-        browser->NavigateHome(settings);
+        webviewMain->navigate_home();
+        webviewSide->navigate_home();
 
         return 0;
 
     case VK_F11:
-        settings.fullscreen = window_fullscreen(hwnd);
-        SendMessageW(window.hwnd, WM_NOTIFY, 0, 0);
+        storage->settings.windowFullscreen = util::window_fullscreen(hwnd);
+        SendMessageW(hwnd, WM_NOTIFY, 0, 0);
 
         return 0;
     }
@@ -314,49 +343,66 @@ int App::_OnKeyDown(HWND hwnd, WPARAM wparam, LPARAM lparam)
     return 0;
 }
 
-int App::_OnNotify(HWND hwnd, WPARAM wparam, LPARAM lparam)
+int App::wm_notify(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-    browser->PostSettings(settings.Serialize());
-    browser->PostSettings(colors.Serialize());
 
-    browser->Bounds(window, settings);
-    browser->Focus(window, settings);
-    browser->Title(window, settings);
-    browser->Icon(window, settings);
+    if (webviewGui)
+        webviewGui->post_settings(storage->serialize());
 
-    settings.Save();
+    if (webviewGui && webviewMain && webviewSide)
+    {
+        resized();
+        webviewGui->title();
+        webviewMain->title();
+        webviewSide->title();
+        webviewGui->icon();
+        webviewMain->icon();
+        webviewSide->icon();
+        SendMessageW(appHwnd, WM_SETFOCUS, 0, 0);
+    }
+
+    storage->save();
 
     return 0;
 }
 
-int App::_OnSetFocus(HWND hwnd, WPARAM wparam, LPARAM lparam)
+int App::wm_setfocus(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-    browser->Focus(window, settings);
+    if (webviewGui && webviewMain && webviewSide)
+    {
+        if (storage->settings.webviewGui)
+            webviewGui->focus();
+
+        if (!storage->settings.webviewGui && !storage->settings.webviewSwapped)
+            webviewMain->focus();
+
+        if (!storage->settings.webviewGui && storage->settings.webviewSwapped)
+            webviewSide->focus();
+    }
 
     return 0;
 }
 
-int App::_OnSettingChange(HWND hwnd, WPARAM wparam, LPARAM lparam)
+int App::wm_settingchange(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-    settings.theme = window_theme(hwnd);
-    colors = Colors{};
-    SendMessageW(window.hwnd, WM_NOTIFY, 0, 0);
+    storage->settings.appTheme = util::window_theme(hwnd);
+    storage->colors = Colors{};
+    SendMessageW(hwnd, WM_NOTIFY, 0, 0);
 
     return 0;
 }
 
-int App::_OnWindowPosChanged(HWND hwnd, WPARAM wparam, LPARAM lparam)
+int App::wm_windowposchanged(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-    browser->Bounds(window, settings);
-
     WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
     GetWindowPlacement(hwnd, &wp);
-    if (wp.showCmd == 3)
-        settings.maximized = true;
-    else
-        settings.maximized = false;
+    wp.showCmd == 3 ? storage->settings.windowMaximized = true
+                    : storage->settings.windowMaximized = false;
 
-    settings.Save();
+    if (webviewGui && webviewMain && webviewSide)
+        resized();
+
+    storage->save();
 
     return 0;
 }

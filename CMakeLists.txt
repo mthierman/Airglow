@@ -34,13 +34,17 @@ if(EXPERIMENTAL_LIBS)
 else()
     set(WEBVIEW "Microsoft.Web.WebView2")
     set(WEBVIEW_VERSION "1.0.1901.177")
-endif()
 
-set(WIL "Microsoft.Windows.ImplementationLibrary")
-set(WIL_VERSION "1.0.230629.1")
+    set(CPPWINRT "Microsoft.Windows.CppWinRT")
+    set(CPPWINRT_VER "2.0.230706.1")
+
+    set(WIL "Microsoft.Windows.ImplementationLibrary")
+    set(WIL_VERSION "1.0.230629.1")
+endif()
 
 if(ENV_LIBS)
     file(TO_CMAKE_PATH "$ENV{LIBRARIES}/${WEBVIEW}.${WEBVIEW_VERSION}" WEBVIEW_PKG)
+    file(TO_CMAKE_PATH "$ENV{LIBRARIES}/${CPPWINRT}.${CPPWINRT_VER}" CPPWINRT_PKG)
     file(TO_CMAKE_PATH "$ENV{LIBRARIES}/${WIL}.${WIL_VERSION}" WIL_PKG)
     file(TO_CMAKE_PATH "$ENV{LIBRARIES}/nlohmann/json/single_include" JSON_PKG)
     file(TO_CMAKE_PATH "$ENV{LIBRARIES}/sqlite-amalgamation-3420000" SQLITE_PKG)
@@ -51,6 +55,12 @@ else()
         nuget install "${WEBVIEW}" -Version "${WEBVIEW_VERSION}" -OutputDirectory "${CMAKE_BINARY_DIR}/_deps"
     )
     file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/_deps/${WEBVIEW}.${WEBVIEW_VERSION}" WEBVIEW_PKG)
+
+    execute_process(
+        COMMAND
+        nuget install "${CPPWINRT}" -Version "${CPPWINRT_VER}" -OutputDirectory "${CMAKE_BINARY_DIR}/_deps"
+    )
+    file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/_deps/${CPPWINRT}.${CPPWINRT_VER}" CPPWINRT_PKG)
 
     execute_process(
         COMMAND
@@ -80,19 +90,20 @@ else()
     file(TO_CMAKE_PATH "${curl_SOURCE_DIR}" CURL_PKG)
 endif()
 
-add_library(sqlite "${SQLITE_PKG}/sqlite3.c" "${SQLITE_PKG}/sqlite3.h")
-set_target_properties(sqlite PROPERTIES LINKER_LANGUAGE C)
-
 message(STATUS "WebView2 ${WEBVIEW_PKG}")
+message(STATUS "C++/WinRT ${CPPWINRT_PKG}")
 message(STATUS "WIL ${WIL_PKG}")
 message(STATUS "json ${JSON_PKG}")
 message(STATUS "SQLite3 ${SQLITE_PKG}")
 message(STATUS "curl ${CURL_PKG}")
 
+add_library(sqlite "${SQLITE_PKG}/sqlite3.c" "${SQLITE_PKG}/sqlite3.h")
+set_target_properties(sqlite PROPERTIES LINKER_LANGUAGE C)
+
 file(GLOB SOURCES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/src/*.cxx")
 file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/res$<$<CONFIG:Debug>:_debug>$<$<CONFIG:Release>:_release>.rc" RC_FILE)
 file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/app.manifest" MANIFEST_FILE)
-file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/src/PCH.hxx" PCH_FILE)
+file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/src/include/PCH.hxx" PCH_FILE)
 
 add_executable(
     ${APP_NAME}
@@ -115,9 +126,18 @@ add_compile_definitions(
     NLOHMANN_JSON_NAMESPACE_NO_VERSION=1
 )
 
-if(MSVC)
+if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     add_compile_options(
         /Zc:__cplusplus
+        /await
+        /bigobj
+        /permissive-
+    )
+endif()
+
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    add_compile_options(
+        -fcoroutines
     )
 endif()
 
@@ -136,33 +156,33 @@ target_precompile_headers(
 target_include_directories(
     ${APP_NAME}
     PRIVATE
-    "${WEBVIEW_PKG}/build/native/include"
+    "${WEBVIEW_PKG}/lib"
     "${WIL_PKG}/include"
     "${JSON_PKG}"
     "${SQLITE_PKG}"
     "${CURL_PKG}/include/curl"
 )
 
-target_link_directories(
-    ${APP_NAME}
-    PRIVATE
-    "${WEBVIEW_PKG}/build/native/x64"
-)
-
 target_link_libraries(
     ${APP_NAME}
     PRIVATE
-    WebView2LoaderStatic.lib
     dwmapi.lib
     gdiplus.lib
     Uxtheme.lib
     Urlmon.Lib
     Kernel32.lib
     User32.Lib
+    WindowsApp.lib
+    shcore.lib
     sqlite
 )
 
 configure_file("${CMAKE_SOURCE_DIR}/tools/install.ps1" "${CMAKE_BINARY_DIR}/install.ps1")
+
+add_custom_command(
+    TARGET ${APP_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy "${WEBVIEW_PKG}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
+)
 
 add_custom_command(
     TARGET ${APP_NAME} PRE_BUILD

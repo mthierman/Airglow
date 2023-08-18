@@ -1,41 +1,39 @@
 #pragma once
 
 #include "Utility.hxx"
-#include "Data.hxx"
-#include "Browser.hxx"
-
-using namespace Utility;
-using namespace Gdiplus;
-using namespace Microsoft::WRL;
+#include "Storage.hxx"
+#include "WebView.hxx"
 
 class App
 {
   public:
-    static std::unique_ptr<App> Create(HINSTANCE, int);
+    App(Storage*, HINSTANCE, PWSTR, int);
     ~App();
 
-    std::unique_ptr<Browser> browser{nullptr};
-    unsigned long long gdiplusToken{};
-    GdiplusStartupInput gdiplusStartupInput{};
-    Window window{};
-    Settings settings{};
-    Paths paths{};
-    Colors colors{};
+    HWND get_hwnd();
 
   private:
-    App(HINSTANCE, int);
-    void Show();
+    HWND create_window(HINSTANCE);
+    void show_window();
+    void resized();
 
     static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
-    int _OnActivate(HWND, WPARAM, LPARAM);
-    int _OnClose(HWND, WPARAM, LPARAM);
-    int _OnDestroy(HWND, WPARAM, LPARAM);
-    int _OnEraseBackground(HWND, WPARAM, LPARAM);
-    int _OnExitSizeMove(HWND, WPARAM, LPARAM);
-    int _OnGetMinMaxInfo(HWND, WPARAM, LPARAM);
-    int _OnKeyDown(HWND, WPARAM, LPARAM);
-    int _OnNotify(HWND, WPARAM, LPARAM);
-    int _OnSetFocus(HWND, WPARAM, LPARAM);
-    int _OnSettingChange(HWND, WPARAM, LPARAM);
-    int _OnWindowPosChanged(HWND, WPARAM, LPARAM);
+    int wm_activate(HWND, UINT, WPARAM, LPARAM);
+    int wm_close(HWND, UINT, WPARAM, LPARAM);
+    int wm_destroy(HWND, UINT, WPARAM, LPARAM);
+    int wm_erasebkgnd(HWND, UINT, WPARAM, LPARAM);
+    int wm_exitsizemove(HWND, UINT, WPARAM, LPARAM);
+    int wm_getminmaxinfo(HWND, UINT, WPARAM, LPARAM);
+    int wm_keydown(HWND, UINT, WPARAM, LPARAM);
+    int wm_notify(HWND, UINT, WPARAM, LPARAM);
+    int wm_setfocus(HWND, UINT, WPARAM, LPARAM);
+    int wm_settingchange(HWND, UINT, WPARAM, LPARAM);
+    int wm_windowposchanged(HWND, UINT, WPARAM, LPARAM);
+
+    Storage* storage{nullptr};
+    HWND appHwnd{nullptr};
+
+    std::unique_ptr<WebView> webviewGui;
+    std::unique_ptr<WebView> webviewMain;
+    std::unique_ptr<WebView> webviewSide;
 };

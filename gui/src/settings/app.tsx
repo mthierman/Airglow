@@ -12,61 +12,61 @@ document.onreadystatechange = () => {
 };
 
 export default function App() {
-    const [homepageMain, setHomepageMain] = useState("");
-    const [homepageSide, setHomepageSide] = useState("");
-    const [theme, setTheme] = useState("");
+    const [mainHomepage, setMainHomepage] = useState("");
+    const [sideHomepage, setSideHomepage] = useState("");
+    const [appTheme, setAppTheme] = useState("");
     const [themeIcon, setThemeIcon] = useState("");
 
     if (window.chrome.webview) {
         window.chrome.webview.addEventListener("message", (arg: any) => {
             if (arg.data.colors) {
                 document.documentElement.style.setProperty(
-                    "--accent",
-                    arg.data.colors.accent,
+                    "--colorAccent",
+                    arg.data.colors.colorAccent,
                 );
                 document.documentElement.style.setProperty(
-                    "--accentDark1",
-                    arg.data.colors.accentDark1,
+                    "--colorAccentDark1",
+                    arg.data.colors.colorAccentDark1,
                 );
                 document.documentElement.style.setProperty(
-                    "--accentDark2",
-                    arg.data.colors.accentDark2,
+                    "--colorAccentDark2",
+                    arg.data.colors.colorAccentDark2,
                 );
                 document.documentElement.style.setProperty(
-                    "--accentDark3",
-                    arg.data.colors.accentDark2,
+                    "--colorAccentDark3",
+                    arg.data.colors.colorAccentDark3,
                 );
                 document.documentElement.style.setProperty(
-                    "--accentLight1",
-                    arg.data.colors.accentLight1,
+                    "--colorAccentLight1",
+                    arg.data.colors.colorAccentLight1,
                 );
                 document.documentElement.style.setProperty(
-                    "--accentLight2",
-                    arg.data.colors.accentLight2,
+                    "--colorAccentLight2",
+                    arg.data.colors.colorAccentLight2,
                 );
                 document.documentElement.style.setProperty(
-                    "--accentLight3",
-                    arg.data.colors.accentLight3,
+                    "--colorAccentLight3",
+                    arg.data.colors.colorAccentLight3,
                 );
             }
             if (arg.data.settings) {
-                setHomepageMain(arg.data.settings.homepageMain);
-                setHomepageSide(arg.data.settings.homepageSide);
-                setTheme(arg.data.settings.theme);
+                setMainHomepage(arg.data.settings.mainHomepage);
+                setSideHomepage(arg.data.settings.sideHomepage);
+                setAppTheme(arg.data.settings.appTheme);
             }
         });
     }
 
     useEffect(() => {
-        if (theme) {
-            if (theme === "dark") {
+        if (appTheme) {
+            if (appTheme === "dark") {
                 setThemeIcon("🌙");
             }
-            if (theme === "light") {
+            if (appTheme === "light") {
                 setThemeIcon("🔆");
             }
         }
-    }, [theme]);
+    }, [appTheme]);
 
     const handleForm = (e: any) => {
         e.preventDefault();
@@ -78,15 +78,15 @@ export default function App() {
         const rawData = new FormData(e.target);
         const data = Object.fromEntries(rawData.entries());
 
-        if (data.homepageMain.toString() != "") {
+        if (data.mainHomepage.toString() != "") {
             window.chrome.webview.postMessage({
-                homepageMain: data.homepageMain,
+                mainHomepage: data.mainHomepage,
             });
         }
 
-        if (data.homepageSide.toString() != "") {
+        if (data.sideHomepage.toString() != "") {
             window.chrome.webview.postMessage({
-                homepageSide: data.homepageSide,
+                sideHomepage: data.sideHomepage,
             });
         }
 
@@ -109,14 +109,14 @@ export default function App() {
                                 🌌 Home
                             </div>
                             <div className="select-text text-neutral-400">
-                                {homepageMain}
+                                {mainHomepage}
                             </div>
                         </div>
                         <input
                             type="text"
-                            name="homepageMain"
-                            id="homepageMain"
-                            placeholder={homepageMain}
+                            name="mainHomepage"
+                            id="mainHomepage"
+                            placeholder={mainHomepage}
                             pattern=".*[.].*"></input>
                     </label>
 
@@ -126,21 +126,21 @@ export default function App() {
                                 🛰️ Sidebar
                             </div>
                             <div className="select-text text-neutral-400">
-                                {homepageSide}
+                                {sideHomepage}
                             </div>
                         </div>
                         <input
                             type="text"
-                            name="homepageSide"
-                            id="homepageSide"
-                            placeholder={homepageSide}
+                            name="sideHomepage"
+                            id="sideHomepage"
+                            placeholder={sideHomepage}
                             pattern=".*[.].*"></input>
                     </label>
                 </div>
 
                 <div className="grid grid-flow-col justify-between">
                     <div className="select-none self-end capitalize">
-                        {themeIcon} {theme} mode
+                        {themeIcon} {appTheme} mode
                     </div>
 
                     <button id="submitUrl" type="submit">
