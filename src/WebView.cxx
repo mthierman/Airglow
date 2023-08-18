@@ -143,15 +143,29 @@ void WebView::gui_web_message_received(winrt::CoreWebView2WebMessageReceivedEven
                 storage->settings.sideHomepage = "https://" + s;
         }
 
+        SendMessageW(appHwnd, WM_NOTIFY, 0, 0);
+    };
+}
+
+void WebView::bar_web_message_received(winrt::CoreWebView2WebMessageReceivedEventArgs const& args)
+{
+    auto webMessage{args.WebMessageAsJson()};
+
+    util::println(winrt::to_string(webMessage));
+
+    if (!webMessage.empty())
+    {
+        auto j{nlohmann::json::parse(webMessage)};
+
         if (!j["mainCurrentPage"].empty())
         {
             auto s{j["mainCurrentPage"].get<std::string>()};
 
             if (s.starts_with("https://"))
-                core.Navigate(util::to_wide(s));
+                storage->settings.mainCurrentPage = s;
 
             else
-                core.Navigate(L"https://" + util::to_wide(s));
+                storage->settings.mainCurrentPage = "https://" + s;
         }
 
         if (!j["sideCurrentPage"].empty())
@@ -159,18 +173,13 @@ void WebView::gui_web_message_received(winrt::CoreWebView2WebMessageReceivedEven
             auto s{j["sideCurrentPage"].get<std::string>()};
 
             if (s.starts_with("https://"))
-                core.Navigate(util::to_wide(s));
+                storage->settings.sideCurrentPage = s;
 
             else
-                core.Navigate(L"https://" + util::to_wide(s));
+                storage->settings.sideCurrentPage = "https://" + s;
         }
-
-        SendMessageW(appHwnd, WM_NOTIFY, 0, 0);
     };
-}
 
-void WebView::bar_web_message_received(winrt::CoreWebView2WebMessageReceivedEventArgs const& args)
-{
     return;
 }
 

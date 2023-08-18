@@ -15,7 +15,6 @@ App::App(Storage* s, HINSTANCE hInstance, PWSTR pCmdLine, int nCmdShow)
     webviewGui =
         std::make_unique<WebView>(storage, appHwnd, "gui", "https://localhost:8000/settings/");
     webviewBar = std::make_unique<WebView>(storage, appHwnd, "bar", "https://localhost:8000/bar/");
-    // webviewBar = std::make_unique<WebView>(storage, appHwnd, "bar", "https://www.example.com/");
 #else
     webviewGui = std::make_unique<WebView>(storage, appHwnd, "gui", util::path_settings().string());
     webviewBar = std::make_unique<WebView>(storage, appHwnd, "bar", util::path_bar().string());
@@ -426,22 +425,21 @@ int App::wm_keydown(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 int App::wm_notify(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-
-    if (webviewGui)
-        webviewGui->post_settings(storage->serialize());
-
-    if (webviewBar)
-        webviewBar->post_settings(storage->serialize());
-
     if (webviewGui && webviewBar && webviewMain && webviewSide)
     {
         resized();
+
+        webviewGui->post_settings(storage->serialize());
+        webviewBar->post_settings(storage->serialize());
+
         webviewGui->title();
         webviewMain->title();
         webviewSide->title();
+
         webviewGui->icon();
         webviewMain->icon();
         webviewSide->icon();
+
         SendMessageW(appHwnd, WM_SETFOCUS, 0, 0);
     }
 
