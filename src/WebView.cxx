@@ -85,7 +85,13 @@ winrt::IAsyncAction WebView::create_webview()
                 core.Navigate(url);
         }
 
-        core.SourceChanged({[=, this](auto const&, auto const& args) { source_changed(); }});
+        core.SourceChanged({[=, this](winrt::CoreWebView2 const& sender, auto const&)
+                            {
+                                storage->settings.mainCurrentPage =
+                                    winrt::to_string(sender.Source());
+
+                                SendMessageW(appHwnd, WM_NOTIFY, 0, 0);
+                            }});
     }
 
     if (name == "side")
@@ -108,7 +114,13 @@ winrt::IAsyncAction WebView::create_webview()
                 core.Navigate(url);
         }
 
-        core.SourceChanged({[=, this](auto const&, auto const& args) { source_changed(); }});
+        core.SourceChanged({[=, this](winrt::CoreWebView2 const& sender, auto const&)
+                            {
+                                storage->settings.sideCurrentPage =
+                                    winrt::to_string(sender.Source());
+
+                                SendMessageW(appHwnd, WM_NOTIFY, 0, 0);
+                            }});
     }
 
     controller.AcceleratorKeyPressed(
