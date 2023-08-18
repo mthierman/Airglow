@@ -5,7 +5,7 @@
 @layer base {
     html,
     body {
-        @apply h-full overflow-x-hidden overflow-y-auto bg-red-400;
+        @apply h-full overflow-y-auto overflow-x-hidden;
     }
     #root {
         @apply grid min-h-full;
@@ -20,6 +20,6 @@
         @apply flex-grow bg-transparent px-2 outline-none;
     }
     address {
-        @apply px-2 text-sm text-neutral-400 truncate;
+        @apply truncate px-2 text-sm text-neutral-400;
     }
 }

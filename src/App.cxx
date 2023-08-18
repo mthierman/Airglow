@@ -430,6 +430,9 @@ int App::wm_notify(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     if (webviewGui)
         webviewGui->post_settings(storage->serialize());
 
+    if (webviewBar)
+        webviewBar->post_settings(storage->serialize());
+
     if (webviewGui && webviewBar && webviewMain && webviewSide)
     {
         resized();
@@ -468,6 +471,7 @@ int App::wm_settingchange(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
     storage->settings.appTheme = util::window_theme(hwnd);
     storage->colors = Colors{};
+
     SendMessageW(hwnd, WM_NOTIFY, 0, 0);
 
     return 0;
