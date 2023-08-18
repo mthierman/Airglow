@@ -124,8 +124,8 @@ void App::resized()
     {
         webviewMain->controller.Bounds(emptyRect);
         webviewSide->controller.Bounds(emptyRect);
-        webviewGui->controller.Bounds(panel_full(bounds));
-        webviewBar->controller.Bounds(panel_bar(bounds));
+        webviewGui->controller.Bounds(panel_gui(bounds));
+        webviewBar->controller.Bounds(emptyRect);
     }
 
     else
@@ -177,7 +177,16 @@ void App::resized()
                 webviewBar->controller.Bounds(panel_bar(bounds));
             }
         }
+
+        webviewGui->controller.Bounds(emptyRect);
     }
+}
+
+winrt::Windows::Foundation::Rect App::panel_gui(RECT bounds)
+{
+    return winrt::Windows::Foundation::Rect{
+        static_cast<float>(bounds.left), static_cast<float>(bounds.top),
+        static_cast<float>(bounds.right), static_cast<float>(bounds.bottom)};
 }
 
 winrt::Windows::Foundation::Rect App::panel_bar(RECT bounds)

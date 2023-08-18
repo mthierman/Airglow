@@ -17,6 +17,7 @@ class App
     void show_window();
     void resized();
     void bar_web_message_received(winrt::CoreWebView2WebMessageReceivedEventArgs const&);
+    winrt::Windows::Foundation::Rect panel_gui(RECT);
     winrt::Windows::Foundation::Rect panel_bar(RECT);
     winrt::Windows::Foundation::Rect panel_full(RECT);
     winrt::Windows::Foundation::Rect panel_left(RECT);

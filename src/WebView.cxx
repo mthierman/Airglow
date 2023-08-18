@@ -86,7 +86,7 @@ winrt::IAsyncAction WebView::create_webview()
         }
 
         core.NavigationCompleted(
-            {[=, this](auto const&, auto const& args) { main_nav_completed(args); }});
+            {[=, this](auto const&, auto const& args) { SendMessageW(appHwnd, WM_NOTIFY, 0, 0); }});
     }
 
     if (name == "side")
@@ -110,7 +110,7 @@ winrt::IAsyncAction WebView::create_webview()
         }
 
         core.NavigationCompleted(
-            {[=, this](auto const&, auto const& args) { side_nav_completed(args); }});
+            {[=, this](auto const&, auto const& args) { SendMessageW(appHwnd, WM_NOTIFY, 0, 0); }});
     }
 
     controller.AcceleratorKeyPressed(
