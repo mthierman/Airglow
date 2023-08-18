@@ -461,49 +461,6 @@ RECT bounds(HWND hwnd)
     return bounds;
 }
 
-winrt::Windows::Foundation::Rect panel_bar(RECT bounds)
-{
-    return winrt::Windows::Foundation::Rect{
-        static_cast<float>(bounds.left), static_cast<float>(bounds.bottom - 50),
-        static_cast<float>(bounds.right - bounds.left), static_cast<float>(50)};
-}
-
-winrt::Windows::Foundation::Rect panel_full(RECT bounds)
-{
-    return winrt::Windows::Foundation::Rect{static_cast<float>(bounds.left),
-                                            static_cast<float>(bounds.top),
-                                            static_cast<float>(bounds.right - bounds.left),
-                                            static_cast<float>(bounds.bottom - bounds.top)};
-}
-
-winrt::Windows::Foundation::Rect panel_left(RECT bounds)
-{
-    return winrt::Windows::Foundation::Rect{
-        static_cast<float>(bounds.left), static_cast<float>(bounds.top),
-        static_cast<float>(bounds.right / 2), static_cast<float>(bounds.bottom - bounds.top)};
-}
-
-winrt::Windows::Foundation::Rect panel_right(RECT bounds)
-{
-    return winrt::Windows::Foundation::Rect{
-        static_cast<float>(bounds.right / 2), static_cast<float>(bounds.top),
-        static_cast<float>(bounds.right / 2), static_cast<float>(bounds.bottom - bounds.top)};
-}
-
-winrt::Windows::Foundation::Rect panel_top(RECT bounds)
-{
-    return winrt::Windows::Foundation::Rect{
-        static_cast<float>(bounds.left), static_cast<float>(bounds.top),
-        static_cast<float>(bounds.right), static_cast<float>(bounds.bottom / 2)};
-}
-
-winrt::Windows::Foundation::Rect panel_bot(RECT bounds)
-{
-    return winrt::Windows::Foundation::Rect{
-        static_cast<float>(bounds.left), static_cast<float>(bounds.bottom / 2),
-        static_cast<float>(bounds.right), static_cast<float>(bounds.bottom)};
-}
-
 // RECT position_to_rect(std::vector<int> bounds)
 // {
 //     return RECT{bounds[0], bounds[1], (bounds[0] + bounds[2]), (bounds[1] + bounds[3])};

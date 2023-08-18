@@ -109,70 +109,132 @@ void App::show_window()
 
 void App::resized()
 {
-    RECT bounds{0, 0, 0, 0};
-    GetClientRect(appHwnd, &bounds);
-
-    auto emptyRect{winrt::Rect{0, 0, 0, 0}};
-
     if (!webviewGui->controller || !webviewBar->controller || !webviewMain->controller ||
         !webviewSide->controller)
         return;
 
-    // if (storage->settings.webviewGui)
-    // {
-    //     webviewGui->controller.Bounds(util::panel_full(bounds));
-    //     webviewMain->controller.Bounds(emptyRect);
-    //     webviewMain->controller.Bounds(emptyRect);
-    // }
+    auto emptyRect{winrt::Rect{0, 0, 0, 0}};
 
-    // else
-    // {
-    //     webviewGui->controller.Bounds(emptyRect);
+    RECT bounds{0, 0, 0, 0};
+    GetClientRect(appHwnd, &bounds);
 
-    //     if (!storage->settings.webviewSplit && !storage->settings.webviewSwapped)
-    //     {
-    //         webviewMain->controller.Bounds(util::panel_full(bounds));
-    //         webviewSide->controller.Bounds(emptyRect);
-    //     }
+    if (storage->settings.webviewGui)
+    {
+        webviewMain->controller.Bounds(emptyRect);
+        webviewSide->controller.Bounds(emptyRect);
+        webviewGui->controller.Bounds(panel_full(bounds));
+        webviewBar->controller.Bounds(panel_bar(bounds));
+    }
 
-    //     if (!storage->settings.webviewSplit && storage->settings.webviewSwapped)
-    //     {
-    //         webviewMain->controller.Bounds(emptyRect);
-    //         webviewSide->controller.Bounds(util::panel_full(bounds));
-    //     }
+    else
+    {
+        if (!storage->settings.webviewSplit && !storage->settings.webviewSwapped)
+        {
+            webviewMain->controller.Bounds(panel_full(bounds));
+            webviewSide->controller.Bounds(emptyRect);
+            webviewBar->controller.Bounds(panel_bar(bounds));
+        }
 
-    //     if (!storage->settings.webviewHorizontal)
-    //     {
-    //         if (storage->settings.webviewSplit && !storage->settings.webviewSwapped)
-    //         {
-    //             webviewMain->controller.Bounds(util::panel_left(bounds));
-    //             webviewSide->controller.Bounds(util::panel_right(bounds));
-    //         }
+        if (!storage->settings.webviewSplit && storage->settings.webviewSwapped)
+        {
+            webviewMain->controller.Bounds(emptyRect);
+            webviewSide->controller.Bounds(panel_full(bounds));
+            webviewBar->controller.Bounds(panel_bar(bounds));
+        }
 
-    //         if (storage->settings.webviewSplit && storage->settings.webviewSwapped)
-    //         {
-    //             webviewMain->controller.Bounds(util::panel_right(bounds));
-    //             webviewSide->controller.Bounds(util::panel_left(bounds));
-    //         }
-    //     }
+        if (!storage->settings.webviewHorizontal)
+        {
+            if (storage->settings.webviewSplit && !storage->settings.webviewSwapped)
+            {
+                webviewMain->controller.Bounds(panel_left(bounds));
+                webviewSide->controller.Bounds(panel_right(bounds));
+                webviewBar->controller.Bounds(panel_bar(bounds));
+            }
 
-    //     if (storage->settings.webviewHorizontal)
-    //     {
-    //         if (storage->settings.webviewSplit && !storage->settings.webviewSwapped)
-    //         {
-    //             webviewMain->controller.Bounds(util::panel_top(bounds));
-    //             webviewSide->controller.Bounds(util::panel_bot(bounds));
-    //         }
+            if (storage->settings.webviewSplit && storage->settings.webviewSwapped)
+            {
+                webviewMain->controller.Bounds(panel_right(bounds));
+                webviewSide->controller.Bounds(panel_left(bounds));
+                webviewBar->controller.Bounds(panel_bar(bounds));
+            }
+        }
 
-    //         if (storage->settings.webviewSplit && storage->settings.webviewSwapped)
-    //         {
-    //             webviewMain->controller.Bounds(util::panel_bot(bounds));
-    //             webviewSide->controller.Bounds(util::panel_top(bounds));
-    //         }
-    //     }
-    // }
+        if (storage->settings.webviewHorizontal)
+        {
+            if (storage->settings.webviewSplit && !storage->settings.webviewSwapped)
+            {
+                webviewMain->controller.Bounds(panel_top(bounds));
+                webviewSide->controller.Bounds(panel_bot(bounds));
+                webviewBar->controller.Bounds(panel_bar(bounds));
+            }
 
-    webviewBar->controller.Bounds(util::panel_bar(bounds));
+            if (storage->settings.webviewSplit && storage->settings.webviewSwapped)
+            {
+                webviewMain->controller.Bounds(panel_bot(bounds));
+                webviewSide->controller.Bounds(panel_top(bounds));
+                webviewBar->controller.Bounds(panel_bar(bounds));
+            }
+        }
+    }
+}
+
+winrt::Windows::Foundation::Rect App::panel_bar(RECT bounds)
+{
+    auto scaledBar{50 * storage->application.scale};
+
+    return winrt::Windows::Foundation::Rect{
+        static_cast<float>(bounds.left), static_cast<float>(bounds.bottom - scaledBar),
+        static_cast<float>(bounds.right - bounds.left), static_cast<float>(scaledBar)};
+}
+
+winrt::Windows::Foundation::Rect App::panel_full(RECT bounds)
+{
+    auto scaledBar{50 * storage->application.scale};
+
+    return winrt::Windows::Foundation::Rect{
+        static_cast<float>(bounds.left), static_cast<float>(bounds.top),
+        static_cast<float>(bounds.right - bounds.left),
+        static_cast<float>((bounds.bottom - bounds.top) - scaledBar)};
+}
+
+winrt::Windows::Foundation::Rect App::panel_left(RECT bounds)
+{
+    auto scaledBar{50 * storage->application.scale};
+
+    return winrt::Windows::Foundation::Rect{
+        static_cast<float>(bounds.left), static_cast<float>(bounds.top),
+        static_cast<float>(bounds.right / 2),
+        static_cast<float>((bounds.bottom - bounds.top) - scaledBar)};
+}
+
+winrt::Windows::Foundation::Rect App::panel_right(RECT bounds)
+{
+    auto scaledBar{50 * storage->application.scale};
+
+    return winrt::Windows::Foundation::Rect{
+        static_cast<float>(bounds.right / 2), static_cast<float>(bounds.top),
+        static_cast<float>(bounds.right / 2),
+        static_cast<float>((bounds.bottom - bounds.top) - scaledBar)};
+}
+
+winrt::Windows::Foundation::Rect App::panel_top(RECT bounds)
+{
+    auto scaledBar{50 * storage->application.scale};
+
+    return winrt::Windows::Foundation::Rect{
+        static_cast<float>(bounds.left), static_cast<float>(bounds.top),
+        static_cast<float>(bounds.right),
+        static_cast<float>((bounds.bottom / 2) - (scaledBar / 2))};
+}
+
+winrt::Windows::Foundation::Rect App::panel_bot(RECT bounds)
+{
+    auto scaledBar{50 * storage->application.scale};
+
+    return winrt::Windows::Foundation::Rect{
+        static_cast<float>(bounds.left), static_cast<float>((bounds.bottom / 2) - (scaledBar / 2)),
+        static_cast<float>(bounds.right),
+        static_cast<float>((bounds.bottom / 2) - (scaledBar / 2))};
 }
 
 __int64 __stdcall App::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
@@ -368,7 +430,7 @@ int App::wm_notify(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     if (webviewGui)
         webviewGui->post_settings(storage->serialize());
 
-    if (webviewGui && webviewMain && webviewSide)
+    if (webviewGui && webviewBar && webviewMain && webviewSide)
     {
         resized();
         webviewGui->title();

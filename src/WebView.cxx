@@ -44,6 +44,8 @@ winrt::IAsyncAction WebView::create_webview()
 
     if (name == "gui")
     {
+        webviewSettings.IsZoomControlEnabled(false);
+
         core.Navigate(url);
 
         core.WebMessageReceived(
@@ -52,6 +54,8 @@ winrt::IAsyncAction WebView::create_webview()
 
     if (name == "bar")
     {
+        webviewSettings.IsZoomControlEnabled(false);
+
         core.Navigate(url);
 
         core.WebMessageReceived(

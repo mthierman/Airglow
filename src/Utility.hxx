@@ -45,12 +45,6 @@ bool window_topmost(HWND);
 std::vector<int> window_position(HWND);
 std::vector<int> bounds_to_position(RECT);
 RECT bounds(HWND);
-winrt::Windows::Foundation::Rect panel_bar(RECT);
-winrt::Windows::Foundation::Rect panel_full(RECT);
-winrt::Windows::Foundation::Rect panel_left(RECT);
-winrt::Windows::Foundation::Rect panel_right(RECT);
-winrt::Windows::Foundation::Rect panel_top(RECT);
-winrt::Windows::Foundation::Rect panel_bot(RECT);
 
 // RECT bounds_to_rect(std::vector<int>);
 // winrt::Windows::Foundation::Rect winrt_bounds_to_rect(RECT);

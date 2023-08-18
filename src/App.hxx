@@ -16,6 +16,12 @@ class App
     HWND create_window(HINSTANCE);
     void show_window();
     void resized();
+    winrt::Windows::Foundation::Rect panel_bar(RECT);
+    winrt::Windows::Foundation::Rect panel_full(RECT);
+    winrt::Windows::Foundation::Rect panel_left(RECT);
+    winrt::Windows::Foundation::Rect panel_right(RECT);
+    winrt::Windows::Foundation::Rect panel_top(RECT);
+    winrt::Windows::Foundation::Rect panel_bot(RECT);
 
     static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
     int wm_activate(HWND, UINT, WPARAM, LPARAM);
