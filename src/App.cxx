@@ -358,15 +358,17 @@ int App::wm_keydown(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     {
     case VK_PAUSE:
         storage->settings.webviewGui = storage->settings.webviewGui ? false : true;
+        if (storage->settings.webviewGui)
+            webviewGui->focus();
+
         SendMessageW(hwnd, WM_NOTIFY, 0, 0);
-        // browser->FocusSettings();
 
         return 0;
 
     case 0x4C:
         if (GetKeyState(VK_CONTROL) & 0x8000)
         {
-            // browser->FocusBar();
+            webviewBar->focus();
         }
 
         return 0;
@@ -379,12 +381,24 @@ int App::wm_keydown(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
     case VK_F1:
         storage->settings.webviewSwapped = storage->settings.webviewSwapped ? false : true;
+
+        if (!storage->settings.webviewSplit && !storage->settings.webviewSwapped)
+            webviewMain->focus();
+        if (!storage->settings.webviewSplit && storage->settings.webviewSwapped)
+            webviewSide->focus();
+
         SendMessageW(hwnd, WM_NOTIFY, 0, 0);
 
         return 0;
 
     case VK_F2:
         storage->settings.webviewSplit = storage->settings.webviewSplit ? false : true;
+
+        if (!storage->settings.webviewSplit && !storage->settings.webviewSwapped)
+            webviewMain->focus();
+        if (!storage->settings.webviewSplit && storage->settings.webviewSwapped)
+            webviewSide->focus();
+
         SendMessageW(hwnd, WM_NOTIFY, 0, 0);
 
         return 0;
@@ -463,8 +477,6 @@ int App::wm_notify(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
         webviewGui->icon();
         webviewMain->icon();
         webviewSide->icon();
-
-        SendMessageW(appHwnd, WM_SETFOCUS, 0, 0);
     }
 
     storage->save();
@@ -474,17 +486,17 @@ int App::wm_notify(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 int App::wm_setfocus(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-    if (webviewGui && webviewMain && webviewSide)
-    {
-        if (storage->settings.webviewGui)
-            webviewGui->focus();
+    // if (webviewGui && webviewMain && webviewSide)
+    // {
+    //     if (storage->settings.webviewGui)
+    //         webviewGui->focus();
 
-        if (!storage->settings.webviewGui && !storage->settings.webviewSwapped)
-            webviewMain->focus();
+    //     if (!storage->settings.webviewGui && !storage->settings.webviewSwapped)
+    //         webviewMain->focus();
 
-        if (!storage->settings.webviewGui && storage->settings.webviewSwapped)
-            webviewSide->focus();
-    }
+    //     if (!storage->settings.webviewGui && storage->settings.webviewSwapped)
+    //         webviewSide->focus();
+    // }
 
     return 0;
 }
