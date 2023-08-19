@@ -99,6 +99,10 @@ message(STATUS "curl ${CURL_PKG}")
 add_library(sqlite "${SQLITE_PKG}/sqlite3.c" "${SQLITE_PKG}/sqlite3.h")
 set_target_properties(sqlite PROPERTIES LINKER_LANGUAGE C)
 
+execute_process(
+    COMMAND cppwinrt -input Microsoft.Web.WebView2.Core.winmd sdk WORKING_DIRECTORY "${WEBVIEW_PKG}/lib"
+)
+
 file(GLOB SOURCES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/src/*.cxx")
 file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/res$<$<CONFIG:Debug>:_debug>$<$<CONFIG:Release>:_release>.rc" RC_FILE)
 file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/app.manifest" MANIFEST_FILE)
