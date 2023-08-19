@@ -311,6 +311,11 @@ int App::wm_dpichanged(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     storage->application.scale =
         static_cast<float>(GetDpiForWindow(hwnd)) / static_cast<float>(USER_DEFAULT_SCREEN_DPI);
 
+    auto bounds = (RECT*)lparam;
+
+    SetWindowPos(appHwnd, nullptr, bounds->left, bounds->top, (bounds->right - bounds->left),
+                 (bounds->bottom - bounds->top), 0);
+
     return 0;
 }
 
