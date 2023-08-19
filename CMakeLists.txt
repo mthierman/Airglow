@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.26)
 set(APP_NAME "Airglow")
-set(APP_NAME_CONSOLE "Isochasm")
 set(APP_VERSION "1.3.1")
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
@@ -113,17 +112,6 @@ add_executable(
     "${MANIFEST_FILE}"
 )
 
-add_executable(
-    ${APP_NAME_CONSOLE}
-    "${CMAKE_SOURCE_DIR}/src/console/Main.cxx"
-)
-
-add_executable(
-    Tests
-    "${CMAKE_SOURCE_DIR}/src/tests/Tests.cxx"
-    "${CMAKE_SOURCE_DIR}/src/Utility.cxx"
-)
-
 add_compile_definitions(
     UNICODE
     APP_NAME="${APP_NAME}"
@@ -161,12 +149,6 @@ target_precompile_headers(
     "${PCH_FILE}"
 )
 
-target_precompile_headers(
-    Tests
-    REUSE_FROM
-    ${APP_NAME}
-)
-
 target_include_directories(
     ${APP_NAME}
     PRIVATE
@@ -177,32 +159,8 @@ target_include_directories(
     "${CURL_PKG}/include/curl"
 )
 
-target_include_directories(
-    Tests
-    PRIVATE
-    "${WEBVIEW_PKG}/lib"
-    "${WIL_PKG}/include"
-    "${JSON_PKG}"
-    "${SQLITE_PKG}"
-    "${CURL_PKG}/include/curl"
-)
-
 target_link_libraries(
     ${APP_NAME}
-    PRIVATE
-    dwmapi.lib
-    gdiplus.lib
-    Uxtheme.lib
-    Urlmon.Lib
-    Kernel32.lib
-    User32.Lib
-    WindowsApp.lib
-    shcore.lib
-    sqlite
-)
-
-target_link_libraries(
-    Tests
     PRIVATE
     dwmapi.lib
     gdiplus.lib
@@ -218,18 +176,14 @@ target_link_libraries(
 configure_file("${CMAKE_SOURCE_DIR}/tools/install.ps1" "${CMAKE_BINARY_DIR}/install.ps1")
 
 add_custom_command(
-    TARGET ${APP_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy "${WEBVIEW_PKG}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
-)
-
-add_custom_command(
     TARGET ${APP_NAME} PRE_BUILD
     COMMAND cd "${CMAKE_SOURCE_DIR}/gui" && pnpm build
 )
 
 add_custom_command(
     TARGET ${APP_NAME} POST_BUILD
-    COMMAND 7z a "${CMAKE_BINARY_DIR}/Airglow.zip" "${CMAKE_BINARY_DIR}/${APP_NAME}/${APP_NAME}.exe" "${CMAKE_BINARY_DIR}/${APP_NAME}/gui"
+    COMMAND ${CMAKE_COMMAND} -E copy "${WEBVIEW_PKG}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
+    COMMAND 7z a "${CMAKE_BINARY_DIR}/Airglow.zip" "${CMAKE_BINARY_DIR}/${APP_NAME}/${APP_NAME}.exe" "${CMAKE_BINARY_DIR}/${APP_NAME}/Microsoft.Web.WebView2.Core.dll" "${CMAKE_BINARY_DIR}/${APP_NAME}/gui"
 )
 
 if(INSTALL)
