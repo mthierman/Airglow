@@ -55,7 +55,16 @@ export default function App() {
     )
         sideUrl = `\uFEFF`;
 
-    let addresses = `flex`;
+    let formStyle = `flex flex-grow`;
+    if (webviewSwapped) formStyle = `flex flex-grow flex-row-reverse`;
+
+    let inputStyle = `flex flex-1 outline-none text-center bg-neutral-200 dark:bg-neutral-800 placeholder:text-left px-2`;
+    let mainInputStyle = inputStyle;
+    let sideInputStyle = inputStyle;
+    if (!webviewSplit && webviewSwapped) mainInputStyle = `hidden`;
+    if (!webviewSplit && !webviewSwapped) sideInputStyle = `hidden`;
+
+    let addresses = `flex bg-white dark:bg-black`;
     if (webviewSwapped) addresses = `flex flex-row-reverse`;
 
     let addressStyle = `flex-1 flex-shrink min-w-0 px-8 text-center truncate text-sm`;
@@ -64,22 +73,8 @@ export default function App() {
     if (!webviewSplit && webviewSwapped) mainAddress = `hidden`;
     if (!webviewSplit && !webviewSwapped) sideAddress = `hidden`;
 
-    let formStyle = `flex flex-grow`;
-    if (webviewSwapped) formStyle = `flex flex-grow flex-row-reverse`;
-
-    let inputStyle = `flex flex-1 outline-none text-center bg-transparent`;
-    let mainInputStyle = inputStyle;
-    let sideInputStyle = inputStyle;
-    if (!webviewSplit && webviewSwapped) mainInputStyle = `hidden`;
-    if (!webviewSplit && !webviewSwapped) sideInputStyle = `hidden`;
-
     return (
         <div className="flex h-full flex-col">
-            <div className={addresses}>
-                <address className={mainAddress}>{mainUrl}</address>
-                <address className={sideAddress}>{sideUrl}</address>
-            </div>
-
             <form
                 className={formStyle}
                 name="url"
@@ -92,16 +87,23 @@ export default function App() {
                     className={mainInputStyle}
                     type="text"
                     name="mainCurrentPage"
-                    id="mainCurrentPage"></input>
+                    id="mainCurrentPage"
+                    placeholder="🔍︎"></input>
 
                 <input
                     className={sideInputStyle}
                     type="text"
                     name="sideCurrentPage"
-                    id="sideCurrentPage"></input>
+                    id="sideCurrentPage"
+                    placeholder="🔍︎"></input>
 
                 <input type="submit" hidden />
             </form>
+
+            <div className={addresses}>
+                <address className={mainAddress}>{mainUrl}</address>
+                <address className={sideAddress}>{sideUrl}</address>
+            </div>
         </div>
     );
 }

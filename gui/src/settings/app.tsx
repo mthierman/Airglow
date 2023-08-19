@@ -60,10 +60,10 @@ export default function App() {
     useEffect(() => {
         if (appTheme) {
             if (appTheme === "dark") {
-                setThemeIcon("🌙");
+                setThemeIcon("🌙︎");
             }
             if (appTheme === "light") {
-                setThemeIcon("🔆");
+                setThemeIcon("🔆︎");
             }
         }
     }, [appTheme]);
@@ -106,9 +106,7 @@ export default function App() {
                 <div className="grid gap-6 self-start">
                     <label className="grid gap-2 whitespace-nowrap">
                         <div className="grid grid-flow-col items-end justify-between gap-6 truncate">
-                            <div className="select-none text-3xl font-light">
-                                🔭 Home
-                            </div>
+                            <div className="select-none text-3xl">📡 Home</div>
                             <div className="select-text text-neutral-400">
                                 {mainHomepage}
                             </div>
@@ -124,7 +122,7 @@ export default function App() {
 
                     <label className="grid gap-2 whitespace-nowrap">
                         <div className="grid grid-flow-col items-end justify-between gap-6 truncate">
-                            <div className="select-none text-3xl font-light">
+                            <div className="select-none text-3xl">
                                 🛰️ Sidebar
                             </div>
                             <div className="select-text text-neutral-400">
