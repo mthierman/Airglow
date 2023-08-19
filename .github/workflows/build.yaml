@@ -41,8 +41,8 @@ jobs:
           $vspath = & $vswhere -products * -latest -property installationPath
           & "$vspath\Common7\Tools\Launch-VsDevShell.ps1" -HostArch amd64 -Arch amd64 -SkipAutomaticLocation
 
-          cmake --preset release
-          cmake --build --preset release
+          cmake -B build -S . -G "Ninja" -DCMAKE_BUILD_TYPE=Release
+          cmake --build build
 
           $zip = Get-Item "build/Airglow.zip"
           $installer = Get-Item "build/install.ps1"
