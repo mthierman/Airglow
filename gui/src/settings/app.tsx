@@ -96,6 +96,7 @@ export default function App() {
     return (
         <div>
             <form
+                className="grid h-full content-between gap-6 p-6"
                 name="settings"
                 id="settings"
                 method="post"
@@ -103,7 +104,7 @@ export default function App() {
                 autoComplete="off"
                 spellCheck="false">
                 <div className="grid gap-6 self-start">
-                    <label>
+                    <label className="grid gap-2 whitespace-nowrap">
                         <div className="grid grid-flow-col items-end justify-between gap-6 truncate">
                             <div className="select-none text-3xl font-light">
                                 🔭 Home
@@ -113,6 +114,7 @@ export default function App() {
                             </div>
                         </div>
                         <input
+                            className="rounded-lg border-[1px] border-neutral-600 bg-transparent p-2 shadow-lg outline-none"
                             type="text"
                             name="mainHomepage"
                             id="mainHomepage"
@@ -120,7 +122,7 @@ export default function App() {
                             pattern=".*[.].*"></input>
                     </label>
 
-                    <label>
+                    <label className="grid gap-2 whitespace-nowrap">
                         <div className="grid grid-flow-col items-end justify-between gap-6 truncate">
                             <div className="select-none text-3xl font-light">
                                 🛰️ Sidebar
@@ -130,6 +132,7 @@ export default function App() {
                             </div>
                         </div>
                         <input
+                            className="rounded-lg border-[1px] border-neutral-600 bg-transparent p-2 shadow-lg outline-none"
                             type="text"
                             name="sideHomepage"
                             id="sideHomepage"
@@ -143,7 +146,10 @@ export default function App() {
                         {themeIcon} {appTheme} mode
                     </div>
 
-                    <button id="submitUrl" type="submit">
+                    <button
+                        className="rounded-lg border-[1px] border-neutral-100 bg-neutral-50 p-2 shadow-lg duration-75 hover:border-green-500 hover:bg-green-500 active:border-green-400 active:bg-green-400 dark:border-neutral-700 dark:bg-neutral-800 dark:hover:border-green-600 dark:hover:bg-green-600 dark:active:border-green-500 dark:active:bg-green-500"
+                        id="submitUrl"
+                        type="submit">
                         Save
                     </button>
                 </div>

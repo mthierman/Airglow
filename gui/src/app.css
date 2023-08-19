@@ -1,18 +1,3 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@layer base {
-    html,
-    body {
-        @apply h-full;
-    }
-    #root {
-        @apply grid min-h-full;
-    }
-}
-
-input:-webkit-autofill {
-    transition: all 5000s ease-in-out 0s;
-    transition-property: background-color, color;
-}

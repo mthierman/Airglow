@@ -2,28 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-    html,
-    body {
-        @apply h-full;
-    }
-    #root {
-        @apply grid min-h-full;
-    }
-    form {
-        @apply grid h-full content-between gap-6 p-6;
-    }
-    label {
-        @apply grid gap-2 whitespace-nowrap;
-    }
-    input {
-        @apply rounded-lg border-[1px] border-neutral-600 bg-transparent p-2 shadow-lg outline-none;
-    }
-    button[type="submit"] {
-        @apply rounded-lg border-[1px] border-neutral-100 bg-neutral-50 p-2 shadow-lg duration-75 hover:border-green-500 hover:bg-green-500 active:border-green-400 active:bg-green-400 dark:border-neutral-700 dark:bg-neutral-800 dark:hover:border-green-600 dark:hover:bg-green-600 dark:active:border-green-500 dark:active:bg-green-500;
-    }
-}
-
 input:-webkit-autofill {
     transition: all 5000s ease-in-out 0s;
     transition-property: background-color, color;

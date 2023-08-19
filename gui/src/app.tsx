@@ -11,11 +11,5 @@ document.onreadystatechange = () => {
 };
 
 export default function App() {
-    return (
-        <div className="max-w-screen pointer-events-none grid max-h-full select-none">
-            <h1 className="place-self-center text-2xl">
-                Press ⏸️ to set homepage
-            </h1>
-        </div>
-    );
+    return <h1 className="text-center text-2xl">Press ⏸️ to set homepage</h1>;
 }
