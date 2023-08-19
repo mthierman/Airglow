@@ -63,10 +63,16 @@ export default function App() {
     if (!webviewSplit && webviewSwapped) mainInputStyle = "hidden";
     if (!webviewSplit && !webviewSwapped) sideInputStyle = "hidden";
 
+    let formStyle = "flex min-w-0 flex-shrink flex-grow text-lg";
+
+    if (webviewSwapped)
+        formStyle =
+            "flex min-w-0 flex-shrink flex-grow text-lg flex-row-reverse";
+
     return (
         <div className="flex h-full flex-col">
             <form
-                className="flex min-w-0 flex-shrink flex-grow flex-row text-lg"
+                className={formStyle}
                 name="url"
                 id="url"
                 method="post"
