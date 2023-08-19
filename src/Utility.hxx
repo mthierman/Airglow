@@ -32,7 +32,7 @@ winrt::hstring bar_url();
 
 std::pair<winrt::hstring, winrt::hstring> command_line();
 
-std::pair<HWND, FILE*> create_console(HWND);
+std::pair<HWND, FILE*> create_console();
 void remove_console(std::pair<HWND, FILE*>);
 
 std::string system_color(winrt::Windows::UI::ViewManagement::UIColorType);

@@ -42,6 +42,9 @@ class App
 
     Storage* storage{nullptr};
     HWND appHwnd{nullptr};
+    std::pair<HWND, FILE*> debugConsole{};
+    unsigned long long gdiplusToken{};
+    Gdiplus::GdiplusStartupInput gdiplusStartupInput{};
 
     std::unique_ptr<WebView> webviewGui;
     std::unique_ptr<WebView> webviewBar;

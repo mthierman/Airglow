@@ -250,15 +250,17 @@ std::pair<winrt::hstring, winrt::hstring> command_line()
     return commands;
 }
 
-std::pair<HWND, FILE*> create_console(HWND hwnd)
+std::pair<HWND, FILE*> create_console()
 {
-    FILE* dummyFile{};
+    HWND hwnd{nullptr};
+    FILE* dummyFile{nullptr};
+
+#ifdef _DEBUG
     AllocConsole();
     hwnd = GetConsoleWindow();
     SetConsoleTitleW(L"Debug");
     window_mica(hwnd);
     SetWindowPos(hwnd, nullptr, 0, 0, 400, 400, SWP_SHOWWINDOW);
-    // window_topmost(hwnd);
     freopen_s(&dummyFile, "CONOUT$", "w", stdout);
     freopen_s(&dummyFile, "CONOUT$", "w", stderr);
     freopen_s(&dummyFile, "CONIN$", "r", stdin);
@@ -266,14 +268,17 @@ std::pair<HWND, FILE*> create_console(HWND hwnd)
     std::clog.clear();
     std::cerr.clear();
     std::cin.clear();
+#endif
 
     return std::make_pair(hwnd, dummyFile);
 }
 
 void remove_console(std::pair<HWND, FILE*> console)
 {
+#ifdef _DEBUG
     fclose(console.second);
     FreeConsole();
+#endif
 }
 
 std::string system_color(winrt::Windows::UI::ViewManagement::UIColorType colorType)
