@@ -128,10 +128,18 @@ add_compile_definitions(
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     add_compile_options(
+        /EHsc
         /Zc:__cplusplus
-        /await
+        /await:strict
         /bigobj
         /permissive-
+        /utf-8
+        /W4
+        /WX
+    )
+
+    add_link_options(
+        /WX
     )
 endif()
 
