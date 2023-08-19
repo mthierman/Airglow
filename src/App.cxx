@@ -1,8 +1,5 @@
 #include "App.hxx"
 
-#define WM_NAVIGATEMAIN (WM_APP + 0)
-#define WM_NAVIGATESIDE (WM_APP + 1)
-
 App::App(Storage* s, HINSTANCE hInstance, PWSTR pCmdLine, int nCmdShow)
     : storage(s), appHwnd(create_window(hInstance))
 {
@@ -311,10 +308,10 @@ int App::wm_dpichanged(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     storage->application.scale =
         static_cast<float>(GetDpiForWindow(hwnd)) / static_cast<float>(USER_DEFAULT_SCREEN_DPI);
 
-    auto bounds = (RECT*)lparam;
+    auto bounds{(RECT*)lparam};
 
     SetWindowPos(appHwnd, nullptr, bounds->left, bounds->top, (bounds->right - bounds->left),
-                 (bounds->bottom - bounds->top), 0);
+                 (bounds->bottom - bounds->top), SWP_NOZORDER | SWP_NOACTIVATE);
 
     return 0;
 }

@@ -1,8 +1,5 @@
 #include "WebView.hxx"
 
-#define WM_NAVIGATEMAIN (WM_APP + 0)
-#define WM_NAVIGATESIDE (WM_APP + 1)
-
 WebView::WebView(Storage* s, HWND h, std::string n) : storage(s), appHwnd(h), name(n)
 {
     create_webview();
