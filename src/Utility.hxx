@@ -26,6 +26,10 @@ std::filesystem::path path_bar();
 std::filesystem::path path_json();
 std::filesystem::path path_db();
 
+winrt::hstring home_url();
+winrt::hstring settings_url();
+winrt::hstring bar_url();
+
 std::pair<winrt::hstring, winrt::hstring> command_line();
 
 std::pair<HWND, FILE*> create_console(HWND);

@@ -162,7 +162,7 @@ std::filesystem::path path_bar()
     if (!std::filesystem::exists(data))
         return std::filesystem::path{};
 
-    return (to_wide("file:///") + data.wstring() + std::filesystem::path::preferred_separator +
+    return (L"file:///" + data.wstring() + std::filesystem::path::preferred_separator +
             to_wide("bar") + std::filesystem::path::preferred_separator + to_wide("index.html"));
 }
 
@@ -183,6 +183,32 @@ std::filesystem::path path_db()
 
     return (data.wstring() + std::filesystem::path::preferred_separator +
             to_wide("Database.sqlite"));
+}
+
+winrt::hstring home_url()
+{
+#ifdef _DEBUG
+    // return winrt::hstring(L"https://localhost:8000/");
+    return winrt::to_hstring(path_home().c_str());
+#endif
+}
+
+winrt::hstring settings_url()
+{
+#ifdef _DEBUG
+    // return winrt::hstring(L"https://localhost:8000/settings/");
+    return winrt::to_hstring(path_settings().c_str());
+#endif
+}
+
+winrt::hstring bar_url()
+{
+#ifdef _DEBUG
+    // return winrt::hstring(L"https://localhost:8000/bar/");
+    return winrt::to_hstring(path_bar().c_str());
+#else
+    // return winrt::to_hstring(path_bar());
+#endif
 }
 
 std::pair<winrt::hstring, winrt::hstring> command_line()

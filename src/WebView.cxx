@@ -3,8 +3,7 @@
 #define WM_NAVIGATEMAIN (WM_APP + 0)
 #define WM_NAVIGATESIDE (WM_APP + 1)
 
-WebView::WebView(Storage* s, HWND h, std::string n, std::string u)
-    : storage(s), appHwnd(h), name(n), url(winrt::to_hstring(u))
+WebView::WebView(Storage* s, HWND h, std::string n) : storage(s), appHwnd(h), name(n)
 {
     create_webview();
 }
@@ -49,7 +48,7 @@ winrt::IAsyncAction WebView::create_webview()
     {
         webviewSettings.IsZoomControlEnabled(false);
 
-        core.Navigate(url);
+        core.Navigate(util::settings_url());
 
         core.WebMessageReceived(
             {[=, this](auto const&, auto const& args) { gui_web_message_received(args); }});
@@ -59,7 +58,7 @@ winrt::IAsyncAction WebView::create_webview()
     {
         webviewSettings.IsZoomControlEnabled(false);
 
-        core.Navigate(url);
+        core.Navigate(util::bar_url());
 
         core.WebMessageReceived(
             {[=, this](auto const&, auto const& args) { bar_web_message_received(args); }});
@@ -74,15 +73,7 @@ winrt::IAsyncAction WebView::create_webview()
 
         else
         {
-            if (url.empty())
-#if _DEBUG
-                core.Navigate(L"https://localhost:8000/");
-#else
-                core.Navigate(util::path_home().wstring());
-#endif
-
-            else
-                core.Navigate(url);
+            core.Navigate(util::home_url());
         }
 
         core.SourceChanged({[=, this](winrt::CoreWebView2 const& sender, auto const&)
@@ -103,15 +94,7 @@ winrt::IAsyncAction WebView::create_webview()
 
         else
         {
-            if (url.empty())
-#if _DEBUG
-                core.Navigate(L"https://localhost:8000/");
-#else
-                core.Navigate(util::path_home().wstring());
-#endif
-
-            else
-                core.Navigate(url);
+            core.Navigate(util::home_url());
         }
 
         core.SourceChanged({[=, this](winrt::CoreWebView2 const& sender, auto const&)

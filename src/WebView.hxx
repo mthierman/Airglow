@@ -12,7 +12,7 @@ using namespace winrt::Windows::Foundation;
 class WebView
 {
   public:
-    WebView(Storage*, HWND, std::string, std::string);
+    WebView(Storage*, HWND, std::string);
     ~WebView();
 
     winrt::IAsyncAction create_webview();
@@ -39,5 +39,4 @@ class WebView
     Storage* storage;
     HWND appHwnd;
     std::string name{};
-    winrt::hstring url{};
 };

@@ -8,20 +8,10 @@ App::App(Storage* s, HINSTANCE hInstance, PWSTR pCmdLine, int nCmdShow)
 {
     show_window();
 
-    webviewMain =
-        std::make_unique<WebView>(storage, appHwnd, "main", storage->settings.mainHomepage);
-
-    webviewSide =
-        std::make_unique<WebView>(storage, appHwnd, "side", storage->settings.sideHomepage);
-
-#ifdef _DEBUG
-    webviewGui =
-        std::make_unique<WebView>(storage, appHwnd, "gui", "https://localhost:8000/settings/");
-    webviewBar = std::make_unique<WebView>(storage, appHwnd, "bar", "https://localhost:8000/bar/");
-#else
-    webviewGui = std::make_unique<WebView>(storage, appHwnd, "gui", util::path_settings().string());
-    webviewBar = std::make_unique<WebView>(storage, appHwnd, "bar", util::path_bar().string());
-#endif
+    webviewMain = std::make_unique<WebView>(storage, appHwnd, "main");
+    webviewSide = std::make_unique<WebView>(storage, appHwnd, "side");
+    webviewGui = std::make_unique<WebView>(storage, appHwnd, "gui");
+    webviewBar = std::make_unique<WebView>(storage, appHwnd, "bar");
 }
 
 App::~App() {}
