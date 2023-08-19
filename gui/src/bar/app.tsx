@@ -67,7 +67,7 @@ export default function App() {
     let addresses = `flex`;
     if (webviewSwapped) addresses = `flex flex-row-reverse`;
 
-    let addressStyle = `flex-1 flex-shrink min-w-0 text-right truncate text-sm not-italic`;
+    let addressStyle = `flex-1 flex-shrink min-w-0 truncate text-sm not-italic`;
     let mainAddress = addressStyle;
     let sideAddress = addressStyle;
     if (!webviewSplit && webviewSwapped) mainAddress = `hidden`;
