@@ -178,7 +178,7 @@ winrt::Windows::Foundation::Rect App::panel_gui(RECT bounds)
 
 winrt::Windows::Foundation::Rect App::panel_bar(RECT bounds)
 {
-    auto scaledBar{75 * storage->application.scale};
+    auto scaledBar{50 * storage->application.scale};
 
     return winrt::Windows::Foundation::Rect{
         static_cast<float>(bounds.left), static_cast<float>(bounds.bottom - scaledBar),
@@ -187,7 +187,7 @@ winrt::Windows::Foundation::Rect App::panel_bar(RECT bounds)
 
 winrt::Windows::Foundation::Rect App::panel_full(RECT bounds)
 {
-    auto scaledBar{75 * storage->application.scale};
+    auto scaledBar{50 * storage->application.scale};
 
     return winrt::Windows::Foundation::Rect{
         static_cast<float>(bounds.left), static_cast<float>(bounds.top),
@@ -197,7 +197,7 @@ winrt::Windows::Foundation::Rect App::panel_full(RECT bounds)
 
 winrt::Windows::Foundation::Rect App::panel_left(RECT bounds)
 {
-    auto scaledBar{75 * storage->application.scale};
+    auto scaledBar{50 * storage->application.scale};
 
     return winrt::Windows::Foundation::Rect{
         static_cast<float>(bounds.left), static_cast<float>(bounds.top),
@@ -207,7 +207,7 @@ winrt::Windows::Foundation::Rect App::panel_left(RECT bounds)
 
 winrt::Windows::Foundation::Rect App::panel_right(RECT bounds)
 {
-    auto scaledBar{75 * storage->application.scale};
+    auto scaledBar{50 * storage->application.scale};
 
     return winrt::Windows::Foundation::Rect{
         static_cast<float>(bounds.right / 2), static_cast<float>(bounds.top),
@@ -217,7 +217,7 @@ winrt::Windows::Foundation::Rect App::panel_right(RECT bounds)
 
 winrt::Windows::Foundation::Rect App::panel_top(RECT bounds)
 {
-    auto scaledBar{75 * storage->application.scale};
+    auto scaledBar{50 * storage->application.scale};
 
     return winrt::Windows::Foundation::Rect{
         static_cast<float>(bounds.left), static_cast<float>(bounds.top),
@@ -227,7 +227,7 @@ winrt::Windows::Foundation::Rect App::panel_top(RECT bounds)
 
 winrt::Windows::Foundation::Rect App::panel_bot(RECT bounds)
 {
-    auto scaledBar{75 * storage->application.scale};
+    auto scaledBar{50 * storage->application.scale};
 
     return winrt::Windows::Foundation::Rect{
         static_cast<float>(bounds.left), static_cast<float>((bounds.bottom / 2) - (scaledBar / 2)),

@@ -44,50 +44,42 @@ export default function App() {
     let sideUrl = sideCurrentPage;
 
     if (
-        mainCurrentPage ===
-            "file:///D:/GitHub/Airglow/build/Airglow/gui/index.html" ||
+        mainCurrentPage.includes("Airglow/gui") ||
         mainCurrentPage === "https://localhost:8000/"
     )
         mainUrl = `\uFEFF`;
 
     if (
-        sideCurrentPage ===
-            "file:///D:/GitHub/Airglow/build/Airglow/gui/index.html" ||
+        sideCurrentPage.includes("Airglow/gui") ||
         sideCurrentPage === "https://localhost:8000/"
     )
         sideUrl = `\uFEFF`;
 
-    let addressBarStyle = "flex min-w-0 flex-shrink";
+    let addresses = `flex`;
+    if (webviewSwapped) addresses = `flex flex-row-reverse`;
 
-    if (webviewSwapped)
-        addressBarStyle = "flex min-w-0 flex-shrink flex-row-reverse";
+    let addressStyle = `flex-1 flex-shrink min-w-0 px-8 text-center truncate text-sm`;
+    let mainAddress = addressStyle;
+    let sideAddress = addressStyle;
+    if (!webviewSplit && webviewSwapped) mainAddress = `hidden`;
+    if (!webviewSplit && !webviewSwapped) sideAddress = `hidden`;
 
-    let addressStyle =
-        "h-min w-full truncate pb-1 pl-2 pr-8 pt-2 text-end text-sm shadow-lg";
+    let formStyle = `flex flex-grow`;
+    if (webviewSwapped) formStyle = `flex flex-grow flex-row-reverse`;
 
-    let mainAddressStyle = addressStyle;
-    let sideAddressStyle = addressStyle;
-
-    if (!webviewSplit && webviewSwapped) mainAddressStyle = "hidden";
-    if (!webviewSplit && !webviewSwapped) sideAddressStyle = "hidden";
-
-    let inputStyle =
-        "flex flex-1 flex-col min-w-0 bg-transparent pl-4 shadow-lg outline-none";
-
+    let inputStyle = `flex flex-1 outline-none text-center bg-transparent`;
     let mainInputStyle = inputStyle;
     let sideInputStyle = inputStyle;
-
-    if (!webviewSplit && webviewSwapped) mainInputStyle = "hidden";
-    if (!webviewSplit && !webviewSwapped) sideInputStyle = "hidden";
-
-    let formStyle = "flex min-w-0 flex-shrink flex-grow text-lg";
-
-    if (webviewSwapped)
-        formStyle =
-            "flex min-w-0 flex-shrink flex-grow text-lg flex-row-reverse";
+    if (!webviewSplit && webviewSwapped) mainInputStyle = `hidden`;
+    if (!webviewSplit && !webviewSwapped) sideInputStyle = `hidden`;
 
     return (
         <div className="flex h-full flex-col">
+            <div className={addresses}>
+                <address className={mainAddress}>{mainUrl}</address>
+                <address className={sideAddress}>{sideUrl}</address>
+            </div>
+
             <form
                 className={formStyle}
                 name="url"
@@ -100,23 +92,16 @@ export default function App() {
                     className={mainInputStyle}
                     type="text"
                     name="mainCurrentPage"
-                    id="mainCurrentPage"
-                    placeholder="📡"></input>
+                    id="mainCurrentPage"></input>
 
                 <input
                     className={sideInputStyle}
                     type="text"
                     name="sideCurrentPage"
-                    id="sideCurrentPage"
-                    placeholder="📡"></input>
+                    id="sideCurrentPage"></input>
 
                 <input type="submit" hidden />
             </form>
-
-            <div className={addressBarStyle}>
-                <address className={mainAddressStyle}>{mainUrl}</address>
-                <address className={sideAddressStyle}>{sideUrl}</address>
-            </div>
         </div>
     );
 }
