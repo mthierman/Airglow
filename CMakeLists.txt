@@ -118,6 +118,12 @@ add_executable(
     "${CMAKE_SOURCE_DIR}/src/console/Main.cxx"
 )
 
+add_executable(
+    Tests
+    "${CMAKE_SOURCE_DIR}/src/tests/Tests.cxx"
+    "${CMAKE_SOURCE_DIR}/src/Utility.cxx"
+)
+
 add_compile_definitions(
     UNICODE
     APP_NAME="${APP_NAME}"
@@ -156,7 +162,7 @@ target_precompile_headers(
 )
 
 target_precompile_headers(
-    ${APP_NAME_CONSOLE}
+    Tests
     REUSE_FROM
     ${APP_NAME}
 )
@@ -171,8 +177,32 @@ target_include_directories(
     "${CURL_PKG}/include/curl"
 )
 
+target_include_directories(
+    Tests
+    PRIVATE
+    "${WEBVIEW_PKG}/lib"
+    "${WIL_PKG}/include"
+    "${JSON_PKG}"
+    "${SQLITE_PKG}"
+    "${CURL_PKG}/include/curl"
+)
+
 target_link_libraries(
     ${APP_NAME}
+    PRIVATE
+    dwmapi.lib
+    gdiplus.lib
+    Uxtheme.lib
+    Urlmon.Lib
+    Kernel32.lib
+    User32.Lib
+    WindowsApp.lib
+    shcore.lib
+    sqlite
+)
+
+target_link_libraries(
+    Tests
     PRIVATE
     dwmapi.lib
     gdiplus.lib
