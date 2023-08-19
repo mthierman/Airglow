@@ -65,7 +65,8 @@ export default function App() {
     if (!webviewSplit && !webviewSwapped) sideInputStyle = `hidden`;
 
     let addresses = `flex bg-white dark:bg-black`;
-    if (webviewSwapped) addresses = `flex flex-row-reverse`;
+    if (webviewSwapped)
+        addresses = `flex flex-row-reverse bg-white dark:bg-black`;
 
     let addressStyle = `flex-1 flex-shrink min-w-0 px-8 text-center truncate text-sm`;
     let mainAddress = addressStyle;
