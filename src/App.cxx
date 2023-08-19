@@ -265,8 +265,6 @@ __int64 __stdcall App::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
             return app->wm_navigateside(hwnd, msg, wparam, lparam);
         case WM_NOTIFY:
             return app->wm_notify(hwnd, msg, wparam, lparam);
-        case WM_SETFOCUS:
-            return app->wm_setfocus(hwnd, msg, wparam, lparam);
         case WM_SETTINGCHANGE:
             return app->wm_settingchange(hwnd, msg, wparam, lparam);
         case WM_WINDOWPOSCHANGED:
@@ -480,23 +478,6 @@ int App::wm_notify(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     }
 
     storage->save();
-
-    return 0;
-}
-
-int App::wm_setfocus(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
-{
-    // if (webviewGui && webviewMain && webviewSide)
-    // {
-    //     if (storage->settings.webviewGui)
-    //         webviewGui->focus();
-
-    //     if (!storage->settings.webviewGui && !storage->settings.webviewSwapped)
-    //         webviewMain->focus();
-
-    //     if (!storage->settings.webviewGui && storage->settings.webviewSwapped)
-    //         webviewSide->focus();
-    // }
 
     return 0;
 }

@@ -38,7 +38,6 @@ class App
     int wm_navigatemain(HWND, UINT, WPARAM, LPARAM);
     int wm_navigateside(HWND, UINT, WPARAM, LPARAM);
     int wm_notify(HWND, UINT, WPARAM, LPARAM);
-    int wm_setfocus(HWND, UINT, WPARAM, LPARAM);
     int wm_settingchange(HWND, UINT, WPARAM, LPARAM);
     int wm_windowposchanged(HWND, UINT, WPARAM, LPARAM);
 
