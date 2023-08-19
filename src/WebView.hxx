@@ -2,7 +2,6 @@
 
 #include "Utility.hxx"
 #include "Storage.hxx"
-#include "include/Definitions.hxx"
 
 namespace winrt
 {

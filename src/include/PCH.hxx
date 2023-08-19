@@ -26,3 +26,4 @@
 #include <curl.h>
 
 #include "Templates.hxx"
+#include "Definitions.hxx"

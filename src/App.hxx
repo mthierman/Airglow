@@ -3,7 +3,6 @@
 #include "Utility.hxx"
 #include "Storage.hxx"
 #include "WebView.hxx"
-#include "include/Definitions.hxx"
 
 class App
 {
