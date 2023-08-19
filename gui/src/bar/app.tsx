@@ -58,24 +58,23 @@ export default function App() {
     let formStyle = `flex flex-grow`;
     if (webviewSwapped) formStyle = `flex flex-grow flex-row-reverse`;
 
-    let inputStyle = `flex flex-1 outline-none text-center bg-neutral-200 dark:bg-neutral-800 placeholder:text-left px-2`;
+    let inputStyle = `flex flex-1 outline-none text-center bg-transparent placeholder:text-left`;
     let mainInputStyle = inputStyle;
     let sideInputStyle = inputStyle;
     if (!webviewSplit && webviewSwapped) mainInputStyle = `hidden`;
     if (!webviewSplit && !webviewSwapped) sideInputStyle = `hidden`;
 
-    let addresses = `flex bg-white dark:bg-black`;
-    if (webviewSwapped)
-        addresses = `flex flex-row-reverse bg-white dark:bg-black`;
+    let addresses = `flex`;
+    if (webviewSwapped) addresses = `flex flex-row-reverse`;
 
-    let addressStyle = `flex-1 flex-shrink min-w-0 px-8 text-center truncate text-sm`;
+    let addressStyle = `flex-1 flex-shrink min-w-0 text-right truncate text-sm not-italic`;
     let mainAddress = addressStyle;
     let sideAddress = addressStyle;
     if (!webviewSplit && webviewSwapped) mainAddress = `hidden`;
     if (!webviewSplit && !webviewSwapped) sideAddress = `hidden`;
 
     return (
-        <div className="flex h-full flex-col">
+        <div className="flex h-full flex-col p-1">
             <form
                 className={formStyle}
                 name="url"
