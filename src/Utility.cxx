@@ -404,8 +404,6 @@ bool window_maximize(HWND hwnd)
 
 bool window_fullscreen(HWND hwnd)
 {
-    window_cloak(hwnd);
-
     static RECT pos;
 
     auto style{GetWindowLongPtrW(hwnd, GWL_STYLE)};
@@ -421,7 +419,6 @@ bool window_fullscreen(HWND hwnd)
                          mi.rcMonitor.right - mi.rcMonitor.left,
                          mi.rcMonitor.bottom - mi.rcMonitor.top, SWP_FRAMECHANGED);
         }
-        window_uncloak(hwnd);
 
         return true;
     }
@@ -431,8 +428,6 @@ bool window_fullscreen(HWND hwnd)
         SetWindowLongPtrW(hwnd, GWL_STYLE, style | WS_OVERLAPPEDWINDOW);
         SetWindowPos(hwnd, nullptr, pos.left, pos.top, (pos.right - pos.left),
                      (pos.bottom - pos.top), SWP_FRAMECHANGED);
-        SendMessage(hwnd, WM_SETICON, 0, 0);
-        window_uncloak(hwnd);
 
         return false;
     }
