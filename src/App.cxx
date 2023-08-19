@@ -428,8 +428,14 @@ int App::wm_keydown(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
         return 0;
 
     case VK_F8:
-        webviewMain->navigate_home();
-        webviewSide->navigate_home();
+        if (!webviewMain && !webviewSide)
+            return 0;
+
+        if (webviewMain->core && webviewSide->core)
+        {
+            webviewMain->core.Navigate(winrt::to_hstring(storage->settings.mainHomepage));
+            webviewSide->core.Navigate(winrt::to_hstring(storage->settings.sideHomepage));
+        }
 
         return 0;
 

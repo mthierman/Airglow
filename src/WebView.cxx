@@ -68,11 +68,11 @@ winrt::IAsyncAction WebView::create_webview()
         if (!args.first.empty())
             core.Navigate(args.first);
 
-        if (storage->settings.mainHomepage.empty())
-            core.Navigate(util::home_url());
-
-        else
+        if (args.first.empty() && !storage->settings.mainHomepage.empty())
             core.Navigate(winrt::to_hstring(storage->settings.mainHomepage));
+
+        if (args.first.empty() && storage->settings.mainHomepage.empty())
+            core.Navigate(util::home_url());
 
         core.SourceChanged({[=, this](winrt::CoreWebView2 const& sender, auto const&)
                             {
@@ -90,11 +90,11 @@ winrt::IAsyncAction WebView::create_webview()
         if (!args.second.empty())
             core.Navigate(args.second);
 
-        if (storage->settings.sideHomepage.empty())
-            core.Navigate(util::home_url());
-
-        else
+        if (args.second.empty() && !storage->settings.sideHomepage.empty())
             core.Navigate(winrt::to_hstring(storage->settings.sideHomepage));
+
+        if (args.second.empty() && storage->settings.sideHomepage.empty())
+            core.Navigate(util::home_url());
 
         core.SourceChanged({[=, this](winrt::CoreWebView2 const& sender, auto const&)
                             {
@@ -286,78 +286,6 @@ void WebView::post_settings(nlohmann::json j)
         return;
 
     core.PostWebMessageAsJson(util::to_wide(j.dump()));
-}
-
-void WebView::navigate_home()
-{
-    if (!core)
-        return;
-
-    if (name == "main" && !storage->settings.mainHomepage.empty())
-        core.Navigate(util::to_wide(storage->settings.mainHomepage));
-
-    if (name == "side" && !storage->settings.sideHomepage.empty())
-        core.Navigate(util::to_wide(storage->settings.sideHomepage));
-}
-
-void WebView::navigate_main()
-{
-    if (!core)
-        return;
-
-    auto args{util::command_line()};
-
-    if (!args.first.empty())
-    {
-        if (args.first.starts_with(L"https://") || args.first.starts_with(L"http://"))
-            core.Navigate(args.first);
-
-        else
-            core.Navigate((L"https://" + args.first));
-        return;
-    }
-
-    if (storage->settings.mainHomepage == "")
-    {
-#ifdef _DEBUG
-        core.Navigate(L"https://localhost:8000/");
-#else
-        core.Navigate(util::path_home().wstring());
-#endif
-        return;
-    }
-
-    core.Navigate(util::to_wide(storage->settings.mainHomepage));
-}
-
-void WebView::navigate_side()
-{
-    if (!core)
-        return;
-
-    auto args{util::command_line()};
-
-    if (!args.second.empty())
-    {
-        if (args.second.starts_with(L"https://") || args.second.starts_with(L"http://"))
-            core.Navigate(args.second);
-
-        else
-            core.Navigate((L"https://" + args.second));
-        return;
-    }
-
-    if (storage->settings.mainHomepage == "")
-    {
-#ifdef _DEBUG
-        core.Navigate(L"https://localhost:8000/");
-#else
-        core.Navigate(util::path_home().wstring());
-#endif
-        return;
-    }
-
-    core.Navigate(util::to_wide(storage->settings.mainHomepage));
 }
 
 void WebView::title()

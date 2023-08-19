@@ -19,9 +19,6 @@ class WebView
     void resized();
 
     void post_settings(nlohmann::json j);
-    void navigate_home();
-    void navigate_main();
-    void navigate_side();
     void title();
     winrt::IAsyncAction icon();
     void focus();
