@@ -40,6 +40,23 @@ export default function App() {
         form.reset();
     };
 
+    let mainUrl = mainCurrentPage;
+    let sideUrl = sideCurrentPage;
+
+    if (
+        mainCurrentPage ===
+            "file:///D:/GitHub/Airglow/build/Airglow/gui/index.html" ||
+        mainCurrentPage === "https://localhost:8000/"
+    )
+        mainUrl = `\uFEFF`;
+
+    if (
+        sideCurrentPage ===
+            "file:///D:/GitHub/Airglow/build/Airglow/gui/index.html" ||
+        sideCurrentPage === "https://localhost:8000/"
+    )
+        sideUrl = `\uFEFF`;
+
     let addressBarStyle = "flex min-w-0 flex-shrink";
 
     if (webviewSwapped)
@@ -55,7 +72,7 @@ export default function App() {
     if (!webviewSplit && !webviewSwapped) sideAddressStyle = "hidden";
 
     let inputStyle =
-        "flex flex-1 flex-col bg-transparent pl-4 shadow-lg outline-none";
+        "flex flex-1 flex-col min-w-0 bg-transparent pl-4 shadow-lg outline-none";
 
     let mainInputStyle = inputStyle;
     let sideInputStyle = inputStyle;
@@ -97,12 +114,8 @@ export default function App() {
             </form>
 
             <div className={addressBarStyle}>
-                <address className={mainAddressStyle}>
-                    {mainCurrentPage}
-                </address>
-                <address className={sideAddressStyle}>
-                    {sideCurrentPage}
-                </address>
+                <address className={mainAddressStyle}>{mainUrl}</address>
+                <address className={sideAddressStyle}>{sideUrl}</address>
             </div>
         </div>
     );
