@@ -80,13 +80,13 @@ export default function App() {
 
         if (data.mainHomepage.toString() != "") {
             window.chrome.webview.postMessage({
-                mainHomepage: data.mainHomepage,
+                mainHomepage: data.mainHomepage.toString().trim(),
             });
         }
 
         if (data.sideHomepage.toString() != "") {
             window.chrome.webview.postMessage({
-                sideHomepage: data.sideHomepage,
+                sideHomepage: data.sideHomepage.toString().trim(),
             });
         }
 
@@ -106,7 +106,7 @@ export default function App() {
                     <label>
                         <div className="grid grid-flow-col items-end justify-between gap-6 truncate">
                             <div className="select-none text-3xl font-light">
-                                🌌 Home
+                                🔭 Home
                             </div>
                             <div className="select-text text-neutral-400">
                                 {mainHomepage}

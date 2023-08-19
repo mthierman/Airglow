@@ -46,7 +46,7 @@ winrt::IAsyncAction WebView::create_webview()
 
     if (name == "gui")
     {
-        webviewSettings.IsZoomControlEnabled(false);
+        // webviewSettings.IsZoomControlEnabled(false);
 
         core.Navigate(util::settings_url());
 
@@ -56,7 +56,7 @@ winrt::IAsyncAction WebView::create_webview()
 
     if (name == "bar")
     {
-        webviewSettings.IsZoomControlEnabled(false);
+        // webviewSettings.IsZoomControlEnabled(false);
 
         core.Navigate(util::bar_url());
 
@@ -71,10 +71,11 @@ winrt::IAsyncAction WebView::create_webview()
         if (!args.first.empty())
             core.Navigate(args.first);
 
-        else
-        {
+        if (storage->settings.mainHomepage.empty())
             core.Navigate(util::home_url());
-        }
+
+        else
+            core.Navigate(winrt::to_hstring(storage->settings.mainHomepage));
 
         core.SourceChanged({[=, this](winrt::CoreWebView2 const& sender, auto const&)
                             {
@@ -92,10 +93,11 @@ winrt::IAsyncAction WebView::create_webview()
         if (!args.second.empty())
             core.Navigate(args.second);
 
-        else
-        {
+        if (storage->settings.sideHomepage.empty())
             core.Navigate(util::home_url());
-        }
+
+        else
+            core.Navigate(winrt::to_hstring(storage->settings.sideHomepage));
 
         core.SourceChanged({[=, this](winrt::CoreWebView2 const& sender, auto const&)
                             {
@@ -129,7 +131,7 @@ void WebView::gui_web_message_received(winrt::CoreWebView2WebMessageReceivedEven
         {
             auto s{j["mainHomepage"].get<std::string>()};
 
-            if (s.starts_with("https://") || s.starts_with("http://"))
+            if (s.starts_with("http://") || s.starts_with("https://"))
                 storage->settings.mainHomepage = s;
             else
                 storage->settings.mainHomepage = "https://" + s;
@@ -139,7 +141,7 @@ void WebView::gui_web_message_received(winrt::CoreWebView2WebMessageReceivedEven
         {
             auto s{j["sideHomepage"].get<std::string>()};
 
-            if (s.starts_with("https://") || s.starts_with("http://"))
+            if (s.starts_with("http://") || s.starts_with("https://"))
                 storage->settings.sideHomepage = s;
             else
                 storage->settings.sideHomepage = "https://" + s;
@@ -163,7 +165,7 @@ void WebView::bar_web_message_received(winrt::CoreWebView2WebMessageReceivedEven
         {
             auto s{j["mainCurrentPage"].get<std::string>()};
 
-            if (s.starts_with("https://"))
+            if (s.starts_with("http://") || s.starts_with("https://"))
                 storage->settings.mainCurrentPage = s;
 
             else
@@ -176,7 +178,7 @@ void WebView::bar_web_message_received(winrt::CoreWebView2WebMessageReceivedEven
         {
             auto s{j["sideCurrentPage"].get<std::string>()};
 
-            if (s.starts_with("https://"))
+            if (s.starts_with("http://") || s.starts_with("https://"))
                 storage->settings.sideCurrentPage = s;
 
             else

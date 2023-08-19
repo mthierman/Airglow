@@ -27,60 +27,77 @@ export default function App() {
 
         if (data.mainCurrentPage.toString() != "") {
             window.chrome.webview.postMessage({
-                mainCurrentPage: data.mainCurrentPage,
+                mainCurrentPage: data.mainCurrentPage.toString().trim(),
             });
         }
 
         if (data.sideCurrentPage.toString() != "") {
             window.chrome.webview.postMessage({
-                sideCurrentPage: data.sideCurrentPage,
+                sideCurrentPage: data.sideCurrentPage.toString().trim(),
             });
         }
 
         form.reset();
     };
 
-    let formStyle = "flex";
-    let mainLabelStyle = "";
-    let sideLabelStyle = "";
+    let addressBarStyle = "flex min-w-0 flex-shrink";
 
-    if (webviewSwapped) formStyle = "flex flex-row-reverse";
+    if (webviewSwapped)
+        addressBarStyle = "flex min-w-0 flex-shrink flex-row-reverse";
 
-    if (!webviewSplit && !webviewSwapped) {
-        sideLabelStyle = "hidden";
-    }
-    if (!webviewSplit && webviewSwapped) {
-        mainLabelStyle = "hidden";
-    }
+    let addressStyle =
+        "h-min w-full truncate pb-1 pl-2 pr-8 pt-2 text-end text-sm shadow-lg";
+
+    let mainAddressStyle = addressStyle;
+    let sideAddressStyle = addressStyle;
+
+    if (!webviewSplit && webviewSwapped) mainAddressStyle = "hidden";
+    if (!webviewSplit && !webviewSwapped) sideAddressStyle = "hidden";
+
+    let inputStyle =
+        "flex flex-1 flex-col bg-transparent pl-4 shadow-lg outline-none";
+
+    let mainInputStyle = inputStyle;
+    let sideInputStyle = inputStyle;
+
+    if (!webviewSplit && webviewSwapped) mainInputStyle = "hidden";
+    if (!webviewSplit && !webviewSwapped) sideInputStyle = "hidden";
 
     return (
-        <div>
+        <div className="flex h-full flex-col">
             <form
-                className={formStyle}
+                className="flex min-w-0 flex-shrink flex-grow flex-row text-lg"
                 name="url"
                 id="url"
                 method="post"
                 onSubmit={handleForm}
                 autoComplete="off"
                 spellCheck="false">
-                <label className={mainLabelStyle}>
-                    <input
-                        type="text"
-                        name="mainCurrentPage"
-                        id="mainCurrentPage"></input>
-                    <address>{mainCurrentPage}</address>
-                </label>
+                <input
+                    className={mainInputStyle}
+                    type="text"
+                    name="mainCurrentPage"
+                    id="mainCurrentPage"
+                    placeholder="📡"></input>
 
-                <label className={sideLabelStyle}>
-                    <input
-                        type="text"
-                        name="sideCurrentPage"
-                        id="sideCurrentPage"></input>
-                    <address>{sideCurrentPage}</address>
-                </label>
+                <input
+                    className={sideInputStyle}
+                    type="text"
+                    name="sideCurrentPage"
+                    id="sideCurrentPage"
+                    placeholder="📡"></input>
 
                 <input type="submit" hidden />
             </form>
+
+            <div className={addressBarStyle}>
+                <address className={mainAddressStyle}>
+                    {mainCurrentPage}
+                </address>
+                <address className={sideAddressStyle}>
+                    {sideCurrentPage}
+                </address>
+            </div>
         </div>
     );
 }

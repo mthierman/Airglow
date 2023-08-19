@@ -188,7 +188,8 @@ std::filesystem::path path_db()
 winrt::hstring home_url()
 {
 #ifdef _DEBUG
-    // return winrt::hstring(L"https://localhost:8000/");
+    return winrt::hstring(L"https://localhost:8000/");
+#else
     return winrt::to_hstring(path_home().c_str());
 #endif
 }
@@ -196,7 +197,8 @@ winrt::hstring home_url()
 winrt::hstring settings_url()
 {
 #ifdef _DEBUG
-    // return winrt::hstring(L"https://localhost:8000/settings/");
+    return winrt::hstring(L"https://localhost:8000/settings/");
+#else
     return winrt::to_hstring(path_settings().c_str());
 #endif
 }
@@ -204,10 +206,9 @@ winrt::hstring settings_url()
 winrt::hstring bar_url()
 {
 #ifdef _DEBUG
-    // return winrt::hstring(L"https://localhost:8000/bar/");
-    return winrt::to_hstring(path_bar().c_str());
+    return winrt::hstring(L"https://localhost:8000/bar/");
 #else
-    // return winrt::to_hstring(path_bar());
+    return winrt::to_hstring(path_bar().c_str());
 #endif
 }
 

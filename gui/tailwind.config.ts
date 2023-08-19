@@ -27,11 +27,11 @@ export default {
         //     serif: ["Constantia", "Georgia", "Times New Roman", "Noto Emoji"],
         //     mono: ["Cascadia Mono", "Consolas", "Courier New", "Noto Emoji"],
         // },
-        fontFamily: {
-            sans: ["Segoe UI Variable Text", "Segoe UI", "Arial", "Noto Emoji"],
-            serif: ["Constantia", "Georgia", "Times New Roman", "Noto Emoji"],
-            mono: ["Cascadia Mono", "Consolas", "Courier New", "Noto Emoji"],
-        },
+        // fontFamily: {
+        //     sans: ["Segoe UI Variable Text", "Segoe UI", "Arial", "Noto Emoji"],
+        //     serif: ["Constantia", "Georgia", "Times New Roman", "Noto Emoji"],
+        //     mono: ["Cascadia Mono", "Consolas", "Courier New", "Noto Emoji"],
+        // },
     },
     corePlugins: {
         preflight: true,
