@@ -98,6 +98,24 @@ int dberror(std::string in)
     return 0;
 };
 
+unsigned long long startup()
+{
+    winrt::init_apartment(winrt::apartment_type::single_threaded);
+
+    SetEnvironmentVariableW(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR", L"0");
+
+    unsigned long long gdiplusToken;
+    Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+
+    if (Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, nullptr) !=
+        Gdiplus::Status::Ok)
+        return util::error("GDI+ failed to initialize");
+
+    return gdiplusToken;
+}
+
+void shutdown(unsigned long long gdiplusToken) { Gdiplus::GdiplusShutdown(gdiplusToken); }
+
 std::filesystem::path path_appdata()
 {
     PWSTR buffer{};
@@ -472,15 +490,9 @@ bool window_topmost(HWND hwnd)
 
 std::vector<int> window_position(HWND hwnd)
 {
-    WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
-    RECT rect{0, 0, 0, 0};
-    GetWindowPlacement(hwnd, &wp);
+    RECT rect;
     GetWindowRect(hwnd, &rect);
-    return bounds_to_position(rect);
-}
 
-std::vector<int> bounds_to_position(RECT rect)
-{
     return std::vector<int>{rect.left, rect.top, (rect.right - rect.left),
                             (rect.bottom - rect.top)};
 }
@@ -512,22 +524,4 @@ RECT bounds(HWND hwnd)
 //     static_cast<long>(rect.Width),
 //                 static_cast<long>(rect.Height)};
 // }
-
-unsigned long long startup()
-{
-    winrt::init_apartment(winrt::apartment_type::single_threaded);
-
-    SetEnvironmentVariableW(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR", L"0");
-
-    unsigned long long gdiplusToken;
-    Gdiplus::GdiplusStartupInput gdiplusStartupInput;
-
-    if (Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, nullptr) !=
-        Gdiplus::Status::Ok)
-        return util::error("GDI+ failed to initialize");
-
-    return gdiplusToken;
-}
-
-void shutdown(unsigned long long gdiplusToken) { Gdiplus::GdiplusShutdown(gdiplusToken); }
 } // namespace util

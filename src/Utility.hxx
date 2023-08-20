@@ -17,6 +17,9 @@ int error(std::string);
 int werror(std::wstring);
 int dberror(std::string);
 
+unsigned long long startup();
+void shutdown(unsigned long long);
+
 std::filesystem::path path_appdata();
 std::filesystem::path path_portable();
 std::filesystem::path path_gui();
@@ -46,14 +49,11 @@ bool window_mica(HWND);
 bool window_maximize(HWND);
 bool window_fullscreen(HWND);
 bool window_topmost(HWND);
+
 std::vector<int> window_position(HWND);
-std::vector<int> bounds_to_position(RECT);
 RECT bounds(HWND);
 
 // RECT bounds_to_rect(std::vector<int>);
 // winrt::Windows::Foundation::Rect winrt_bounds_to_rect(RECT);
 // RECT winrt_rect_to_bounds(winrt::Windows::Foundation::Rect);
-
-unsigned long long startup();
-void shutdown(unsigned long long);
 } // namespace util
