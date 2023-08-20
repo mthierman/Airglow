@@ -26,10 +26,10 @@ struct Settings
     bool webviewSplit{false};
     bool webviewSwapped{false};
     bool webviewHorizontal{false};
-    std::string mainHomepage{""};
-    std::string mainCurrentPage{""};
-    std::string sideHomepage{""};
-    std::string sideCurrentPage{""};
+    std::string mainHomepage{};
+    std::string mainCurrentPage{};
+    std::string sideHomepage{};
+    std::string sideCurrentPage{};
 };
 
 struct Colors
@@ -72,6 +72,7 @@ class Storage
     Colors deserialize_colors(nlohmann::json j);
     nlohmann::json load();
     void save();
+
     Application application{};
     Settings settings{};
     Paths paths{};

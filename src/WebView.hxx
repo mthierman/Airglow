@@ -33,7 +33,7 @@ class WebView
     void bar_web_message_received(winrt::CoreWebView2WebMessageReceivedEventArgs const&);
     void accelerator_key_pressed(winrt::CoreWebView2AcceleratorKeyPressedEventArgs const&);
 
-    Storage* storage;
-    HWND appHwnd;
+    Storage* storage{nullptr};
+    HWND appHwnd{nullptr};
     std::string name{};
 };

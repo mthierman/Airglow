@@ -42,7 +42,7 @@ class App
 
     Storage* storage{nullptr};
     HWND appHwnd{nullptr};
-    std::pair<HWND, FILE*> debugConsole{};
+    std::pair<HWND, FILE*> debugConsole{nullptr, nullptr};
     unsigned long long gdiplusToken{};
     Gdiplus::GdiplusStartupInput gdiplusStartupInput{};
 

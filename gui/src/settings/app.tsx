@@ -107,12 +107,12 @@ export default function App() {
                     <label className="grid gap-2 whitespace-nowrap">
                         <div className="grid grid-flow-col items-end justify-between gap-6 truncate">
                             <div className="select-none text-3xl">📡 Home</div>
-                            <div className="select-text text-neutral-400">
+                            <div className="select-text text-accent dark:text-accentLight1">
                                 {mainHomepage}
                             </div>
                         </div>
                         <input
-                            className="rounded-lg border-[1px] border-neutral-600 bg-transparent p-2 shadow-lg outline-none"
+                            className="rounded-lg border-[1px] bg-transparent p-2 shadow-md shadow-neutral-400 outline-none focus:border-accent dark:shadow-black dark:focus:border-accentLight2"
                             type="text"
                             name="mainHomepage"
                             id="mainHomepage"
@@ -125,12 +125,12 @@ export default function App() {
                             <div className="select-none text-3xl">
                                 🛰️ Sidebar
                             </div>
-                            <div className="select-text text-neutral-400">
+                            <div className="select-text text-accent dark:text-accentLight1">
                                 {sideHomepage}
                             </div>
                         </div>
                         <input
-                            className="rounded-lg border-[1px] border-neutral-600 bg-transparent p-2 shadow-lg outline-none"
+                            className="rounded-lg border-[1px] bg-transparent p-2 shadow-md shadow-neutral-400 outline-none focus:border-accent dark:shadow-black dark:focus:border-accentLight1"
                             type="text"
                             name="sideHomepage"
                             id="sideHomepage"
@@ -145,7 +145,7 @@ export default function App() {
                     </div>
 
                     <button
-                        className="rounded-lg border-[1px] border-neutral-100 bg-neutral-50 p-2 shadow-lg duration-75 hover:border-green-500 hover:bg-green-500 active:border-green-400 active:bg-green-400 dark:border-neutral-700 dark:bg-neutral-800 dark:hover:border-green-600 dark:hover:bg-green-600 dark:active:border-green-500 dark:active:bg-green-500"
+                        className="rounded-lg border-[1px] bg-transparent p-2 shadow-md shadow-neutral-400 duration-75 hover:border-accent hover:text-accent active:scale-95 dark:shadow-black dark:hover:border-accentLight1 dark:hover:text-accentLight1"
                         id="submitUrl"
                         type="submit">
                         Save
