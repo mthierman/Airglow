@@ -111,7 +111,7 @@ export default function App() {
                 spellCheck="false">
                 <label
                     className={
-                        "flex min-w-0 flex-1 select-none text-accentDark2 dark:text-accent " +
+                        "flex min-w-0 flex-1 select-none px-1 text-accentDark2 dark:text-accent " +
                         (!webviewSplit && webviewSwapped ? "hidden" : "")
                     }>
                     🔍︎
@@ -124,7 +124,7 @@ export default function App() {
 
                 <label
                     className={
-                        "flex min-w-0 flex-1 select-none text-accentDark2 dark:text-accent " +
+                        "flex min-w-0 flex-1 select-none px-1 text-accentDark2 dark:text-accent " +
                         (!webviewSplit && !webviewSwapped ? "hidden" : "")
                     }>
                     🔍︎
