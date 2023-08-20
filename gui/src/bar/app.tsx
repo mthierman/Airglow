@@ -70,44 +70,13 @@ export default function App() {
         form.reset();
     };
 
-    let mainUrl = mainCurrentPage;
-    let sideUrl = sideCurrentPage;
-
-    if (
-        mainCurrentPage.includes("Airglow/gui") ||
-        mainCurrentPage === "https://localhost:8000/"
-    )
-        mainUrl = `\uFEFF`;
-
-    if (
-        sideCurrentPage.includes("Airglow/gui") ||
-        sideCurrentPage === "https://localhost:8000/"
-    )
-        sideUrl = `\uFEFF`;
-
-    let form = `flex flex-grow shadow-md shadow-neutral-400 dark:shadow-black`;
-    if (webviewSwapped)
-        form = `flex flex-grow flex-row-reverse shadow-md shadow-neutral-400 dark:shadow-black`;
-
-    let input = `flex flex-1 outline-none text-center bg-transparent placeholder:text-left px-4`;
-    let mainInput = input;
-    let sideInput = input;
-    if (!webviewSplit && webviewSwapped) mainInput = `hidden`;
-    if (!webviewSplit && !webviewSwapped) sideInput = `hidden`;
-
-    let addresses = `flex`;
-    if (webviewSwapped) addresses = `flex flex-row-reverse`;
-
-    let address = `flex-1 flex-shrink min-w-0 truncate text-sm not-italic text-center px-4 py-1 text-accent dark:text-accentLight1`;
-    let mainAddress = address;
-    let sideAddress = address;
-    if (!webviewSplit && webviewSwapped) mainAddress = `hidden`;
-    if (!webviewSplit && !webviewSwapped) sideAddress = `hidden`;
-
     return (
         <div className="flex h-full flex-col">
             <form
-                className={form}
+                className={
+                    "flex flex-grow shadow-md shadow-neutral-400 dark:shadow-black " +
+                    (webviewSwapped ? "flex-row-reverse" : "")
+                }
                 name="url"
                 id="url"
                 method="post"
@@ -115,14 +84,20 @@ export default function App() {
                 autoComplete="off"
                 spellCheck="false">
                 <input
-                    className={mainInput}
+                    className={
+                        "flex flex-1 bg-transparent px-4 text-center outline-none placeholder:text-left " +
+                        (!webviewSplit && webviewSwapped ? "hidden" : "")
+                    }
                     type="text"
                     name="mainCurrentPage"
                     id="mainCurrentPage"
                     placeholder="🔍︎"></input>
 
                 <input
-                    className={sideInput}
+                    className={
+                        "flex flex-1 bg-transparent px-4 text-center outline-none placeholder:text-left " +
+                        (!webviewSplit && !webviewSwapped ? "hidden" : "")
+                    }
                     type="text"
                     name="sideCurrentPage"
                     id="sideCurrentPage"
@@ -131,9 +106,31 @@ export default function App() {
                 <input type="submit" hidden />
             </form>
 
-            <div className={addresses}>
-                <address className={mainAddress}>{mainUrl}</address>
-                <address className={sideAddress}>{sideUrl}</address>
+            <div
+                className={
+                    "flex " + (webviewSwapped ? "flex-row-reverse" : "")
+                }>
+                <address
+                    className={
+                        "min-w-0 flex-1 flex-shrink truncate px-4 py-1 text-center text-sm not-italic text-accent dark:text-accentLight1 " +
+                        (!webviewSplit && webviewSwapped ? "hidden" : "")
+                    }>
+                    {mainCurrentPage.includes("Airglow/gui") ||
+                    mainCurrentPage === "https://localhost:8000/"
+                        ? `\uFEFF`
+                        : mainCurrentPage}
+                    <a href="#">🛠️</a>
+                </address>
+                <address
+                    className={
+                        "min-w-0 flex-1 flex-shrink truncate px-4 py-1 text-center text-sm not-italic text-accent dark:text-accentLight1 " +
+                        (!webviewSplit && !webviewSwapped ? "hidden" : "")
+                    }>
+                    {sideCurrentPage.includes("Airglow/gui") ||
+                    sideCurrentPage === "https://localhost:8000/"
+                        ? `\uFEFF`
+                        : sideCurrentPage}
+                </address>
             </div>
         </div>
     );
