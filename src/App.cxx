@@ -257,6 +257,10 @@ __int64 __stdcall App::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
             return app->wm_close(hwnd, msg, wparam, lparam);
         case WM_DESTROY:
             return app->wm_destroy(hwnd, msg, wparam, lparam);
+        case WM_DEVTOOLSMAIN:
+            return app->wm_devtoolsmain(hwnd, msg, wparam, lparam);
+        case WM_DEVTOOLSSIDE:
+            return app->wm_devtoolsside(hwnd, msg, wparam, lparam);
         case WM_DPICHANGED:
             return app->wm_dpichanged(hwnd, msg, wparam, lparam);
         case WM_ERASEBKGND:
@@ -309,6 +313,28 @@ int App::wm_close(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 int App::wm_destroy(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
     PostQuitMessage(0);
+
+    return 0;
+}
+
+int App::wm_devtoolsmain(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+{
+    if (!webviewMain)
+        return 0;
+
+    if (webviewMain->core)
+        webviewMain->core.OpenDevToolsWindow();
+
+    return 0;
+}
+
+int App::wm_devtoolsside(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+{
+    if (!webviewSide)
+        return 0;
+
+    if (webviewSide->core)
+        webviewSide->core.OpenDevToolsWindow();
 
     return 0;
 }

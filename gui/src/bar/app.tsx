@@ -70,11 +70,23 @@ export default function App() {
         form.reset();
     };
 
+    const handleMainDevtools = () => {
+        window.chrome.webview.postMessage({
+            mainDevtools: true,
+        });
+    };
+
+    const handleSideDevtools = () => {
+        window.chrome.webview.postMessage({
+            sideDevtools: true,
+        });
+    };
+
     return (
-        <div className="flex h-full flex-col">
+        <div className="flex h-full flex-col overflow-clip">
             <form
                 className={
-                    "flex flex-grow shadow-md shadow-neutral-400 dark:shadow-black " +
+                    "flex flex-grow text-2xl shadow-lg shadow-neutral-300 dark:shadow-neutral-950 " +
                     (webviewSwapped ? "flex-row-reverse" : "")
                 }
                 name="url"
@@ -85,51 +97,63 @@ export default function App() {
                 spellCheck="false">
                 <input
                     className={
-                        "flex flex-1 bg-transparent px-4 text-center outline-none placeholder:text-left " +
+                        "flex min-w-0 flex-1 bg-transparent px-2 text-center text-accentDark2 outline-none placeholder:text-left dark:text-accent " +
                         (!webviewSplit && webviewSwapped ? "hidden" : "")
                     }
                     type="text"
                     name="mainCurrentPage"
-                    id="mainCurrentPage"
-                    placeholder="🔍︎"></input>
+                    id="mainCurrentPage"></input>
 
                 <input
                     className={
-                        "flex flex-1 bg-transparent px-4 text-center outline-none placeholder:text-left " +
+                        "flex min-w-0 flex-1 bg-transparent px-2 text-center text-accentDark2 outline-none placeholder:text-left dark:text-accent " +
                         (!webviewSplit && !webviewSwapped ? "hidden" : "")
                     }
                     type="text"
                     name="sideCurrentPage"
-                    id="sideCurrentPage"
-                    placeholder="🔍︎"></input>
+                    id="sideCurrentPage"></input>
 
                 <input type="submit" hidden />
             </form>
 
             <div
                 className={
-                    "flex " + (webviewSwapped ? "flex-row-reverse" : "")
+                    "flex p-2 text-sm text-neutral-500 dark:text-neutral-400 " +
+                    (webviewSwapped ? "flex-row-reverse" : "")
                 }>
                 <address
                     className={
-                        "min-w-0 flex-1 flex-shrink truncate px-4 py-1 text-center text-sm not-italic text-accent dark:text-accentLight1 " +
+                        "flex min-w-0 flex-1 flex-shrink items-center not-italic " +
                         (!webviewSplit && webviewSwapped ? "hidden" : "")
                     }>
-                    {mainCurrentPage.includes("Airglow/gui") ||
-                    mainCurrentPage === "https://localhost:8000/"
-                        ? `\uFEFF`
-                        : mainCurrentPage}
-                    <a href="#">🛠️</a>
+                    <span className="flex-grow truncate px-4 text-center">
+                        <a
+                            className="select-none pr-2 hover:cursor-pointer"
+                            onClick={handleMainDevtools}>
+                            {"🔧︎"}
+                        </a>
+                        {mainCurrentPage.includes("Airglow/gui") ||
+                        mainCurrentPage === "https://localhost:8000/"
+                            ? `\uFEFF`
+                            : mainCurrentPage}
+                    </span>
                 </address>
                 <address
                     className={
-                        "min-w-0 flex-1 flex-shrink truncate px-4 py-1 text-center text-sm not-italic text-accent dark:text-accentLight1 " +
+                        "flex min-w-0 flex-1 flex-shrink items-center not-italic " +
                         (!webviewSplit && !webviewSwapped ? "hidden" : "")
                     }>
-                    {sideCurrentPage.includes("Airglow/gui") ||
-                    sideCurrentPage === "https://localhost:8000/"
-                        ? `\uFEFF`
-                        : sideCurrentPage}
+                    <span className="flex-grow truncate px-4 text-center">
+                        <a
+                            className="select-none pr-2 hover:cursor-pointer"
+                            onClick={handleSideDevtools}>
+                            {"🔧︎"}
+                        </a>
+                        {sideCurrentPage.includes("Airglow/gui") ||
+                        sideCurrentPage === "https://localhost:8000/"
+                            ? `\uFEFF`
+                            : sideCurrentPage}
+                    </span>
                 </address>
             </div>
         </div>

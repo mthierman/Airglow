@@ -29,6 +29,8 @@ class App
     int wm_activate(HWND, UINT, WPARAM, LPARAM);
     int wm_close(HWND, UINT, WPARAM, LPARAM);
     int wm_destroy(HWND, UINT, WPARAM, LPARAM);
+    int wm_devtoolsmain(HWND, UINT, WPARAM, LPARAM);
+    int wm_devtoolsside(HWND, UINT, WPARAM, LPARAM);
     int wm_dpichanged(HWND, UINT, WPARAM, LPARAM);
     int wm_erasebkgnd(HWND, UINT, WPARAM, LPARAM);
     int wm_exitsizemove(HWND, UINT, WPARAM, LPARAM);

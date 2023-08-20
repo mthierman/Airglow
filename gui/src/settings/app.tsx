@@ -107,16 +107,15 @@ export default function App() {
                     <label className="grid gap-2 whitespace-nowrap">
                         <div className="grid grid-flow-col items-end justify-between gap-6 truncate">
                             <div className="select-none text-3xl">📡 Home</div>
-                            <div className="select-text text-accent dark:text-accentLight1">
+                            <div className="select-text text-accentDark2 dark:text-accent">
                                 {mainHomepage}
                             </div>
                         </div>
                         <input
-                            className="rounded-lg border-[1px] bg-transparent p-2 shadow-md shadow-neutral-400 outline-none focus:border-accent dark:shadow-black dark:focus:border-accentLight2"
+                            className="rounded-lg border-[1px] bg-transparent p-2 shadow-md shadow-neutral-400 outline-none focus:border-accentDark2 dark:shadow-black dark:focus:border-accent"
                             type="text"
                             name="mainHomepage"
-                            id="mainHomepage"
-                            placeholder={mainHomepage}></input>
+                            id="mainHomepage"></input>
                     </label>
 
                     <label className="grid gap-2 whitespace-nowrap">
@@ -124,16 +123,15 @@ export default function App() {
                             <div className="select-none text-3xl">
                                 🛰️ Sidebar
                             </div>
-                            <div className="select-text text-accent dark:text-accentLight1">
+                            <div className="select-text text-accentDark2 dark:text-accent">
                                 {sideHomepage}
                             </div>
                         </div>
                         <input
-                            className="rounded-lg border-[1px] bg-transparent p-2 shadow-md shadow-neutral-400 outline-none focus:border-accent dark:shadow-black dark:focus:border-accentLight1"
+                            className="rounded-lg border-[1px] bg-transparent p-2 shadow-md shadow-neutral-400 outline-none focus:border-accentDark2 dark:shadow-black dark:focus:border-accent"
                             type="text"
                             name="sideHomepage"
-                            id="sideHomepage"
-                            placeholder={sideHomepage}></input>
+                            id="sideHomepage"></input>
                     </label>
                 </div>
 
@@ -143,7 +141,7 @@ export default function App() {
                     </div>
 
                     <button
-                        className="rounded-lg border-[1px] bg-transparent p-2 shadow-md shadow-neutral-400 duration-75 hover:border-accent hover:text-accent active:scale-95 dark:shadow-black dark:hover:border-accentLight1 dark:hover:text-accentLight1"
+                        className="rounded-lg border-[1px] bg-transparent p-2 shadow-md shadow-neutral-400 duration-75 hover:border-accentDark2 hover:text-accentDark2 active:scale-95 dark:shadow-black dark:hover:border-accent dark:hover:text-accent"
                         id="submitUrl"
                         type="submit">
                         Save

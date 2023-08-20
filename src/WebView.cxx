@@ -183,6 +183,22 @@ void WebView::bar_web_message_received(winrt::CoreWebView2WebMessageReceivedEven
 
             SendMessageW(appHwnd, WM_NAVIGATESIDE, 0, 0);
         }
+
+        if (!j["mainDevtools"].empty())
+        {
+            auto s{j["mainDevtools"].get<bool>()};
+
+            if (s == true)
+                SendMessageW(appHwnd, WM_DEVTOOLSMAIN, 0, 0);
+        }
+
+        if (!j["sideDevtools"].empty())
+        {
+            auto s{j["sideDevtools"].get<bool>()};
+
+            if (s == true)
+                SendMessageW(appHwnd, WM_DEVTOOLSSIDE, 0, 0);
+        }
     };
 
     return;
