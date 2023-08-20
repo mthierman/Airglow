@@ -50,10 +50,6 @@ bool window_maximize(HWND);
 bool window_fullscreen(HWND);
 bool window_topmost(HWND);
 
-std::vector<int> window_position(HWND);
 RECT bounds(HWND);
-
-// RECT bounds_to_rect(std::vector<int>);
-// winrt::Windows::Foundation::Rect winrt_bounds_to_rect(RECT);
-// RECT winrt_rect_to_bounds(winrt::Windows::Foundation::Rect);
+std::vector<int> window_position(HWND);
 } // namespace util

@@ -488,15 +488,6 @@ bool window_topmost(HWND hwnd)
     }
 }
 
-std::vector<int> window_position(HWND hwnd)
-{
-    RECT rect;
-    GetWindowRect(hwnd, &rect);
-
-    return std::vector<int>{rect.left, rect.top, (rect.right - rect.left),
-                            (rect.bottom - rect.top)};
-}
-
 RECT bounds(HWND hwnd)
 {
     RECT bounds{0, 0, 0, 0};
@@ -505,23 +496,12 @@ RECT bounds(HWND hwnd)
     return bounds;
 }
 
-// RECT position_to_rect(std::vector<int> bounds)
-// {
-//     return RECT{bounds[0], bounds[1], (bounds[0] + bounds[2]), (bounds[1] + bounds[3])};
-// }
+std::vector<int> window_position(HWND hwnd)
+{
+    RECT rect;
+    GetWindowRect(hwnd, &rect);
 
-// winrt::Windows::Foundation::Rect winrt_bounds_to_rect(RECT bounds)
-// {
-//     return winrt::Windows::Foundation::Rect{static_cast<float>(bounds.left),
-//                                             static_cast<float>(bounds.top),
-//                                             static_cast<float>(bounds.right - bounds.left),
-//                                             static_cast<float>(bounds.bottom - bounds.top)};
-// }
-
-// RECT winrt_rect(winrt::Windows::Foundation::Rect rect)
-// {
-//     return RECT{static_cast<long>(rect.X), static_cast<long>(rect.Y),
-//     static_cast<long>(rect.Width),
-//                 static_cast<long>(rect.Height)};
-// }
+    return std::vector<int>{rect.left, rect.top, (rect.right - rect.left),
+                            (rect.bottom - rect.top)};
+}
 } // namespace util
