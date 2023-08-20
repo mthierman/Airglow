@@ -82,6 +82,20 @@ export default function App() {
         });
     };
 
+    const mainBlank = () => {
+        return mainCurrentPage.includes("Airglow/gui") ||
+            mainCurrentPage === "https://localhost:8000/"
+            ? true
+            : false;
+    };
+
+    const sideBlank = () => {
+        return sideCurrentPage.includes("Airglow/gui") ||
+            sideCurrentPage === "https://localhost:8000/"
+            ? true
+            : false;
+    };
+
     return (
         <div className="flex h-full flex-col overflow-clip">
             <form
@@ -95,23 +109,31 @@ export default function App() {
                 onSubmit={handleForm}
                 autoComplete="off"
                 spellCheck="false">
-                <input
+                <label
                     className={
-                        "flex min-w-0 flex-1 bg-transparent px-2 text-center text-accentDark2 outline-none placeholder:text-left dark:text-accent " +
+                        "flex min-w-0 flex-1 select-none text-accentDark2 dark:text-accent " +
                         (!webviewSplit && webviewSwapped ? "hidden" : "")
-                    }
-                    type="text"
-                    name="mainCurrentPage"
-                    id="mainCurrentPage"></input>
+                    }>
+                    🔍︎
+                    <input
+                        className="flex min-w-0 flex-1 bg-transparent px-2 text-center text-accentDark2 outline-none placeholder:text-left dark:text-accent"
+                        type="text"
+                        name="mainCurrentPage"
+                        id="mainCurrentPage"></input>
+                </label>
 
-                <input
+                <label
                     className={
-                        "flex min-w-0 flex-1 bg-transparent px-2 text-center text-accentDark2 outline-none placeholder:text-left dark:text-accent " +
+                        "flex min-w-0 flex-1 select-none text-accentDark2 dark:text-accent " +
                         (!webviewSplit && !webviewSwapped ? "hidden" : "")
-                    }
-                    type="text"
-                    name="sideCurrentPage"
-                    id="sideCurrentPage"></input>
+                    }>
+                    🔍︎
+                    <input
+                        className="flex min-w-0 flex-1 bg-transparent px-2 text-center text-accentDark2 outline-none placeholder:text-left dark:text-accent"
+                        type="text"
+                        name="sideCurrentPage"
+                        id="sideCurrentPage"></input>
+                </label>
 
                 <input type="submit" hidden />
             </form>
@@ -130,12 +152,9 @@ export default function App() {
                         <a
                             className="select-none pr-2 hover:cursor-pointer"
                             onClick={handleMainDevtools}>
-                            {"🔧︎"}
+                            {mainBlank() ? `` : `🔧︎`}
                         </a>
-                        {mainCurrentPage.includes("Airglow/gui") ||
-                        mainCurrentPage === "https://localhost:8000/"
-                            ? `\uFEFF`
-                            : mainCurrentPage}
+                        {mainBlank() ? `` : mainCurrentPage}
                     </span>
                 </address>
                 <address
@@ -147,12 +166,9 @@ export default function App() {
                         <a
                             className="select-none pr-2 hover:cursor-pointer"
                             onClick={handleSideDevtools}>
-                            {"🔧︎"}
+                            {sideBlank() ? `` : `🔧︎`}
                         </a>
-                        {sideCurrentPage.includes("Airglow/gui") ||
-                        sideCurrentPage === "https://localhost:8000/"
-                            ? `\uFEFF`
-                            : sideCurrentPage}
+                        {sideBlank() ? `` : sideCurrentPage}
                     </span>
                 </address>
             </div>
