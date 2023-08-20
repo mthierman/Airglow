@@ -10,9 +10,6 @@ App::App(HINSTANCE hInstance, PWSTR pCmdLine, int nCmdShow)
     if (!storage)
         util::error("Storage failed to initialize");
 
-    if (!appHwnd)
-        util::error("Window failed to initialize");
-
     if (!webviewGui || !webviewBar || !webviewMain || !webviewSide)
         util::error("WebView failed to initialize");
 
