@@ -4,7 +4,6 @@
 int __stdcall wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
     auto gdiplusToken{util::startup()};
-
     auto debugConsole{util::create_console(false)};
 
     auto app{std::make_unique<App>(hInstance, pCmdLine, nCmdShow)};
@@ -27,9 +26,8 @@ int __stdcall wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdL
         }
     }
 
-    util::shutdown(gdiplusToken);
-
     util::remove_console(debugConsole);
+    util::shutdown(gdiplusToken);
 
     return 0;
 }
