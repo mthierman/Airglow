@@ -385,6 +385,15 @@ winrt::IAsyncAction WebView::icon()
         if (name != "main")
             co_return;
 
+        if (storage->settings.mainCurrentPage.contains("Airglow/gui") ||
+            storage->settings.mainCurrentPage == "https://localhost:8000/")
+        {
+            SetClassLongPtrW(appHwnd, GCLP_HICONSM, (LONG_PTR)storage->application.hIcon);
+            SetClassLongPtrW(appHwnd, GCLP_HICON, (LONG_PTR)storage->application.hIcon);
+
+            co_return;
+        }
+
         if (iconBitmap.GetHICON(&hIcon) == Gdiplus::Status::Ok)
         {
             SetClassLongPtrW(appHwnd, GCLP_HICONSM, (LONG_PTR)hIcon);
@@ -396,6 +405,15 @@ winrt::IAsyncAction WebView::icon()
     {
         if (name != "side")
             co_return;
+
+        if (storage->settings.sideCurrentPage.contains("Airglow/gui") ||
+            storage->settings.sideCurrentPage == "https://localhost:8000/")
+        {
+            SetClassLongPtrW(appHwnd, GCLP_HICONSM, (LONG_PTR)storage->application.hIcon);
+            SetClassLongPtrW(appHwnd, GCLP_HICON, (LONG_PTR)storage->application.hIcon);
+
+            co_return;
+        }
 
         if (iconBitmap.GetHICON(&hIcon) == Gdiplus::Status::Ok)
         {
