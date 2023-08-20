@@ -116,8 +116,7 @@ export default function App() {
                             type="text"
                             name="mainHomepage"
                             id="mainHomepage"
-                            placeholder={mainHomepage}
-                            pattern=".*[.].*"></input>
+                            placeholder={mainHomepage}></input>
                     </label>
 
                     <label className="grid gap-2 whitespace-nowrap">
@@ -134,8 +133,7 @@ export default function App() {
                             type="text"
                             name="sideHomepage"
                             id="sideHomepage"
-                            placeholder={sideHomepage}
-                            pattern=".*[.].*"></input>
+                            placeholder={sideHomepage}></input>
                     </label>
                 </div>
 
