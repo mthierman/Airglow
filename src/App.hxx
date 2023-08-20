@@ -25,7 +25,7 @@ class App
     winrt::Windows::Foundation::Rect panel_top(RECT);
     winrt::Windows::Foundation::Rect panel_bot(RECT);
 
-    static __int64 __stdcall _WndProc(HWND, UINT, WPARAM, LPARAM);
+    static __int64 __stdcall WndProc(HWND, UINT, WPARAM, LPARAM);
     int wm_activate(HWND, UINT, WPARAM, LPARAM);
     int wm_close(HWND, UINT, WPARAM, LPARAM);
     int wm_destroy(HWND, UINT, WPARAM, LPARAM);

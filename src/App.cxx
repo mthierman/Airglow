@@ -29,7 +29,7 @@ HWND App::create_window(HINSTANCE hInstance)
     WNDCLASSEXW wcex{sizeof(WNDCLASSEX)};
     wcex.lpszClassName = storage->application.appName.c_str();
     wcex.lpszMenuName = storage->application.appName.c_str();
-    wcex.lpfnWndProc = App::_WndProc;
+    wcex.lpfnWndProc = App::WndProc;
     wcex.style = CS_HREDRAW | CS_VREDRAW;
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
@@ -261,7 +261,7 @@ winrt::Windows::Foundation::Rect App::panel_bot(RECT bounds)
         static_cast<float>((bounds.bottom / 2) - (scaledBar / 2))};
 }
 
-__int64 __stdcall App::_WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+__int64 __stdcall App::WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
     App* app = InstanceFromWndProc<App>(hwnd, msg, lparam);
 
