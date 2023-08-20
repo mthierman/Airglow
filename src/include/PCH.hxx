@@ -4,12 +4,7 @@
 #include <dwmapi.h>
 #include <gdiplus.h>
 #include <ShlObj.h>
-#include <urlmon.h>
-#include <libloaderapi.h>
-#include <objidl.h>
 #include <shcore.h>
-#include <combaseapi.h>
-#include <WinUser.h>
 
 #include <filesystem>
 #include <fstream>
