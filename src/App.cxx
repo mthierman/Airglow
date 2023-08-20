@@ -121,6 +121,8 @@ void App::resized()
         webviewSide->controller.Bounds(emptyRect);
         webviewGui->controller.Bounds(panel_gui(bounds));
         webviewBar->controller.Bounds(emptyRect);
+
+        return;
     }
 
     else
@@ -129,14 +131,20 @@ void App::resized()
         {
             webviewMain->controller.Bounds(panel_full(bounds));
             webviewSide->controller.Bounds(emptyRect);
+            webviewGui->controller.Bounds(emptyRect);
             webviewBar->controller.Bounds(panel_bar(bounds));
+
+            return;
         }
 
         if (!storage->settings.webviewSplit && storage->settings.webviewSwapped)
         {
             webviewMain->controller.Bounds(emptyRect);
             webviewSide->controller.Bounds(panel_full(bounds));
+            webviewGui->controller.Bounds(emptyRect);
             webviewBar->controller.Bounds(panel_bar(bounds));
+
+            return;
         }
 
         if (!storage->settings.webviewHorizontal)
@@ -145,14 +153,20 @@ void App::resized()
             {
                 webviewMain->controller.Bounds(panel_left(bounds));
                 webviewSide->controller.Bounds(panel_right(bounds));
+                webviewGui->controller.Bounds(emptyRect);
                 webviewBar->controller.Bounds(panel_bar(bounds));
+
+                return;
             }
 
             if (storage->settings.webviewSplit && storage->settings.webviewSwapped)
             {
                 webviewMain->controller.Bounds(panel_right(bounds));
                 webviewSide->controller.Bounds(panel_left(bounds));
+                webviewGui->controller.Bounds(emptyRect);
                 webviewBar->controller.Bounds(panel_bar(bounds));
+
+                return;
             }
         }
 
@@ -162,18 +176,22 @@ void App::resized()
             {
                 webviewMain->controller.Bounds(panel_top(bounds));
                 webviewSide->controller.Bounds(panel_bot(bounds));
+                webviewGui->controller.Bounds(emptyRect);
                 webviewBar->controller.Bounds(panel_bar(bounds));
+
+                return;
             }
 
             if (storage->settings.webviewSplit && storage->settings.webviewSwapped)
             {
                 webviewMain->controller.Bounds(panel_bot(bounds));
                 webviewSide->controller.Bounds(panel_top(bounds));
+                webviewGui->controller.Bounds(emptyRect);
                 webviewBar->controller.Bounds(panel_bar(bounds));
+
+                return;
             }
         }
-
-        webviewGui->controller.Bounds(emptyRect);
     }
 }
 
