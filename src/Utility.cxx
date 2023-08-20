@@ -250,34 +250,39 @@ std::pair<winrt::hstring, winrt::hstring> command_line()
     return commands;
 }
 
-std::pair<HWND, FILE*> create_console()
+FILE* create_console(bool create)
 {
-    HWND hwnd{nullptr};
     FILE* dummyFile{nullptr};
 
 #ifdef _DEBUG
-    AllocConsole();
-    hwnd = GetConsoleWindow();
-    SetConsoleTitleW(L"Debug");
-    window_mica(hwnd);
-    SetWindowPos(hwnd, nullptr, 0, 0, 400, 400, SWP_SHOWWINDOW);
-    freopen_s(&dummyFile, "CONOUT$", "w", stdout);
-    freopen_s(&dummyFile, "CONOUT$", "w", stderr);
-    freopen_s(&dummyFile, "CONIN$", "r", stdin);
-    std::cout.clear();
-    std::clog.clear();
-    std::cerr.clear();
-    std::cin.clear();
+    if (create)
+    {
+        AllocConsole();
+        auto hwnd{GetConsoleWindow()};
+        SetConsoleTitleW(L"Debug");
+        window_mica(hwnd);
+        SetWindowPos(hwnd, nullptr, 0, 0, 400, 400, SWP_SHOWWINDOW);
+        freopen_s(&dummyFile, "CONOUT$", "w", stdout);
+        freopen_s(&dummyFile, "CONOUT$", "w", stderr);
+        freopen_s(&dummyFile, "CONIN$", "r", stdin);
+        std::cout.clear();
+        std::clog.clear();
+        std::cerr.clear();
+        std::cin.clear();
+    }
 #endif
 
-    return std::make_pair(hwnd, dummyFile);
+    return dummyFile;
 }
 
-void remove_console(std::pair<HWND, FILE*> console)
+void remove_console(FILE* console)
 {
 #ifdef _DEBUG
-    fclose(console.second);
-    FreeConsole();
+    if (console)
+    {
+        fclose(console);
+        FreeConsole();
+    }
 #endif
 }
 
@@ -507,4 +512,22 @@ RECT bounds(HWND hwnd)
 //     static_cast<long>(rect.Width),
 //                 static_cast<long>(rect.Height)};
 // }
+
+unsigned long long startup()
+{
+    winrt::init_apartment(winrt::apartment_type::single_threaded);
+
+    SetEnvironmentVariableW(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR", L"0");
+
+    unsigned long long gdiplusToken;
+    Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+
+    if (Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, nullptr) !=
+        Gdiplus::Status::Ok)
+        return util::error("GDI+ failed to initialize");
+
+    return gdiplusToken;
+}
+
+void shutdown(unsigned long long gdiplusToken) { Gdiplus::GdiplusShutdown(gdiplusToken); }
 } // namespace util

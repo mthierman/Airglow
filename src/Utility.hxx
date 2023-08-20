@@ -32,8 +32,8 @@ winrt::hstring bar_url();
 
 std::pair<winrt::hstring, winrt::hstring> command_line();
 
-std::pair<HWND, FILE*> create_console();
-void remove_console(std::pair<HWND, FILE*>);
+FILE* create_console(bool);
+void remove_console(FILE*);
 
 std::string system_color(winrt::Windows::UI::ViewManagement::UIColorType);
 std::string system_theme();
@@ -53,4 +53,7 @@ RECT bounds(HWND);
 // RECT bounds_to_rect(std::vector<int>);
 // winrt::Windows::Foundation::Rect winrt_bounds_to_rect(RECT);
 // RECT winrt_rect_to_bounds(winrt::Windows::Foundation::Rect);
+
+unsigned long long startup();
+void shutdown(unsigned long long);
 } // namespace util

@@ -1,15 +1,13 @@
 #include "App.hxx"
 #include "Utility.hxx"
-#include "Storage.hxx"
 
 int __stdcall wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
-    auto storage{std::make_unique<Storage>()};
+    auto gdiplusToken{util::startup()};
 
-    if (!storage)
-        return util::error("Storage failed to initialize");
+    auto debugConsole{util::create_console(false)};
 
-    auto app{std::make_unique<App>(storage.get(), hInstance, pCmdLine, nCmdShow)};
+    auto app{std::make_unique<App>(hInstance, pCmdLine, nCmdShow)};
 
     if (!app)
         return util::error("Application failed to start");
@@ -28,6 +26,10 @@ int __stdcall wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdL
             DispatchMessageW(&msg);
         }
     }
+
+    util::shutdown(gdiplusToken);
+
+    util::remove_console(debugConsole);
 
     return 0;
 }

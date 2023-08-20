@@ -1,22 +1,22 @@
 #include "App.hxx"
 
-App::App(Storage* s, HINSTANCE hInstance, PWSTR pCmdLine, int nCmdShow)
-    : storage(s), appHwnd(create_window(hInstance))
+App::App(HINSTANCE hInstance, PWSTR pCmdLine, int nCmdShow)
+    : storage(std::make_unique<Storage>()), appHwnd(create_window(hInstance)),
+      webviewGui(std::make_unique<WebView>(storage.get(), appHwnd, "gui")),
+      webviewBar(std::make_unique<WebView>(storage.get(), appHwnd, "bar")),
+      webviewMain(std::make_unique<WebView>(storage.get(), appHwnd, "main")),
+      webviewSide(std::make_unique<WebView>(storage.get(), appHwnd, "side"))
 {
-    SetEnvironmentVariableW(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR", L"0");
+    if (!storage)
+        util::error("Storage failed to initialize");
 
-    if (Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, nullptr) !=
-        Gdiplus::Status::Ok)
-        util::error("GDI+ failed to initialize");
+    if (!appHwnd)
+        util::error("Window failed to initialize");
+
+    if (!webviewGui || !webviewBar || !webviewMain || !webviewSide)
+        util::error("WebView failed to initialize");
 
     show_window();
-
-    webviewMain = std::make_unique<WebView>(storage, appHwnd, "main");
-    webviewSide = std::make_unique<WebView>(storage, appHwnd, "side");
-    webviewGui = std::make_unique<WebView>(storage, appHwnd, "gui");
-    webviewBar = std::make_unique<WebView>(storage, appHwnd, "bar");
-
-    // debugConsole = util::create_console();
 }
 
 App::~App() {}
@@ -299,10 +299,6 @@ int App::wm_activate(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 int App::wm_close(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-    // util::remove_console(debugConsole);
-
-    Gdiplus::GdiplusShutdown(gdiplusToken);
-
     storage->save();
 
     DestroyWindow(hwnd);

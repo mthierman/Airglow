@@ -7,7 +7,7 @@
 class App
 {
   public:
-    App(Storage*, HINSTANCE, PWSTR, int);
+    App(HINSTANCE, PWSTR, int);
     ~App();
 
     HWND get_hwnd();
@@ -42,12 +42,8 @@ class App
     int wm_settingchange(HWND, UINT, WPARAM, LPARAM);
     int wm_windowposchanged(HWND, UINT, WPARAM, LPARAM);
 
-    Storage* storage{nullptr};
-    HWND appHwnd{nullptr};
-    std::pair<HWND, FILE*> debugConsole{nullptr, nullptr};
-    unsigned long long gdiplusToken{};
-    Gdiplus::GdiplusStartupInput gdiplusStartupInput{};
-
+    std::unique_ptr<Storage> storage;
+    HWND appHwnd;
     std::unique_ptr<WebView> webviewGui;
     std::unique_ptr<WebView> webviewBar;
     std::unique_ptr<WebView> webviewMain;
