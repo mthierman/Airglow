@@ -107,7 +107,7 @@ export default function App() {
                     <label className="grid gap-2 whitespace-nowrap">
                         <div className="grid grid-flow-col items-end justify-between gap-6 truncate">
                             <div className="select-none text-3xl">📡 Home</div>
-                            <div className="select-text text-accentDark2 dark:text-accent">
+                            <div className="select-text font-semibold text-accentDark2 dark:text-accent">
                                 {mainHomepage}
                             </div>
                         </div>
@@ -123,7 +123,7 @@ export default function App() {
                             <div className="select-none text-3xl">
                                 🛰️ Sidebar
                             </div>
-                            <div className="select-text text-accentDark2 dark:text-accent">
+                            <div className="select-text font-semibold text-accentDark2 dark:text-accent">
                                 {sideHomepage}
                             </div>
                         </div>

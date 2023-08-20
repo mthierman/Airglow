@@ -86,7 +86,7 @@ export default function App() {
         <div className="flex h-full flex-col overflow-clip">
             <form
                 className={
-                    "flex flex-grow text-2xl shadow-lg shadow-neutral-300 dark:shadow-neutral-950 " +
+                    "flex flex-grow p-1 font-semibold shadow-lg shadow-neutral-300 dark:shadow-neutral-950 " +
                     (webviewSwapped ? "flex-row-reverse" : "")
                 }
                 name="url"

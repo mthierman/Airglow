@@ -333,22 +333,20 @@ int App::wm_destroy(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 int App::wm_devtoolsmain(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-    if (!webviewMain)
+    if (!webviewMain || !webviewMain->core)
         return 0;
 
-    if (webviewMain->core)
-        webviewMain->core.OpenDevToolsWindow();
+    webviewMain->core.OpenDevToolsWindow();
 
     return 0;
 }
 
 int App::wm_devtoolsside(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-    if (!webviewSide)
+    if (!webviewSide || !webviewSide->core)
         return 0;
 
-    if (webviewSide->core)
-        webviewSide->core.OpenDevToolsWindow();
+    webviewSide->core.OpenDevToolsWindow();
 
     return 0;
 }
@@ -503,16 +501,22 @@ int App::wm_keydown(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 int App::wm_navigatemain(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-    if (webviewMain->core)
-        webviewMain->core.Navigate(winrt::to_hstring(storage->settings.mainCurrentPage));
+    if (!webviewMain->core || !webviewMain->controller)
+        return 0;
+
+    webviewMain->core.Navigate(winrt::to_hstring(storage->settings.mainCurrentPage));
+    webviewMain->focus();
 
     return 0;
 }
 
 int App::wm_navigateside(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-    if (webviewSide->core)
-        webviewSide->core.Navigate(winrt::to_hstring(storage->settings.sideCurrentPage));
+    if (!webviewSide->core || !webviewSide->controller)
+        return 0;
+
+    webviewSide->core.Navigate(winrt::to_hstring(storage->settings.sideCurrentPage));
+    webviewSide->focus();
 
     return 0;
 }
