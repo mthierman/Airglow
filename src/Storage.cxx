@@ -38,15 +38,15 @@ nlohmann::json Storage::serialize()
                                    {"sideCurrentPage", settings.sideCurrentPage},
                                }},
                               {"colors",
-                               {{"colorAccent", colors.colorAccent},
-                                {"colorAccentDark1", colors.colorAccentDark1},
-                                {"colorAccentDark2", colors.colorAccentDark2},
-                                {"colorAccentDark3", colors.colorAccentDark3},
-                                {"colorAccentLight1", colors.colorAccentLight1},
-                                {"colorAccentLight2", colors.colorAccentLight2},
-                                {"colorAccentLight3", colors.colorAccentLight3},
-                                {"colorBackground", colors.colorBackground},
-                                {"colorForeground", colors.colorForeground}}}};
+                               {{"accent", colors.accent},
+                                {"accentDark1", colors.accentDark1},
+                                {"accentDark2", colors.accentDark2},
+                                {"accentDark3", colors.accentDark3},
+                                {"accentLight1", colors.accentLight1},
+                                {"accentLight2", colors.accentLight2},
+                                {"accentLight3", colors.accentLight3},
+                                {"background", colors.background},
+                                {"foreground", colors.foreground}}}};
     }
     catch (const std::exception& e)
     {
@@ -84,15 +84,15 @@ Colors Storage::deserialize_colors(nlohmann::json j)
 {
     try
     {
-        return Colors{j["colors"]["colorAccent"].get<std::string>(),
-                      j["colors"]["colorAccentDark1"].get<std::string>(),
-                      j["colors"]["colorAccentDark2"].get<std::string>(),
-                      j["colors"]["colorAccentDark3"].get<std::string>(),
-                      j["colors"]["colorAccentLight1"].get<std::string>(),
-                      j["colors"]["colorAccentLight2"].get<std::string>(),
-                      j["colors"]["colorAccentLight3"].get<std::string>(),
-                      j["colors"]["colorBackground"].get<std::string>(),
-                      j["colors"]["colorForeground"].get<std::string>()};
+        return Colors{j["colors"]["accent"].get<std::string>(),
+                      j["colors"]["accentDark1"].get<std::string>(),
+                      j["colors"]["accentDark2"].get<std::string>(),
+                      j["colors"]["accentDark3"].get<std::string>(),
+                      j["colors"]["accentLight1"].get<std::string>(),
+                      j["colors"]["accentLight2"].get<std::string>(),
+                      j["colors"]["accentLight3"].get<std::string>(),
+                      j["colors"]["background"].get<std::string>(),
+                      j["colors"]["foreground"].get<std::string>()};
     }
     catch (const std::exception& e)
     {

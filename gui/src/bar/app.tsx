@@ -1,6 +1,15 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function App() {
+    const [colors, setColors] = useState({
+        accent: "",
+        accentDark1: "",
+        accentDark2: "",
+        accentDark3: "",
+        accentLight1: "",
+        accentLight2: "",
+        accentLight3: "",
+    });
     const [mainCurrentPage, setMainCurrentPage] = useState("");
     const [sideCurrentPage, setSideCurrentPage] = useState("");
     const [webviewSplit, setWebviewSplit] = useState(false);
@@ -9,35 +18,44 @@ export default function App() {
     if (window.chrome.webview) {
         window.chrome.webview.addEventListener("message", (arg: any) => {
             if (arg.data.colors) {
+                setColors(arg.data.colors);
+
                 document.documentElement.style.setProperty(
-                    "--colorAccent",
-                    arg.data.colors.colorAccent,
+                    "--accent",
+                    colors.accent,
                 );
+
                 document.documentElement.style.setProperty(
-                    "--colorAccentDark1",
-                    arg.data.colors.colorAccentDark1,
+                    "--accentDark1",
+                    colors.accentDark1,
                 );
+
                 document.documentElement.style.setProperty(
-                    "--colorAccentDark2",
-                    arg.data.colors.colorAccentDark2,
+                    "--accentDark2",
+                    colors.accentDark2,
                 );
+
                 document.documentElement.style.setProperty(
-                    "--colorAccentDark3",
-                    arg.data.colors.colorAccentDark3,
+                    "--accentDark3",
+                    colors.accentDark3,
                 );
+
                 document.documentElement.style.setProperty(
-                    "--colorAccentLight1",
-                    arg.data.colors.colorAccentLight1,
+                    "--accentLight1",
+                    colors.accentLight1,
                 );
+
                 document.documentElement.style.setProperty(
-                    "--colorAccentLight2",
-                    arg.data.colors.colorAccentLight2,
+                    "--accentLight2",
+                    colors.accentLight2,
                 );
+
                 document.documentElement.style.setProperty(
-                    "--colorAccentLight3",
-                    arg.data.colors.colorAccentLight3,
+                    "--accentLight3",
+                    colors.accentLight3,
                 );
             }
+
             if (arg.data.settings) {
                 setMainCurrentPage(arg.data.settings.mainCurrentPage);
                 setSideCurrentPage(arg.data.settings.sideCurrentPage);

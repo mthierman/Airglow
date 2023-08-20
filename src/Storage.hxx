@@ -34,23 +34,22 @@ struct Settings
 
 struct Colors
 {
-    std::string colorAccent{
-        util::system_color(winrt::Windows::UI::ViewManagement::UIColorType::Accent)};
-    std::string colorAccentDark1{
+    std::string accent{util::system_color(winrt::Windows::UI::ViewManagement::UIColorType::Accent)};
+    std::string accentDark1{
         util::system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark1)};
-    std::string colorAccentDark2{
+    std::string accentDark2{
         util::system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark2)};
-    std::string colorAccentDark3{
+    std::string accentDark3{
         util::system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark3)};
-    std::string colorAccentLight1{
+    std::string accentLight1{
         util::system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight1)};
-    std::string colorAccentLight2{
+    std::string accentLight2{
         util::system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight2)};
-    std::string colorAccentLight3{
+    std::string accentLight3{
         util::system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight3)};
-    std::string colorBackground{
+    std::string background{
         util::system_color(winrt::Windows::UI::ViewManagement::UIColorType::Background)};
-    std::string colorForeground{
+    std::string foreground{
         util::system_color(winrt::Windows::UI::ViewManagement::UIColorType::Foreground)};
 };
 
