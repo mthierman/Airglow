@@ -10,6 +10,23 @@ export default function App() {
         accentLight2: "",
         accentLight3: "",
     });
+
+    // const [settings, setSettings] = useState({
+    //     appTheme: "",
+    //     windowPosition: [0, 0, 0, 0],
+    //     windowMaximized: false,
+    //     windowFullscreen: false,
+    //     windowTopmost: false,
+    //     webviewGui: false,
+    //     webviewSplit: false,
+    //     webviewSwapped: false,
+    //     webviewHorizontal: false,
+    //     mainHomepage: "",
+    //     mainCurrentPage: "",
+    //     sideHomepage: "",
+    //     sideCurrentPage: "",
+    // });
+
     const [mainCurrentPage, setMainCurrentPage] = useState("");
     const [sideCurrentPage, setSideCurrentPage] = useState("");
     const [webviewSplit, setWebviewSplit] = useState(false);
@@ -106,8 +123,8 @@ export default function App() {
     };
 
     const isBlank = (page: string) => {
-        return sideCurrentPage.includes("Airglow/gui") ||
-            sideCurrentPage === "https://localhost:8000/"
+        return page.includes("Airglow/gui") ||
+            page === "https://localhost:8000/"
             ? true
             : false;
     };
@@ -132,7 +149,7 @@ export default function App() {
                     }>
                     🔍︎
                     <input
-                        className="flex min-w-0 flex-1 bg-transparent px-2 text-center text-accentDark2 outline-none dark:text-accent"
+                        className="flex min-w-0 flex-1 bg-transparent px-2 text-center outline-none"
                         type="text"
                         name="mainCurrentPage"
                         id="mainCurrentPage"></input>
@@ -145,7 +162,7 @@ export default function App() {
                     }>
                     🔍︎
                     <input
-                        className="flex min-w-0 flex-1 bg-transparent px-2 text-center text-accentDark2 outline-none dark:text-accent"
+                        className="flex min-w-0 flex-1 bg-transparent px-2 text-center outline-none"
                         type="text"
                         name="sideCurrentPage"
                         id="sideCurrentPage"></input>
@@ -156,8 +173,9 @@ export default function App() {
 
             <div
                 className={
-                    "flex p-2 text-sm text-neutral-500 dark:text-neutral-400 " +
-                    (webviewSwapped ? "flex-row-reverse" : "")
+                    webviewSwapped
+                        ? "flex flex-row-reverse p-2 text-sm"
+                        : "flex p-2 text-sm"
                 }>
                 <address
                     className={

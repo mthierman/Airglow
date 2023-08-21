@@ -11,9 +11,5 @@ document.onreadystatechange = () => {
 };
 
 export default function App() {
-    return (
-        <h1 className="pointer-events-none select-none text-center text-2xl">
-            Press ⏸️ to set homepage
-        </h1>
-    );
+    return <h1>Press ⏸️ to set homepage</h1>;
 }

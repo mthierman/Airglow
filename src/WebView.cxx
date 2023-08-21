@@ -47,6 +47,9 @@ winrt::IAsyncAction WebView::create_webview()
 
         core.Navigate(util::settings_url());
 
+        core.NavigationCompleted(
+            {[=, this](auto const&, auto const& args) { SendMessage(appHwnd, WM_NOTIFY, 0, 0); }});
+
         core.WebMessageReceived(
             {[=, this](auto const&, auto const& args) { gui_web_message_received(args); }});
     }
@@ -56,6 +59,9 @@ winrt::IAsyncAction WebView::create_webview()
         webviewSettings.IsZoomControlEnabled(false);
 
         core.Navigate(util::bar_url());
+
+        core.NavigationCompleted(
+            {[=, this](auto const&, auto const& args) { SendMessage(appHwnd, WM_NOTIFY, 0, 0); }});
 
         core.WebMessageReceived(
             {[=, this](auto const&, auto const& args) { bar_web_message_received(args); }});
