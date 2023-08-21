@@ -167,8 +167,6 @@ void WebView::bar_web_message_received(winrt::CoreWebView2WebMessageReceivedEven
 {
     auto webMessage{args.WebMessageAsJson()};
 
-    util::println(winrt::to_string(webMessage));
-
     if (!webMessage.empty())
     {
         auto j{nlohmann::json::parse(webMessage)};
