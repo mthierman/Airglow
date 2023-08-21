@@ -5,8 +5,7 @@ App::App(HINSTANCE hInstance, PWSTR pCmdLine, int nCmdShow)
       webviewGui(std::make_unique<WebView>(storage.get(), appHwnd, "gui")),
       webviewBar(std::make_unique<WebView>(storage.get(), appHwnd, "bar")),
       webviewMain(std::make_unique<WebView>(storage.get(), appHwnd, "main")),
-      webviewSide(std::make_unique<WebView>(storage.get(), appHwnd, "side")),
-      scaledBar(65 * storage->settings.appScale)
+      webviewSide(std::make_unique<WebView>(storage.get(), appHwnd, "side"))
 {
     if (!storage)
         util::error("Storage failed to initialize");
@@ -16,6 +15,8 @@ App::App(HINSTANCE hInstance, PWSTR pCmdLine, int nCmdShow)
 
     storage->settings.appScale =
         static_cast<float>(GetDpiForWindow(appHwnd)) / static_cast<float>(USER_DEFAULT_SCREEN_DPI);
+
+    scaledBar = 65 * storage->settings.appScale;
 
     show_window();
 }
