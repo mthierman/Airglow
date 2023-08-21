@@ -52,7 +52,7 @@ jobs:
 
           if ("${{ github.ref_name }}" -eq "main") {
             gh release delete $version -y
-            gh release create $version $zip $installer -F $notes -t "Airglow $version"
+            gh release create $version $zip -F $notes -t "Airglow $version"
           }
 
           if ("${{ github.ref_name }}" -eq "dev") {
