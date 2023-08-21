@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function App() {
     const [colors, setColors] = useState({
@@ -29,52 +29,40 @@ export default function App() {
         sideCurrentPage: "",
     });
 
-    const accentColors = () => {
-        document.documentElement.style.setProperty("--accent", colors.accent);
+    if (window.chrome.webview) {
+        window.chrome.webview.addEventListener("message", (arg: any) => {
+            if (arg.data.settings) setSettings(arg.data.settings);
+            if (arg.data.colors) setColors(arg.data.colors);
+        });
+    }
 
+    useEffect(() => {
+        document.documentElement.style.setProperty("--accent", colors.accent);
         document.documentElement.style.setProperty(
             "--accentDark1",
             colors.accentDark1,
         );
-
         document.documentElement.style.setProperty(
             "--accentDark2",
             colors.accentDark2,
         );
-
         document.documentElement.style.setProperty(
             "--accentDark3",
             colors.accentDark3,
         );
-
         document.documentElement.style.setProperty(
             "--accentLight1",
             colors.accentLight1,
         );
-
         document.documentElement.style.setProperty(
             "--accentLight2",
             colors.accentLight2,
         );
-
         document.documentElement.style.setProperty(
             "--accentLight3",
             colors.accentLight3,
         );
-    };
-
-    if (window.chrome.webview) {
-        window.chrome.webview.addEventListener("message", (arg: any) => {
-            if (arg.data.settings) {
-                setSettings(arg.data.settings);
-            }
-
-            if (arg.data.colors) {
-                setColors(arg.data.colors);
-                accentColors();
-            }
-        });
-    }
+    }, [colors]);
 
     const handleForm = (e: any) => {
         e.preventDefault();
@@ -144,7 +132,7 @@ export default function App() {
                             ? "hidden"
                             : "")
                     }>
-                    🔍︎
+                    <span className="hover:cursor-pointer">🔍︎</span>
                     <input
                         className="flex min-w-0 flex-1 bg-transparent px-2 text-center outline-none"
                         type="text"
@@ -159,7 +147,7 @@ export default function App() {
                             ? "hidden"
                             : "")
                     }>
-                    🔍︎
+                    <span className="hover:cursor-pointer">🔍︎</span>
                     <input
                         className="flex min-w-0 flex-1 bg-transparent px-2 text-center outline-none"
                         type="text"

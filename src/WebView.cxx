@@ -116,8 +116,8 @@ winrt::IAsyncAction WebView::create_webview()
 
     core.FaviconChanged({[=, this](auto const&, auto const& args) { icon(); }});
 
-    core.NavigationCompleted(
-        {[=, this](auto const&, auto const& args) { SendMessage(appHwnd, WM_NOTIFY, 0, 0); }});
+    core.DOMContentLoaded(
+        {[=, this](auto const&, auto const&) { SendMessageW(appHwnd, WM_NOTIFY, 0, 0); }});
 }
 
 void WebView::gui_web_message_received(winrt::CoreWebView2WebMessageReceivedEventArgs const& args)

@@ -348,6 +348,8 @@ int App::wm_dpichanged(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     storage->settings.appScale =
         static_cast<float>(GetDpiForWindow(hwnd)) / static_cast<float>(USER_DEFAULT_SCREEN_DPI);
 
+    scaledBar = 65 * storage->settings.appScale;
+
     auto bounds{(RECT*)lparam};
 
     SetWindowPos(appHwnd, nullptr, bounds->left, bounds->top, (bounds->right - bounds->left),
@@ -404,13 +406,6 @@ int App::wm_keydown(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     {
         storage->settings.webviewGui = storage->settings.webviewGui ? false : true;
 
-        if (storage->settings.webviewGui)
-        {
-            webviewGui->focus();
-            webviewGui->title();
-            webviewGui->icon();
-        }
-
         break;
     }
 
@@ -434,40 +429,12 @@ int App::wm_keydown(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     {
         storage->settings.webviewSwapped = storage->settings.webviewSwapped ? false : true;
 
-        if (!storage->settings.webviewSplit && !storage->settings.webviewSwapped)
-        {
-            webviewMain->focus();
-            webviewMain->title();
-            webviewMain->icon();
-        }
-
-        if (!storage->settings.webviewSplit && storage->settings.webviewSwapped)
-        {
-            webviewSide->focus();
-            webviewSide->title();
-            webviewSide->icon();
-        }
-
         break;
     }
 
     case VK_F2:
     {
         storage->settings.webviewSplit = storage->settings.webviewSplit ? false : true;
-
-        if (!storage->settings.webviewSplit && !storage->settings.webviewSwapped)
-        {
-            webviewMain->focus();
-            webviewMain->title();
-            webviewMain->icon();
-        }
-
-        if (!storage->settings.webviewSplit && storage->settings.webviewSwapped)
-        {
-            webviewSide->focus();
-            webviewSide->title();
-            webviewSide->icon();
-        }
 
         break;
     }
@@ -487,9 +454,6 @@ int App::wm_keydown(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
         else
         {
             storage->settings.windowTopmost = util::window_topmost(hwnd);
-            webviewGui->title();
-            webviewMain->title();
-            webviewSide->title();
         }
 
         break;
@@ -556,6 +520,24 @@ int App::wm_notify(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
         webviewBar->post_settings(storage->serialize());
         webviewMain->post_settings(storage->serialize());
         webviewSide->post_settings(storage->serialize());
+
+        if (storage->settings.webviewGui)
+        {
+            webviewGui->focus();
+            webviewGui->title();
+            webviewGui->icon();
+        }
+
+        else
+        {
+            webviewMain->focus();
+            webviewMain->title();
+            webviewMain->icon();
+
+            webviewSide->focus();
+            webviewSide->title();
+            webviewSide->icon();
+        }
 
         resized();
 

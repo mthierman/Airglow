@@ -42,50 +42,10 @@ export default function App() {
 
     const [themeIcon, setThemeIcon] = useState("");
 
-    const accentColors = () => {
-        document.documentElement.style.setProperty("--accent", colors.accent);
-
-        document.documentElement.style.setProperty(
-            "--accentDark1",
-            colors.accentDark1,
-        );
-
-        document.documentElement.style.setProperty(
-            "--accentDark2",
-            colors.accentDark2,
-        );
-
-        document.documentElement.style.setProperty(
-            "--accentDark3",
-            colors.accentDark3,
-        );
-
-        document.documentElement.style.setProperty(
-            "--accentLight1",
-            colors.accentLight1,
-        );
-
-        document.documentElement.style.setProperty(
-            "--accentLight2",
-            colors.accentLight2,
-        );
-
-        document.documentElement.style.setProperty(
-            "--accentLight3",
-            colors.accentLight3,
-        );
-    };
-
     if (window.chrome.webview) {
         window.chrome.webview.addEventListener("message", (arg: any) => {
-            if (arg.data.settings) {
-                setSettings(arg.data.settings);
-            }
-
-            if (arg.data.colors) {
-                setColors(arg.data.colors);
-                accentColors();
-            }
+            if (arg.data.settings) setSettings(arg.data.settings);
+            if (arg.data.colors) setColors(arg.data.colors);
         });
     }
 
@@ -99,6 +59,34 @@ export default function App() {
             }
         }
     }, [settings.appTheme]);
+
+    useEffect(() => {
+        document.documentElement.style.setProperty("--accent", colors.accent);
+        document.documentElement.style.setProperty(
+            "--accentDark1",
+            colors.accentDark1,
+        );
+        document.documentElement.style.setProperty(
+            "--accentDark2",
+            colors.accentDark2,
+        );
+        document.documentElement.style.setProperty(
+            "--accentDark3",
+            colors.accentDark3,
+        );
+        document.documentElement.style.setProperty(
+            "--accentLight1",
+            colors.accentLight1,
+        );
+        document.documentElement.style.setProperty(
+            "--accentLight2",
+            colors.accentLight2,
+        );
+        document.documentElement.style.setProperty(
+            "--accentLight3",
+            colors.accentLight3,
+        );
+    }, [colors]);
 
     const handleForm = (e: any) => {
         e.preventDefault();
