@@ -51,12 +51,9 @@ export default function App() {
 
     useEffect(() => {
         if (settings.appTheme) {
-            if (settings.appTheme === "dark") {
-                setThemeIcon(`🌙`);
-            }
-            if (settings.appTheme === "light") {
-                setThemeIcon(`☀️`);
-            }
+            settings.appTheme === "dark"
+                ? setThemeIcon(`🌙`)
+                : setThemeIcon(`☀️`);
         }
     }, [settings.appTheme]);
 
@@ -122,37 +119,29 @@ export default function App() {
             onSubmit={handleForm}
             autoComplete="off"
             spellCheck="false">
-            <div className="grid gap-4 p-4">
-                <label className="grid whitespace-nowrap">
-                    <div className="grid gap-2 grid-flow-col items-end justify-between">
-                        <div className="select-none text-xl font-semibold">
-                            📡 Home
-                        </div>
-                        <div className="select-text truncate font-extralight">
-                            {settings.mainHomepage}
-                        </div>
+            <div className="flex flex-row">
+                <label className="flex flex-grow flex-col whitespace-nowrap">
+                    <div className="select-none bg-accentLight3 p-2 text-2xl font-semibold shadow-lg shadow-neutral-300 outline-none dark:bg-accentDark3 dark:shadow-neutral-950">
+                        📡 Home
                     </div>
                     <input
-                        className="bg-transparent p-2 text-center shadow-lg shadow-neutral-300 outline-none dark:shadow-neutral-950"
+                        className="bg-transparent p-2 outline-none"
                         type="text"
                         name="mainHomepage"
-                        id="mainHomepage"></input>
+                        id="mainHomepage"
+                        placeholder={settings.mainHomepage}></input>
                 </label>
 
-                <label className="grid whitespace-nowrap">
-                    <div className="grid gap-2 grid-flow-col items-end justify-between">
-                        <div className="select-none text-xl font-semibold">
-                            🛰️ Sidebar
-                        </div>
-                        <div className="select-text truncate font-extralight">
-                            {settings.sideHomepage}
-                        </div>
+                <label className="flex flex-grow flex-col whitespace-nowrap">
+                    <div className="select-none bg-neutral-200 p-2 text-2xl font-semibold shadow-lg shadow-neutral-300 outline-none dark:bg-neutral-800 dark:shadow-neutral-950">
+                        🛰️ Sidebar
                     </div>
                     <input
-                        className="bg-transparent p-2 text-center shadow-lg shadow-neutral-300 outline-none dark:shadow-neutral-950"
+                        className="bg-transparent p-2 outline-none"
                         type="text"
                         name="sideHomepage"
-                        id="sideHomepage"></input>
+                        id="sideHomepage"
+                        placeholder={settings.sideHomepage}></input>
                 </label>
             </div>
 
@@ -162,7 +151,7 @@ export default function App() {
                 </div>
 
                 <button
-                    className="rounded-lg p-2 shadow-lg shadow-neutral-300 duration-75 active:scale-95 dark:shadow-neutral-950"
+                    className="rounded-lg p-2 shadow-lg shadow-neutral-300 duration-100 hover:scale-95 active:scale-90 dark:shadow-neutral-950 active:bg-green-600"
                     id="submitUrl"
                     type="submit">
                     Save

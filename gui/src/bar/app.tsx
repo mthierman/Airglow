@@ -114,9 +114,8 @@ export default function App() {
         <div className="flex h-full flex-col overflow-clip">
             <form
                 className={
-                    settings.webviewSwapped
-                        ? "flex flex-grow flex-row-reverse p-1 font-semibold shadow-lg shadow-neutral-300 dark:shadow-neutral-950"
-                        : "flex flex-grow p-1 font-semibold shadow-lg shadow-neutral-300 dark:shadow-neutral-950"
+                    "flex flex-grow font-semibold shadow-lg shadow-neutral-300 dark:shadow-neutral-950 " +
+                    (settings.webviewSwapped ? "flex-row-reverse" : "")
                 }
                 name="url"
                 id="url"
@@ -126,7 +125,7 @@ export default function App() {
                 spellCheck="false">
                 <label
                     className={
-                        "flex min-w-0 flex-1 select-none px-1 " +
+                        "flex min-w-0 flex-1 select-none items-center bg-accentLight3 px-2 py-1 dark:bg-accentDark3 " +
                         (!settings.webviewSplit && settings.webviewSwapped
                             ? "hidden"
                             : "")
@@ -141,7 +140,7 @@ export default function App() {
 
                 <label
                     className={
-                        "flex min-w-0 flex-1 select-none px-1 " +
+                        "flex min-w-0 flex-1 select-none items-center bg-neutral-200 px-2 py-1 dark:bg-neutral-800 " +
                         (!settings.webviewSplit && !settings.webviewSwapped
                             ? "hidden"
                             : "")
