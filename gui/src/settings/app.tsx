@@ -110,6 +110,10 @@ export default function App() {
         form.reset();
     };
 
+    const handleClipboard = async (page: string) => {
+        await navigator.clipboard.writeText(page);
+    };
+
     return (
         <form
             className="grid h-full content-between"
@@ -119,29 +123,49 @@ export default function App() {
             onSubmit={handleForm}
             autoComplete="off"
             spellCheck="false">
-            <div className="flex flex-row">
-                <label className="flex flex-grow flex-col whitespace-nowrap">
-                    <div className="select-none bg-accentLight3 p-2 text-2xl font-semibold shadow-lg shadow-neutral-300 outline-none dark:bg-accentDark3 dark:shadow-neutral-950">
-                        📡 Home
+            <div className="grid grid-flow-col grid-cols-2">
+                <label className="flex flex-col">
+                    <div className="z-50 grid gap-2 bg-accentLight3 p-2 text-2xl font-semibold leading-none shadow-lg shadow-neutral-400 outline-none dark:bg-accentDark3 dark:shadow-neutral-950">
+                        <span className="select-none hover:cursor-pointer">
+                            📡 Home
+                        </span>
+                        <span className="truncate text-sm">
+                            <a
+                                className="hover:cursor-pointer"
+                                onClick={() => {
+                                    handleClipboard(settings.mainHomepage);
+                                }}>
+                                {settings.mainHomepage}
+                            </a>
+                        </span>
                     </div>
                     <input
-                        className="bg-transparent p-2 outline-none placeholder:text-end"
+                        className="z-40 bg-accentLight3 p-2 shadow-lg shadow-neutral-400 outline-none dark:bg-accentDark3 dark:shadow-neutral-950"
                         type="text"
                         name="mainHomepage"
-                        id="mainHomepage"
-                        placeholder={settings.mainHomepage}></input>
+                        id="mainHomepage"></input>
                 </label>
 
-                <label className="flex flex-grow flex-col whitespace-nowrap">
-                    <div className="select-none bg-neutral-200 p-2 text-2xl font-semibold shadow-lg shadow-neutral-300 outline-none dark:bg-neutral-800 dark:shadow-neutral-950">
-                        🛰️ Sidebar
+                <label className="flex flex-col">
+                    <div className="z-50 grid gap-2 truncate bg-neutral-200 p-2 text-2xl font-semibold leading-none shadow-lg shadow-neutral-400 outline-none dark:bg-neutral-800 dark:shadow-neutral-950">
+                        <span className="select-none hover:cursor-pointer">
+                            🛰️ Sidebar
+                        </span>
+                        <span className="truncate text-sm">
+                            <a
+                                className="hover:cursor-pointer"
+                                onClick={() => {
+                                    handleClipboard(settings.sideHomepage);
+                                }}>
+                                {settings.sideHomepage}
+                            </a>
+                        </span>
                     </div>
                     <input
-                        className="bg-transparent p-2 outline-none placeholder:text-end"
+                        className="z-40 bg-neutral-200 p-2 shadow-lg shadow-neutral-400 outline-none dark:bg-neutral-800 dark:shadow-neutral-950"
                         type="text"
                         name="sideHomepage"
-                        id="sideHomepage"
-                        placeholder={settings.sideHomepage}></input>
+                        id="sideHomepage"></input>
                 </label>
             </div>
 
@@ -151,7 +175,7 @@ export default function App() {
                 </div>
 
                 <button
-                    className="rounded-lg p-2 shadow-lg shadow-neutral-300 duration-100 hover:scale-95 active:scale-90 active:bg-green-600 dark:shadow-neutral-950"
+                    className="rounded-lg p-2 shadow-lg shadow-neutral-400 duration-100 hover:scale-95 active:scale-90 active:bg-green-600 dark:shadow-neutral-950"
                     id="submitUrl"
                     type="submit">
                     Save

@@ -31,6 +31,19 @@ export default function App() {
 
     if (window.chrome.webview) {
         window.chrome.webview.addEventListener("message", (arg: any) => {
+            if (arg.data === "focus") {
+                const mainInput = document.getElementById(
+                    "mainCurrentPage",
+                ) as HTMLInputElement;
+                const sideInput = document.getElementById(
+                    "sideCurrentPage",
+                ) as HTMLInputElement;
+
+                if (!settings.webviewGui && !settings.webviewSwapped)
+                    mainInput.focus();
+                if (!settings.webviewGui && settings.webviewSwapped)
+                    sideInput.focus();
+            }
             if (arg.data.settings) setSettings(arg.data.settings);
             if (arg.data.colors) setColors(arg.data.colors);
         });
@@ -99,6 +112,18 @@ export default function App() {
             });
     };
 
+    const handleHome = (webview: string) => {
+        if (webview === "main")
+            window.chrome.webview.postMessage({
+                mainHome: true,
+            });
+
+        if (webview === "side")
+            window.chrome.webview.postMessage({
+                sideHome: true,
+            });
+    };
+
     const handleClipboard = async (page: string) => {
         await navigator.clipboard.writeText(page);
     };
@@ -114,7 +139,7 @@ export default function App() {
         <div className="flex h-full flex-col overflow-clip">
             <form
                 className={
-                    "flex flex-grow font-semibold shadow-lg shadow-neutral-300 dark:shadow-neutral-950 " +
+                    "flex flex-grow font-semibold shadow-lg shadow-neutral-400 dark:shadow-neutral-950 " +
                     (settings.webviewSwapped ? "flex-row-reverse" : "")
                 }
                 name="url"
@@ -136,6 +161,15 @@ export default function App() {
                         type="text"
                         name="mainCurrentPage"
                         id="mainCurrentPage"></input>
+                    <div className="select-none self-center bg-accentLight3 hover:cursor-pointer dark:bg-accentDark3">
+                        <a
+                            className="hover:cursor-pointer"
+                            onClick={() => {
+                                handleHome("main");
+                            }}>
+                            📡
+                        </a>
+                    </div>
                 </label>
 
                 <label
@@ -151,6 +185,15 @@ export default function App() {
                         type="text"
                         name="sideCurrentPage"
                         id="sideCurrentPage"></input>
+                    <div className="select-none self-center bg-neutral-200 hover:cursor-pointer dark:bg-neutral-800">
+                        <a
+                            className="hover:cursor-pointer"
+                            onClick={() => {
+                                handleHome("side");
+                            }}>
+                            🛰️
+                        </a>
+                    </div>
                 </label>
 
                 <input type="submit" hidden />
@@ -181,7 +224,7 @@ export default function App() {
                             ``
                         ) : (
                             <a
-                                className="hover:cursor-copy"
+                                className="hover:cursor-pointer"
                                 onClick={() => {
                                     handleClipboard(settings.mainCurrentPage);
                                 }}>
@@ -209,7 +252,7 @@ export default function App() {
                             ``
                         ) : (
                             <a
-                                className="hover:cursor-copy"
+                                className="hover:cursor-pointer"
                                 onClick={() => {
                                     handleClipboard(settings.sideCurrentPage);
                                 }}>

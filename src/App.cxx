@@ -279,6 +279,10 @@ __int64 __stdcall App::WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam
             return app->wm_exitsizemove(hwnd, msg, wparam, lparam);
         case WM_GETMINMAXINFO:
             return app->wm_getminmaxinfo(hwnd, msg, wparam, lparam);
+        case WM_HOMEMAIN:
+            return app->wm_homemain(hwnd, msg, wparam, lparam);
+        case WM_HOMESIDE:
+            return app->wm_homeside(hwnd, msg, wparam, lparam);
         case WM_KEYDOWN:
             return app->wm_keydown(hwnd, msg, wparam, lparam);
         case WM_NAVIGATEMAIN:
@@ -396,6 +400,26 @@ int App::wm_getminmaxinfo(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     return 0;
 }
 
+int App::wm_homemain(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+{
+    if (!webviewMain->core || !webviewMain->controller)
+        return 0;
+
+    webviewMain->core.Navigate(winrt::to_hstring(storage->settings.mainHomepage));
+
+    return 0;
+}
+
+int App::wm_homeside(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+{
+    if (!webviewSide->core || !webviewSide->controller)
+        return 0;
+
+    webviewSide->core.Navigate(winrt::to_hstring(storage->settings.sideHomepage));
+
+    return 0;
+}
+
 int App::wm_keydown(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
     if (!webviewGui || !webviewBar || !webviewMain || !webviewSide)
@@ -497,7 +521,6 @@ int App::wm_navigatemain(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
         return 0;
 
     webviewMain->core.Navigate(winrt::to_hstring(storage->settings.mainCurrentPage));
-    webviewMain->focus();
 
     return 0;
 }
@@ -508,7 +531,6 @@ int App::wm_navigateside(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
         return 0;
 
     webviewSide->core.Navigate(winrt::to_hstring(storage->settings.sideCurrentPage));
-    webviewSide->focus();
 
     return 0;
 }
@@ -524,18 +546,18 @@ int App::wm_notify(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
         if (storage->settings.webviewGui)
         {
-            webviewGui->focus();
+            // webviewGui->focus();
             webviewGui->title();
             webviewGui->icon();
         }
 
         else
         {
-            webviewMain->focus();
+            // webviewMain->focus();
             webviewMain->title();
             webviewMain->icon();
 
-            webviewSide->focus();
+            // webviewSide->focus();
             webviewSide->title();
             webviewSide->icon();
         }

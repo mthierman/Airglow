@@ -203,6 +203,22 @@ void WebView::bar_web_message_received(winrt::CoreWebView2WebMessageReceivedEven
             if (s == true)
                 SendMessageW(appHwnd, WM_DEVTOOLSSIDE, 0, 0);
         }
+
+        if (!j["mainHome"].empty())
+        {
+            auto s{j["mainHome"].get<bool>()};
+
+            if (s == true)
+                SendMessageW(appHwnd, WM_HOMEMAIN, 0, 0);
+        }
+
+        if (!j["sideHome"].empty())
+        {
+            auto s{j["sideHome"].get<bool>()};
+
+            if (s == true)
+                SendMessageW(appHwnd, WM_HOMESIDE, 0, 0);
+        }
     };
 
     return;
@@ -431,8 +447,11 @@ winrt::IAsyncAction WebView::icon()
 
 void WebView::focus()
 {
-    if (!controller)
+    if (!core || !controller)
         return;
 
     controller.MoveFocus(winrt::CoreWebView2MoveFocusReason::Programmatic);
+
+    if (name == "bar")
+        core.PostWebMessageAsString(L"focus");
 }

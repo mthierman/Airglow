@@ -35,6 +35,8 @@ class App
     int wm_erasebkgnd(HWND, UINT, WPARAM, LPARAM);
     int wm_exitsizemove(HWND, UINT, WPARAM, LPARAM);
     int wm_getminmaxinfo(HWND, UINT, WPARAM, LPARAM);
+    int wm_homemain(HWND, UINT, WPARAM, LPARAM);
+    int wm_homeside(HWND, UINT, WPARAM, LPARAM);
     int wm_keydown(HWND, UINT, WPARAM, LPARAM);
     int wm_navigatemain(HWND, UINT, WPARAM, LPARAM);
     int wm_navigateside(HWND, UINT, WPARAM, LPARAM);
