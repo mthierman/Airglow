@@ -436,7 +436,7 @@ int App::wm_keydown(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
     case 0x4C:
     {
-        if (GetKeyState(VK_CONTROL) & 0x8000)
+        if ((GetKeyState(VK_CONTROL) & 0x8000) && !storage->settings.webviewGui)
             webviewBar->focus();
 
         break;
