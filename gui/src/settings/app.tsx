@@ -52,10 +52,10 @@ export default function App() {
     useEffect(() => {
         if (settings.appTheme) {
             if (settings.appTheme === "dark") {
-                setThemeIcon("🌙︎");
+                setThemeIcon(`🌙`);
             }
             if (settings.appTheme === "light") {
-                setThemeIcon("🔆︎");
+                setThemeIcon(`☀️`);
             }
         }
     }, [settings.appTheme]);
@@ -114,60 +114,60 @@ export default function App() {
     };
 
     return (
-        <div>
-            <form
-                className="grid h-full content-between gap-6 p-6"
-                name="settings"
-                id="settings"
-                method="post"
-                onSubmit={handleForm}
-                autoComplete="off"
-                spellCheck="false">
-                <div className="grid gap-6 self-start">
-                    <label className="grid gap-2 whitespace-nowrap">
-                        <div className="grid grid-flow-col items-end justify-between gap-6 truncate">
-                            <div className="select-none text-3xl">📡 Home</div>
-                            <div className="select-text font-semibold">
-                                {settings.mainHomepage}
-                            </div>
+        <form
+            className="grid h-full content-between"
+            name="settings"
+            id="settings"
+            method="post"
+            onSubmit={handleForm}
+            autoComplete="off"
+            spellCheck="false">
+            <div className="grid gap-4 p-4">
+                <label className="grid whitespace-nowrap">
+                    <div className="grid grid-flow-col items-end justify-between">
+                        <div className="select-none text-xl font-semibold">
+                            📡 Home
                         </div>
-                        <input
-                            className="rounded-lg border-[1px] bg-transparent p-2 shadow-md shadow-neutral-400 outline-none focus:border-accentDark2 dark:shadow-black dark:focus:border-accent"
-                            type="text"
-                            name="mainHomepage"
-                            id="mainHomepage"></input>
-                    </label>
-
-                    <label className="grid gap-2 whitespace-nowrap">
-                        <div className="grid grid-flow-col items-end justify-between gap-6 truncate">
-                            <div className="select-none text-3xl">
-                                🛰️ Sidebar
-                            </div>
-                            <div className="select-text font-semibold">
-                                {settings.sideHomepage}
-                            </div>
+                        <div className="select-text truncate font-extralight">
+                            {settings.mainHomepage}
                         </div>
-                        <input
-                            className="rounded-lg border-[1px] bg-transparent p-2 shadow-md shadow-neutral-400 outline-none focus:border-accentDark2 dark:shadow-black dark:focus:border-accent"
-                            type="text"
-                            name="sideHomepage"
-                            id="sideHomepage"></input>
-                    </label>
-                </div>
-
-                <div className="grid grid-flow-col justify-between">
-                    <div className="select-none self-end capitalize">
-                        {themeIcon} {settings.appTheme} mode
                     </div>
+                    <input
+                        className="bg-transparent p-2 text-center shadow-lg shadow-neutral-300 outline-none dark:shadow-neutral-950"
+                        type="text"
+                        name="mainHomepage"
+                        id="mainHomepage"></input>
+                </label>
 
-                    <button
-                        className="rounded-lg border-[1px] bg-transparent p-2 shadow-md shadow-neutral-400 duration-75 hover:border-accentDark2 active:scale-95 dark:shadow-black dark:hover:border-accent"
-                        id="submitUrl"
-                        type="submit">
-                        Save
-                    </button>
+                <label className="grid whitespace-nowrap">
+                    <div className="grid grid-flow-col items-end justify-between">
+                        <div className="select-none text-xl font-semibold">
+                            🛰️ Sidebar
+                        </div>
+                        <div className="select-text truncate font-extralight">
+                            {settings.sideHomepage}
+                        </div>
+                    </div>
+                    <input
+                        className="bg-transparent p-2 text-center shadow-lg shadow-neutral-300 outline-none dark:shadow-neutral-950"
+                        type="text"
+                        name="sideHomepage"
+                        id="sideHomepage"></input>
+                </label>
+            </div>
+
+            <div className="grid grid-flow-col justify-between gap-4 p-4">
+                <div className="select-none self-end capitalize">
+                    {themeIcon} {settings.appTheme} mode
                 </div>
-            </form>
-        </div>
+
+                <button
+                    className="rounded-lg p-2 shadow-lg shadow-neutral-300 duration-75 active:scale-95 dark:shadow-neutral-950"
+                    id="submitUrl"
+                    type="submit">
+                    Save
+                </button>
+            </div>
+        </form>
     );
 }

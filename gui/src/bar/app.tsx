@@ -132,7 +132,7 @@ export default function App() {
                             ? "hidden"
                             : "")
                     }>
-                    <span className="hover:cursor-pointer">🔍︎</span>
+                    <span className="hover:cursor-pointer">🔍</span>
                     <input
                         className="flex min-w-0 flex-1 bg-transparent px-2 text-center outline-none"
                         type="text"
@@ -147,7 +147,7 @@ export default function App() {
                             ? "hidden"
                             : "")
                     }>
-                    <span className="hover:cursor-pointer">🔍︎</span>
+                    <span className="hover:cursor-pointer">🔍</span>
                     <input
                         className="flex min-w-0 flex-1 bg-transparent px-2 text-center outline-none"
                         type="text"
@@ -177,7 +177,7 @@ export default function App() {
                             onClick={() => {
                                 handleDevtools("main");
                             }}>
-                            {isBlank(settings.mainCurrentPage) ? `` : `🔧︎`}
+                            {isBlank(settings.mainCurrentPage) ? `` : `🔧`}
                         </a>
                         {isBlank(settings.mainCurrentPage) ? (
                             ``
@@ -205,7 +205,7 @@ export default function App() {
                             onClick={() => {
                                 handleDevtools("side");
                             }}>
-                            {isBlank(settings.sideCurrentPage) ? `` : `🔧︎`}
+                            {isBlank(settings.sideCurrentPage) ? `` : `🔧`}
                         </a>
                         {isBlank(settings.sideCurrentPage) ? (
                             ``

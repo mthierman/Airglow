@@ -15,9 +15,9 @@ export default {
                 accentLight3: "var(--accentLight3)",
             },
         },
-        fontFamily: {
-            sans: ["Segoe UI Variable Display"],
-        },
+        // fontFamily: {
+        //     sans: ["Segoe UI"],
+        // },
     },
     corePlugins: {
         preflight: true,
