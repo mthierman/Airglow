@@ -5,7 +5,8 @@ App::App(HINSTANCE hInstance, PWSTR pCmdLine, int nCmdShow)
       webviewGui(std::make_unique<WebView>(storage.get(), appHwnd, "gui")),
       webviewBar(std::make_unique<WebView>(storage.get(), appHwnd, "bar")),
       webviewMain(std::make_unique<WebView>(storage.get(), appHwnd, "main")),
-      webviewSide(std::make_unique<WebView>(storage.get(), appHwnd, "side"))
+      webviewSide(std::make_unique<WebView>(storage.get(), appHwnd, "side")),
+      scaledBar(65 * storage->settings.appScale)
 {
     if (!storage)
         util::error("Storage failed to initialize");
@@ -20,12 +21,15 @@ App::~App() {}
 
 HWND App::create_window(HINSTANCE hInstance)
 {
-    storage->application.hIcon = (HICON)LoadImageW(hInstance, util::to_wide(APP_NAME).c_str(),
-                                                   IMAGE_ICON, 0, 0, LR_DEFAULTSIZE);
+    storage->application.hIcon =
+        (HICON)LoadImageW(hInstance, util::to_wide(storage->settings.appName).c_str(), IMAGE_ICON,
+                          0, 0, LR_DEFAULTSIZE);
+
+    auto appName{util::to_wide(storage->settings.appName)};
 
     WNDCLASSEXW wcex{sizeof(WNDCLASSEX)};
-    wcex.lpszClassName = storage->application.appName.c_str();
-    wcex.lpszMenuName = storage->application.appName.c_str();
+    wcex.lpszClassName = appName.c_str();
+    wcex.lpszMenuName = appName.c_str();
     wcex.lpfnWndProc = App::WndProc;
     wcex.style = CS_HREDRAW | CS_VREDRAW;
     wcex.cbClsExtra = 0;
@@ -41,15 +45,14 @@ HWND App::create_window(HINSTANCE hInstance)
     if (atom == 0)
         util::error("Window failed to register");
 
-    auto hwnd{CreateWindowExW(0, storage->application.appName.c_str(),
-                              storage->application.appName.c_str(), WS_OVERLAPPEDWINDOW,
+    auto hwnd{CreateWindowExW(0, appName.c_str(), appName.c_str(), WS_OVERLAPPEDWINDOW,
                               CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
                               nullptr, hInstance, this)};
 
     if (!hwnd)
         util::error("Window failed to initialize");
 
-    storage->application.scale =
+    storage->settings.appScale =
         static_cast<float>(GetDpiForWindow(hwnd)) / static_cast<float>(USER_DEFAULT_SCREEN_DPI);
 
     return hwnd;
@@ -201,8 +204,6 @@ winrt::Windows::Foundation::Rect App::panel_gui(RECT bounds)
 
 winrt::Windows::Foundation::Rect App::panel_bar(RECT bounds)
 {
-    auto scaledBar{65 * storage->application.scale};
-
     return winrt::Windows::Foundation::Rect{
         static_cast<float>(bounds.left), static_cast<float>(bounds.bottom - scaledBar),
         static_cast<float>(bounds.right - bounds.left), static_cast<float>(scaledBar)};
@@ -210,8 +211,6 @@ winrt::Windows::Foundation::Rect App::panel_bar(RECT bounds)
 
 winrt::Windows::Foundation::Rect App::panel_full(RECT bounds)
 {
-    auto scaledBar{65 * storage->application.scale};
-
     return winrt::Windows::Foundation::Rect{
         static_cast<float>(bounds.left), static_cast<float>(bounds.top),
         static_cast<float>(bounds.right - bounds.left),
@@ -220,8 +219,6 @@ winrt::Windows::Foundation::Rect App::panel_full(RECT bounds)
 
 winrt::Windows::Foundation::Rect App::panel_left(RECT bounds)
 {
-    auto scaledBar{65 * storage->application.scale};
-
     return winrt::Windows::Foundation::Rect{
         static_cast<float>(bounds.left), static_cast<float>(bounds.top),
         static_cast<float>(bounds.right / 2),
@@ -230,8 +227,6 @@ winrt::Windows::Foundation::Rect App::panel_left(RECT bounds)
 
 winrt::Windows::Foundation::Rect App::panel_right(RECT bounds)
 {
-    auto scaledBar{65 * storage->application.scale};
-
     return winrt::Windows::Foundation::Rect{
         static_cast<float>(bounds.right / 2), static_cast<float>(bounds.top),
         static_cast<float>(bounds.right / 2),
@@ -240,8 +235,6 @@ winrt::Windows::Foundation::Rect App::panel_right(RECT bounds)
 
 winrt::Windows::Foundation::Rect App::panel_top(RECT bounds)
 {
-    auto scaledBar{65 * storage->application.scale};
-
     return winrt::Windows::Foundation::Rect{
         static_cast<float>(bounds.left), static_cast<float>(bounds.top),
         static_cast<float>(bounds.right),
@@ -250,8 +243,6 @@ winrt::Windows::Foundation::Rect App::panel_top(RECT bounds)
 
 winrt::Windows::Foundation::Rect App::panel_bot(RECT bounds)
 {
-    auto scaledBar{65 * storage->application.scale};
-
     return winrt::Windows::Foundation::Rect{
         static_cast<float>(bounds.left), static_cast<float>((bounds.bottom / 2) - (scaledBar / 2)),
         static_cast<float>(bounds.right),
@@ -350,7 +341,7 @@ int App::wm_devtoolsside(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 int App::wm_dpichanged(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-    storage->application.scale =
+    storage->settings.appScale =
         static_cast<float>(GetDpiForWindow(hwnd)) / static_cast<float>(USER_DEFAULT_SCREEN_DPI);
 
     auto bounds{(RECT*)lparam};

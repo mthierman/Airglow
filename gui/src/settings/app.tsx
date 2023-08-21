@@ -20,71 +20,84 @@ export default function App() {
         accentLight1: "",
         accentLight2: "",
         accentLight3: "",
+        foreground: "",
+        background: "",
     });
-    const [mainHomepage, setMainHomepage] = useState("");
-    const [sideHomepage, setSideHomepage] = useState("");
-    const [appTheme, setAppTheme] = useState("");
+
+    const [settings, setSettings] = useState({
+        appTheme: "",
+        windowPosition: [0, 0, 0, 0],
+        windowMaximized: false,
+        windowFullscreen: false,
+        windowTopmost: false,
+        webviewGui: false,
+        webviewSplit: false,
+        webviewSwapped: false,
+        webviewHorizontal: false,
+        mainHomepage: "",
+        mainCurrentPage: "",
+        sideHomepage: "",
+        sideCurrentPage: "",
+    });
+
     const [themeIcon, setThemeIcon] = useState("");
 
+    const accentColors = () => {
+        document.documentElement.style.setProperty("--accent", colors.accent);
+
+        document.documentElement.style.setProperty(
+            "--accentDark1",
+            colors.accentDark1,
+        );
+
+        document.documentElement.style.setProperty(
+            "--accentDark2",
+            colors.accentDark2,
+        );
+
+        document.documentElement.style.setProperty(
+            "--accentDark3",
+            colors.accentDark3,
+        );
+
+        document.documentElement.style.setProperty(
+            "--accentLight1",
+            colors.accentLight1,
+        );
+
+        document.documentElement.style.setProperty(
+            "--accentLight2",
+            colors.accentLight2,
+        );
+
+        document.documentElement.style.setProperty(
+            "--accentLight3",
+            colors.accentLight3,
+        );
+    };
     if (window.chrome.webview) {
         window.chrome.webview.addEventListener("message", (arg: any) => {
-            if (arg.data.colors) {
-                setColors(arg.data.colors);
-
-                document.documentElement.style.setProperty(
-                    "--accent",
-                    colors.accent,
-                );
-
-                document.documentElement.style.setProperty(
-                    "--accentDark1",
-                    colors.accentDark1,
-                );
-
-                document.documentElement.style.setProperty(
-                    "--accentDark2",
-                    colors.accentDark2,
-                );
-
-                document.documentElement.style.setProperty(
-                    "--accentDark3",
-                    colors.accentDark3,
-                );
-
-                document.documentElement.style.setProperty(
-                    "--accentLight1",
-                    colors.accentLight1,
-                );
-
-                document.documentElement.style.setProperty(
-                    "--accentLight2",
-                    colors.accentLight2,
-                );
-
-                document.documentElement.style.setProperty(
-                    "--accentLight3",
-                    colors.accentLight3,
-                );
+            if (arg.data.settings) {
+                setSettings(arg.data.settings);
             }
 
-            if (arg.data.settings) {
-                setMainHomepage(arg.data.settings.mainHomepage);
-                setSideHomepage(arg.data.settings.sideHomepage);
-                setAppTheme(arg.data.settings.appTheme);
+            if (arg.data.colors) {
+                setColors(arg.data.colors);
+                accentColors();
             }
         });
     }
 
     useEffect(() => {
-        if (appTheme) {
-            if (appTheme === "dark") {
+        if (settings.appTheme) {
+            if (settings.appTheme === "dark") {
                 setThemeIcon("🌙︎");
             }
-            if (appTheme === "light") {
+            if (settings.appTheme === "light") {
                 setThemeIcon("🔆︎");
             }
         }
-    }, [appTheme]);
+    }, [settings.appTheme]);
 
     const handleForm = (e: any) => {
         e.preventDefault();
@@ -126,7 +139,7 @@ export default function App() {
                         <div className="grid grid-flow-col items-end justify-between gap-6 truncate">
                             <div className="select-none text-3xl">📡 Home</div>
                             <div className="select-text font-semibold text-accentDark2 dark:text-accent">
-                                {mainHomepage}
+                                {settings.mainHomepage}
                             </div>
                         </div>
                         <input
@@ -142,7 +155,7 @@ export default function App() {
                                 🛰️ Sidebar
                             </div>
                             <div className="select-text font-semibold text-accentDark2 dark:text-accent">
-                                {sideHomepage}
+                                {settings.sideHomepage}
                             </div>
                         </div>
                         <input
@@ -155,7 +168,7 @@ export default function App() {
 
                 <div className="grid grid-flow-col justify-between">
                     <div className="select-none self-end capitalize">
-                        {themeIcon} {appTheme} mode
+                        {themeIcon} {settings.appTheme} mode
                     </div>
 
                     <button

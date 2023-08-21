@@ -4,7 +4,6 @@
 
 struct Application
 {
-    std::wstring appName{util::to_wide(APP_NAME)};
     HCURSOR hCursor{
         (HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED)};
     HICON hIcon{
@@ -12,12 +11,14 @@ struct Application
     HBRUSH darkBrush{(HBRUSH)GetStockObject(BLACK_BRUSH)};
     HBRUSH lightBrush{(HBRUSH)GetStockObject(WHITE_BRUSH)};
     HBRUSH nullBrush{(HBRUSH)GetStockObject(NULL_BRUSH)};
-    float scale{1};
 };
 
 struct Settings
 {
+    std::string appName{APP_NAME};
+    std::string appVersion{APP_VERSION};
     std::string appTheme{util::system_theme()};
+    float appScale{1};
     std::vector<int> windowPosition{0, 0, 0, 0};
     bool windowMaximized{false};
     bool windowFullscreen{false};

@@ -9,75 +9,69 @@ export default function App() {
         accentLight1: "",
         accentLight2: "",
         accentLight3: "",
+        foreground: "",
+        background: "",
     });
 
-    // const [settings, setSettings] = useState({
-    //     appTheme: "",
-    //     windowPosition: [0, 0, 0, 0],
-    //     windowMaximized: false,
-    //     windowFullscreen: false,
-    //     windowTopmost: false,
-    //     webviewGui: false,
-    //     webviewSplit: false,
-    //     webviewSwapped: false,
-    //     webviewHorizontal: false,
-    //     mainHomepage: "",
-    //     mainCurrentPage: "",
-    //     sideHomepage: "",
-    //     sideCurrentPage: "",
-    // });
+    const [settings, setSettings] = useState({
+        appTheme: "",
+        windowPosition: [0, 0, 0, 0],
+        windowMaximized: false,
+        windowFullscreen: false,
+        windowTopmost: false,
+        webviewGui: false,
+        webviewSplit: false,
+        webviewSwapped: false,
+        webviewHorizontal: false,
+        mainHomepage: "",
+        mainCurrentPage: "",
+        sideHomepage: "",
+        sideCurrentPage: "",
+    });
 
-    const [mainCurrentPage, setMainCurrentPage] = useState("");
-    const [sideCurrentPage, setSideCurrentPage] = useState("");
-    const [webviewSplit, setWebviewSplit] = useState(false);
-    const [webviewSwapped, setWebviewSwapped] = useState(false);
+    const accentColors = () => {
+        document.documentElement.style.setProperty("--accent", colors.accent);
+
+        document.documentElement.style.setProperty(
+            "--accentDark1",
+            colors.accentDark1,
+        );
+
+        document.documentElement.style.setProperty(
+            "--accentDark2",
+            colors.accentDark2,
+        );
+
+        document.documentElement.style.setProperty(
+            "--accentDark3",
+            colors.accentDark3,
+        );
+
+        document.documentElement.style.setProperty(
+            "--accentLight1",
+            colors.accentLight1,
+        );
+
+        document.documentElement.style.setProperty(
+            "--accentLight2",
+            colors.accentLight2,
+        );
+
+        document.documentElement.style.setProperty(
+            "--accentLight3",
+            colors.accentLight3,
+        );
+    };
 
     if (window.chrome.webview) {
         window.chrome.webview.addEventListener("message", (arg: any) => {
-            if (arg.data.colors) {
-                setColors(arg.data.colors);
-
-                document.documentElement.style.setProperty(
-                    "--accent",
-                    colors.accent,
-                );
-
-                document.documentElement.style.setProperty(
-                    "--accentDark1",
-                    colors.accentDark1,
-                );
-
-                document.documentElement.style.setProperty(
-                    "--accentDark2",
-                    colors.accentDark2,
-                );
-
-                document.documentElement.style.setProperty(
-                    "--accentDark3",
-                    colors.accentDark3,
-                );
-
-                document.documentElement.style.setProperty(
-                    "--accentLight1",
-                    colors.accentLight1,
-                );
-
-                document.documentElement.style.setProperty(
-                    "--accentLight2",
-                    colors.accentLight2,
-                );
-
-                document.documentElement.style.setProperty(
-                    "--accentLight3",
-                    colors.accentLight3,
-                );
+            if (arg.data.settings) {
+                setSettings(arg.data.settings);
             }
 
-            if (arg.data.settings) {
-                setMainCurrentPage(arg.data.settings.mainCurrentPage);
-                setSideCurrentPage(arg.data.settings.sideCurrentPage);
-                setWebviewSplit(arg.data.settings.webviewSplit);
-                setWebviewSwapped(arg.data.settings.webviewSwapped);
+            if (arg.data.colors) {
+                setColors(arg.data.colors);
+                accentColors();
             }
         });
     }
@@ -134,7 +128,7 @@ export default function App() {
             <form
                 className={
                     "flex flex-grow p-1 font-semibold shadow-lg shadow-neutral-300 dark:shadow-neutral-950 " +
-                    (webviewSwapped ? "flex-row-reverse" : "")
+                    (settings.webviewSwapped ? "flex-row-reverse" : "")
                 }
                 name="url"
                 id="url"
@@ -145,7 +139,9 @@ export default function App() {
                 <label
                     className={
                         "flex min-w-0 flex-1 select-none px-1 " +
-                        (!webviewSplit && webviewSwapped ? "hidden" : "")
+                        (!settings.webviewSplit && settings.webviewSwapped
+                            ? "hidden"
+                            : "")
                     }>
                     🔍︎
                     <input
@@ -158,7 +154,9 @@ export default function App() {
                 <label
                     className={
                         "flex min-w-0 flex-1 select-none px-1 " +
-                        (!webviewSplit && !webviewSwapped ? "hidden" : "")
+                        (!settings.webviewSplit && !settings.webviewSwapped
+                            ? "hidden"
+                            : "")
                     }>
                     🔍︎
                     <input
@@ -173,14 +171,16 @@ export default function App() {
 
             <div
                 className={
-                    webviewSwapped
+                    settings.webviewSwapped
                         ? "flex flex-row-reverse p-2 text-sm"
                         : "flex p-2 text-sm"
                 }>
                 <address
                     className={
                         "flex min-w-0 flex-1 flex-shrink items-center not-italic " +
-                        (!webviewSplit && webviewSwapped ? "hidden" : "")
+                        (!settings.webviewSplit && settings.webviewSwapped
+                            ? "hidden"
+                            : "")
                     }>
                     <span className="flex-grow truncate px-4 text-center">
                         <a
@@ -188,17 +188,17 @@ export default function App() {
                             onClick={() => {
                                 handleDevtools("main");
                             }}>
-                            {isBlank(mainCurrentPage) ? `` : `🔧︎`}
+                            {isBlank(settings.mainCurrentPage) ? `` : `🔧︎`}
                         </a>
-                        {isBlank(mainCurrentPage) ? (
+                        {isBlank(settings.mainCurrentPage) ? (
                             ``
                         ) : (
                             <a
                                 className="hover:cursor-copy"
                                 onClick={() => {
-                                    handleClipboard(mainCurrentPage);
+                                    handleClipboard(settings.mainCurrentPage);
                                 }}>
-                                {mainCurrentPage}
+                                {settings.mainCurrentPage}
                             </a>
                         )}
                     </span>
@@ -206,7 +206,9 @@ export default function App() {
                 <address
                     className={
                         "flex min-w-0 flex-1 flex-shrink items-center not-italic " +
-                        (!webviewSplit && !webviewSwapped ? "hidden" : "")
+                        (!settings.webviewSplit && !settings.webviewSwapped
+                            ? "hidden"
+                            : "")
                     }>
                     <span className="flex-grow truncate px-4 text-center">
                         <a
@@ -214,17 +216,17 @@ export default function App() {
                             onClick={() => {
                                 handleDevtools("side");
                             }}>
-                            {isBlank(sideCurrentPage) ? `` : `🔧︎`}
+                            {isBlank(settings.sideCurrentPage) ? `` : `🔧︎`}
                         </a>
-                        {isBlank(sideCurrentPage) ? (
+                        {isBlank(settings.sideCurrentPage) ? (
                             ``
                         ) : (
                             <a
                                 className="hover:cursor-copy"
                                 onClick={() => {
-                                    handleClipboard(sideCurrentPage);
+                                    handleClipboard(settings.sideCurrentPage);
                                 }}>
-                                {sideCurrentPage}
+                                {settings.sideCurrentPage}
                             </a>
                         )}
                     </span>

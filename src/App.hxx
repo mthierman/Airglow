@@ -48,4 +48,5 @@ class App
     std::unique_ptr<WebView> webviewBar;
     std::unique_ptr<WebView> webviewMain;
     std::unique_ptr<WebView> webviewSide;
+    float scaledBar;
 };

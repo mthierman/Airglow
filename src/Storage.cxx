@@ -23,7 +23,10 @@ nlohmann::json Storage::serialize()
     {
         return nlohmann::json{{"settings",
                                {
+                                   {"appName", settings.appName},
+                                   {"appVersion", settings.appVersion},
                                    {"appTheme", settings.appTheme},
+                                   {"appScale", settings.appScale},
                                    {"windowPosition", settings.windowPosition},
                                    {"windowMaximized", settings.windowMaximized},
                                    {"windowFullscreen", settings.windowFullscreen},
@@ -59,7 +62,10 @@ Settings Storage::deserialize_settings(nlohmann::json j)
 {
     try
     {
-        return Settings{j["settings"]["appTheme"].get<std::string>(),
+        return Settings{j["settings"]["appName"].get<std::string>(),
+                        j["settings"]["appVersion"].get<std::string>(),
+                        j["settings"]["appTheme"].get<std::string>(),
+                        j["settings"]["appScale"].get<float>(),
                         j["settings"]["windowPosition"].get<std::vector<int>>(),
                         j["settings"]["windowMaximized"].get<bool>(),
                         j["settings"]["windowFullscreen"].get<bool>(),
