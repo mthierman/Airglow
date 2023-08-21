@@ -88,26 +88,24 @@ export default function App() {
         form.reset();
     };
 
-    const handleMainDevtools = () => {
-        window.chrome.webview.postMessage({
-            mainDevtools: true,
-        });
+    const handleDevtools = (webview: string) => {
+        switch (webview) {
+            case "main":
+                window.chrome.webview.postMessage({
+                    mainDevtools: true,
+                });
+            case "side":
+                window.chrome.webview.postMessage({
+                    sideDevtools: true,
+                });
+        }
     };
 
-    const handleSideDevtools = () => {
-        window.chrome.webview.postMessage({
-            sideDevtools: true,
-        });
+    const handleClipboard = async (page: string) => {
+        await navigator.clipboard.writeText(page);
     };
 
-    const mainBlank = () => {
-        return mainCurrentPage.includes("Airglow/gui") ||
-            mainCurrentPage === "https://localhost:8000/"
-            ? true
-            : false;
-    };
-
-    const sideBlank = () => {
+    const isBlank = (page: string) => {
         return sideCurrentPage.includes("Airglow/gui") ||
             sideCurrentPage === "https://localhost:8000/"
             ? true
@@ -129,12 +127,12 @@ export default function App() {
                 spellCheck="false">
                 <label
                     className={
-                        "flex min-w-0 flex-1 select-none px-1 text-accentDark2 dark:text-accent " +
+                        "flex min-w-0 flex-1 select-none px-1 " +
                         (!webviewSplit && webviewSwapped ? "hidden" : "")
                     }>
                     🔍︎
                     <input
-                        className="flex min-w-0 flex-1 bg-transparent px-2 text-center text-accentDark2 outline-none placeholder:text-left dark:text-accent"
+                        className="flex min-w-0 flex-1 bg-transparent px-2 text-center text-accentDark2 outline-none dark:text-accent"
                         type="text"
                         name="mainCurrentPage"
                         id="mainCurrentPage"></input>
@@ -142,12 +140,12 @@ export default function App() {
 
                 <label
                     className={
-                        "flex min-w-0 flex-1 select-none px-1 text-accentDark2 dark:text-accent " +
+                        "flex min-w-0 flex-1 select-none px-1 " +
                         (!webviewSplit && !webviewSwapped ? "hidden" : "")
                     }>
                     🔍︎
                     <input
-                        className="flex min-w-0 flex-1 bg-transparent px-2 text-center text-accentDark2 outline-none placeholder:text-left dark:text-accent"
+                        className="flex min-w-0 flex-1 bg-transparent px-2 text-center text-accentDark2 outline-none dark:text-accent"
                         type="text"
                         name="sideCurrentPage"
                         id="sideCurrentPage"></input>
@@ -169,10 +167,22 @@ export default function App() {
                     <span className="flex-grow truncate px-4 text-center">
                         <a
                             className="select-none pr-2 hover:cursor-pointer"
-                            onClick={handleMainDevtools}>
-                            {mainBlank() ? `` : `🔧︎`}
+                            onClick={() => {
+                                handleDevtools("main");
+                            }}>
+                            {isBlank(mainCurrentPage) ? `` : `🔧︎`}
                         </a>
-                        {mainBlank() ? `` : mainCurrentPage}
+                        {isBlank(mainCurrentPage) ? (
+                            ``
+                        ) : (
+                            <a
+                                className="hover:cursor-copy"
+                                onClick={() => {
+                                    handleClipboard(mainCurrentPage);
+                                }}>
+                                {mainCurrentPage}
+                            </a>
+                        )}
                     </span>
                 </address>
                 <address
@@ -183,10 +193,22 @@ export default function App() {
                     <span className="flex-grow truncate px-4 text-center">
                         <a
                             className="select-none pr-2 hover:cursor-pointer"
-                            onClick={handleSideDevtools}>
-                            {sideBlank() ? `` : `🔧︎`}
+                            onClick={() => {
+                                handleDevtools("side");
+                            }}>
+                            {isBlank(sideCurrentPage) ? `` : `🔧︎`}
                         </a>
-                        {sideBlank() ? `` : sideCurrentPage}
+                        {isBlank(sideCurrentPage) ? (
+                            ``
+                        ) : (
+                            <a
+                                className="hover:cursor-copy"
+                                onClick={() => {
+                                    handleClipboard(sideCurrentPage);
+                                }}>
+                                {sideCurrentPage}
+                            </a>
+                        )}
                     </span>
                 </address>
             </div>
