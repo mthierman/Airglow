@@ -15,9 +15,11 @@ export default {
                 accentLight3: "var(--accentLight3)",
             },
         },
-        // fontFamily: {
-        //     sans: ["Segoe UI"],
-        // },
+        fontFamily: {
+            sans: ["Segoe UI Variable Text", "Segoe UI", "Noto Emoji"],
+            serif: ["Cambria", "Noto Emoji"],
+            mono: ["Cascadia Code", "Noto Emoji"],
+        },
     },
     corePlugins: {
         preflight: true,

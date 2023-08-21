@@ -124,7 +124,7 @@ export default function App() {
             spellCheck="false">
             <div className="grid gap-4 p-4">
                 <label className="grid whitespace-nowrap">
-                    <div className="grid grid-flow-col items-end justify-between">
+                    <div className="grid gap-2 grid-flow-col items-end justify-between">
                         <div className="select-none text-xl font-semibold">
                             📡 Home
                         </div>
@@ -140,7 +140,7 @@ export default function App() {
                 </label>
 
                 <label className="grid whitespace-nowrap">
-                    <div className="grid grid-flow-col items-end justify-between">
+                    <div className="grid gap-2 grid-flow-col items-end justify-between">
                         <div className="select-none text-xl font-semibold">
                             🛰️ Sidebar
                         </div>
