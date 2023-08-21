@@ -430,6 +430,8 @@ int App::wm_keydown(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     case VK_PAUSE:
     {
         storage->settings.webviewGui = storage->settings.webviewGui ? false : true;
+        if (storage->settings.webviewGui)
+            webviewGui->focus();
 
         break;
     }

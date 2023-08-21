@@ -132,9 +132,13 @@ void WebView::gui_web_message_received(winrt::CoreWebView2WebMessageReceivedEven
         {
             auto s{j["mainHomepage"].get<std::string>()};
 
-            if (s.starts_with("http://") || s.starts_with("https://"))
+            // if (s.empty())
+            //     storage->settings.mainHomepage = "";
+
+            if (!s.empty() && (s.starts_with("http://") || s.starts_with("https://")))
                 storage->settings.mainHomepage = s;
-            else
+
+            if (!s.empty())
                 storage->settings.mainHomepage = "https://" + s;
         }
 
@@ -142,9 +146,13 @@ void WebView::gui_web_message_received(winrt::CoreWebView2WebMessageReceivedEven
         {
             auto s{j["sideHomepage"].get<std::string>()};
 
-            if (s.starts_with("http://") || s.starts_with("https://"))
+            // if (s.empty())
+            //     storage->settings.sideHomepage = "";
+
+            if (!s.empty() && (s.starts_with("http://") || s.starts_with("https://")))
                 storage->settings.sideHomepage = s;
-            else
+
+            if (!s.empty())
                 storage->settings.sideHomepage = "https://" + s;
         }
 

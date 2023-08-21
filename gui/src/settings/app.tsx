@@ -95,17 +95,25 @@ export default function App() {
         const rawData = new FormData(e.target);
         const data = Object.fromEntries(rawData.entries());
 
-        if (data.mainHomepage.toString() != "") {
-            window.chrome.webview.postMessage({
-                mainHomepage: data.mainHomepage.toString().trim(),
-            });
-        }
+        window.chrome.webview.postMessage({
+            mainHomepage: data.mainHomepage.toString().trim(),
+        });
 
-        if (data.sideHomepage.toString() != "") {
-            window.chrome.webview.postMessage({
-                sideHomepage: data.sideHomepage.toString().trim(),
-            });
-        }
+        window.chrome.webview.postMessage({
+            sideHomepage: data.sideHomepage.toString().trim(),
+        });
+
+        // if (data.mainHomepage.toString() != "") {
+        //     window.chrome.webview.postMessage({
+        //         mainHomepage: data.mainHomepage.toString().trim(),
+        //     });
+        // }
+
+        // if (data.sideHomepage.toString() != "") {
+        //     window.chrome.webview.postMessage({
+        //         sideHomepage: data.sideHomepage.toString().trim(),
+        //     });
+        // }
 
         form.reset();
     };
@@ -141,7 +149,9 @@ export default function App() {
                                 onClick={() => {
                                     handleClipboard(settings.mainHomepage);
                                 }}>
-                                {settings.mainHomepage}
+                                {settings.mainHomepage === ""
+                                    ? "unset"
+                                    : settings.mainHomepage}
                             </a>
                         </span>
                     </div>
@@ -163,7 +173,9 @@ export default function App() {
                                 onClick={() => {
                                     handleClipboard(settings.sideHomepage);
                                 }}>
-                                {settings.sideHomepage}
+                                {settings.sideHomepage === ""
+                                    ? "unset"
+                                    : settings.sideHomepage}
                             </a>
                         </span>
                     </div>
