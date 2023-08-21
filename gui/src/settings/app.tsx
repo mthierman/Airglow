@@ -125,7 +125,7 @@ export default function App() {
                         📡 Home
                     </div>
                     <input
-                        className="bg-transparent p-2 outline-none"
+                        className="bg-transparent p-2 outline-none placeholder:text-end"
                         type="text"
                         name="mainHomepage"
                         id="mainHomepage"
@@ -137,7 +137,7 @@ export default function App() {
                         🛰️ Sidebar
                     </div>
                     <input
-                        className="bg-transparent p-2 outline-none"
+                        className="bg-transparent p-2 outline-none placeholder:text-end"
                         type="text"
                         name="sideHomepage"
                         id="sideHomepage"
@@ -151,7 +151,7 @@ export default function App() {
                 </div>
 
                 <button
-                    className="rounded-lg p-2 shadow-lg shadow-neutral-300 duration-100 hover:scale-95 active:scale-90 dark:shadow-neutral-950 active:bg-green-600"
+                    className="rounded-lg p-2 shadow-lg shadow-neutral-300 duration-100 hover:scale-95 active:scale-90 active:bg-green-600 dark:shadow-neutral-950"
                     id="submitUrl"
                     type="submit">
                     Save
