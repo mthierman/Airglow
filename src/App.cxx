@@ -546,19 +546,16 @@ int App::wm_notify(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
         if (storage->settings.webviewGui)
         {
-            // webviewGui->focus();
             webviewGui->title();
             webviewGui->icon();
         }
 
         else
         {
-            // webviewMain->focus();
             webviewMain->title();
-            webviewMain->icon();
-
-            // webviewSide->focus();
             webviewSide->title();
+
+            webviewMain->icon();
             webviewSide->icon();
         }
 

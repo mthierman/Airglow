@@ -25,6 +25,7 @@ class WebView
     void navigation_completed();
 
     winrt::CoreWebView2Environment environment{nullptr};
+    winrt::CoreWebView2Profile profile{nullptr};
     winrt::CoreWebView2Controller controller{nullptr};
     winrt::CoreWebView2 core{nullptr};
 

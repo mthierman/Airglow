@@ -114,6 +114,12 @@ export default function App() {
         await navigator.clipboard.writeText(page);
     };
 
+    const handleClear = () => {
+        window.chrome.webview.postMessage({
+            clear: true,
+        });
+    };
+
     return (
         <form
             className="grid h-full content-between"
@@ -173,13 +179,22 @@ export default function App() {
                 <div className="select-none self-end capitalize">
                     {themeIcon} {settings.appTheme} mode
                 </div>
+                <div className="grid grid-flow-col gap-2">
+                    <button
+                        className="rounded-lg p-2 shadow-lg shadow-neutral-400 duration-100 hover:scale-95 active:scale-90 active:bg-green-600 dark:shadow-neutral-950"
+                        id="clear"
+                        type="button"
+                        onClick={handleClear}>
+                        Clear User Data
+                    </button>
 
-                <button
-                    className="rounded-lg p-2 shadow-lg shadow-neutral-400 duration-100 hover:scale-95 active:scale-90 active:bg-green-600 dark:shadow-neutral-950"
-                    id="submitUrl"
-                    type="submit">
-                    Save
-                </button>
+                    <button
+                        className="rounded-lg p-2 shadow-lg shadow-neutral-400 duration-100 hover:scale-95 active:scale-90 active:bg-green-600 dark:shadow-neutral-950"
+                        id="submitUrl"
+                        type="submit">
+                        Save
+                    </button>
+                </div>
             </div>
         </form>
     );

@@ -148,6 +148,17 @@ void WebView::gui_web_message_received(winrt::CoreWebView2WebMessageReceivedEven
                 storage->settings.sideHomepage = "https://" + s;
         }
 
+        if (!j["clear"].empty())
+        {
+            auto s{j["clear"].get<bool>()};
+
+            if (s == true)
+            {
+                profile = core.Profile();
+                profile.ClearBrowsingDataAsync();
+            }
+        }
+
         SendMessageW(appHwnd, WM_NOTIFY, 0, 0);
     };
 }
