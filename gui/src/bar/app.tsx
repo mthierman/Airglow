@@ -88,16 +88,15 @@ export default function App() {
     };
 
     const handleDevtools = (webview: string) => {
-        switch (webview) {
-            case "main":
-                window.chrome.webview.postMessage({
-                    mainDevtools: true,
-                });
-            case "side":
-                window.chrome.webview.postMessage({
-                    sideDevtools: true,
-                });
-        }
+        if (webview === "main")
+            window.chrome.webview.postMessage({
+                mainDevtools: true,
+            });
+
+        if (webview === "side")
+            window.chrome.webview.postMessage({
+                sideDevtools: true,
+            });
     };
 
     const handleClipboard = async (page: string) => {
