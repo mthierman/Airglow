@@ -96,8 +96,9 @@ message(STATUS "json ${JSON_PKG}")
 message(STATUS "SQLite3 ${SQLITE_PKG}")
 message(STATUS "curl ${CURL_PKG}")
 
-# add_library(sqlite "${SQLITE_PKG}/sqlite3.c" "${SQLITE_PKG}/sqlite3.h")
-# set_target_properties(sqlite PROPERTIES LINKER_LANGUAGE C)
+add_library(sqlite "${SQLITE_PKG}/sqlite3.c" "${SQLITE_PKG}/sqlite3.h")
+set_target_properties(sqlite PROPERTIES LINKER_LANGUAGE C)
+
 execute_process(
     COMMAND cppwinrt -input Microsoft.Web.WebView2.Core.winmd sdk WORKING_DIRECTORY "${WEBVIEW_PKG}/lib"
 )
@@ -168,8 +169,7 @@ target_link_libraries(
     dwmapi.lib
     gdiplus.lib
     shcore.lib
-
-    # sqlite
+    sqlite
 )
 
 configure_file("${CMAKE_SOURCE_DIR}/tools/install.ps1" "${CMAKE_BINARY_DIR}/install.ps1")
