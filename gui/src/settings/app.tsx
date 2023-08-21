@@ -75,6 +75,7 @@ export default function App() {
             colors.accentLight3,
         );
     };
+
     if (window.chrome.webview) {
         window.chrome.webview.addEventListener("message", (arg: any) => {
             if (arg.data.settings) {
@@ -138,7 +139,7 @@ export default function App() {
                     <label className="grid gap-2 whitespace-nowrap">
                         <div className="grid grid-flow-col items-end justify-between gap-6 truncate">
                             <div className="select-none text-3xl">📡 Home</div>
-                            <div className="select-text font-semibold text-accentDark2 dark:text-accent">
+                            <div className="select-text font-semibold">
                                 {settings.mainHomepage}
                             </div>
                         </div>
@@ -154,7 +155,7 @@ export default function App() {
                             <div className="select-none text-3xl">
                                 🛰️ Sidebar
                             </div>
-                            <div className="select-text font-semibold text-accentDark2 dark:text-accent">
+                            <div className="select-text font-semibold">
                                 {settings.sideHomepage}
                             </div>
                         </div>
@@ -172,7 +173,7 @@ export default function App() {
                     </div>
 
                     <button
-                        className="rounded-lg border-[1px] bg-transparent p-2 shadow-md shadow-neutral-400 duration-75 hover:border-accentDark2 hover:text-accentDark2 active:scale-95 dark:shadow-black dark:hover:border-accent dark:hover:text-accent"
+                        className="rounded-lg border-[1px] bg-transparent p-2 shadow-md shadow-neutral-400 duration-75 hover:border-accentDark2 active:scale-95 dark:shadow-black dark:hover:border-accent"
                         id="submitUrl"
                         type="submit">
                         Save

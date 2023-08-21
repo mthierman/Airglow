@@ -14,6 +14,9 @@ App::App(HINSTANCE hInstance, PWSTR pCmdLine, int nCmdShow)
     if (!webviewGui || !webviewBar || !webviewMain || !webviewSide)
         util::error("WebView failed to initialize");
 
+    storage->settings.appScale =
+        static_cast<float>(GetDpiForWindow(appHwnd)) / static_cast<float>(USER_DEFAULT_SCREEN_DPI);
+
     show_window();
 }
 
@@ -51,9 +54,6 @@ HWND App::create_window(HINSTANCE hInstance)
 
     if (!hwnd)
         util::error("Window failed to initialize");
-
-    storage->settings.appScale =
-        static_cast<float>(GetDpiForWindow(hwnd)) / static_cast<float>(USER_DEFAULT_SCREEN_DPI);
 
     return hwnd;
 }
@@ -106,6 +106,9 @@ void App::show_window()
 
 void App::resized()
 {
+    if (!webviewGui && !webviewBar && !webviewMain && !webviewSide)
+        return;
+
     if (!webviewGui->controller || !webviewBar->controller || !webviewMain->controller ||
         !webviewSide->controller)
         return;
@@ -296,9 +299,10 @@ __int64 __stdcall App::WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam
 int App::wm_activate(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
     if (!storage->settings.windowMaximized && !storage->settings.windowFullscreen)
+    {
         storage->settings.windowPosition = util::window_position(hwnd);
-
-    SendMessageW(hwnd, WM_NOTIFY, 0, 0);
+        storage->save();
+    }
 
     return 0;
 }
@@ -372,9 +376,10 @@ int App::wm_erasebkgnd(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 int App::wm_exitsizemove(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
     if (!storage->settings.windowMaximized && !storage->settings.windowFullscreen)
+    {
         storage->settings.windowPosition = util::window_position(hwnd);
-
-    SendMessageW(hwnd, WM_NOTIFY, 0, 0);
+        storage->save();
+    }
 
     return 0;
 }
@@ -390,99 +395,133 @@ int App::wm_getminmaxinfo(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 int App::wm_keydown(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
+    if (!webviewGui || !webviewBar || !webviewMain || !webviewSide)
+        return 0;
+
     switch (wparam)
     {
     case VK_PAUSE:
+    {
         storage->settings.webviewGui = storage->settings.webviewGui ? false : true;
+
         if (storage->settings.webviewGui)
-            webviewGui->focus();
-
-        SendMessageW(hwnd, WM_NOTIFY, 0, 0);
-
-        return 0;
-
-    case 0x4C:
-        if (GetKeyState(VK_CONTROL) & 0x8000)
         {
-            webviewBar->focus();
+            webviewGui->focus();
+            webviewGui->title();
+            webviewGui->icon();
         }
 
-        return 0;
+        break;
+    }
+
+    case 0x4C:
+    {
+        if (GetKeyState(VK_CONTROL) & 0x8000)
+            webviewBar->focus();
+
+        break;
+    }
 
     case 0x57:
+    {
         if (GetKeyState(VK_CONTROL) & 0x8000)
             PostMessageW(hwnd, WM_CLOSE, 0, 0);
 
-        return 0;
+        break;
+    }
 
     case VK_F1:
+    {
         storage->settings.webviewSwapped = storage->settings.webviewSwapped ? false : true;
 
         if (!storage->settings.webviewSplit && !storage->settings.webviewSwapped)
+        {
             webviewMain->focus();
+            webviewMain->title();
+            webviewMain->icon();
+        }
+
         if (!storage->settings.webviewSplit && storage->settings.webviewSwapped)
+        {
             webviewSide->focus();
+            webviewSide->title();
+            webviewSide->icon();
+        }
 
-        SendMessageW(hwnd, WM_NOTIFY, 0, 0);
-
-        return 0;
+        break;
+    }
 
     case VK_F2:
+    {
         storage->settings.webviewSplit = storage->settings.webviewSplit ? false : true;
 
         if (!storage->settings.webviewSplit && !storage->settings.webviewSwapped)
+        {
             webviewMain->focus();
+            webviewMain->title();
+            webviewMain->icon();
+        }
+
         if (!storage->settings.webviewSplit && storage->settings.webviewSwapped)
+        {
             webviewSide->focus();
+            webviewSide->title();
+            webviewSide->icon();
+        }
 
-        SendMessageW(hwnd, WM_NOTIFY, 0, 0);
-
-        return 0;
+        break;
+    }
 
     case VK_F3:
+    {
         storage->settings.webviewHorizontal = storage->settings.webviewHorizontal ? false : true;
-        SendMessageW(hwnd, WM_NOTIFY, 0, 0);
 
-        return 0;
+        break;
+    }
 
     case VK_F4:
+    {
         if (GetKeyState(VK_MENU) & 0x8000)
-        {
             SendMessageW(hwnd, WM_CLOSE, 0, 0);
-        }
 
         else
         {
             storage->settings.windowTopmost = util::window_topmost(hwnd);
-            SendMessageW(hwnd, WM_NOTIFY, 0, 0);
+            webviewGui->title();
+            webviewMain->title();
+            webviewSide->title();
         }
 
-        return 0;
+        break;
+    }
 
     case VK_F6:
+    {
         storage->settings.windowMaximized = util::window_maximize(hwnd);
-        SendMessageW(hwnd, WM_NOTIFY, 0, 0);
 
-        return 0;
+        break;
+    }
 
     case VK_F8:
-        if (!webviewMain && !webviewSide)
-            return 0;
+    {
+        webviewMain->core.Navigate(winrt::to_hstring(storage->settings.mainHomepage));
+        webviewSide->core.Navigate(winrt::to_hstring(storage->settings.sideHomepage));
 
-        if (webviewMain->core && webviewSide->core)
-        {
-            webviewMain->core.Navigate(winrt::to_hstring(storage->settings.mainHomepage));
-            webviewSide->core.Navigate(winrt::to_hstring(storage->settings.sideHomepage));
-        }
-
-        return 0;
+        break;
+    }
 
     case VK_F11:
+    {
         storage->settings.windowFullscreen = util::window_fullscreen(hwnd);
-        SendMessageW(hwnd, WM_NOTIFY, 0, 0);
 
+        break;
+    }
+
+    default:
         return 0;
     }
+
+    SendMessageW(hwnd, WM_NOTIFY, 0, 0);
 
     return 0;
 }
@@ -513,21 +552,15 @@ int App::wm_notify(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
     if (webviewGui && webviewBar && webviewMain && webviewSide)
     {
-        resized();
-
         webviewGui->post_settings(storage->serialize());
         webviewBar->post_settings(storage->serialize());
+        webviewMain->post_settings(storage->serialize());
+        webviewSide->post_settings(storage->serialize());
 
-        webviewGui->title();
-        webviewMain->title();
-        webviewSide->title();
+        resized();
 
-        webviewGui->icon();
-        webviewMain->icon();
-        webviewSide->icon();
+        storage->save();
     }
-
-    storage->save();
 
     return 0;
 }
@@ -549,10 +582,7 @@ int App::wm_windowposchanged(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     wp.showCmd == 3 ? storage->settings.windowMaximized = true
                     : storage->settings.windowMaximized = false;
 
-    if (webviewGui && webviewBar && webviewMain && webviewSide)
-        resized();
-
-    storage->save();
+    resized();
 
     return 0;
 }

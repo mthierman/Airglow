@@ -47,9 +47,6 @@ winrt::IAsyncAction WebView::create_webview()
 
         core.Navigate(util::settings_url());
 
-        core.NavigationCompleted(
-            {[=, this](auto const&, auto const& args) { SendMessage(appHwnd, WM_NOTIFY, 0, 0); }});
-
         core.WebMessageReceived(
             {[=, this](auto const&, auto const& args) { gui_web_message_received(args); }});
     }
@@ -60,15 +57,14 @@ winrt::IAsyncAction WebView::create_webview()
 
         core.Navigate(util::bar_url());
 
-        core.NavigationCompleted(
-            {[=, this](auto const&, auto const& args) { SendMessage(appHwnd, WM_NOTIFY, 0, 0); }});
-
         core.WebMessageReceived(
             {[=, this](auto const&, auto const& args) { bar_web_message_received(args); }});
     }
 
     if (name == "main")
     {
+        webviewSettings.IsZoomControlEnabled(true);
+
         auto args{util::command_line()};
 
         if (!args.first.empty())
@@ -91,6 +87,8 @@ winrt::IAsyncAction WebView::create_webview()
 
     if (name == "side")
     {
+        webviewSettings.IsZoomControlEnabled(true);
+
         auto args{util::command_line()};
 
         if (!args.second.empty())
@@ -119,7 +117,7 @@ winrt::IAsyncAction WebView::create_webview()
     core.FaviconChanged({[=, this](auto const&, auto const& args) { icon(); }});
 
     core.NavigationCompleted(
-        {[=, this](auto const&, auto const& args) { SendMessageW(appHwnd, WM_NOTIFY, 0, 0); }});
+        {[=, this](auto const&, auto const& args) { SendMessage(appHwnd, WM_NOTIFY, 0, 0); }});
 }
 
 void WebView::gui_web_message_received(winrt::CoreWebView2WebMessageReceivedEventArgs const& args)
