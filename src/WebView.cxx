@@ -268,10 +268,10 @@ void WebView::initial_navigation()
         if (!url2.empty())
             navigate(url2);
 
-        if (url2.empty() && !storage->settings.mainHomepage.empty())
-            navigate(storage->settings.mainHomepage);
+        if (url2.empty() && !storage->settings.sideHomepage.empty())
+            navigate(storage->settings.sideHomepage);
 
-        if (url2.empty() && storage->settings.mainHomepage.empty())
+        if (url2.empty() && storage->settings.sideHomepage.empty())
             core.Navigate(winrt::to_hstring(util::home_url()));
     }
 }
