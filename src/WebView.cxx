@@ -41,11 +41,19 @@ winrt::IAsyncAction WebView::create_webview()
     webviewSettings.IsWebMessageEnabled(true);
     webviewSettings.IsZoomControlEnabled(true);
 
+    controller.AcceleratorKeyPressed(
+        {[=, this](auto const&, auto const& args) { accelerator_key_pressed(args); }});
+
+    core.DocumentTitleChanged({[=, this](auto const&, auto const& args) { title(); }});
+
+    core.FaviconChanged({[=, this](auto const&, auto const& args) { icon(); }});
+
+    core.DOMContentLoaded(
+        {[=, this](auto const&, auto const&) { SendMessageW(appHwnd, WM_NOTIFY, 0, 0); }});
+
     if (name == "gui")
     {
         webviewSettings.IsZoomControlEnabled(false);
-
-        core.Navigate(util::settings_url());
 
         core.WebMessageReceived(
             {[=, this](auto const&, auto const& args) { gui_web_message_received(args); }});
@@ -55,8 +63,6 @@ winrt::IAsyncAction WebView::create_webview()
     {
         webviewSettings.IsZoomControlEnabled(false);
 
-        core.Navigate(util::bar_url());
-
         core.WebMessageReceived(
             {[=, this](auto const&, auto const& args) { bar_web_message_received(args); }});
     }
@@ -64,17 +70,6 @@ winrt::IAsyncAction WebView::create_webview()
     if (name == "main")
     {
         webviewSettings.IsZoomControlEnabled(true);
-
-        auto args{util::command_line()};
-
-        if (!args.first.empty())
-            core.Navigate(args.first);
-
-        if (args.first.empty() && !storage->settings.mainHomepage.empty())
-            core.Navigate(winrt::to_hstring(storage->settings.mainHomepage));
-
-        if (args.first.empty() && storage->settings.mainHomepage.empty())
-            core.Navigate(util::home_url());
 
         core.SourceChanged({[=, this](winrt::CoreWebView2 const& sender, auto const&)
                             {
@@ -89,17 +84,6 @@ winrt::IAsyncAction WebView::create_webview()
     {
         webviewSettings.IsZoomControlEnabled(true);
 
-        auto args{util::command_line()};
-
-        if (!args.second.empty())
-            core.Navigate(args.second);
-
-        if (args.second.empty() && !storage->settings.sideHomepage.empty())
-            core.Navigate(winrt::to_hstring(storage->settings.sideHomepage));
-
-        if (args.second.empty() && storage->settings.sideHomepage.empty())
-            core.Navigate(util::home_url());
-
         core.SourceChanged({[=, this](winrt::CoreWebView2 const& sender, auto const&)
                             {
                                 storage->settings.sideCurrentPage =
@@ -109,228 +93,7 @@ winrt::IAsyncAction WebView::create_webview()
                             }});
     }
 
-    controller.AcceleratorKeyPressed(
-        {[=, this](auto const&, auto const& args) { accelerator_key_pressed(args); }});
-
-    core.DocumentTitleChanged({[=, this](auto const&, auto const& args) { title(); }});
-
-    core.FaviconChanged({[=, this](auto const&, auto const& args) { icon(); }});
-
-    core.DOMContentLoaded(
-        {[=, this](auto const&, auto const&) { SendMessageW(appHwnd, WM_NOTIFY, 0, 0); }});
-}
-
-void WebView::gui_web_message_received(winrt::CoreWebView2WebMessageReceivedEventArgs const& args)
-{
-    auto webMessage{args.WebMessageAsJson()};
-
-    if (!webMessage.empty())
-    {
-        auto j{nlohmann::json::parse(webMessage)};
-
-        if (!j["mainHomepage"].empty())
-        {
-            auto s{j["mainHomepage"].get<std::string>()};
-
-            // if (s.empty())
-            //     storage->settings.mainHomepage = "";
-
-            if (!s.empty() && (s.starts_with("http://") || s.starts_with("https://")))
-                storage->settings.mainHomepage = s;
-
-            if (!s.empty())
-                storage->settings.mainHomepage = "https://" + s;
-        }
-
-        if (!j["sideHomepage"].empty())
-        {
-            auto s{j["sideHomepage"].get<std::string>()};
-
-            // if (s.empty())
-            //     storage->settings.sideHomepage = "";
-
-            if (!s.empty() && (s.starts_with("http://") || s.starts_with("https://")))
-                storage->settings.sideHomepage = s;
-
-            if (!s.empty())
-                storage->settings.sideHomepage = "https://" + s;
-        }
-
-        if (!j["clear"].empty())
-        {
-            auto s{j["clear"].get<bool>()};
-
-            if (s == true)
-            {
-                profile = core.Profile();
-                profile.ClearBrowsingDataAsync();
-            }
-        }
-
-        SendMessageW(appHwnd, WM_NOTIFY, 0, 0);
-    };
-}
-
-void WebView::bar_web_message_received(winrt::CoreWebView2WebMessageReceivedEventArgs const& args)
-{
-    auto webMessage{args.WebMessageAsJson()};
-
-    if (!webMessage.empty())
-    {
-        auto j{nlohmann::json::parse(webMessage)};
-
-        if (!j["mainCurrentPage"].empty())
-        {
-            auto s{j["mainCurrentPage"].get<std::string>()};
-
-            if (s.starts_with("http://") || s.starts_with("https://"))
-                storage->settings.mainCurrentPage = s;
-
-            else
-                storage->settings.mainCurrentPage = "https://" + s;
-
-            SendMessageW(appHwnd, WM_NAVIGATEMAIN, 0, 0);
-        }
-
-        if (!j["sideCurrentPage"].empty())
-        {
-            auto s{j["sideCurrentPage"].get<std::string>()};
-
-            if (s.starts_with("http://") || s.starts_with("https://"))
-                storage->settings.sideCurrentPage = s;
-
-            else
-                storage->settings.sideCurrentPage = "https://" + s;
-
-            SendMessageW(appHwnd, WM_NAVIGATESIDE, 0, 0);
-        }
-
-        if (!j["mainDevtools"].empty())
-        {
-            auto s{j["mainDevtools"].get<bool>()};
-
-            if (s == true)
-                SendMessageW(appHwnd, WM_DEVTOOLSMAIN, 0, 0);
-        }
-
-        if (!j["sideDevtools"].empty())
-        {
-            auto s{j["sideDevtools"].get<bool>()};
-
-            if (s == true)
-                SendMessageW(appHwnd, WM_DEVTOOLSSIDE, 0, 0);
-        }
-
-        if (!j["mainHome"].empty())
-        {
-            auto s{j["mainHome"].get<bool>()};
-
-            if (s == true)
-                SendMessageW(appHwnd, WM_HOMEMAIN, 0, 0);
-        }
-
-        if (!j["sideHome"].empty())
-        {
-            auto s{j["sideHome"].get<bool>()};
-
-            if (s == true)
-                SendMessageW(appHwnd, WM_HOMESIDE, 0, 0);
-        }
-    };
-
-    return;
-}
-
-void WebView::accelerator_key_pressed(winrt::CoreWebView2AcceleratorKeyPressedEventArgs const& args)
-{
-    auto keyEventKind = args.KeyEventKind();
-
-    if (keyEventKind == winrt::CoreWebView2KeyEventKind::KeyDown ||
-        keyEventKind == winrt::CoreWebView2KeyEventKind::SystemKeyDown)
-    {
-        auto virtualKey{args.VirtualKey()};
-
-        switch (virtualKey)
-        {
-        case 19:
-            args.Handled(true);
-            SendMessageW(appHwnd, WM_KEYDOWN, VK_PAUSE, 0);
-
-            break;
-
-        case 76:
-            args.Handled(true);
-            SendMessageW(appHwnd, WM_KEYDOWN, 0x4C, 0);
-
-            break;
-
-        case 87:
-            args.Handled(true);
-            SendMessageW(appHwnd, WM_KEYDOWN, 0x57, 0);
-
-            break;
-
-        case 112:
-            args.Handled(true);
-            SendMessageW(appHwnd, WM_KEYDOWN, VK_F1, 0);
-
-            break;
-
-        case 113:
-            args.Handled(true);
-            SendMessageW(appHwnd, WM_KEYDOWN, VK_F2, 0);
-
-            break;
-
-        case 114:
-            args.Handled(true);
-            SendMessageW(appHwnd, WM_KEYDOWN, VK_F3, 0);
-
-            break;
-
-        case 115:
-            args.Handled(true);
-            SendMessageW(appHwnd, WM_KEYDOWN, VK_F4, 0);
-
-            break;
-
-        case 117:
-            args.Handled(true);
-            SendMessageW(appHwnd, WM_KEYDOWN, VK_F6, 0);
-
-            break;
-
-        case 118:
-            args.Handled(true);
-            SendMessageW(appHwnd, WM_KEYDOWN, VK_F7, 0);
-
-            break;
-
-        case 119:
-            args.Handled(true);
-            SendMessageW(appHwnd, WM_KEYDOWN, VK_F8, 0);
-
-            break;
-
-        case 120:
-            args.Handled(true);
-            SendMessageW(appHwnd, WM_KEYDOWN, VK_F9, 0);
-
-            break;
-
-        case 121:
-            args.Handled(true);
-            SendMessageW(appHwnd, WM_KEYDOWN, VK_F10, 0);
-
-            break;
-
-        case 122:
-            args.Handled(true);
-            SendMessageW(appHwnd, WM_KEYDOWN, VK_F11, 0);
-
-            break;
-        }
-    }
+    initial_navigation();
 }
 
 void WebView::post_settings(nlohmann::json j)
@@ -471,4 +234,241 @@ void WebView::focus()
 
     if (name == "bar")
         core.PostWebMessageAsString(L"focus");
+}
+
+void WebView::initial_navigation()
+{
+    auto url1{util::command_line().first};
+    auto url2{util::command_line().second};
+
+    if (name == "gui")
+    {
+        core.Navigate(winrt::to_hstring(util::settings_url()));
+    }
+
+    if (name == "bar")
+    {
+        core.Navigate(winrt::to_hstring(util::bar_url()));
+    }
+
+    if (name == "main")
+    {
+        if (!url1.empty())
+            navigate(url1);
+
+        if (url1.empty() && !storage->settings.mainHomepage.empty())
+            navigate(storage->settings.mainHomepage);
+
+        if (url1.empty() && storage->settings.mainHomepage.empty())
+            core.Navigate(winrt::to_hstring(util::home_url()));
+    }
+
+    if (name == "side")
+    {
+        if (!url2.empty())
+            navigate(url2);
+
+        if (url2.empty() && !storage->settings.mainHomepage.empty())
+            navigate(storage->settings.mainHomepage);
+
+        if (url2.empty() && storage->settings.mainHomepage.empty())
+            core.Navigate(winrt::to_hstring(util::home_url()));
+    }
+}
+
+std::string WebView::parse_url(std::string s)
+{
+    if (s.empty())
+        return s;
+
+    if (s.starts_with("http://") || s.starts_with("https://"))
+        return s;
+
+    else
+        return ("https://" + s);
+
+    return s;
+}
+
+void WebView::navigate(std::string s)
+{
+    if (!core || s.empty())
+        return;
+
+    auto url{winrt::to_hstring(parse_url(s))};
+
+    core.Navigate(url);
+
+    return;
+}
+
+void WebView::gui_web_message_received(winrt::CoreWebView2WebMessageReceivedEventArgs const& args)
+{
+    auto webMessage{args.WebMessageAsJson()};
+
+    if (!webMessage.empty())
+    {
+        auto j{nlohmann::json::parse(webMessage)};
+
+        if (!j["mainHomepage"].empty())
+        {
+            storage->settings.mainHomepage = j["mainHomepage"].get<std::string>();
+        }
+
+        if (!j["sideHomepage"].empty())
+        {
+            storage->settings.sideHomepage = j["sideHomepage"].get<std::string>();
+        }
+
+        if (!j["clear"].empty())
+        {
+            if (j["clear"].get<bool>())
+            {
+                profile = core.Profile();
+                profile.ClearBrowsingDataAsync();
+            }
+        }
+
+        SendMessageW(appHwnd, WM_NOTIFY, 0, 0);
+    };
+}
+
+void WebView::bar_web_message_received(winrt::CoreWebView2WebMessageReceivedEventArgs const& args)
+{
+    auto webMessage{args.WebMessageAsJson()};
+
+    if (!webMessage.empty())
+    {
+        auto j{nlohmann::json::parse(webMessage)};
+
+        if (!j["mainCurrentPage"].empty())
+        {
+            storage->settings.mainCurrentPage = j["mainCurrentPage"].get<std::string>();
+            SendMessageW(appHwnd, WM_NAVIGATEMAIN, 0, 0);
+        }
+
+        if (!j["sideCurrentPage"].empty())
+        {
+            storage->settings.sideCurrentPage = j["sideCurrentPage"].get<std::string>();
+            SendMessageW(appHwnd, WM_NAVIGATESIDE, 0, 0);
+        }
+
+        if (!j["mainDevtools"].empty())
+        {
+            if (j["mainDevtools"].get<bool>())
+                SendMessageW(appHwnd, WM_DEVTOOLSMAIN, 0, 0);
+        }
+
+        if (!j["sideDevtools"].empty())
+        {
+            if (j["sideDevtools"].get<bool>())
+                SendMessageW(appHwnd, WM_DEVTOOLSSIDE, 0, 0);
+        }
+
+        if (!j["mainHome"].empty())
+        {
+            if (j["mainHome"].get<bool>())
+                SendMessageW(appHwnd, WM_HOMEMAIN, 0, 0);
+        }
+
+        if (!j["sideHome"].empty())
+        {
+            if (j["sideHome"].get<bool>())
+                SendMessageW(appHwnd, WM_HOMESIDE, 0, 0);
+        }
+    };
+
+    return;
+}
+
+void WebView::accelerator_key_pressed(winrt::CoreWebView2AcceleratorKeyPressedEventArgs const& args)
+{
+    auto keyEventKind = args.KeyEventKind();
+
+    if (keyEventKind == winrt::CoreWebView2KeyEventKind::KeyDown ||
+        keyEventKind == winrt::CoreWebView2KeyEventKind::SystemKeyDown)
+    {
+        auto virtualKey{args.VirtualKey()};
+
+        switch (virtualKey)
+        {
+        case 19:
+            args.Handled(true);
+            SendMessageW(appHwnd, WM_KEYDOWN, VK_PAUSE, 0);
+
+            break;
+
+        case 76:
+            args.Handled(true);
+            SendMessageW(appHwnd, WM_KEYDOWN, 0x4C, 0);
+
+            break;
+
+        case 87:
+            args.Handled(true);
+            SendMessageW(appHwnd, WM_KEYDOWN, 0x57, 0);
+
+            break;
+
+        case 112:
+            args.Handled(true);
+            SendMessageW(appHwnd, WM_KEYDOWN, VK_F1, 0);
+
+            break;
+
+        case 113:
+            args.Handled(true);
+            SendMessageW(appHwnd, WM_KEYDOWN, VK_F2, 0);
+
+            break;
+
+        case 114:
+            args.Handled(true);
+            SendMessageW(appHwnd, WM_KEYDOWN, VK_F3, 0);
+
+            break;
+
+        case 115:
+            args.Handled(true);
+            SendMessageW(appHwnd, WM_KEYDOWN, VK_F4, 0);
+
+            break;
+
+        case 117:
+            args.Handled(true);
+            SendMessageW(appHwnd, WM_KEYDOWN, VK_F6, 0);
+
+            break;
+
+        case 118:
+            args.Handled(true);
+            SendMessageW(appHwnd, WM_KEYDOWN, VK_F7, 0);
+
+            break;
+
+        case 119:
+            args.Handled(true);
+            SendMessageW(appHwnd, WM_KEYDOWN, VK_F8, 0);
+
+            break;
+
+        case 120:
+            args.Handled(true);
+            SendMessageW(appHwnd, WM_KEYDOWN, VK_F9, 0);
+
+            break;
+
+        case 121:
+            args.Handled(true);
+            SendMessageW(appHwnd, WM_KEYDOWN, VK_F10, 0);
+
+            break;
+
+        case 122:
+            args.Handled(true);
+            SendMessageW(appHwnd, WM_KEYDOWN, VK_F11, 0);
+
+            break;
+        }
+    }
 }

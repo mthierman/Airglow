@@ -402,20 +402,14 @@ int App::wm_getminmaxinfo(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 int App::wm_homemain(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-    if (!webviewMain->core || !webviewMain->controller)
-        return 0;
-
-    webviewMain->core.Navigate(winrt::to_hstring(storage->settings.mainHomepage));
+    webviewMain->navigate(storage->settings.mainHomepage);
 
     return 0;
 }
 
 int App::wm_homeside(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-    if (!webviewSide->core || !webviewSide->controller)
-        return 0;
-
-    webviewSide->core.Navigate(winrt::to_hstring(storage->settings.sideHomepage));
+    webviewSide->navigate(storage->settings.sideHomepage);
 
     return 0;
 }
@@ -495,8 +489,8 @@ int App::wm_keydown(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
     case VK_F8:
     {
-        webviewMain->core.Navigate(winrt::to_hstring(storage->settings.mainHomepage));
-        webviewSide->core.Navigate(winrt::to_hstring(storage->settings.sideHomepage));
+        SendMessageW(appHwnd, WM_HOMEMAIN, 0, 0);
+        SendMessageW(appHwnd, WM_HOMESIDE, 0, 0);
 
         break;
     }
@@ -519,20 +513,14 @@ int App::wm_keydown(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 int App::wm_navigatemain(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-    if (!webviewMain->core || !webviewMain->controller)
-        return 0;
-
-    webviewMain->core.Navigate(winrt::to_hstring(storage->settings.mainCurrentPage));
+    webviewMain->navigate(storage->settings.mainCurrentPage);
 
     return 0;
 }
 
 int App::wm_navigateside(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-    if (!webviewSide->core || !webviewSide->controller)
-        return 0;
-
-    webviewSide->core.Navigate(winrt::to_hstring(storage->settings.sideCurrentPage));
+    webviewSide->navigate(storage->settings.sideCurrentPage);
 
     return 0;
 }

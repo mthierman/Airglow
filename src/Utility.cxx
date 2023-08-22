@@ -203,36 +203,36 @@ std::filesystem::path path_db()
             to_wide("Database.sqlite"));
 }
 
-winrt::hstring home_url()
+std::string home_url()
 {
 #ifdef _DEBUG
-    return winrt::hstring(L"https://localhost:8000/");
+    return "https://localhost:8000/";
 #else
-    return winrt::to_hstring(path_home().c_str());
+    return path_home().string();
 #endif
 }
 
-winrt::hstring settings_url()
+std::string settings_url()
 {
 #ifdef _DEBUG
-    return winrt::hstring(L"https://localhost:8000/settings/");
+    return "https://localhost:8000/settings/";
 #else
-    return winrt::to_hstring(path_settings().c_str());
+    return path_settings().string();
 #endif
 }
 
-winrt::hstring bar_url()
+std::string bar_url()
 {
 #ifdef _DEBUG
-    return winrt::hstring(L"https://localhost:8000/bar/");
+    return "https://localhost:8000/bar/";
 #else
-    return winrt::to_hstring(path_bar().c_str());
+    return path_bar().string();
 #endif
 }
 
-std::pair<winrt::hstring, winrt::hstring> command_line()
+std::pair<std::string, std::string> command_line()
 {
-    std::pair<winrt::hstring, winrt::hstring> commands;
+    std::pair<std::string, std::string> commands;
 
     auto cmd{GetCommandLineW()};
     int count;
@@ -241,29 +241,17 @@ std::pair<winrt::hstring, winrt::hstring> command_line()
 
     if (count == 2)
     {
-        commands.first = args[1];
-        commands.second = winrt::hstring{};
+        commands.first = to_string(args[1]);
+        commands.second = std::string{};
     }
 
     if (count == 3)
     {
-        commands.first = args[1];
-        commands.second = args[2];
+        commands.first = to_string(args[1]);
+        commands.second = to_string(args[2]);
     }
 
     LocalFree(args);
-
-    if (!commands.first.empty())
-    {
-        if (!commands.first.starts_with(L"http") || !commands.first.starts_with(L"https"))
-            commands.first = L"https://" + commands.first;
-    }
-
-    if (!commands.second.empty())
-    {
-        if (!commands.second.starts_with(L"http") || !commands.second.starts_with(L"https"))
-            commands.second = L"https://" + commands.second;
-    }
 
     return commands;
 }

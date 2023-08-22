@@ -16,13 +16,16 @@ class WebView
     ~WebView();
 
     winrt::IAsyncAction create_webview();
-    void resized();
 
     void post_settings(nlohmann::json j);
     void title();
     winrt::IAsyncAction icon();
     void focus();
     void navigation_completed();
+    void initial_navigation();
+
+    std::string parse_url(std::string);
+    void navigate(std::string);
 
     winrt::CoreWebView2Environment environment{nullptr};
     winrt::CoreWebView2Profile profile{nullptr};

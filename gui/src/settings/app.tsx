@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import icon from "../../../data/icons/icon.svg?raw";
+import iconRaw from "../../../data/icons/icon.svg?raw";
 
 document.onreadystatechange = () => {
     if (document.readyState === "complete") {
         const favicon = document.createElement("link");
         favicon.type = "image/svg+xml";
         favicon.rel = "icon";
-        favicon.href = `data:image/svg+xml,${encodeURIComponent(icon)}`;
+        favicon.href = `data:image/svg+xml,${encodeURIComponent(iconRaw)}`;
         document.head.appendChild(favicon);
     }
 };
@@ -95,25 +95,17 @@ export default function App() {
         const rawData = new FormData(e.target);
         const data = Object.fromEntries(rawData.entries());
 
-        window.chrome.webview.postMessage({
-            mainHomepage: data.mainHomepage.toString().trim(),
-        });
+        if (data.mainHomepage.toString() != "") {
+            window.chrome.webview.postMessage({
+                mainHomepage: data.mainHomepage.toString().trim(),
+            });
+        }
 
-        window.chrome.webview.postMessage({
-            sideHomepage: data.sideHomepage.toString().trim(),
-        });
-
-        // if (data.mainHomepage.toString() != "") {
-        //     window.chrome.webview.postMessage({
-        //         mainHomepage: data.mainHomepage.toString().trim(),
-        //     });
-        // }
-
-        // if (data.sideHomepage.toString() != "") {
-        //     window.chrome.webview.postMessage({
-        //         sideHomepage: data.sideHomepage.toString().trim(),
-        //     });
-        // }
+        if (data.sideHomepage.toString() != "") {
+            window.chrome.webview.postMessage({
+                sideHomepage: data.sideHomepage.toString().trim(),
+            });
+        }
 
         form.reset();
     };
@@ -187,26 +179,27 @@ export default function App() {
                 </label>
             </div>
 
-            <div className="grid grid-flow-col justify-between gap-4 p-4">
-                <div className="select-none self-end capitalize">
-                    {themeIcon} {settings.appTheme} mode
-                </div>
-                <div className="grid grid-flow-col gap-2">
+            <div className="flex items-center gap-4 p-4 text-lg leading-none">
+                <div className="flex flex-col items-center gap-4">
+                    <div className="select-none capitalize">
+                        {themeIcon + " " + settings.appTheme + " Mode"}
+                    </div>
+
                     <button
-                        className="rounded-lg p-2 shadow-lg shadow-neutral-400 duration-100 hover:scale-95 active:scale-90 active:bg-green-600 dark:shadow-neutral-950"
+                        className="rounded-lg bg-red-950 p-2 shadow-lg shadow-neutral-400 duration-100 hover:scale-95 active:scale-90 active:bg-green-600 dark:shadow-neutral-950"
                         id="clear"
                         type="button"
                         onClick={handleClear}>
                         Clear User Data
                     </button>
-
-                    <button
-                        className="rounded-lg p-2 shadow-lg shadow-neutral-400 duration-100 hover:scale-95 active:scale-90 active:bg-green-600 dark:shadow-neutral-950"
-                        id="submitUrl"
-                        type="submit">
-                        Save
-                    </button>
                 </div>
+
+                <button
+                    className="ml-auto mt-auto rounded-lg p-2 shadow-lg shadow-neutral-400 duration-100 hover:scale-95 active:scale-90 active:bg-green-600 dark:shadow-neutral-950"
+                    id="submitUrl"
+                    type="submit">
+                    Save
+                </button>
             </div>
         </form>
     );
