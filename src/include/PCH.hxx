@@ -5,6 +5,7 @@
 #include <gdiplus.h>
 #include <ShlObj.h>
 #include <shcore.h>
+// #include <ShObjIdl.h>
 
 #include <filesystem>
 #include <fstream>
