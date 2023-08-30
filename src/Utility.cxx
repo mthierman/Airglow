@@ -27,7 +27,6 @@ std::string to_string(std::wstring in)
 
 std::wstring to_wide(std::string in)
 {
-
     if (!in.empty())
     {
         auto inSize{static_cast<int>(in.size())};
