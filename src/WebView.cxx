@@ -101,7 +101,7 @@ void WebView::post_settings(nlohmann::json j)
     if (!core)
         return;
 
-    core.PostWebMessageAsJson(util::to_wide(j.dump()));
+    core.PostWebMessageAsJson(util::to_wstring(j.dump()));
 }
 
 void WebView::title()

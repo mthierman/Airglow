@@ -3,10 +3,8 @@
 namespace util
 {
 std::string to_string(std::wstring);
-std::wstring to_wide(std::string);
-std::string bool_to_string(bool);
-std::wstring bool_to_wide(bool);
-bool bool_toggle(bool);
+std::wstring to_wstring(std::string);
+
 void print(std::string);
 void println(std::string);
 void wprint(std::wstring);

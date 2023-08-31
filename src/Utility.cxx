@@ -25,7 +25,7 @@ std::string to_string(std::wstring in)
     return {};
 }
 
-std::wstring to_wide(std::string in)
+std::wstring to_wstring(std::string in)
 {
     if (!in.empty())
     {
@@ -48,17 +48,11 @@ std::wstring to_wide(std::string in)
     return {};
 }
 
-std::string bool_to_string(bool in) { return in ? std::string("true") : std::string("false"); }
-
-std::wstring bool_to_wide(bool in) { return in ? std::wstring(L"true") : std::wstring(L"false"); }
-
-bool bool_toggle(bool b) { return b ? false : true; }
-
-void print(std::string in) { OutputDebugStringW(to_wide(in).c_str()); }
+void print(std::string in) { OutputDebugStringW(to_wstring(in).c_str()); }
 
 void println(std::string in)
 {
-    OutputDebugStringW(to_wide(in).c_str());
+    OutputDebugStringW(to_wstring(in).c_str());
     OutputDebugStringW(L"\n");
 }
 
@@ -70,13 +64,13 @@ void wprintln(std::wstring in)
     OutputDebugStringW(L"\n");
 }
 
-void msgbox(std::string in) { MessageBoxW(nullptr, to_wide(in).c_str(), L"Message", 0); };
+void msgbox(std::string in) { MessageBoxW(nullptr, to_wstring(in).c_str(), L"Message", 0); };
 
 void wmsgbox(std::wstring in) { MessageBoxW(nullptr, in.c_str(), L"Message", 0); };
 
 int error(std::string in)
 {
-    std::wstring error = to_wide(in + ". Error: " + std::to_string(GetLastError()));
+    std::wstring error = to_wstring(in + ". Error: " + std::to_string(GetLastError()));
     MessageBoxW(nullptr, error.c_str(), L"Error", 0);
 
     return 0;
@@ -92,7 +86,7 @@ int werror(std::wstring in)
 
 int dberror(std::string in)
 {
-    MessageBoxW(nullptr, to_wide(in).c_str(), L"Error", 0);
+    MessageBoxW(nullptr, to_wstring(in).c_str(), L"Error", 0);
 
     return 0;
 };
@@ -123,7 +117,7 @@ std::filesystem::path path_appdata()
         return std::filesystem::path{};
 
     std::filesystem::path data =
-        std::wstring(buffer) + std::filesystem::path::preferred_separator + to_wide("Airglow");
+        std::wstring(buffer) + std::filesystem::path::preferred_separator + to_wstring("Airglow");
 
     CoTaskMemFree(buffer);
 
@@ -149,7 +143,7 @@ std::filesystem::path path_gui()
     if (!std::filesystem::exists(data))
         return std::filesystem::path{};
 
-    return (data.wstring() + std::filesystem::path::preferred_separator + to_wide("gui"));
+    return (data.wstring() + std::filesystem::path::preferred_separator + to_wstring("gui"));
 }
 
 std::filesystem::path path_home()
@@ -159,7 +153,7 @@ std::filesystem::path path_home()
         return std::filesystem::path{};
 
     return (L"file:///" + data.wstring() + std::filesystem::path::preferred_separator +
-            to_wide("index.html"));
+            to_wstring("index.html"));
 }
 
 std::filesystem::path path_settings()
@@ -169,8 +163,8 @@ std::filesystem::path path_settings()
         return std::filesystem::path{};
 
     return (L"file:///" + data.wstring() + std::filesystem::path::preferred_separator +
-            to_wide("settings") + std::filesystem::path::preferred_separator +
-            to_wide("index.html"));
+            to_wstring("settings") + std::filesystem::path::preferred_separator +
+            to_wstring("index.html"));
 }
 
 std::filesystem::path path_bar()
@@ -180,7 +174,7 @@ std::filesystem::path path_bar()
         return std::filesystem::path{};
 
     return (L"file:///" + data.wstring() + std::filesystem::path::preferred_separator +
-            to_wide("bar") + std::filesystem::path::preferred_separator + to_wide("index.html"));
+            to_wstring("bar") + std::filesystem::path::preferred_separator + to_wstring("index.html"));
 }
 
 std::filesystem::path path_json()
@@ -189,7 +183,7 @@ std::filesystem::path path_json()
     if (!std::filesystem::exists(data))
         return std::filesystem::path{};
 
-    return (data.wstring() + std::filesystem::path::preferred_separator + to_wide("Airglow.json"));
+    return (data.wstring() + std::filesystem::path::preferred_separator + to_wstring("Airglow.json"));
 }
 
 std::filesystem::path path_db()
@@ -199,7 +193,7 @@ std::filesystem::path path_db()
         return std::filesystem::path{};
 
     return (data.wstring() + std::filesystem::path::preferred_separator +
-            to_wide("Database.sqlite"));
+            to_wstring("Database.sqlite"));
 }
 
 std::string home_url()

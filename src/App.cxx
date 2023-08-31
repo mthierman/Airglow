@@ -26,10 +26,10 @@ App::~App() {}
 HWND App::create_window(HINSTANCE hInstance)
 {
     storage->application.hIcon =
-        (HICON)LoadImageW(hInstance, util::to_wide(storage->settings.appName).c_str(), IMAGE_ICON,
-                          0, 0, LR_DEFAULTSIZE);
+        (HICON)LoadImageW(hInstance, util::to_wstring(storage->settings.appName).c_str(),
+                          IMAGE_ICON, 0, 0, LR_DEFAULTSIZE);
 
-    auto appName{util::to_wide(storage->settings.appName)};
+    auto appName{util::to_wstring(storage->settings.appName)};
 
     WNDCLASSEXW wcex{sizeof(WNDCLASSEX)};
     wcex.lpszClassName = appName.c_str();

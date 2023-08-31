@@ -6,8 +6,8 @@ struct Application
 {
     HCURSOR hCursor{
         (HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED)};
-    HICON hIcon{
-        (HICON)LoadImageW(nullptr, IDI_APPLICATION, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE)};
+    HICON hIcon{(HICON)LoadImageW(nullptr, (LPCWSTR)IDI_APPLICATION, IMAGE_ICON, 0, 0,
+                                  LR_SHARED | LR_DEFAULTSIZE)};
     HBRUSH darkBrush{(HBRUSH)GetStockObject(BLACK_BRUSH)};
     HBRUSH lightBrush{(HBRUSH)GetStockObject(WHITE_BRUSH)};
     HBRUSH nullBrush{(HBRUSH)GetStockObject(NULL_BRUSH)};
