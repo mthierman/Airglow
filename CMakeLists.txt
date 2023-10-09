@@ -27,7 +27,7 @@ execute_process(
 )
 
 set(WEBVIEW "Microsoft.Web.WebView2")
-set(WEBVIEW_VERSION "1.0.1938.49")
+set(WEBVIEW_VERSION "1.0.2045.28")
 
 set(CPPWINRT "Microsoft.Windows.CppWinRT")
 set(CPPWINRT_VER "2.0.230706.1")
@@ -40,7 +40,7 @@ if(ENV_LIBS)
     file(TO_CMAKE_PATH "$ENV{LIBRARIES}/${CPPWINRT}.${CPPWINRT_VER}" CPPWINRT_PKG)
     file(TO_CMAKE_PATH "$ENV{LIBRARIES}/${WIL}.${WIL_VERSION}" WIL_PKG)
     file(TO_CMAKE_PATH "$ENV{LIBRARIES}/nlohmann/json/single_include" JSON_PKG)
-    file(TO_CMAKE_PATH "$ENV{LIBRARIES}/sqlite-amalgamation-3430000" SQLITE_PKG)
+    file(TO_CMAKE_PATH "$ENV{LIBRARIES}/sqlite-amalgamation-3430100" SQLITE_PKG)
     file(TO_CMAKE_PATH "$ENV{LIBRARIES}/curl" CURL_PKG)
 else()
     execute_process(
@@ -70,14 +70,14 @@ else()
 
     FetchContent_Declare(
         sqlite3
-        URL https://www.sqlite.org/2023/sqlite-amalgamation-3430000.zip
+        URL https://www.sqlite.org/2023/sqlite-amalgamation-3430100.zip
     )
     FetchContent_Populate(sqlite3)
     file(TO_CMAKE_PATH "${sqlite3_SOURCE_DIR}" SQLITE_PKG)
 
     FetchContent_Declare(
         curl
-        URL https://github.com/curl/curl/releases/download/curl-8_2_1/curl-8.2.1.zip
+        URL https://github.com/curl/curl/releases/download/curl-8_3_0/curl-8.3.0.zip
     )
     FetchContent_Populate(curl)
     file(TO_CMAKE_PATH "${curl_SOURCE_DIR}" CURL_PKG)

@@ -21,7 +21,4 @@ export default {
             mono: ["Cascadia Code", "Noto Emoji"],
         },
     },
-    corePlugins: {
-        preflight: true,
-    },
 } satisfies Config;
