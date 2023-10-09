@@ -1,7 +1,6 @@
 #pragma once
 
-template <class T, class U, HWND(U::*m_hwnd)>
-T* InstanceFromWndProc(HWND hwnd, UINT msg, LPARAM lparam)
+template <class T> T* InstanceFromWndProc(HWND hwnd, UINT msg, LPARAM lparam)
 {
     T* pInstance;
 
@@ -10,7 +9,6 @@ T* InstanceFromWndProc(HWND hwnd, UINT msg, LPARAM lparam)
         LPCREATESTRUCTW pCreateStruct = reinterpret_cast<LPCREATESTRUCTW>(lparam);
         pInstance = reinterpret_cast<T*>(pCreateStruct->lpCreateParams);
         SetWindowLongPtrW(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pInstance));
-        pInstance->*m_hwnd = hwnd;
     }
 
     else
