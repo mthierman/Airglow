@@ -131,7 +131,7 @@ export default function App() {
             spellCheck="false">
             <div className="grid grid-flow-col grid-cols-2">
                 <label className="flex flex-col">
-                    <div className="z-50 grid gap-2 bg-accentLight3 p-2 text-2xl font-semibold leading-none shadow-lg shadow-neutral-400 outline-none dark:bg-accentDark3 dark:shadow-neutral-950">
+                    <div className="z-50 grid gap-2 bg-accent p-2 text-2xl font-semibold leading-none text-black shadow-lg shadow-neutral-400 outline-none dark:shadow-neutral-950">
                         <span className="select-none hover:cursor-pointer">
                             📡 Home
                         </span>
@@ -148,7 +148,7 @@ export default function App() {
                         </span>
                     </div>
                     <input
-                        className="z-40 bg-accentLight3 p-2 shadow-lg shadow-neutral-400 outline-none dark:bg-accentDark3 dark:shadow-neutral-950"
+                        className="z-40 bg-accent p-2 text-black shadow-lg shadow-neutral-400 outline-none dark:shadow-neutral-950"
                         type="text"
                         name="mainHomepage"
                         id="mainHomepage"></input>
@@ -186,7 +186,7 @@ export default function App() {
                     </div>
 
                     <button
-                        className="rounded-lg bg-red-950 p-2 shadow-lg shadow-neutral-400 duration-100 hover:scale-95 active:scale-90 active:bg-green-600 dark:shadow-neutral-950"
+                        className="rounded-lg bg-red-800 p-2 text-white shadow-lg shadow-neutral-400 duration-100 hover:scale-95 active:scale-90 active:bg-green-600 dark:shadow-neutral-950"
                         id="clear"
                         type="button"
                         onClick={handleClear}>

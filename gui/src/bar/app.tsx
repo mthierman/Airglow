@@ -161,7 +161,7 @@ export default function App() {
                 spellCheck="false">
                 <label
                     className={
-                        "flex min-w-0 flex-1 select-none items-center bg-accentLight3 px-2 py-1 dark:bg-accentDark3 " +
+                        "flex min-w-0 flex-1 select-none items-center bg-accent px-2 py-1 text-black" +
                         (!settings.webviewSplit && settings.webviewSwapped
                             ? "hidden"
                             : "")
@@ -172,7 +172,7 @@ export default function App() {
                         type="text"
                         name="mainCurrentPage"
                         id="mainCurrentPage"></input>
-                    <div className="select-none self-center bg-accentLight3 hover:cursor-pointer dark:bg-accentDark3">
+                    <div className="select-none self-center bg-accent hover:cursor-pointer">
                         <a
                             className="hover:cursor-pointer"
                             onClick={() => {

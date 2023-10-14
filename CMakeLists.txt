@@ -8,6 +8,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${APP_NAME}")
 include(FetchContent)
 
 option(ENV_LIBS OFF)
+option(WEBVIEW_PRERELEASE OFF)
 option(INSTALL OFF)
 option(CREATE_SYMLINKS OFF)
 
@@ -27,7 +28,12 @@ execute_process(
 )
 
 set(WEBVIEW "Microsoft.Web.WebView2")
-set(WEBVIEW_VERSION "1.0.2045.28")
+
+if(WEBVIEW_PRERELEASE)
+    set(WEBVIEW_VERSION "1.0.2106-prerelease")
+else()
+    set(WEBVIEW_VERSION "1.0.2045.28")
+endif()
 
 set(CPPWINRT "Microsoft.Windows.CppWinRT")
 set(CPPWINRT_VER "2.0.230706.1")
