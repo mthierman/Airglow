@@ -3,6 +3,7 @@
 module.exports = {
     tabWidth: 4,
     bracketSameLine: true,
+    quoteProps: "consistent",
     overrides: [
         {
             files: ["*.yml", "*.yaml"],

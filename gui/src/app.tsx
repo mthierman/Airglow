@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import iconRaw from "../../data/icon.svg?raw";
+import iconRaw from "../../data/release.svg?raw";
 
 document.onreadystatechange = () => {
     if (document.readyState === "complete") {

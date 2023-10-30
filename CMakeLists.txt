@@ -8,9 +8,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${APP_NAME}")
 include(FetchContent)
 
 option(ENV_LIBS OFF)
-option(WEBVIEW_PRERELEASE OFF)
 option(INSTALL OFF)
-option(CREATE_SYMLINKS OFF)
+    option(CREATE_SYMLINKS OFF)
 
 project(
     ${APP_NAME}
@@ -28,12 +27,7 @@ execute_process(
 )
 
 set(WEBVIEW "Microsoft.Web.WebView2")
-
-if(WEBVIEW_PRERELEASE)
-    set(WEBVIEW_VERSION "1.0.2106-prerelease")
-else()
-    set(WEBVIEW_VERSION "1.0.2045.28")
-endif()
+set(WEBVIEW_VERSION "1.0.2088.41")
 
 set(CPPWINRT "Microsoft.Windows.CppWinRT")
 set(CPPWINRT_VER "2.0.230706.1")
@@ -76,14 +70,14 @@ else()
 
     FetchContent_Declare(
         sqlite3
-        URL https://www.sqlite.org/2023/sqlite-amalgamation-3430100.zip
+        URL https://www.sqlite.org/2023/sqlite-amalgamation-3430200.zip
     )
     FetchContent_Populate(sqlite3)
     file(TO_CMAKE_PATH "${sqlite3_SOURCE_DIR}" SQLITE_PKG)
 
     FetchContent_Declare(
         curl
-        URL https://github.com/curl/curl/releases/download/curl-8_3_0/curl-8.3.0.zip
+        URL https://github.com/curl/curl/releases/download/curl-8_4_0/curl-8.4.0.zip
     )
     FetchContent_Populate(curl)
     file(TO_CMAKE_PATH "${curl_SOURCE_DIR}" CURL_PKG)
@@ -104,8 +98,8 @@ execute_process(
 )
 
 file(GLOB SOURCES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/src/*.cxx")
-file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/res$<$<CONFIG:Debug>:_debug>$<$<CONFIG:Release>:_release>.rc" RC_FILE)
-file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/app.manifest" MANIFEST_FILE)
+file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.rc" RC_FILE)
+file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/data/app.manifest" MANIFEST_FILE)
 file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/src/include/PCH.hxx" PCH_FILE)
 
 add_executable(
@@ -177,12 +171,13 @@ configure_file("${CMAKE_SOURCE_DIR}/tools/install.ps1" "${CMAKE_BINARY_DIR}/inst
 add_custom_command(
     TARGET ${APP_NAME} PRE_BUILD
     COMMAND cd "${CMAKE_SOURCE_DIR}/gui" && pnpm build
+    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/gui/dist" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/gui"
 )
 
 add_custom_command(
     TARGET ${APP_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy "${WEBVIEW_PKG}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
-    COMMAND 7z a "${CMAKE_BINARY_DIR}/Airglow.zip" "${CMAKE_BINARY_DIR}/${APP_NAME}/${APP_NAME}.exe" "${CMAKE_BINARY_DIR}/${APP_NAME}/Microsoft.Web.WebView2.Core.dll" "${CMAKE_BINARY_DIR}/${APP_NAME}/gui"
+    COMMAND 7z a "${CMAKE_BINARY_DIR}/Airglow.zip" "${CMAKE_BINARY_DIR}/${APP_NAME}/${APP_NAME}.exe" "${CMAKE_BINARY_DIR}/${APP_NAME}/Microsoft.Web.WebView2.Core.dll" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/gui"
 )
 
 if(INSTALL)
