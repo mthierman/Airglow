@@ -8,8 +8,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${APP_NAME}")
 include(FetchContent)
 
 option(ENV_LIBS OFF)
-option(INSTALL OFF)
-    option(CREATE_SYMLINKS OFF)
 
 project(
     ${APP_NAME}
@@ -17,8 +15,6 @@ project(
     LANGUAGES C CXX ASM
 )
 
-math(EXPR BITNESS "${CMAKE_SIZEOF_VOID_P} * 8" OUTPUT_FORMAT DECIMAL)
-message(STATUS "${APP_NAME} v${APP_VERSION} (${BITNESS}-bit) [${CMAKE_BUILD_TYPE}]")
 file(WRITE "${CMAKE_BINARY_DIR}/app_version.txt" "v${APP_VERSION}")
 execute_process(
     COMMAND
@@ -166,30 +162,10 @@ target_link_libraries(
     sqlite
 )
 
-configure_file("${CMAKE_SOURCE_DIR}/tools/install.ps1" "${CMAKE_BINARY_DIR}/install.ps1")
-
-add_custom_command(
-    TARGET ${APP_NAME} PRE_BUILD
-    COMMAND cd "${CMAKE_SOURCE_DIR}/gui" && pnpm build
-    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/gui/dist" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/gui"
+execute_process(
+    COMMAND cmd /c pnpm build
+    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/gui"
 )
 
-add_custom_command(
-    TARGET ${APP_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy "${WEBVIEW_PKG}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
-    COMMAND 7z a "${CMAKE_BINARY_DIR}/Airglow.zip" "${CMAKE_BINARY_DIR}/${APP_NAME}/${APP_NAME}.exe" "${CMAKE_BINARY_DIR}/${APP_NAME}/Microsoft.Web.WebView2.Core.dll" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/gui"
-)
-
-if(INSTALL)
-    add_custom_command(
-        TARGET ${APP_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_BINARY_DIR}/${APP_NAME}" "$ENV{LocalAppData}/${APP_NAME}"
-    )
-endif()
-
-if(CREATE_SYMLINKS)
-    add_custom_command(
-        TARGET ${APP_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E create_symlink "${CMAKE_BINARY_DIR}/${APP_NAME}" "$ENV{LocalAppData}/${APP_NAME}"
-    )
-endif()
+file(COPY "${CMAKE_SOURCE_DIR}/gui/dist" DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/gui")
+file(COPY "${WEBVIEW_PKG}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll" DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
