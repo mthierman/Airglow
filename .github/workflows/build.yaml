@@ -44,9 +44,12 @@ jobs:
           cmake -B build -S . -G "Ninja" -DCMAKE_BUILD_TYPE=Release
           cmake --build build
 
-          7z a build/Airglow.zip build/Airglow/Airglow.exe build/Airglow/Microsoft.Web.WebView2.Core.dll build/Airglow/gui
+          Push-Location
+          Set-Location build/Airglow
+          7z a Airglow.zip Airglow.exe Microsoft.Web.WebView2.Core.dll gui
+          Pop-Location
 
-          $zip = Get-Item "build/Airglow.zip"
+          $zip = Get-Item "build/Airglow/Airglow.zip"
           $version = Get-Content "build/version.txt"
           $notes = Get-Item "build/release_notes.txt"
           $commit = git rev-parse --short HEAD
