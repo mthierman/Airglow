@@ -47,7 +47,7 @@ jobs:
           7z a build/Airglow.zip build/Airglow/Airglow.exe build/Airglow/Microsoft.Web.WebView2.Core.dll build/Airglow/gui
 
           $zip = Get-Item "build/Airglow.zip"
-          $version = Get-Content "build/app_version.txt"
+          $version = Get-Content "build/version.txt"
           $notes = Get-Item "build/release_notes.txt"
           $commit = git rev-parse --short HEAD
 

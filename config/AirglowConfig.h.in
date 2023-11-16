@@ -1,0 +1,22 @@
+// clang-format off
+// ╔─────────────────────────────╗
+// │                             │
+// │     ╔═╗╦╦═╗╔═╗╦  ╔═╗╦ ╦     │  Airglow - https://github.com/mthierman/Airglow
+// │     ╠═╣║╠╦╝║ ╦║  ║ ║║║║     │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
+// │     ╩ ╩╩╩╚═╚═╝╩═╝╚═╝╚╩╝     │  SPDX-License-Identifier: MIT
+// │                             │
+// ╚─────────────────────────────╝
+// clang-format on
+
+#pragma once
+
+#define APP_NAME "@APP_NAME@"
+#define APP_VERSION "@APP_VERSION@"
+#define WEBVIEW "@WEBVIEW@"
+#define WEBVIEW_VER "@WEBVIEW_VER@"
+#define CPPWINRT "@CPPWINRT@"
+#define CPPWINRT_VER "@CPPWINRT_VER@"
+#define WIL "@WIL@"
+#define WIL_VER "@WIL_VER@"
+#define GDIPVER 0x0110
+// clang-format on
