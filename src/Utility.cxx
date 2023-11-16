@@ -1,3 +1,13 @@
+// clang-format off
+// ╔─────────────────────────────╗
+// │                             │
+// │     ╔═╗╦╦═╗╔═╗╦  ╔═╗╦ ╦     │  Airglow - https://github.com/mthierman/Airglow
+// │     ╠═╣║╠╦╝║ ╦║  ║ ║║║║     │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
+// │     ╩ ╩╩╩╚═╚═╝╩═╝╚═╝╚╩╝     │  SPDX-License-Identifier: MIT
+// │                             │
+// ╚─────────────────────────────╝
+// clang-format on
+
 #include "Utility.hxx"
 
 namespace util
@@ -121,8 +131,7 @@ std::filesystem::path path_appdata()
 
     CoTaskMemFree(buffer);
 
-    if (!std::filesystem::exists(data))
-        std::filesystem::create_directory(data);
+    if (!std::filesystem::exists(data)) std::filesystem::create_directory(data);
 
     return data;
 }
@@ -140,8 +149,7 @@ std::filesystem::path path_portable()
 std::filesystem::path path_gui()
 {
     auto data = path_portable();
-    if (!std::filesystem::exists(data))
-        return std::filesystem::path{};
+    if (!std::filesystem::exists(data)) return std::filesystem::path{};
 
     return (data.wstring() + std::filesystem::path::preferred_separator + to_wstring("gui"));
 }
@@ -149,8 +157,7 @@ std::filesystem::path path_gui()
 std::filesystem::path path_home()
 {
     auto data = path_gui();
-    if (!std::filesystem::exists(data))
-        return std::filesystem::path{};
+    if (!std::filesystem::exists(data)) return std::filesystem::path{};
 
     return (L"file:///" + data.wstring() + std::filesystem::path::preferred_separator +
             to_wstring("index.html"));
@@ -159,8 +166,7 @@ std::filesystem::path path_home()
 std::filesystem::path path_settings()
 {
     auto data = path_gui();
-    if (!std::filesystem::exists(data))
-        return std::filesystem::path{};
+    if (!std::filesystem::exists(data)) return std::filesystem::path{};
 
     return (L"file:///" + data.wstring() + std::filesystem::path::preferred_separator +
             to_wstring("settings") + std::filesystem::path::preferred_separator +
@@ -170,27 +176,26 @@ std::filesystem::path path_settings()
 std::filesystem::path path_bar()
 {
     auto data = path_gui();
-    if (!std::filesystem::exists(data))
-        return std::filesystem::path{};
+    if (!std::filesystem::exists(data)) return std::filesystem::path{};
 
     return (L"file:///" + data.wstring() + std::filesystem::path::preferred_separator +
-            to_wstring("bar") + std::filesystem::path::preferred_separator + to_wstring("index.html"));
+            to_wstring("bar") + std::filesystem::path::preferred_separator +
+            to_wstring("index.html"));
 }
 
 std::filesystem::path path_json()
 {
     auto data = path_portable();
-    if (!std::filesystem::exists(data))
-        return std::filesystem::path{};
+    if (!std::filesystem::exists(data)) return std::filesystem::path{};
 
-    return (data.wstring() + std::filesystem::path::preferred_separator + to_wstring("Airglow.json"));
+    return (data.wstring() + std::filesystem::path::preferred_separator +
+            to_wstring("Airglow.json"));
 }
 
 std::filesystem::path path_db()
 {
     auto data = path_portable();
-    if (!std::filesystem::exists(data))
-        return std::filesystem::path{};
+    if (!std::filesystem::exists(data)) return std::filesystem::path{};
 
     return (data.wstring() + std::filesystem::path::preferred_separator +
             to_wstring("Database.sqlite"));
@@ -301,8 +306,7 @@ std::string system_theme()
     auto settings{winrt::Windows::UI::ViewManagement::UISettings()};
     auto fg{settings.GetColorValue(winrt::Windows::UI::ViewManagement::UIColorType::Foreground)};
 
-    if (((5 * fg.G) + (2 * fg.R) + fg.B) > (8 * 128))
-        return "dark";
+    if (((5 * fg.G) + (2 * fg.R) + fg.B) > (8 * 128)) return "dark";
 
     return "light";
 }
@@ -339,13 +343,11 @@ bool window_darktitle()
 
     auto uxtheme{LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32)};
 
-    if (!uxtheme)
-        return false;
+    if (!uxtheme) return false;
 
     auto ord135{GetProcAddress(uxtheme, PCSTR MAKEINTRESOURCEW(135))};
 
-    if (!ord135)
-        return false;
+    if (!ord135) return false;
 
     auto SetPreferredAppMode{reinterpret_cast<fnSetPreferredAppMode>(ord135)};
     SetPreferredAppMode(PreferredAppMode::AllowDark);
@@ -358,8 +360,7 @@ bool window_cloak(HWND hwnd)
 {
     auto cloak{TRUE};
 
-    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloak, sizeof(cloak))))
-        return false;
+    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloak, sizeof(cloak)))) return false;
 
     return true;
 }
@@ -368,8 +369,7 @@ bool window_uncloak(HWND hwnd)
 {
     auto uncloak{FALSE};
 
-    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &uncloak, sizeof(uncloak))))
-        return false;
+    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &uncloak, sizeof(uncloak)))) return false;
 
     return true;
 }
@@ -379,8 +379,7 @@ bool window_mica(HWND hwnd)
     MARGINS m{0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
     auto backdrop{DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW};
 
-    if (FAILED(DwmExtendFrameIntoClientArea(hwnd, &m)))
-        return false;
+    if (FAILED(DwmExtendFrameIntoClientArea(hwnd, &m))) return false;
 
     if (FAILED(
             DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop, sizeof(&backdrop))))

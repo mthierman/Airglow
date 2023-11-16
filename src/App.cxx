@@ -1,3 +1,13 @@
+// clang-format off
+// ╔─────────────────────────────╗
+// │                             │
+// │     ╔═╗╦╦═╗╔═╗╦  ╔═╗╦ ╦     │  Airglow - https://github.com/mthierman/Airglow
+// │     ╠═╣║╠╦╝║ ╦║  ║ ║║║║     │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
+// │     ╩ ╩╩╩╚═╚═╝╩═╝╚═╝╚╩╝     │  SPDX-License-Identifier: MIT
+// │                             │
+// ╚─────────────────────────────╝
+// clang-format on
+
 #include "App.hxx"
 
 App::App(HINSTANCE hInstance, PWSTR pCmdLine, int nCmdShow)
@@ -7,8 +17,7 @@ App::App(HINSTANCE hInstance, PWSTR pCmdLine, int nCmdShow)
       webviewMain(std::make_unique<WebView>(storage.get(), appHwnd, "main")),
       webviewSide(std::make_unique<WebView>(storage.get(), appHwnd, "side"))
 {
-    if (!storage)
-        util::error("Storage failed to initialize");
+    if (!storage) util::error("Storage failed to initialize");
 
     if (!webviewGui || !webviewBar || !webviewMain || !webviewSide)
         util::error("WebView failed to initialize");
@@ -46,15 +55,13 @@ HWND App::create_window(HINSTANCE hInstance)
 
     auto atom{RegisterClassExW(&wcex)};
 
-    if (atom == 0)
-        util::error("Window failed to register");
+    if (atom == 0) util::error("Window failed to register");
 
     auto hwnd{CreateWindowExW(0, appName.c_str(), appName.c_str(), WS_OVERLAPPEDWINDOW,
                               CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
                               nullptr, hInstance, this)};
 
-    if (!hwnd)
-        util::error("Window failed to initialize");
+    if (!hwnd) util::error("Window failed to initialize");
 
     return hwnd;
 }
@@ -68,19 +75,16 @@ void App::show_window()
 
     auto mica{util::window_mica(appHwnd)};
 
-    if (!mica)
-        util::window_cloak(appHwnd);
+    if (!mica) util::window_cloak(appHwnd);
 
-    if (storage->settings.windowTopmost)
-        util::window_topmost(appHwnd);
+    if (storage->settings.windowTopmost) util::window_topmost(appHwnd);
 
     if (storage->settings.windowPosition[0] == 0 && storage->settings.windowPosition[1] == 0 &&
         storage->settings.windowPosition[2] == 0 && storage->settings.windowPosition[3] == 0)
     {
         ShowWindow(appHwnd, SW_SHOWDEFAULT);
 
-        if (!mica)
-            util::window_uncloak(appHwnd);
+        if (!mica) util::window_uncloak(appHwnd);
 
         return;
     }
@@ -92,23 +96,18 @@ void App::show_window()
                      storage->settings.windowPosition[3], 0);
     }
 
-    if (storage->settings.windowMaximized)
-        ShowWindow(appHwnd, SW_SHOWMAXIMIZED);
+    if (storage->settings.windowMaximized) ShowWindow(appHwnd, SW_SHOWMAXIMIZED);
 
-    else
-        ShowWindow(appHwnd, SW_SHOWNORMAL);
+    else ShowWindow(appHwnd, SW_SHOWNORMAL);
 
-    if (storage->settings.windowFullscreen)
-        util::window_fullscreen(appHwnd);
+    if (storage->settings.windowFullscreen) util::window_fullscreen(appHwnd);
 
-    if (!mica)
-        util::window_uncloak(appHwnd);
+    if (!mica) util::window_uncloak(appHwnd);
 }
 
 void App::resized()
 {
-    if (!webviewGui && !webviewBar && !webviewMain && !webviewSide)
-        return;
+    if (!webviewGui && !webviewBar && !webviewMain && !webviewSide) return;
 
     if (!webviewGui->controller || !webviewBar->controller || !webviewMain->controller ||
         !webviewSide->controller)
@@ -261,40 +260,23 @@ __int64 __stdcall App::WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam
     {
         switch (msg)
         {
-        case WM_ACTIVATE:
-            return app->wm_activate(hwnd, msg, wparam, lparam);
-        case WM_CLOSE:
-            return app->wm_close(hwnd, msg, wparam, lparam);
-        case WM_DESTROY:
-            return app->wm_destroy(hwnd, msg, wparam, lparam);
-        case WM_DEVTOOLSMAIN:
-            return app->wm_devtoolsmain(hwnd, msg, wparam, lparam);
-        case WM_DEVTOOLSSIDE:
-            return app->wm_devtoolsside(hwnd, msg, wparam, lparam);
-        case WM_DPICHANGED:
-            return app->wm_dpichanged(hwnd, msg, wparam, lparam);
-        case WM_ERASEBKGND:
-            return app->wm_erasebkgnd(hwnd, msg, wparam, lparam);
-        case WM_EXITSIZEMOVE:
-            return app->wm_exitsizemove(hwnd, msg, wparam, lparam);
-        case WM_GETMINMAXINFO:
-            return app->wm_getminmaxinfo(hwnd, msg, wparam, lparam);
-        case WM_HOMEMAIN:
-            return app->wm_homemain(hwnd, msg, wparam, lparam);
-        case WM_HOMESIDE:
-            return app->wm_homeside(hwnd, msg, wparam, lparam);
-        case WM_KEYDOWN:
-            return app->wm_keydown(hwnd, msg, wparam, lparam);
-        case WM_NAVIGATEMAIN:
-            return app->wm_navigatemain(hwnd, msg, wparam, lparam);
-        case WM_NAVIGATESIDE:
-            return app->wm_navigateside(hwnd, msg, wparam, lparam);
-        case WM_NOTIFY:
-            return app->wm_notify(hwnd, msg, wparam, lparam);
-        case WM_SETTINGCHANGE:
-            return app->wm_settingchange(hwnd, msg, wparam, lparam);
-        case WM_WINDOWPOSCHANGED:
-            return app->wm_windowposchanged(hwnd, msg, wparam, lparam);
+        case WM_ACTIVATE: return app->wm_activate(hwnd, msg, wparam, lparam);
+        case WM_CLOSE: return app->wm_close(hwnd, msg, wparam, lparam);
+        case WM_DESTROY: return app->wm_destroy(hwnd, msg, wparam, lparam);
+        case WM_DEVTOOLSMAIN: return app->wm_devtoolsmain(hwnd, msg, wparam, lparam);
+        case WM_DEVTOOLSSIDE: return app->wm_devtoolsside(hwnd, msg, wparam, lparam);
+        case WM_DPICHANGED: return app->wm_dpichanged(hwnd, msg, wparam, lparam);
+        case WM_ERASEBKGND: return app->wm_erasebkgnd(hwnd, msg, wparam, lparam);
+        case WM_EXITSIZEMOVE: return app->wm_exitsizemove(hwnd, msg, wparam, lparam);
+        case WM_GETMINMAXINFO: return app->wm_getminmaxinfo(hwnd, msg, wparam, lparam);
+        case WM_HOMEMAIN: return app->wm_homemain(hwnd, msg, wparam, lparam);
+        case WM_HOMESIDE: return app->wm_homeside(hwnd, msg, wparam, lparam);
+        case WM_KEYDOWN: return app->wm_keydown(hwnd, msg, wparam, lparam);
+        case WM_NAVIGATEMAIN: return app->wm_navigatemain(hwnd, msg, wparam, lparam);
+        case WM_NAVIGATESIDE: return app->wm_navigateside(hwnd, msg, wparam, lparam);
+        case WM_NOTIFY: return app->wm_notify(hwnd, msg, wparam, lparam);
+        case WM_SETTINGCHANGE: return app->wm_settingchange(hwnd, msg, wparam, lparam);
+        case WM_WINDOWPOSCHANGED: return app->wm_windowposchanged(hwnd, msg, wparam, lparam);
         }
     }
 
@@ -330,8 +312,7 @@ int App::wm_destroy(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 int App::wm_devtoolsmain(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-    if (!webviewMain || !webviewMain->core)
-        return 0;
+    if (!webviewMain || !webviewMain->core) return 0;
 
     webviewMain->core.OpenDevToolsWindow();
 
@@ -340,8 +321,7 @@ int App::wm_devtoolsmain(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 int App::wm_devtoolsside(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-    if (!webviewSide || !webviewSide->core)
-        return 0;
+    if (!webviewSide || !webviewSide->core) return 0;
 
     webviewSide->core.OpenDevToolsWindow();
 
@@ -372,8 +352,7 @@ int App::wm_erasebkgnd(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     if (storage->settings.appTheme == "dark")
         FillRect(hdc, &ps.rcPaint, storage->application.darkBrush);
 
-    else
-        FillRect(hdc, &ps.rcPaint, storage->application.lightBrush);
+    else FillRect(hdc, &ps.rcPaint, storage->application.lightBrush);
 
     EndPaint(hwnd, &ps);
 
@@ -416,16 +395,14 @@ int App::wm_homeside(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 int App::wm_keydown(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-    if (!webviewGui || !webviewBar || !webviewMain || !webviewSide)
-        return 0;
+    if (!webviewGui || !webviewBar || !webviewMain || !webviewSide) return 0;
 
     switch (wparam)
     {
     case VK_PAUSE:
     {
         storage->settings.webviewGui = storage->settings.webviewGui ? false : true;
-        if (storage->settings.webviewGui)
-            webviewGui->focus();
+        if (storage->settings.webviewGui) webviewGui->focus();
 
         break;
     }
@@ -440,8 +417,7 @@ int App::wm_keydown(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
     case 0x57:
     {
-        if (GetKeyState(VK_CONTROL) & 0x8000)
-            PostMessageW(hwnd, WM_CLOSE, 0, 0);
+        if (GetKeyState(VK_CONTROL) & 0x8000) PostMessageW(hwnd, WM_CLOSE, 0, 0);
 
         break;
     }
@@ -469,13 +445,9 @@ int App::wm_keydown(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
     case VK_F4:
     {
-        if (GetKeyState(VK_MENU) & 0x8000)
-            SendMessageW(hwnd, WM_CLOSE, 0, 0);
+        if (GetKeyState(VK_MENU) & 0x8000) SendMessageW(hwnd, WM_CLOSE, 0, 0);
 
-        else
-        {
-            storage->settings.windowTopmost = util::window_topmost(hwnd);
-        }
+        else { storage->settings.windowTopmost = util::window_topmost(hwnd); }
 
         break;
     }
@@ -502,8 +474,7 @@ int App::wm_keydown(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
         break;
     }
 
-    default:
-        return 0;
+    default: return 0;
     }
 
     SendMessageW(hwnd, WM_NOTIFY, 0, 0);

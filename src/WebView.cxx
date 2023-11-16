@@ -1,3 +1,13 @@
+// clang-format off
+// ╔─────────────────────────────╗
+// │                             │
+// │     ╔═╗╦╦═╗╔═╗╦  ╔═╗╦ ╦     │  Airglow - https://github.com/mthierman/Airglow
+// │     ╠═╣║╠╦╝║ ╦║  ║ ║║║║     │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
+// │     ╩ ╩╩╩╚═╚═╝╩═╝╚═╝╚╩╝     │  SPDX-License-Identifier: MIT
+// │                             │
+// ╚─────────────────────────────╝
+// clang-format on
+
 #include "WebView.hxx"
 
 WebView::WebView(Storage* s, HWND h, std::string n) : storage(s), appHwnd(h), name(n)
