@@ -12,11 +12,4 @@
 
 #define APP_NAME "@APP_NAME@"
 #define APP_VERSION "@APP_VERSION@"
-#define WEBVIEW "@WEBVIEW@"
-#define WEBVIEW_VER "@WEBVIEW_VER@"
-#define CPPWINRT "@CPPWINRT@"
-#define CPPWINRT_VER "@CPPWINRT_VER@"
-#define WIL "@WIL@"
-#define WIL_VER "@WIL_VER@"
-#define GDIPVER 0x0110
 // clang-format on

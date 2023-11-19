@@ -11,14 +11,17 @@ permissions:
 jobs:
   build:
     runs-on: windows-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 5
+          submodules: true
       - uses: pnpm/action-setup@v2
         with:
           version: latest
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: "*"
           check-latest: true
@@ -32,12 +35,12 @@ jobs:
       - uses: actions/cache@v3
         id: library-cache
         with:
-          path: build/_deps
+          path: |
+            build/_deps
+            build/libs/Nuget
           key: library-cache-${{ hashFiles('**/CMakeLists.txt') }}
-      - env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          $vswhere = "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+      - run: |
+          $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
           $vspath = & $vswhere -products * -latest -property installationPath
           & "$vspath\Common7\Tools\Launch-VsDevShell.ps1" -HostArch amd64 -Arch amd64 -SkipAutomaticLocation
 

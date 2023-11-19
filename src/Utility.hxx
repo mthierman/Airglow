@@ -43,9 +43,6 @@ std::string bar_url();
 
 std::pair<std::string, std::string> command_line();
 
-FILE* create_console(bool);
-void remove_console(FILE*);
-
 std::string system_color(winrt::Windows::UI::ViewManagement::UIColorType);
 std::string system_theme();
 

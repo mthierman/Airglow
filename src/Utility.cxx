@@ -254,42 +254,6 @@ std::pair<std::string, std::string> command_line()
     return commands;
 }
 
-FILE* create_console(bool create)
-{
-    FILE* dummyFile{nullptr};
-
-#ifdef _DEBUG
-    if (create)
-    {
-        AllocConsole();
-        auto hwnd{GetConsoleWindow()};
-        SetConsoleTitleW(L"Debug");
-        window_mica(hwnd);
-        SetWindowPos(hwnd, nullptr, 0, 0, 400, 400, SWP_SHOWWINDOW);
-        freopen_s(&dummyFile, "CONOUT$", "w", stdout);
-        freopen_s(&dummyFile, "CONOUT$", "w", stderr);
-        freopen_s(&dummyFile, "CONIN$", "r", stdin);
-        std::cout.clear();
-        std::clog.clear();
-        std::cerr.clear();
-        std::cin.clear();
-    }
-#endif
-
-    return dummyFile;
-}
-
-void remove_console(FILE* console)
-{
-#ifdef _DEBUG
-    if (console)
-    {
-        fclose(console);
-        FreeConsole();
-    }
-#endif
-}
-
 std::string system_color(winrt::Windows::UI::ViewManagement::UIColorType colorType)
 {
     auto settings{winrt::Windows::UI::ViewManagement::UISettings()};

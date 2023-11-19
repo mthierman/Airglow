@@ -54,9 +54,9 @@ winrt::IAsyncAction WebView::create_webview()
     controller.AcceleratorKeyPressed(
         {[=, this](auto const&, auto const& args) { accelerator_key_pressed(args); }});
 
-    core.DocumentTitleChanged({[=, this](auto const&, auto const& args) { title(); }});
+    core.DocumentTitleChanged({[=, this](auto const&, auto const& /*args*/) { title(); }});
 
-    core.FaviconChanged({[=, this](auto const&, auto const& args) { icon(); }});
+    core.FaviconChanged({[=, this](auto const&, auto const& /*args*/) { icon(); }});
 
     core.DOMContentLoaded(
         {[=, this](auto const&, auto const&) { SendMessageW(appHwnd, WM_NOTIFY, 0, 0); }});
@@ -108,26 +108,22 @@ winrt::IAsyncAction WebView::create_webview()
 
 void WebView::post_settings(nlohmann::json j)
 {
-    if (!core)
-        return;
+    if (!core) return;
 
     core.PostWebMessageAsJson(util::to_wstring(j.dump()));
 }
 
 void WebView::title()
 {
-    if (!core)
-        return;
+    if (!core) return;
 
     auto title{core.DocumentTitle()};
 
     if (storage->settings.webviewGui)
     {
-        if (name != "gui")
-            return;
+        if (name != "gui") return;
 
-        if (!storage->settings.windowTopmost)
-            SetWindowTextW(appHwnd, title.c_str());
+        if (!storage->settings.windowTopmost) SetWindowTextW(appHwnd, title.c_str());
 
         else
         {
@@ -138,11 +134,9 @@ void WebView::title()
 
     if (!storage->settings.webviewGui && !storage->settings.webviewSwapped)
     {
-        if (name != "main")
-            return;
+        if (name != "main") return;
 
-        if (!storage->settings.windowTopmost)
-            SetWindowTextW(appHwnd, title.c_str());
+        if (!storage->settings.windowTopmost) SetWindowTextW(appHwnd, title.c_str());
 
         else
         {
@@ -153,11 +147,9 @@ void WebView::title()
 
     if (!storage->settings.webviewGui && storage->settings.webviewSwapped)
     {
-        if (name != "side")
-            return;
+        if (name != "side") return;
 
-        if (!storage->settings.windowTopmost)
-            SetWindowTextW(appHwnd, title.c_str());
+        if (!storage->settings.windowTopmost) SetWindowTextW(appHwnd, title.c_str());
 
         else
         {
@@ -169,8 +161,7 @@ void WebView::title()
 
 winrt::IAsyncAction WebView::icon()
 {
-    if (!core)
-        co_return;
+    if (!core) co_return;
 
     auto icon{co_await core.GetFaviconAsync(winrt::CoreWebView2FaviconImageFormat::Png)};
     IUnknown* favicon = (IUnknown*)winrt::get_abi(icon);
@@ -183,8 +174,7 @@ winrt::IAsyncAction WebView::icon()
 
     if (storage->settings.webviewGui)
     {
-        if (name != "gui")
-            co_return;
+        if (name != "gui") co_return;
 
         SetClassLongPtrW(appHwnd, GCLP_HICONSM, (LONG_PTR)storage->application.hIcon);
         SetClassLongPtrW(appHwnd, GCLP_HICON, (LONG_PTR)storage->application.hIcon);
@@ -192,8 +182,7 @@ winrt::IAsyncAction WebView::icon()
 
     if (!storage->settings.webviewGui && !storage->settings.webviewSwapped)
     {
-        if (name != "main")
-            co_return;
+        if (name != "main") co_return;
 
         if (storage->settings.mainCurrentPage.contains("Airglow/gui") ||
             storage->settings.mainCurrentPage == "https://localhost:8000/")
@@ -213,8 +202,7 @@ winrt::IAsyncAction WebView::icon()
 
     if (!storage->settings.webviewGui && storage->settings.webviewSwapped)
     {
-        if (name != "side")
-            co_return;
+        if (name != "side") co_return;
 
         if (storage->settings.sideCurrentPage.contains("Airglow/gui") ||
             storage->settings.sideCurrentPage == "https://localhost:8000/")
@@ -237,13 +225,11 @@ winrt::IAsyncAction WebView::icon()
 
 void WebView::focus()
 {
-    if (!core || !controller)
-        return;
+    if (!core || !controller) return;
 
     controller.MoveFocus(winrt::CoreWebView2MoveFocusReason::Programmatic);
 
-    if (name == "bar")
-        core.PostWebMessageAsString(L"focus");
+    if (name == "bar") core.PostWebMessageAsString(L"focus");
 }
 
 void WebView::initial_navigation()
@@ -251,20 +237,13 @@ void WebView::initial_navigation()
     auto url1{util::command_line().first};
     auto url2{util::command_line().second};
 
-    if (name == "gui")
-    {
-        core.Navigate(winrt::to_hstring(util::settings_url()));
-    }
+    if (name == "gui") { core.Navigate(winrt::to_hstring(util::settings_url())); }
 
-    if (name == "bar")
-    {
-        core.Navigate(winrt::to_hstring(util::bar_url()));
-    }
+    if (name == "bar") { core.Navigate(winrt::to_hstring(util::bar_url())); }
 
     if (name == "main")
     {
-        if (!url1.empty())
-            navigate(url1);
+        if (!url1.empty()) navigate(url1);
 
         if (url1.empty() && !storage->settings.mainHomepage.empty())
             navigate(storage->settings.mainHomepage);
@@ -275,8 +254,7 @@ void WebView::initial_navigation()
 
     if (name == "side")
     {
-        if (!url2.empty())
-            navigate(url2);
+        if (!url2.empty()) navigate(url2);
 
         if (url2.empty() && !storage->settings.sideHomepage.empty())
             navigate(storage->settings.sideHomepage);
@@ -288,22 +266,16 @@ void WebView::initial_navigation()
 
 std::string WebView::parse_url(std::string s)
 {
-    if (s.empty())
-        return s;
+    if (s.empty()) return s;
 
-    if (s.starts_with("http://") || s.starts_with("https://"))
-        return s;
+    if (s.starts_with("http://") || s.starts_with("https://")) return s;
 
-    else
-        return ("https://" + s);
-
-    return s;
+    else return ("https://" + s);
 }
 
 void WebView::navigate(std::string s)
 {
-    if (!core || s.empty())
-        return;
+    if (!core || s.empty()) return;
 
     auto url{winrt::to_hstring(parse_url(s))};
 
@@ -365,26 +337,22 @@ void WebView::bar_web_message_received(winrt::CoreWebView2WebMessageReceivedEven
 
         if (!j["mainDevtools"].empty())
         {
-            if (j["mainDevtools"].get<bool>())
-                SendMessageW(appHwnd, WM_DEVTOOLSMAIN, 0, 0);
+            if (j["mainDevtools"].get<bool>()) SendMessageW(appHwnd, WM_DEVTOOLSMAIN, 0, 0);
         }
 
         if (!j["sideDevtools"].empty())
         {
-            if (j["sideDevtools"].get<bool>())
-                SendMessageW(appHwnd, WM_DEVTOOLSSIDE, 0, 0);
+            if (j["sideDevtools"].get<bool>()) SendMessageW(appHwnd, WM_DEVTOOLSSIDE, 0, 0);
         }
 
         if (!j["mainHome"].empty())
         {
-            if (j["mainHome"].get<bool>())
-                SendMessageW(appHwnd, WM_HOMEMAIN, 0, 0);
+            if (j["mainHome"].get<bool>()) SendMessageW(appHwnd, WM_HOMEMAIN, 0, 0);
         }
 
         if (!j["sideHome"].empty())
         {
-            if (j["sideHome"].get<bool>())
-                SendMessageW(appHwnd, WM_HOMESIDE, 0, 0);
+            if (j["sideHome"].get<bool>()) SendMessageW(appHwnd, WM_HOMESIDE, 0, 0);
         }
     };
 

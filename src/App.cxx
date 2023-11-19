@@ -10,7 +10,7 @@
 
 #include "App.hxx"
 
-App::App(HINSTANCE hInstance, PWSTR pCmdLine, int nCmdShow)
+App::App(HINSTANCE hInstance, PWSTR /*pCmdLine*/, int /*nCmdShow*/)
     : storage(std::make_unique<Storage>()), appHwnd(create_window(hInstance)),
       webviewGui(std::make_unique<WebView>(storage.get(), appHwnd, "gui")),
       webviewBar(std::make_unique<WebView>(storage.get(), appHwnd, "bar")),
@@ -35,8 +35,7 @@ App::~App() {}
 HWND App::create_window(HINSTANCE hInstance)
 {
     storage->application.hIcon =
-        (HICON)LoadImageW(hInstance, util::to_wstring(storage->settings.appName).c_str(),
-                          IMAGE_ICON, 0, 0, LR_DEFAULTSIZE);
+        (HICON)LoadImageW(hInstance, MAKEINTRESOURCEW(1), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE);
 
     auto appName{util::to_wstring(storage->settings.appName)};
 
@@ -260,30 +259,30 @@ __int64 __stdcall App::WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam
     {
         switch (msg)
         {
-        case WM_ACTIVATE: return app->wm_activate(hwnd, msg, wparam, lparam);
-        case WM_CLOSE: return app->wm_close(hwnd, msg, wparam, lparam);
-        case WM_DESTROY: return app->wm_destroy(hwnd, msg, wparam, lparam);
-        case WM_DEVTOOLSMAIN: return app->wm_devtoolsmain(hwnd, msg, wparam, lparam);
-        case WM_DEVTOOLSSIDE: return app->wm_devtoolsside(hwnd, msg, wparam, lparam);
-        case WM_DPICHANGED: return app->wm_dpichanged(hwnd, msg, wparam, lparam);
-        case WM_ERASEBKGND: return app->wm_erasebkgnd(hwnd, msg, wparam, lparam);
-        case WM_EXITSIZEMOVE: return app->wm_exitsizemove(hwnd, msg, wparam, lparam);
-        case WM_GETMINMAXINFO: return app->wm_getminmaxinfo(hwnd, msg, wparam, lparam);
-        case WM_HOMEMAIN: return app->wm_homemain(hwnd, msg, wparam, lparam);
-        case WM_HOMESIDE: return app->wm_homeside(hwnd, msg, wparam, lparam);
-        case WM_KEYDOWN: return app->wm_keydown(hwnd, msg, wparam, lparam);
-        case WM_NAVIGATEMAIN: return app->wm_navigatemain(hwnd, msg, wparam, lparam);
-        case WM_NAVIGATESIDE: return app->wm_navigateside(hwnd, msg, wparam, lparam);
-        case WM_NOTIFY: return app->wm_notify(hwnd, msg, wparam, lparam);
-        case WM_SETTINGCHANGE: return app->wm_settingchange(hwnd, msg, wparam, lparam);
-        case WM_WINDOWPOSCHANGED: return app->wm_windowposchanged(hwnd, msg, wparam, lparam);
+        case WM_ACTIVATE: return app->wm_activate(hwnd);
+        case WM_CLOSE: return app->wm_close(hwnd);
+        case WM_DESTROY: return app->wm_destroy();
+        case WM_DEVTOOLSMAIN: return app->wm_devtoolsmain();
+        case WM_DEVTOOLSSIDE: return app->wm_devtoolsside();
+        case WM_DPICHANGED: return app->wm_dpichanged(hwnd, lparam);
+        case WM_ERASEBKGND: return app->wm_erasebkgnd(hwnd);
+        case WM_EXITSIZEMOVE: return app->wm_exitsizemove(hwnd);
+        case WM_GETMINMAXINFO: return app->wm_getminmaxinfo(lparam);
+        case WM_HOMEMAIN: return app->wm_homemain();
+        case WM_HOMESIDE: return app->wm_homeside();
+        case WM_KEYDOWN: return app->wm_keydown(hwnd, wparam);
+        case WM_NAVIGATEMAIN: return app->wm_navigatemain();
+        case WM_NAVIGATESIDE: return app->wm_navigateside();
+        case WM_NOTIFY: return app->wm_notify();
+        case WM_SETTINGCHANGE: return app->wm_settingchange(hwnd);
+        case WM_WINDOWPOSCHANGED: return app->wm_windowposchanged(hwnd);
         }
     }
 
     return DefWindowProcW(hwnd, msg, wparam, lparam);
 }
 
-int App::wm_activate(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+int App::wm_activate(HWND hwnd)
 {
     if (!storage->settings.windowMaximized && !storage->settings.windowFullscreen)
     {
@@ -294,7 +293,7 @@ int App::wm_activate(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     return 0;
 }
 
-int App::wm_close(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+int App::wm_close(HWND hwnd)
 {
     storage->save();
 
@@ -303,14 +302,14 @@ int App::wm_close(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     return 0;
 }
 
-int App::wm_destroy(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+int App::wm_destroy()
 {
     PostQuitMessage(0);
 
     return 0;
 }
 
-int App::wm_devtoolsmain(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+int App::wm_devtoolsmain()
 {
     if (!webviewMain || !webviewMain->core) return 0;
 
@@ -319,7 +318,7 @@ int App::wm_devtoolsmain(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     return 0;
 }
 
-int App::wm_devtoolsside(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+int App::wm_devtoolsside()
 {
     if (!webviewSide || !webviewSide->core) return 0;
 
@@ -328,7 +327,7 @@ int App::wm_devtoolsside(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     return 0;
 }
 
-int App::wm_dpichanged(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+int App::wm_dpichanged(HWND hwnd, LPARAM lparam)
 {
     storage->settings.appScale =
         static_cast<float>(GetDpiForWindow(hwnd)) / static_cast<float>(USER_DEFAULT_SCREEN_DPI);
@@ -343,7 +342,7 @@ int App::wm_dpichanged(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     return 0;
 }
 
-int App::wm_erasebkgnd(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+int App::wm_erasebkgnd(HWND hwnd)
 {
     InvalidateRect(hwnd, nullptr, true);
     PAINTSTRUCT ps{};
@@ -359,7 +358,7 @@ int App::wm_erasebkgnd(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     return 1;
 }
 
-int App::wm_exitsizemove(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+int App::wm_exitsizemove(HWND hwnd)
 {
     if (!storage->settings.windowMaximized && !storage->settings.windowFullscreen)
     {
@@ -370,7 +369,7 @@ int App::wm_exitsizemove(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     return 0;
 }
 
-int App::wm_getminmaxinfo(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+int App::wm_getminmaxinfo(LPARAM lparam)
 {
     LPMINMAXINFO minmax{(LPMINMAXINFO)lparam};
     minmax->ptMinTrackSize.x = 500;
@@ -379,21 +378,21 @@ int App::wm_getminmaxinfo(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     return 0;
 }
 
-int App::wm_homemain(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+int App::wm_homemain()
 {
     webviewMain->navigate(storage->settings.mainHomepage);
 
     return 0;
 }
 
-int App::wm_homeside(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+int App::wm_homeside()
 {
     webviewSide->navigate(storage->settings.sideHomepage);
 
     return 0;
 }
 
-int App::wm_keydown(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+int App::wm_keydown(HWND hwnd, WPARAM wparam)
 {
     if (!webviewGui || !webviewBar || !webviewMain || !webviewSide) return 0;
 
@@ -482,21 +481,21 @@ int App::wm_keydown(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     return 0;
 }
 
-int App::wm_navigatemain(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+int App::wm_navigatemain()
 {
     webviewMain->navigate(storage->settings.mainCurrentPage);
 
     return 0;
 }
 
-int App::wm_navigateside(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+int App::wm_navigateside()
 {
     webviewSide->navigate(storage->settings.sideCurrentPage);
 
     return 0;
 }
 
-int App::wm_notify(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+int App::wm_notify()
 {
     if (webviewGui && webviewBar && webviewMain && webviewSide)
     {
@@ -528,7 +527,7 @@ int App::wm_notify(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     return 0;
 }
 
-int App::wm_settingchange(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+int App::wm_settingchange(HWND hwnd)
 {
     storage->settings.appTheme = util::window_theme(hwnd);
     storage->colors = Colors{};
@@ -538,7 +537,7 @@ int App::wm_settingchange(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
     return 0;
 }
 
-int App::wm_windowposchanged(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+int App::wm_windowposchanged(HWND hwnd)
 {
     WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
     GetWindowPlacement(hwnd, &wp);

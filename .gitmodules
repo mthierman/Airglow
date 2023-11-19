@@ -1,0 +1,3 @@
+[submodule "libs/Glow"]
+	path = libs/Glow
+	url = https://github.com/mthierman/Glow.git

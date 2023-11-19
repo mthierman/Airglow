@@ -10,6 +10,7 @@
 
 #pragma once
 
+#include <GlowConfig.h>
 #include <AirglowConfig.h>
 
 #include <Windows.h>
