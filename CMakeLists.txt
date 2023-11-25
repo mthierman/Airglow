@@ -92,7 +92,7 @@ target_link_libraries(
     glow::glow
     glow::glow_compile_features
     glow::glow_compile_options
-    glow::glow_settings
+    glow::glow_includes
     glow::glow_libs
 )
 
