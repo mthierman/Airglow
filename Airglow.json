@@ -1,0 +1,15 @@
+{
+    "name": "Airglow",
+    "version": "1.5.0",
+    "webview_pkg": "Microsoft.Web.WebView2",
+    "webview_ver": "1.0.2151.40",
+    "cppwinrt_pkg": "Microsoft.Windows.CppWinRT",
+    "cppwinrt_ver": "2.0.230706.1",
+    "wil_pkg": "Microsoft.Windows.ImplementationLibrary",
+    "wil_ver": "1.0.231028.1",
+    "url_wil": "https://github.com/microsoft/wil/archive/refs/tags/v1.0.231028.1.tar.gz",
+    "url_json": "https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz",
+    "url_toml": "https://github.com/marzer/tomlplusplus/archive/refs/tags/v3.4.0.tar.gz",
+    "url_sqlite": "https://www.sqlite.org/2023/sqlite-amalgamation-3440200.zip",
+    "url_curl": "https://github.com/curl/curl/releases/download/curl-8_4_0/curl-8.4.0.tar.xz"
+}
