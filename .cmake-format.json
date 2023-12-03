@@ -59,7 +59,7 @@
             "If a cmdline positional group consumes more than this many",
             "lines without nesting, then invalidate the layout (and nest)"
         ],
-        "max_rows_cmdline": 0,
+        "max_rows_cmdline": 1,
         "_help_separate_ctrl_name_with_space": [
             "If true, separate flow control names from their parentheses",
             "with a space"
