@@ -25,8 +25,8 @@ struct Application
 
 struct Settings
 {
-    std::string appName{APP_NAME};
-    std::string appVersion{APP_VERSION};
+    std::string appName{PROJECT_NAME};
+    std::string appVersion{PROJECT_VERSION};
     std::string appTheme{util::system_theme()};
     float appScale{1};
     std::vector<int> windowPosition{0, 0, 0, 0};

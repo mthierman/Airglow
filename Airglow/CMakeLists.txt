@@ -1,3 +1,15 @@
+file(
+    TO_CMAKE_PATH
+    ${PROJECT_BINARY_DIR}/data/Airglow.rc
+    AIRGLOW_DATA_RC
+)
+
+file(
+    GENERATE
+    OUTPUT ${AIRGLOW_DATA_RC}
+    CONTENT "1 ICON \"Airglow.ico\""
+)
+
 add_executable(
     ${PROJECT_NAME}
     WIN32
@@ -11,6 +23,7 @@ target_sources(
             Storage.cxx
             Utility.cxx
             WebView.cxx
+            ${AIRGLOW_DATA_RC}
 )
 
 target_sources(
@@ -44,9 +57,65 @@ target_link_libraries(
             glow::flags
 )
 
-# add_custom_command( TARGET ${APP_NAME} COMMAND ${CMAKE_COMMAND} -E copy
-# ${NUGET_DIRECTORY}/${WEBVIEW}.${WEBVIEW_VER}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll
-# ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} COMMENT "Copying Microsoft.Web.WebView2.Core.dll..." )
+set(NUGET_DIRECTORY
+    ${CMAKE_BINARY_DIR}/_deps/Nuget
+)
+
+file(
+    READ
+    ${PROJECT_SOURCE_DIR}/libs/Glow/Glow.json
+    PROJECT_JSON
+)
+
+string(
+    JSON
+    WEBVIEW
+    GET
+    ${PROJECT_JSON}
+    WEBVIEW
+)
+
+string(
+    JSON
+    WEBVIEW_VER
+    GET
+    ${PROJECT_JSON}
+    WEBVIEW_VER
+)
+
+add_custom_command(
+    TARGET ${PROJECT_NAME}
+    COMMAND
+        ${CMAKE_COMMAND} -E copy
+        ${CMAKE_BINARY_DIR}/_deps/Nuget/${WEBVIEW}.${WEBVIEW_VER}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll
+        ${CMAKE_CURRENT_BINARY_DIR}
+    COMMENT "Copying Microsoft.Web.WebView2.Core.dll..."
+)
+
+set(AIRGLOW_ICON_SOURCE
+    ${PROJECT_SOURCE_DIR}/Data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico
+)
+
+set(AIRGLOW_ICON
+    ${PROJECT_BINARY_DIR}/Data/Airglow.ico
+)
+
+add_custom_command(
+    OUTPUT ${AIRGLOW_ICON}
+    COMMAND ${CMAKE_COMMAND} -E copy ${AIRGLOW_ICON_SOURCE} ${AIRGLOW_ICON}
+    COMMENT "Copying icon..."
+)
+
+add_custom_target(
+    CopyIcon
+    ALL
+    DEPENDS ${AIRGLOW_ICON}
+)
+
+add_dependencies(
+    ${PROJECT_NAME}
+    CopyIcon
+)
 
 add_custom_target(
     BuildGui

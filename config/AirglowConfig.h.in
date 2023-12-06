@@ -10,6 +10,6 @@
 
 #pragma once
 
-#define APP_NAME "@APP_NAME@"
-#define APP_VERSION "@APP_VERSION@"
+#define PROJECT_NAME "@PROJECT_NAME@"
+#define PROJECT_VERSION "@PROJECT_VERSION@"
 // clang-format on
