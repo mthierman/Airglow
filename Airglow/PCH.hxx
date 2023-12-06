@@ -10,8 +10,8 @@
 
 #pragma once
 
-#include <GlowConfig.h>
-#include <AirglowConfig.h>
+// #include <GlowConfig.h>
+// #include <AirglowConfig.h>
 
 #include <Windows.h>
 #include <dwmapi.h>
