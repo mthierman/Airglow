@@ -3,6 +3,43 @@ add_executable(
     WIN32
 )
 
+file(
+    TO_CMAKE_PATH
+    ${PROJECT_BINARY_DIR}/data/Airglow.rc
+    AIRGLOW_DATA_RC
+)
+
+file(
+    GENERATE
+    OUTPUT ${AIRGLOW_DATA_RC}
+    CONTENT "1 ICON \"Airglow.ico\""
+)
+
+set(AIRGLOW_ICON_SOURCE
+    ${PROJECT_SOURCE_DIR}/Data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico
+)
+
+set(AIRGLOW_ICON
+    ${PROJECT_BINARY_DIR}/Data/Airglow.ico
+)
+
+add_custom_command(
+    OUTPUT ${AIRGLOW_ICON}
+    COMMAND ${CMAKE_COMMAND} -E copy ${AIRGLOW_ICON_SOURCE} ${AIRGLOW_ICON}
+    COMMENT "Copying icon..."
+)
+
+add_custom_target(
+    CopyIcon
+    ALL
+    DEPENDS ${AIRGLOW_ICON}
+)
+
+add_dependencies(
+    ${PROJECT_NAME}
+    CopyIcon
+)
+
 target_sources(
     ${PROJECT_NAME}
     PRIVATE Main.cxx
@@ -43,43 +80,6 @@ target_link_libraries(
     PRIVATE shcore.lib
             glow::glow
             glow::flags
-)
-
-file(
-    TO_CMAKE_PATH
-    ${PROJECT_BINARY_DIR}/data/Airglow.rc
-    AIRGLOW_DATA_RC
-)
-
-file(
-    GENERATE
-    OUTPUT ${AIRGLOW_DATA_RC}
-    CONTENT "1 ICON \"Airglow.ico\""
-)
-
-set(AIRGLOW_ICON_SOURCE
-    ${PROJECT_SOURCE_DIR}/Data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico
-)
-
-set(AIRGLOW_ICON
-    ${PROJECT_BINARY_DIR}/Data/Airglow.ico
-)
-
-add_custom_command(
-    OUTPUT ${AIRGLOW_ICON}
-    COMMAND ${CMAKE_COMMAND} -E copy ${AIRGLOW_ICON_SOURCE} ${AIRGLOW_ICON}
-    COMMENT "Copying icon..."
-)
-
-add_custom_target(
-    CopyIcon
-    ALL
-    DEPENDS ${AIRGLOW_ICON}
-)
-
-add_dependencies(
-    ${PROJECT_NAME}
-    CopyIcon
 )
 
 add_custom_target(
