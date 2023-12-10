@@ -92,7 +92,7 @@ add_custom_target(
 add_custom_target(
     CopyGui
     ALL
-    COMMAND ${CMAKE_COMMAND} -E copy_directory dist ${PROJECT_BINARY_DIR}/gui
+    COMMAND ${CMAKE_COMMAND} -E copy_directory dist ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/gui
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/gui
 )
 
@@ -106,6 +106,6 @@ add_custom_command(
     COMMAND
         ${CMAKE_COMMAND} -E copy
         ${CMAKE_BINARY_DIR}/_deps/Nuget/${WEBVIEW}.${WEBVIEW_VER}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll
-        ${CMAKE_CURRENT_BINARY_DIR}
+        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
     COMMENT "Copying Microsoft.Web.WebView2.Core.dll..."
 )

@@ -9,6 +9,10 @@ project(
               CXX
 )
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY
+    ${PROJECT_BINARY_DIR}/Airglow_artifacts
+)
+
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/Configure.cmake)
 
 add_subdirectory(libs/Glow)

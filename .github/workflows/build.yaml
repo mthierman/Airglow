@@ -48,7 +48,7 @@ jobs:
           cmake --build build
 
           Push-Location
-          Set-Location build/Airglow
+          Set-Location build/Airglow_artifacts
           7z a Airglow.zip Airglow.exe Microsoft.Web.WebView2.Core.dll gui
           Pop-Location
 
