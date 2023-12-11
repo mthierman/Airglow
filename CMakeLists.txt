@@ -1,30 +1,8 @@
 cmake_minimum_required(VERSION 3.27)
 
-file(
-    READ
-    ${CMAKE_SOURCE_DIR}/Airglow.json
-    AIRGLOW_JSON
-)
-
-string(
-    JSON
-    NAME
-    GET
-    ${AIRGLOW_JSON}
-    NAME
-)
-
-string(
-    JSON
-    VERSION
-    GET
-    ${AIRGLOW_JSON}
-    VERSION
-)
-
 project(
-    ${NAME}
-    VERSION ${VERSION}
+    Airglow
+    VERSION 1.6.0
     LANGUAGES C
               CXX
 )
