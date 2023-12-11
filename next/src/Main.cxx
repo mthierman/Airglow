@@ -6,6 +6,7 @@
 // ╚─────────────────────╝
 // clang-format on
 
+#include <airglow.hxx>
 #include <gui/app.hxx>
 
 //==============================================================================
@@ -13,6 +14,9 @@ auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine,
     -> int
 {
     auto app{std::make_unique<glow::gui::App>("Next")};
+
+    OutputDebugString(PROJECT_NAME);
+    OutputDebugString(PROJECT_VERSION);
 
     ::MSG msg{};
     int r{};

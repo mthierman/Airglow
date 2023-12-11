@@ -3,9 +3,21 @@ add_executable(
     WIN32
 )
 
+configure_file(
+    ${PROJECT_SOURCE_DIR}/config/airglow.hxx.in
+    ${PROJECT_BINARY_DIR}/config/airglow.hxx
+)
+
 target_sources(
     ${PROJECT_NAME}
-    PRIVATE Main.cxx
+    PRIVATE src/Main.cxx
+            ${PROJECT_SOURCE_DIR}/data/airglow.manifest
+    PUBLIC FILE_SET
+           HEADERS
+           BASE_DIRS
+           ${PROJECT_BINARY_DIR}/config
+           FILES
+           ${PROJECT_BINARY_DIR}/config/airglow.hxx
 )
 
 target_link_libraries(
