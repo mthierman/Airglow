@@ -25,6 +25,7 @@ struct WinMain
 struct App final : public glow::gui::App
 {
     using glow::gui::App::App;
+    auto run() -> void;
 
   private:
     auto handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override;
@@ -33,6 +34,12 @@ struct App final : public glow::gui::App
     //==============================================================================
     auto on_notify() -> int;
     auto on_window_pos_changed() -> int;
+
+    std::unique_ptr<glow::gui::WebView> wv1{
+        std::make_unique<glow::gui::WebView>("webview1", m_hwnd.get(), 1)};
+
+    std::unique_ptr<glow::gui::WebView> wv2{
+        std::make_unique<glow::gui::WebView>("webview2", m_hwnd.get(), 2)};
 };
 
 //==============================================================================

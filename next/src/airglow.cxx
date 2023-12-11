@@ -12,7 +12,9 @@
 auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nCmdShow)
     -> int
 {
-    airglow::WinMain();
+    airglow::App app(PROJECT_NAME);
+
+    app.run();
 
     return 0;
 }

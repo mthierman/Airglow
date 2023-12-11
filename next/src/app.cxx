@@ -12,11 +12,8 @@ namespace airglow
 {
 
 //==============================================================================
-WinMain::WinMain()
+auto App::run() -> void
 {
-    App app(PROJECT_NAME);
-    glow::gui::WebView wv1("webview1", app.m_hwnd.get(), 1);
-    glow::gui::WebView wv2("webview2", app.m_hwnd.get(), 2);
     glow::gui::msg_loop();
 }
 
