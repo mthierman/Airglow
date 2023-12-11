@@ -6,9 +6,7 @@
 // ╚─────────────────────╝
 // clang-format on
 
-#include <config/airglow.hxx>
 #include <gui/app.hxx>
-#include <gui/gui.hxx>
 
 namespace airglow
 {
