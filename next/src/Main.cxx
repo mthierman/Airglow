@@ -6,7 +6,7 @@
 // ╚─────────────────────╝
 // clang-format on
 
-#include <airglow.hxx>
+#include <config/airglow.hxx>
 #include <gui/app.hxx>
 
 //==============================================================================

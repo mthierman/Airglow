@@ -4,8 +4,8 @@ add_executable(
 )
 
 configure_file(
-    ${PROJECT_SOURCE_DIR}/config/airglow.hxx.in
-    ${PROJECT_BINARY_DIR}/config/airglow.hxx
+    config/airglow.hxx.in
+    ${PROJECT_BINARY_DIR}/include/config/airglow.hxx
 )
 
 target_sources(
@@ -15,9 +15,9 @@ target_sources(
     PUBLIC FILE_SET
            HEADERS
            BASE_DIRS
-           ${PROJECT_BINARY_DIR}/config
+           ${PROJECT_BINARY_DIR}/include
            FILES
-           ${PROJECT_BINARY_DIR}/config/airglow.hxx
+           ${PROJECT_BINARY_DIR}/include/config/airglow.hxx
 )
 
 target_link_libraries(
