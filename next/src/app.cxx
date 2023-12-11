@@ -15,7 +15,8 @@ namespace airglow
 WinMain::WinMain()
 {
     App app(PROJECT_NAME);
-    glow::gui::WebView wv("webview", app.m_hwnd.get(), 1);
+    glow::gui::WebView wv1("webview1", app.m_hwnd.get(), 1);
+    glow::gui::WebView wv2("webview2", app.m_hwnd.get(), 2);
     glow::gui::msg_loop();
 }
 
@@ -39,8 +40,13 @@ auto CALLBACK App::enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL
     auto rcParent{(LPRECT)lParam};
 
     if (childId == 1)
-        ::SetWindowPos(hwnd, nullptr, 0, 0, (rcParent->right - rcParent->left),
+        ::SetWindowPos(hwnd, nullptr, 0, 0, (rcParent->right - rcParent->left) / 2,
                        (rcParent->bottom - rcParent->top), SWP_NOZORDER);
+
+    if (childId == 2)
+        ::SetWindowPos(hwnd, nullptr, (rcParent->right - rcParent->left) / 2, 0,
+                       (rcParent->right - rcParent->left) / 2, (rcParent->bottom - rcParent->top),
+                       SWP_NOZORDER);
 
     return 1;
 }
