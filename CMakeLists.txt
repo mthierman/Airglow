@@ -16,4 +16,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/Configure.cmake)
 
 add_subdirectory(libs/Glow)
-add_subdirectory(previous)
+
+if(AIRGLOW_NEXT)
+    add_subdirectory(next)
+else()
+    add_subdirectory(previous)
+endif()
