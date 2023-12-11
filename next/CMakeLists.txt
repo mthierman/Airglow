@@ -11,6 +11,7 @@ configure_file(
 target_sources(
     ${PROJECT_NAME}
     PRIVATE src/airglow.cxx
+            src/app.cxx
             data/airglow.manifest
     PUBLIC FILE_SET
            HEADERS
@@ -19,6 +20,7 @@ target_sources(
            ${PROJECT_BINARY_DIR}/include
            FILES
            ${PROJECT_BINARY_DIR}/include/config/airglow.hxx
+           src/app.hxx
 )
 
 target_link_libraries(

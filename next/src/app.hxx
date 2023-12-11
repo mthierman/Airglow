@@ -6,13 +6,26 @@
 // ╚─────────────────────╝
 // clang-format on
 
-#include "app.hxx"
+#include <config/airglow.hxx>
+#include <gui/app.hxx>
+#include <gui/gui.hxx>
+
+namespace airglow
+{
 
 //==============================================================================
-auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nCmdShow)
-    -> int
+struct App : glow::gui::App
 {
-    airglow::App app(PROJECT_NAME);
+    using glow::gui::App::App;
 
-    glow::gui::msg_loop();
-}
+  private:
+    auto handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override;
+    static auto enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL;
+
+    //==============================================================================
+    auto on_notify() -> int;
+    auto on_window_pos_changed() -> int;
+};
+
+//==============================================================================
+} // namespace airglow
