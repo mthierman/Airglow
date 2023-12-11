@@ -15,6 +15,7 @@ target_sources(
     PUBLIC FILE_SET
            HEADERS
            BASE_DIRS
+           ${CMAKE_CURRENT_SOURCE_DIR}
            ${PROJECT_BINARY_DIR}/include
            FILES
            ${PROJECT_BINARY_DIR}/include/config/airglow.hxx
