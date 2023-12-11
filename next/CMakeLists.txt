@@ -1,3 +1,5 @@
+include(cmake/icon.cmake)
+
 add_executable(
     ${PROJECT_NAME}
     WIN32
@@ -13,7 +15,7 @@ target_sources(
     PRIVATE src/airglow.cxx
             src/app.cxx
             src/webview.cxx
-            data/airglow.manifest
+            ${AIRGLOW_RC}
     PUBLIC FILE_SET
            HEADERS
            BASE_DIRS
@@ -31,7 +33,7 @@ target_link_libraries(
             glow::flags
 )
 
-# add_dependencies(
-#     App
-#     MakeIcon
-# )
+add_dependencies(
+    ${PROJECT_NAME}
+    CopyIcon
+)
