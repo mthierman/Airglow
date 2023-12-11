@@ -10,8 +10,8 @@ configure_file(
 
 target_sources(
     ${PROJECT_NAME}
-    PRIVATE src/Main.cxx
-            ${PROJECT_SOURCE_DIR}/data/airglow.manifest
+    PRIVATE src/airglow.cxx
+            data/airglow.manifest
     PUBLIC FILE_SET
            HEADERS
            BASE_DIRS
