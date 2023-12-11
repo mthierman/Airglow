@@ -16,11 +16,6 @@
 namespace airglow
 {
 
-struct WinMain
-{
-    WinMain();
-};
-
 //==============================================================================
 struct App final : public glow::gui::App
 {
@@ -31,15 +26,11 @@ struct App final : public glow::gui::App
     auto handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override;
     static auto enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL;
 
-    //==============================================================================
     auto on_notify() -> int;
     auto on_window_pos_changed() -> int;
 
-    std::unique_ptr<glow::gui::WebView> wv1{
-        std::make_unique<glow::gui::WebView>("webview1", m_hwnd.get(), 1)};
-
-    std::unique_ptr<glow::gui::WebView> wv2{
-        std::make_unique<glow::gui::WebView>("webview2", m_hwnd.get(), 2)};
+    glow::gui::WebView w1{"webview1", m_hwnd.get(), 1};
+    glow::gui::WebView w2{"webview2", m_hwnd.get(), 2};
 };
 
 //==============================================================================
