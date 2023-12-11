@@ -12,6 +12,14 @@ namespace airglow
 {
 
 //==============================================================================
+WinMain::WinMain()
+{
+    App app(PROJECT_NAME);
+    glow::gui::WebView wv("webview", app.m_hwnd.get(), 1);
+    glow::gui::msg_loop();
+}
+
+//==============================================================================
 auto App::handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     switch (uMsg)

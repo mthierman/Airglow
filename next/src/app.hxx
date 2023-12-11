@@ -6,11 +6,20 @@
 // ╚─────────────────────╝
 // clang-format on
 
+#include <config/airglow.hxx>
+
 #include <gui/app.hxx>
+#include <gui/gui.hxx>
+#include <gui/webview.hxx>
 
 //==============================================================================
 namespace airglow
 {
+
+struct WinMain
+{
+    WinMain();
+};
 
 //==============================================================================
 struct App final : public glow::gui::App
