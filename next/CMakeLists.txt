@@ -30,3 +30,8 @@ target_link_libraries(
     PRIVATE glow::glow
             glow::flags
 )
+
+# add_dependencies(
+#     App
+#     MakeIcon
+# )
