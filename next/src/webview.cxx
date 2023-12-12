@@ -13,7 +13,7 @@ namespace airglow
 {
 
 //==============================================================================
-auto WebView::accelerator_key_pressed() -> void
+auto WebView::accelerator_key_pressed_handler() -> void
 {
     OutputDebugString("KEY PRESSED");
     EventRegistrationToken acceleratorKeyPressedToken;
