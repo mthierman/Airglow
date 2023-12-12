@@ -91,10 +91,6 @@ auto App::on_window_pos_changed() -> int
     ::RECT clientRect{0};
     ::GetClientRect(m_hwnd.get(), &clientRect);
     ::EnumChildWindows(m_hwnd.get(), enum_child_proc, reinterpret_cast<LPARAM>(&clientRect));
-
-    // std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    // std::this_thread::sleep_for(std::chrono::microseconds(1));
-    // std::this_thread::sleep_for(std::chrono::nanoseconds(1));
     ::Sleep(1);
 
     return 0;
