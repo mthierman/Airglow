@@ -8,6 +8,7 @@
 
 #include "app.hxx"
 
+//==============================================================================
 namespace airglow
 {
 
@@ -19,6 +20,7 @@ auto App::handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> 
 {
     switch (uMsg)
     {
+    case WM_KEYDOWN: return on_key_down(wParam);
     case WM_NOTIFY: return on_notify();
     case WM_WINDOWPOSCHANGED: return on_window_pos_changed();
     }
@@ -46,6 +48,17 @@ auto CALLBACK App::enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL
 }
 
 //==============================================================================
+auto App::on_key_down(WPARAM wParam) -> int
+{
+    switch (wParam)
+    {
+    case VK_PAUSE: OutputDebugString("PAUSE");
+    }
+
+    return 0;
+}
+
+//==============================================================================
 auto App::on_notify() -> int
 {
     ::RECT clientRect{0};
@@ -64,4 +77,6 @@ auto App::on_window_pos_changed() -> int
 
     return 0;
 }
+
+//==============================================================================
 } // namespace airglow

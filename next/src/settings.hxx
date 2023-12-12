@@ -8,33 +8,38 @@
 
 #pragma once
 
-#include <config/airglow.hxx>
+// #include <nlohmann/json.hpp>
 
-#include <gui/app.hxx>
-#include <gui/gui.hxx>
-#include <gui/webview.hxx>
+#include <config/airglow.hxx>
 
 //==============================================================================
 namespace airglow
 {
 
 //==============================================================================
-struct App final : public glow::gui::App
+struct Settings
 {
-    using glow::gui::App::App;
-    auto run() -> void;
-
-  private:
-    auto handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override;
-    static auto enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL;
-
-    auto on_key_down(WPARAM wParam) -> int;
-    auto on_notify() -> int;
-    auto on_window_pos_changed() -> int;
-
-    glow::gui::WebView w1{"webview1", m_hwnd.get(), 1};
-    glow::gui::WebView w2{"webview2", m_hwnd.get(), 2};
+    std::string name{"test"};
+    std::string version{"test"};
+    int width{0};
+    int height{0};
 };
+
+//==============================================================================
+inline void to_json(nlohmann::json& j, const Settings& s)
+{
+    j = nlohmann::json{
+        {"name", s.name}, {"version", s.version}, {"width", s.width}, {"height", s.height}};
+}
+
+//==============================================================================
+inline void from_json(const nlohmann::json& j, Settings& s)
+{
+    j.at("name").get_to(s.name);
+    j.at("version").get_to(s.version);
+    j.at("width").get_to(s.width);
+    j.at("height").get_to(s.height);
+}
 
 //==============================================================================
 } // namespace airglow
