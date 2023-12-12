@@ -23,7 +23,7 @@ struct WebView final : public glow::gui::WebView
     using glow::gui::WebView::WebView;
 
   private:
-    auto accelerator_key_pressed_handler() -> void;
+    virtual auto accelerator_key_pressed_handler() -> void override;
 };
 
 //==============================================================================
