@@ -79,4 +79,93 @@ auto App::on_window_pos_changed() -> int
 }
 
 //==============================================================================
+auto App::save() -> void
+{
+    auto path{glow::filesystem::get_pgmptr()};
+    if (!path.empty())
+    {
+        auto settingsFile{path / "settings.json"};
+
+        try
+        {
+            if (!std::filesystem::exists(settingsFile))
+            {
+                try
+                {
+                    json j = m_settings;
+                    std::ofstream f(settingsFile);
+                    f << std::setw(4) << j << "\n";
+                    f.close();
+                }
+                catch (const std::exception& e)
+                {
+                    std::println("{}", e.what());
+                }
+            }
+            else
+            {
+                try
+                {
+                    json j = m_settings;
+                    std::ofstream f(settingsFile);
+                    f << std::setw(4) << j << "\n";
+                    f.close();
+                }
+                catch (const std::exception& e)
+                {
+                    std::println("{}", e.what());
+                }
+            }
+        }
+        catch (const std::filesystem::filesystem_error& e)
+        {
+            std::println("{}", e.what());
+        }
+    }
+}
+
+//==============================================================================
+auto App::load() -> void
+{
+    auto path{glow::filesystem::get_pgmptr()};
+    if (!path.empty())
+    {
+        auto settingsFile{path / "settings.json"};
+
+        try
+        {
+            if (!std::filesystem::exists(settingsFile))
+            {
+                try
+                {
+                    json j = m_settings;
+                    std::ofstream f(settingsFile);
+                    f << std::setw(4) << j << "\n";
+                    f.close();
+                }
+                catch (const std::exception& e)
+                {
+                    std::println("{}", e.what());
+                }
+            }
+            else
+            {
+                try
+                {
+                    //
+                }
+                catch (const std::exception& e)
+                {
+                    std::println("{}", e.what());
+                }
+            }
+        }
+        catch (const std::filesystem::filesystem_error& e)
+        {
+            std::println("{}", e.what());
+        }
+    }
+}
+
+//==============================================================================
 } // namespace airglow
