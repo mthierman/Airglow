@@ -52,7 +52,24 @@ auto App::on_key_down(WPARAM wParam) -> int
 {
     switch (wParam)
     {
-    case VK_PAUSE: OutputDebugString("PAUSE");
+    case VK_PAUSE: OutputDebugString("PAUSE"); break;
+    case 0x4C:
+        if (::GetKeyState(VK_CONTROL) & 0x8000) OutputDebugString("L");
+        break;
+    case 0x57:
+        if (::GetKeyState(VK_CONTROL) & 0x8000)
+        {
+            OutputDebugString("W");
+            PostMessage(m_hwnd.get(), WM_CLOSE, 0, 0);
+        }
+        break;
+    case VK_F1: OutputDebugString("F1"); break;
+    case VK_F2: OutputDebugString("F2"); break;
+    case VK_F3: OutputDebugString("F3"); break;
+    case VK_F4: OutputDebugString("F4"); break;
+    case VK_F6: OutputDebugString("F6"); break;
+    case VK_F8: OutputDebugString("F8"); break;
+    case VK_F11: OutputDebugString("F11"); break;
     }
 
     return 0;
