@@ -14,6 +14,7 @@ target_sources(
     ${PROJECT_NAME}
     PRIVATE src/airglow.cxx
             src/app.cxx
+            src/webview.cxx
             ${AIRGLOW_RC}
     PUBLIC FILE_SET
            HEADERS
@@ -23,6 +24,7 @@ target_sources(
            FILES
            ${PROJECT_BINARY_DIR}/include/config/airglow.hxx
            src/app.hxx
+           src/webview.hxx
 )
 
 target_link_libraries(

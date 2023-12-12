@@ -20,6 +20,8 @@
 #include <gui/gui.hxx>
 #include <gui/webview.hxx>
 
+#include "webview.hxx"
+
 //==============================================================================
 namespace airglow
 {
@@ -66,8 +68,8 @@ struct App final : public glow::gui::App
     auto on_notify() -> int;
     auto on_window_pos_changed() -> int;
 
-    glow::gui::WebView w1{"webview1", m_hwnd.get(), 1};
-    glow::gui::WebView w2{"webview2", m_hwnd.get(), 2};
+    WebView wv1{"webview1", m_hwnd.get(), 1};
+    WebView wv2{"webview2", m_hwnd.get(), 2};
 
     Settings m_settings;
     auto save() -> void;
