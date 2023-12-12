@@ -13,9 +13,9 @@ namespace airglow
 {
 
 //==============================================================================
-auto WebView::accelerator_key_pressed_handler() -> void
+auto WebView::web_message_received_handler() -> void
 {
-    OutputDebugString("KEY PRESSED");
+    OutputDebugString("WEB MESSAGE RECEIVED");
     // OutputDebugString("KEY PRESSED");
     // EventRegistrationToken acceleratorKeyPressedToken;
 
@@ -44,6 +44,28 @@ auto WebView::accelerator_key_pressed_handler() -> void
     //         })
     //         .Get(),
     //     &acceleratorKeyPressedToken);
+}
+
+//==============================================================================
+auto WebView::accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressedEventArgs* args)
+    -> void
+{
+    COREWEBVIEW2_KEY_EVENT_KIND kind;
+    args->get_KeyEventKind(&kind);
+    if (kind == COREWEBVIEW2_KEY_EVENT_KIND_KEY_DOWN ||
+        kind == COREWEBVIEW2_KEY_EVENT_KIND_SYSTEM_KEY_DOWN)
+    {
+        UINT key;
+        args->get_VirtualKey(&key);
+        // OutputDebugString(std::to_string(key).c_str());
+        switch (key)
+        {
+        case 19:
+            args->put_Handled(TRUE);
+            SendMessage(m_hwndParent.get(), WM_KEYDOWN, VK_PAUSE, 0);
+            break;
+        }
+    }
 }
 
 //==============================================================================
