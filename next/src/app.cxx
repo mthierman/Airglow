@@ -22,7 +22,7 @@ auto App::handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> 
     {
     case WM_KEYDOWN: return on_key_down(wParam);
     case WM_NOTIFY: return on_notify();
-    case WM_WINDOWPOSCHANGED: return on_window_pos_changed();
+    case WM_SIZE: return on_size();
     }
 
     return ::DefWindowProc(hwnd, uMsg, wParam, lParam);
@@ -86,7 +86,7 @@ auto App::on_notify() -> int
 }
 
 //==============================================================================
-auto App::on_window_pos_changed() -> int
+auto App::on_size() -> int
 {
     ::RECT clientRect{0};
     ::GetClientRect(m_hwnd.get(), &clientRect);

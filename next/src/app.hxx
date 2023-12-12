@@ -66,7 +66,7 @@ struct App final : public glow::gui::App
 
     auto on_key_down(WPARAM wParam) -> int;
     auto on_notify() -> int;
-    auto on_window_pos_changed() -> int;
+    auto on_size() -> int;
 
     WebView wv1{"webview1", m_hwnd.get(), 1};
     WebView wv2{"webview2", m_hwnd.get(), 2};
