@@ -13,7 +13,10 @@ namespace airglow
 {
 
 //==============================================================================
-auto WebView::web_message_received_handler() -> void { OutputDebugString("WEB MESSAGE RECEIVED"); }
+auto WebView::web_message_received_handler() -> void
+{
+    OutputDebugString("DERIVED WebView::web_message_received_handler()");
+}
 
 //==============================================================================
 auto WebView::accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressedEventArgs* args)

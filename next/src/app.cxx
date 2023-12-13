@@ -17,7 +17,7 @@ auto run() -> void
 {
     App app(PROJECT_NAME);
 
-    glow::gui::msg_loop();
+    glow::gui::message_loop();
 }
 
 //==============================================================================

@@ -62,6 +62,9 @@ struct App final : public glow::gui::App
 {
     using glow::gui::App::App;
 
+    auto save() -> void;
+    auto load() -> void;
+
     WebView wv1{"webview1", m_hwnd.get(), 1};
     WebView wv2{"webview2", m_hwnd.get(), 2};
     Settings m_settings;
@@ -73,9 +76,6 @@ struct App final : public glow::gui::App
     auto on_key_down(WPARAM wParam) -> int;
     auto on_notify() -> int;
     auto on_size() -> int;
-
-    auto save() -> void;
-    auto load() -> void;
 };
 
 //==============================================================================
