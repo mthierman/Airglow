@@ -13,7 +13,12 @@ namespace airglow
 {
 
 //==============================================================================
-auto App::run() -> void { glow::gui::msg_loop(); }
+auto run() -> void
+{
+    App app(PROJECT_NAME);
+
+    glow::gui::msg_loop();
+}
 
 //==============================================================================
 auto App::handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT

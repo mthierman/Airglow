@@ -28,6 +28,9 @@ namespace airglow
 using json = nlohmann::json;
 
 //==============================================================================
+auto run() -> void;
+
+//==============================================================================
 struct Settings
 {
     std::string name{PROJECT_NAME};
@@ -58,7 +61,6 @@ inline void from_json(const json& j, Settings& settings)
 struct App final : public glow::gui::App
 {
     using glow::gui::App::App;
-    auto run() -> void;
 
   private:
     auto handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override;
