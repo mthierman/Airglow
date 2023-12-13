@@ -62,6 +62,10 @@ struct App final : public glow::gui::App
 {
     using glow::gui::App::App;
 
+    WebView wv1{"webview1", m_hwnd.get(), 1};
+    WebView wv2{"webview2", m_hwnd.get(), 2};
+    Settings m_settings;
+
   private:
     auto handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override;
     static auto enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL;
@@ -70,10 +74,6 @@ struct App final : public glow::gui::App
     auto on_notify() -> int;
     auto on_size() -> int;
 
-    WebView wv1{"webview1", m_hwnd.get(), 1};
-    WebView wv2{"webview2", m_hwnd.get(), 2};
-
-    Settings m_settings;
     auto save() -> void;
     auto load() -> void;
 };
