@@ -16,6 +16,7 @@ target_sources(
             src/app.cxx
             src/webview.cxx
             ${AIRGLOW_RC}
+            data/airglow.manifest
     PUBLIC FILE_SET
            HEADERS
            BASE_DIRS
