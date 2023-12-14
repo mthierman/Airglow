@@ -24,7 +24,8 @@ struct WebView final : public glow::gui::WebView
 
   private:
     virtual auto web_message_received_handler() -> void override;
-    virtual auto accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressedEventArgs* args) -> void override;
+    virtual auto accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressedEventArgs* args)
+        -> void override;
 };
 
 //==============================================================================
