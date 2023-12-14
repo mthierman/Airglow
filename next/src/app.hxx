@@ -22,15 +22,13 @@
 
 #include "webview.hxx"
 
-//==============================================================================
 namespace airglow
 {
+
 using json = nlohmann::json;
 
-//==============================================================================
 auto run() -> void;
 
-//==============================================================================
 struct Settings
 {
     std::string name{PROJECT_NAME};
@@ -39,7 +37,6 @@ struct Settings
     int height{};
 };
 
-//==============================================================================
 inline void to_json(json& j, const Settings& settings)
 {
     j = json{{"name", settings.name},
@@ -48,7 +45,6 @@ inline void to_json(json& j, const Settings& settings)
              {"height", settings.height}};
 }
 
-//==============================================================================
 inline void from_json(const json& j, Settings& settings)
 {
     j.at("name").get_to(settings.name);
@@ -57,7 +53,6 @@ inline void from_json(const json& j, Settings& settings)
     j.at("height").get_to(settings.height);
 }
 
-//==============================================================================
 struct App final : public glow::gui::App
 {
     using glow::gui::App::App;
@@ -78,5 +73,4 @@ struct App final : public glow::gui::App
     auto on_size() -> int;
 };
 
-//==============================================================================
 } // namespace airglow

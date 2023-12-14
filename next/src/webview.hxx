@@ -13,11 +13,9 @@
 #include <gui/gui.hxx>
 #include <gui/webview.hxx>
 
-//==============================================================================
 namespace airglow
 {
 
-//==============================================================================
 struct WebView final : public glow::gui::WebView
 {
     using glow::gui::WebView::WebView;
@@ -28,5 +26,4 @@ struct WebView final : public glow::gui::WebView
         -> void override;
 };
 
-//==============================================================================
 } // namespace airglow

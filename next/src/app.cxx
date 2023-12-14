@@ -8,11 +8,9 @@
 
 #include "app.hxx"
 
-//==============================================================================
 namespace airglow
 {
 
-//==============================================================================
 auto run() -> void
 {
     App app(PROJECT_NAME);
@@ -20,7 +18,6 @@ auto run() -> void
     glow::gui::message_loop();
 }
 
-//==============================================================================
 auto App::handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     switch (uMsg)
@@ -33,7 +30,6 @@ auto App::handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> 
     return DefWindowProcA(hwnd, uMsg, wParam, lParam);
 }
 
-//==============================================================================
 auto CALLBACK App::enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL
 {
     auto childId{GetWindowLongPtrA(hwnd, GWL_ID)};
@@ -52,7 +48,6 @@ auto CALLBACK App::enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL
     return 1;
 }
 
-//==============================================================================
 auto App::on_key_down(WPARAM wParam) -> int
 {
     switch (wParam)
@@ -80,7 +75,6 @@ auto App::on_key_down(WPARAM wParam) -> int
     return 0;
 }
 
-//==============================================================================
 auto App::on_notify() -> int
 {
     RECT clientRect{0};
@@ -90,7 +84,6 @@ auto App::on_notify() -> int
     return 0;
 }
 
-//==============================================================================
 auto App::on_size() -> int
 {
     RECT clientRect{0};
@@ -101,7 +94,6 @@ auto App::on_size() -> int
     return 0;
 }
 
-//==============================================================================
 auto App::save() -> void
 {
     auto path{glow::filesystem::get_pgmptr()};
@@ -147,7 +139,6 @@ auto App::save() -> void
     }
 }
 
-//==============================================================================
 auto App::load() -> void
 {
     auto path{glow::filesystem::get_pgmptr()};
@@ -190,5 +181,4 @@ auto App::load() -> void
     }
 }
 
-//==============================================================================
 } // namespace airglow

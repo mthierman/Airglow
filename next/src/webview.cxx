@@ -8,14 +8,11 @@
 
 #include "webview.hxx"
 
-//==============================================================================
 namespace airglow
 {
 
-//==============================================================================
 auto WebView::web_message_received_handler() -> void {}
 
-//==============================================================================
 auto WebView::accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressedEventArgs* args)
     -> void
 {
@@ -110,5 +107,4 @@ auto WebView::accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressed
     }
 }
 
-//==============================================================================
 } // namespace airglow
