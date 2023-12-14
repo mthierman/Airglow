@@ -45,6 +45,16 @@ auto CALLBACK App::enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL
                      (rcParent->right - rcParent->left) / 2, (rcParent->bottom - rcParent->top),
                      SWP_NOZORDER);
 
+    // BLACK BORDERS:
+    // if (childId == 1)
+    //     SetWindowPos(hwnd, nullptr, 1, 1, ((rcParent->right - rcParent->left) / 2) - 2,
+    //                  (rcParent->bottom - rcParent->top) - 2, SWP_NOZORDER);
+
+    // if (childId == 2)
+    //     SetWindowPos(hwnd, nullptr, ((rcParent->right - rcParent->left) / 2) + 1, 1,
+    //                  ((rcParent->right - rcParent->left) / 2) - 2,
+    //                  (rcParent->bottom - rcParent->top) - 2, SWP_NOZORDER);
+
     return 1;
 }
 
