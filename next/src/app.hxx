@@ -35,8 +35,8 @@ struct Settings
 {
     std::string name{PROJECT_NAME};
     std::string version{PROJECT_VERSION};
-    int width{0};
-    int height{0};
+    int width{};
+    int height{};
 };
 
 //==============================================================================

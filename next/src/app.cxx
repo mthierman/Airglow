@@ -30,24 +30,24 @@ auto App::handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> 
     case WM_SIZE: return on_size();
     }
 
-    return ::DefWindowProc(hwnd, uMsg, wParam, lParam);
+    return DefWindowProcA(hwnd, uMsg, wParam, lParam);
 }
 
 //==============================================================================
 auto CALLBACK App::enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL
 {
-    auto childId{::GetWindowLongPtr(hwnd, GWL_ID)};
+    auto childId{GetWindowLongPtrA(hwnd, GWL_ID)};
 
     auto rcParent{(LPRECT)lParam};
 
     if (childId == 1)
-        ::SetWindowPos(hwnd, nullptr, 0, 0, (rcParent->right - rcParent->left) / 2,
-                       (rcParent->bottom - rcParent->top), SWP_NOZORDER);
+        SetWindowPos(hwnd, nullptr, 0, 0, (rcParent->right - rcParent->left) / 2,
+                     (rcParent->bottom - rcParent->top), SWP_NOZORDER);
 
     if (childId == 2)
-        ::SetWindowPos(hwnd, nullptr, (rcParent->right - rcParent->left) / 2, 0,
-                       (rcParent->right - rcParent->left) / 2, (rcParent->bottom - rcParent->top),
-                       SWP_NOZORDER);
+        SetWindowPos(hwnd, nullptr, (rcParent->right - rcParent->left) / 2, 0,
+                     (rcParent->right - rcParent->left) / 2, (rcParent->bottom - rcParent->top),
+                     SWP_NOZORDER);
 
     return 1;
 }
@@ -57,24 +57,24 @@ auto App::on_key_down(WPARAM wParam) -> int
 {
     switch (wParam)
     {
-    case VK_PAUSE: OutputDebugString("PAUSE"); break;
+    case VK_PAUSE: OutputDebugStringA("PAUSE"); break;
     case 0x4C:
-        if (::GetKeyState(VK_CONTROL) & 0x8000) OutputDebugString("L");
+        if (GetKeyState(VK_CONTROL) & 0x8000) OutputDebugStringA("L");
         break;
     case 0x57:
-        if (::GetKeyState(VK_CONTROL) & 0x8000)
+        if (GetKeyState(VK_CONTROL) & 0x8000)
         {
-            OutputDebugString("W");
-            PostMessage(m_hwnd.get(), WM_CLOSE, 0, 0);
+            OutputDebugStringA("W");
+            PostMessageA(m_hwnd.get(), WM_CLOSE, 0, 0);
         }
         break;
-    case VK_F1: OutputDebugString("F1"); break;
-    case VK_F2: OutputDebugString("F2"); break;
-    case VK_F3: OutputDebugString("F3"); break;
-    case VK_F4: OutputDebugString("F4"); break;
-    case VK_F6: OutputDebugString("F6"); break;
-    case VK_F8: OutputDebugString("F8"); break;
-    case VK_F11: OutputDebugString("F11"); break;
+    case VK_F1: OutputDebugStringA("F1"); break;
+    case VK_F2: OutputDebugStringA("F2"); break;
+    case VK_F3: OutputDebugStringA("F3"); break;
+    case VK_F4: OutputDebugStringA("F4"); break;
+    case VK_F6: OutputDebugStringA("F6"); break;
+    case VK_F8: OutputDebugStringA("F8"); break;
+    case VK_F11: OutputDebugStringA("F11"); break;
     }
 
     return 0;
@@ -83,9 +83,9 @@ auto App::on_key_down(WPARAM wParam) -> int
 //==============================================================================
 auto App::on_notify() -> int
 {
-    ::RECT clientRect{0};
-    ::GetClientRect(m_hwnd.get(), &clientRect);
-    ::EnumChildWindows(m_hwnd.get(), enum_child_proc, reinterpret_cast<LPARAM>(&clientRect));
+    RECT clientRect{0};
+    GetClientRect(m_hwnd.get(), &clientRect);
+    EnumChildWindows(m_hwnd.get(), enum_child_proc, reinterpret_cast<LPARAM>(&clientRect));
 
     return 0;
 }
@@ -93,10 +93,10 @@ auto App::on_notify() -> int
 //==============================================================================
 auto App::on_size() -> int
 {
-    ::RECT clientRect{0};
-    ::GetClientRect(m_hwnd.get(), &clientRect);
-    ::EnumChildWindows(m_hwnd.get(), enum_child_proc, reinterpret_cast<LPARAM>(&clientRect));
-    ::Sleep(1);
+    RECT clientRect{0};
+    GetClientRect(m_hwnd.get(), &clientRect);
+    EnumChildWindows(m_hwnd.get(), enum_child_proc, reinterpret_cast<LPARAM>(&clientRect));
+    Sleep(1);
 
     return 0;
 }
