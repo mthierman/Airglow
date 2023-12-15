@@ -13,7 +13,7 @@ file(
 file(
     GENERATE
     OUTPUT ${AIRGLOW_RC}
-    CONTENT "1 ICON \"icon.ico\""
+    CONTENT "101 ICON \"icon.ico\""
 )
 
 set(GLOW_ICON_SOURCE
