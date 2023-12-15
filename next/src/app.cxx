@@ -87,9 +87,7 @@ auto App::on_key_down(WPARAM wParam) -> int
 
 auto App::on_notify() -> int
 {
-    RECT clientRect{0};
-    GetClientRect(m_hwnd.get(), &clientRect);
-    EnumChildWindows(m_hwnd.get(), enum_child_proc, reinterpret_cast<LPARAM>(&clientRect));
+    on_size();
 
     return 0;
 }
