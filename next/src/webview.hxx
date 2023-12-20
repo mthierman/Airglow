@@ -10,19 +10,18 @@
 
 #include <config/airglow.hxx>
 
-#include <gui/gui.hxx>
 #include <gui/webview.hxx>
 
 namespace airglow
 {
 
-struct WebView final : public glow::gui::WebView
+struct WebView final : public glow::gui::WebView2
 {
-    using glow::gui::WebView::WebView;
+    using glow::gui::WebView2::WebView2;
 
   private:
-    virtual auto web_message_received_handler() -> void override;
-    virtual auto accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressedEventArgs* args)
+    auto web_message_received_handler() -> void override;
+    auto accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressedEventArgs* args)
         -> void override;
 };
 

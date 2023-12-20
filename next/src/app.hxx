@@ -17,9 +17,9 @@
 #include <config/airglow.hxx>
 
 #include <filesystem/filesystem.hxx>
-#include <gui/app.hxx>
 #include <gui/gui.hxx>
 #include <gui/webview.hxx>
+#include <gui/window.hxx>
 
 #include "webview.hxx"
 
@@ -54,24 +54,23 @@ inline void from_json(const json& j, Settings& settings)
     j.at("height").get_to(settings.height);
 }
 
-struct App final : public glow::gui::App
+struct App final : public glow::gui::Window
 {
-    using glow::gui::App::App;
+    using glow::gui::Window::Window;
 
     auto save() -> void;
     auto load() -> void;
 
-    WebView wv1{"webview1", m_hwnd.get(), 1};
-    WebView wv2{"webview2", m_hwnd.get(), 2};
-    Settings m_settings;
-
-  private:
     auto handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override;
     static auto enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL;
 
     auto on_key_down(WPARAM wParam) -> int;
-    auto on_notify() -> int;
     auto on_size() -> int;
+    auto on_destroy() -> int;
+
+    WebView wv1{m_hwnd.get(), 1};
+    WebView wv2{m_hwnd.get(), 2};
+    Settings m_settings;
 };
 
 } // namespace airglow

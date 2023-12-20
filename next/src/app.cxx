@@ -13,7 +13,7 @@ namespace airglow
 
 auto run() -> void
 {
-    App app(PROJECT_NAME);
+    App app;
 
     glow::gui::message_loop();
 }
@@ -23,8 +23,8 @@ auto App::handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> 
     switch (uMsg)
     {
     case WM_KEYDOWN: return on_key_down(wParam);
-    case WM_NOTIFY: return on_notify();
     case WM_SIZE: return on_size();
+    case WM_DESTROY: return on_destroy();
     }
 
     return DefWindowProcA(hwnd, uMsg, wParam, lParam);
@@ -85,19 +85,19 @@ auto App::on_key_down(WPARAM wParam) -> int
     return 0;
 }
 
-auto App::on_notify() -> int
-{
-    on_size();
-
-    return 0;
-}
-
 auto App::on_size() -> int
 {
     RECT clientRect{0};
     GetClientRect(m_hwnd.get(), &clientRect);
     EnumChildWindows(m_hwnd.get(), enum_child_proc, std::bit_cast<LPARAM>(&clientRect));
     Sleep(1);
+
+    return 0;
+}
+
+auto App::on_destroy() -> int
+{
+    PostQuitMessage(0);
 
     return 0;
 }
