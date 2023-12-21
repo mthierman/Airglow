@@ -1,13 +1,13 @@
-include(${PROJECT_SOURCE_DIR}/cmake/icon.cmake)
-
-add_executable(
-    ${PROJECT_NAME}
-    WIN32
-)
+include(${PROJECT_SOURCE_DIR}/cmake/resources.cmake)
 
 configure_file(
     ${PROJECT_SOURCE_DIR}/config/airglow.hxx.in
     ${PROJECT_BINARY_DIR}/include/config/airglow.hxx
+)
+
+add_executable(
+    ${PROJECT_NAME}
+    WIN32
 )
 
 target_sources(
