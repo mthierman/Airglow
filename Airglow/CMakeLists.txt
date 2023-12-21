@@ -1,4 +1,4 @@
-include(cmake/icon.cmake)
+include(${PROJECT_SOURCE_DIR}/cmake/icon.cmake)
 
 add_executable(
     ${PROJECT_NAME}
@@ -6,7 +6,7 @@ add_executable(
 )
 
 configure_file(
-    config/airglow.hxx.in
+    ${PROJECT_SOURCE_DIR}/config/airglow.hxx.in
     ${PROJECT_BINARY_DIR}/include/config/airglow.hxx
 )
 
@@ -16,12 +16,12 @@ target_sources(
             src/app.cxx
             src/webview.cxx
             ${AIRGLOW_RC}
-            data/airglow.manifest
+            ${PROJECT_SOURCE_DIR}/data/airglow.manifest
     PUBLIC FILE_SET
            HEADERS
            BASE_DIRS
-           ${PROJECT_BINARY_DIR}/include
            ${CMAKE_CURRENT_SOURCE_DIR}
+           ${PROJECT_BINARY_DIR}/include
            FILES
            ${PROJECT_BINARY_DIR}/include/config/airglow.hxx
            src/app.hxx

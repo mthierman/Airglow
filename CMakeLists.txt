@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.27)
 
+add_subdirectory(libs/Glow)
+
 project(
     Airglow
     VERSION 1.6.0
@@ -7,10 +9,4 @@ project(
               CXX
 )
 
-add_subdirectory(libs/Glow)
-
-if(AIRGLOW_NEXT)
-    add_subdirectory(next)
-else()
-    add_subdirectory(previous)
-endif()
+add_subdirectory(Airglow)
