@@ -6,7 +6,7 @@
 // ╚─────────────────────╝
 // clang-format on
 
-#include "webview.hxx"
+#include "WebView.hxx"
 
 namespace airglow
 {

@@ -1,8 +1,8 @@
-include(${PROJECT_SOURCE_DIR}/cmake/resources.cmake)
+include(${PROJECT_SOURCE_DIR}/CMake/Resources.cmake)
 
 configure_file(
-    ${PROJECT_SOURCE_DIR}/config/airglow.hxx.in
-    ${PROJECT_BINARY_DIR}/include/config/airglow.hxx
+    ${PROJECT_SOURCE_DIR}/Config/airglow.hxx.in
+    ${CMAKE_CURRENT_BINARY_DIR}/Include/config/airglow.hxx
 )
 
 add_executable(
@@ -12,20 +12,20 @@ add_executable(
 
 target_sources(
     ${PROJECT_NAME}
-    PRIVATE src/airglow.cxx
-            src/app.cxx
-            src/webview.cxx
+    PRIVATE Airglow.cxx
+            App.cxx
+            WebView.cxx
             ${AIRGLOW_RC}
-            ${PROJECT_SOURCE_DIR}/data/airglow.manifest
+            ${PROJECT_SOURCE_DIR}/Data/airglow.manifest
     PUBLIC FILE_SET
            HEADERS
            BASE_DIRS
            ${CMAKE_CURRENT_SOURCE_DIR}
-           ${PROJECT_BINARY_DIR}/include
+           ${CMAKE_CURRENT_BINARY_DIR}/Include
            FILES
-           ${PROJECT_BINARY_DIR}/include/config/airglow.hxx
-           src/app.hxx
-           src/webview.hxx
+           ${CMAKE_CURRENT_BINARY_DIR}/Include/config/airglow.hxx
+           App.hxx
+           WebView.hxx
 )
 
 target_link_libraries(
