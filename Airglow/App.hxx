@@ -18,8 +18,8 @@
 
 #include <filesystem/filesystem.hxx>
 #include <gui/gui.hxx>
+#include <gui/mainwindow.hxx>
 #include <gui/webview.hxx>
-#include <gui/window.hxx>
 
 #include "webview.hxx"
 
@@ -54,9 +54,9 @@ inline void from_json(const json& j, Settings& settings)
     j.at("height").get_to(settings.height);
 }
 
-struct App final : public glow::gui::Window
+struct App final : public glow::gui::MainWindow
 {
-    using glow::gui::Window::Window;
+    using glow::gui::MainWindow::MainWindow;
 
     auto save() -> void;
     auto load() -> void;
@@ -66,7 +66,6 @@ struct App final : public glow::gui::Window
 
     auto on_key_down(WPARAM wParam) -> int;
     auto on_size() -> int;
-    auto on_destroy() -> int;
 
     WebView wv1{m_hwnd.get(), 1};
     WebView wv2{m_hwnd.get(), 2};

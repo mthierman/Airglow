@@ -24,7 +24,6 @@ auto App::handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> 
     {
     case WM_KEYDOWN: return on_key_down(wParam);
     case WM_SIZE: return on_size();
-    case WM_DESTROY: return on_destroy();
     }
 
     return DefWindowProcA(hwnd, uMsg, wParam, lParam);
@@ -91,13 +90,6 @@ auto App::on_size() -> int
     GetClientRect(m_hwnd.get(), &clientRect);
     EnumChildWindows(m_hwnd.get(), enum_child_proc, std::bit_cast<LPARAM>(&clientRect));
     Sleep(1);
-
-    return 0;
-}
-
-auto App::on_destroy() -> int
-{
-    PostQuitMessage(0);
 
     return 0;
 }
