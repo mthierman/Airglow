@@ -9,7 +9,7 @@
 // clang-format on
 
 import { useEffect, useState } from "react";
-import iconRaw from "../../../data/release.svg?raw";
+import iconRaw from "../../../../data/release.svg?raw";
 
 document.onreadystatechange = () => {
     if (document.readyState === "complete") {
@@ -61,46 +61,24 @@ export default function App() {
 
     useEffect(() => {
         if (settings.appTheme) {
-            settings.appTheme === "dark"
-                ? setThemeIcon(`🌙`)
-                : setThemeIcon(`☀️`);
+            settings.appTheme === "dark" ? setThemeIcon(`🌙`) : setThemeIcon(`☀️`);
         }
     }, [settings.appTheme]);
 
     useEffect(() => {
         document.documentElement.style.setProperty("--accent", colors.accent);
-        document.documentElement.style.setProperty(
-            "--accentDark1",
-            colors.accentDark1,
-        );
-        document.documentElement.style.setProperty(
-            "--accentDark2",
-            colors.accentDark2,
-        );
-        document.documentElement.style.setProperty(
-            "--accentDark3",
-            colors.accentDark3,
-        );
-        document.documentElement.style.setProperty(
-            "--accentLight1",
-            colors.accentLight1,
-        );
-        document.documentElement.style.setProperty(
-            "--accentLight2",
-            colors.accentLight2,
-        );
-        document.documentElement.style.setProperty(
-            "--accentLight3",
-            colors.accentLight3,
-        );
+        document.documentElement.style.setProperty("--accentDark1", colors.accentDark1);
+        document.documentElement.style.setProperty("--accentDark2", colors.accentDark2);
+        document.documentElement.style.setProperty("--accentDark3", colors.accentDark3);
+        document.documentElement.style.setProperty("--accentLight1", colors.accentLight1);
+        document.documentElement.style.setProperty("--accentLight2", colors.accentLight2);
+        document.documentElement.style.setProperty("--accentLight3", colors.accentLight3);
     }, [colors]);
 
     const handleForm = (e: any) => {
         e.preventDefault();
 
-        const form = document.getElementsByName(
-            "settings",
-        )[0] as HTMLFormElement;
+        const form = document.getElementsByName("settings")[0] as HTMLFormElement;
 
         const rawData = new FormData(e.target);
         const data = Object.fromEntries(rawData.entries());
@@ -142,18 +120,14 @@ export default function App() {
             <div className="grid grid-flow-col grid-cols-2">
                 <label className="flex flex-col">
                     <div className="z-50 grid gap-2 bg-accent p-2 text-2xl font-semibold leading-none text-black shadow-lg shadow-neutral-400 outline-none dark:shadow-neutral-950">
-                        <span className="select-none hover:cursor-pointer">
-                            📡 Home
-                        </span>
+                        <span className="select-none hover:cursor-pointer">📡 Home</span>
                         <span className="truncate text-sm">
                             <a
                                 className="hover:cursor-pointer"
                                 onClick={() => {
                                     handleClipboard(settings.mainHomepage);
                                 }}>
-                                {settings.mainHomepage === ""
-                                    ? "unset"
-                                    : settings.mainHomepage}
+                                {settings.mainHomepage === "" ? "unset" : settings.mainHomepage}
                             </a>
                         </span>
                     </div>
@@ -166,18 +140,14 @@ export default function App() {
 
                 <label className="flex flex-col">
                     <div className="z-50 grid gap-2 truncate bg-neutral-200 p-2 text-2xl font-semibold leading-none shadow-lg shadow-neutral-400 outline-none dark:bg-neutral-800 dark:shadow-neutral-950">
-                        <span className="select-none hover:cursor-pointer">
-                            🛰️ Sidebar
-                        </span>
+                        <span className="select-none hover:cursor-pointer">🛰️ Sidebar</span>
                         <span className="truncate text-sm">
                             <a
                                 className="hover:cursor-pointer"
                                 onClick={() => {
                                     handleClipboard(settings.sideHomepage);
                                 }}>
-                                {settings.sideHomepage === ""
-                                    ? "unset"
-                                    : settings.sideHomepage}
+                                {settings.sideHomepage === "" ? "unset" : settings.sideHomepage}
                             </a>
                         </span>
                     </div>

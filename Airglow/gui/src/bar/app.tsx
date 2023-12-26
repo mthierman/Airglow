@@ -9,7 +9,7 @@
 // clang-format on
 
 import { useEffect, useState } from "react";
-import iconRaw from "../../../data/release.svg?raw";
+import iconRaw from "../../../../data/release.svg?raw";
 
 document.onreadystatechange = () => {
     if (document.readyState === "complete") {
@@ -53,17 +53,11 @@ export default function App() {
     if (window.chrome.webview) {
         window.chrome.webview.addEventListener("message", (arg: any) => {
             if (arg.data === "focus") {
-                const mainInput = document.getElementById(
-                    "mainCurrentPage",
-                ) as HTMLInputElement;
-                const sideInput = document.getElementById(
-                    "sideCurrentPage",
-                ) as HTMLInputElement;
+                const mainInput = document.getElementById("mainCurrentPage") as HTMLInputElement;
+                const sideInput = document.getElementById("sideCurrentPage") as HTMLInputElement;
 
-                if (!settings.webviewGui && !settings.webviewSwapped)
-                    mainInput.focus();
-                if (!settings.webviewGui && settings.webviewSwapped)
-                    sideInput.focus();
+                if (!settings.webviewGui && !settings.webviewSwapped) mainInput.focus();
+                if (!settings.webviewGui && settings.webviewSwapped) sideInput.focus();
             }
             if (arg.data.settings) setSettings(arg.data.settings);
             if (arg.data.colors) setColors(arg.data.colors);
@@ -72,30 +66,12 @@ export default function App() {
 
     useEffect(() => {
         document.documentElement.style.setProperty("--accent", colors.accent);
-        document.documentElement.style.setProperty(
-            "--accentDark1",
-            colors.accentDark1,
-        );
-        document.documentElement.style.setProperty(
-            "--accentDark2",
-            colors.accentDark2,
-        );
-        document.documentElement.style.setProperty(
-            "--accentDark3",
-            colors.accentDark3,
-        );
-        document.documentElement.style.setProperty(
-            "--accentLight1",
-            colors.accentLight1,
-        );
-        document.documentElement.style.setProperty(
-            "--accentLight2",
-            colors.accentLight2,
-        );
-        document.documentElement.style.setProperty(
-            "--accentLight3",
-            colors.accentLight3,
-        );
+        document.documentElement.style.setProperty("--accentDark1", colors.accentDark1);
+        document.documentElement.style.setProperty("--accentDark2", colors.accentDark2);
+        document.documentElement.style.setProperty("--accentDark3", colors.accentDark3);
+        document.documentElement.style.setProperty("--accentLight1", colors.accentLight1);
+        document.documentElement.style.setProperty("--accentLight2", colors.accentLight2);
+        document.documentElement.style.setProperty("--accentLight3", colors.accentLight3);
     }, [colors]);
 
     const handleForm = (e: any) => {
@@ -150,10 +126,7 @@ export default function App() {
     };
 
     const isBlank = (page: string) => {
-        return page.includes("Airglow/gui") ||
-            page === "https://localhost:8000/"
-            ? true
-            : false;
+        return page.includes("Airglow/gui") || page === "https://localhost:8000/" ? true : false;
     };
 
     return (
@@ -172,9 +145,7 @@ export default function App() {
                 <label
                     className={
                         "flex min-w-0 flex-1 select-none items-center bg-accent px-2 py-1 text-black" +
-                        (!settings.webviewSplit && settings.webviewSwapped
-                            ? "hidden"
-                            : "")
+                        (!settings.webviewSplit && settings.webviewSwapped ? "hidden" : "")
                     }>
                     <span className="hover:cursor-pointer">🔍</span>
                     <input
@@ -196,9 +167,7 @@ export default function App() {
                 <label
                     className={
                         "flex min-w-0 flex-1 select-none items-center bg-neutral-200 px-2 py-1 dark:bg-neutral-800 " +
-                        (!settings.webviewSplit && !settings.webviewSwapped
-                            ? "hidden"
-                            : "")
+                        (!settings.webviewSplit && !settings.webviewSwapped ? "hidden" : "")
                     }>
                     <span className="hover:cursor-pointer">🔍</span>
                     <input
@@ -229,9 +198,7 @@ export default function App() {
                 <address
                     className={
                         "flex min-w-0 flex-1 flex-shrink items-center not-italic " +
-                        (!settings.webviewSplit && settings.webviewSwapped
-                            ? "hidden"
-                            : "")
+                        (!settings.webviewSplit && settings.webviewSwapped ? "hidden" : "")
                     }>
                     <span className="flex-grow truncate px-4 text-center">
                         <a
@@ -257,9 +224,7 @@ export default function App() {
                 <address
                     className={
                         "flex min-w-0 flex-1 flex-shrink items-center not-italic " +
-                        (!settings.webviewSplit && !settings.webviewSwapped
-                            ? "hidden"
-                            : "")
+                        (!settings.webviewSplit && !settings.webviewSwapped ? "hidden" : "")
                     }>
                     <span className="flex-grow truncate px-4 text-center">
                         <a
