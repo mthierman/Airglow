@@ -25,6 +25,7 @@ auto App::handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> 
     switch (uMsg)
     {
     case WM_KEYDOWN: return on_key_down(wParam);
+    case WM_NOTIFY: return on_notify();
     case WM_SIZE: return on_size();
     }
 
@@ -38,13 +39,16 @@ auto CALLBACK App::enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL
     auto rcParent{(LPRECT)lParam};
 
     if (childId == 1)
-        SetWindowPos(hwnd, nullptr, 0, 0, (rcParent->right - rcParent->left) / 2,
+        SetWindowPos(hwnd, nullptr, 40, 0, ((rcParent->right - rcParent->left) / 2) - 40,
                      (rcParent->bottom - rcParent->top), SWP_NOZORDER);
 
     if (childId == 2)
         SetWindowPos(hwnd, nullptr, (rcParent->right - rcParent->left) / 2, 0,
                      (rcParent->right - rcParent->left) / 2, (rcParent->bottom - rcParent->top),
                      SWP_NOZORDER);
+
+    if (childId == 3)
+        SetWindowPos(hwnd, nullptr, 0, 0, 40, (rcParent->bottom - rcParent->top), SWP_NOZORDER);
 
     // BLACK BORDERS:
     // if (childId == 1)
@@ -82,6 +86,16 @@ auto App::on_key_down(WPARAM wParam) -> int
     case VK_F8: OutputDebugStringA("F8"); break;
     case VK_F11: OutputDebugStringA("F11"); break;
     }
+
+    return 0;
+}
+
+auto App::on_notify() -> int
+{
+    //
+    OutputDebugStringA("Notified!");
+    // if (wv3.m_initialized) wv3.navigate("https://localhost:8000/tabs/index.html");
+    if (wv3.m_initialized) wv3.m_core20->Navigate(L"https://localhost:8000/tabs/index.html");
 
     return 0;
 }

@@ -65,10 +65,12 @@ struct App final : public glow::gui::MainWindow
     static auto enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL;
 
     auto on_key_down(WPARAM wParam) -> int;
+    auto on_notify() -> int;
     auto on_size() -> int;
 
     WebView wv1{m_hwnd.get(), 1};
     WebView wv2{m_hwnd.get(), 2};
+    WebView wv3{m_hwnd.get(), 3};
     Settings m_settings;
 };
 

@@ -13,6 +13,7 @@ const defaults = {
                 main: path.resolve(__dirname, "src/index.html"),
                 settings: path.resolve(__dirname, "src/settings/index.html"),
                 bar: path.resolve(__dirname, "src/bar/index.html"),
+                tabs: path.resolve(__dirname, "src/tabs/index.html"),
             },
         },
     },
