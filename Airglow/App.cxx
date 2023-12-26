@@ -15,6 +15,8 @@ auto run() -> void
 {
     App app;
 
+    glow::gui::set_title(app.m_hwnd.get(), "Airglow");
+
     glow::gui::message_loop();
 }
 

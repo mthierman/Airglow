@@ -21,7 +21,7 @@
 #include <gui/mainwindow.hxx>
 #include <gui/webview.hxx>
 
-#include "webview.hxx"
+#include "WebView.hxx"
 
 namespace airglow
 {

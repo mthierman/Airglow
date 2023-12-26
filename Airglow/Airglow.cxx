@@ -6,7 +6,7 @@
 // ╚─────────────────────╝
 // clang-format on
 
-#include "app.hxx"
+#include "App.hxx"
 
 auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nCmdShow)
     -> int

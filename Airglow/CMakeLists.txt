@@ -6,12 +6,12 @@ configure_file(
 )
 
 add_executable(
-    ${PROJECT_NAME}
+    Airglow
     WIN32
 )
 
 target_sources(
-    ${PROJECT_NAME}
+    Airglow
     PRIVATE Airglow.cxx
             App.cxx
             WebView.cxx
@@ -29,12 +29,12 @@ target_sources(
 )
 
 target_link_libraries(
-    ${PROJECT_NAME}
+    Airglow
     PRIVATE glow::glow
             glow::flags
 )
 
 add_dependencies(
-    ${PROJECT_NAME}
+    Airglow
     CopyIcon
 )
