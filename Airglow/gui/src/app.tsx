@@ -9,7 +9,7 @@
 // clang-format on
 
 import { useEffect, useState } from "react";
-import iconRaw from "../../data/release.svg?raw";
+import iconRaw from "../../../data/release.svg?raw";
 
 document.onreadystatechange = () => {
     if (document.readyState === "complete") {
@@ -44,30 +44,12 @@ export default function App() {
 
     useEffect(() => {
         document.documentElement.style.setProperty("--accent", colors.accent);
-        document.documentElement.style.setProperty(
-            "--accentDark1",
-            colors.accentDark1,
-        );
-        document.documentElement.style.setProperty(
-            "--accentDark2",
-            colors.accentDark2,
-        );
-        document.documentElement.style.setProperty(
-            "--accentDark3",
-            colors.accentDark3,
-        );
-        document.documentElement.style.setProperty(
-            "--accentLight1",
-            colors.accentLight1,
-        );
-        document.documentElement.style.setProperty(
-            "--accentLight2",
-            colors.accentLight2,
-        );
-        document.documentElement.style.setProperty(
-            "--accentLight3",
-            colors.accentLight3,
-        );
+        document.documentElement.style.setProperty("--accentDark1", colors.accentDark1);
+        document.documentElement.style.setProperty("--accentDark2", colors.accentDark2);
+        document.documentElement.style.setProperty("--accentDark3", colors.accentDark3);
+        document.documentElement.style.setProperty("--accentLight1", colors.accentLight1);
+        document.documentElement.style.setProperty("--accentLight2", colors.accentLight2);
+        document.documentElement.style.setProperty("--accentLight3", colors.accentLight3);
     }, [colors]);
 
     return (

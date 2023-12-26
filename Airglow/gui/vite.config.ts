@@ -21,7 +21,7 @@ const defaults = {
 const server = {
     port: 8000,
     https: {
-        pfx: path.resolve("../../.cert/localhost.pfx"),
+        pfx: path.resolve("../../../.cert/localhost.pfx"),
         passphrase: "localhost",
     },
 };

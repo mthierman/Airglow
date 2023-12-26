@@ -1,5 +1,5 @@
 {
-    "name": "settings",
+    "name": "gui",
     "private": true,
     "version": "0.0.0",
     "type": "module",
@@ -9,22 +9,25 @@
         "watch": "vite build --emptyOutDir --watch",
         "preview": "vite preview"
     },
+    "dependencies": {
+        "@fluentui/react-components": "^9.43.3",
+        "@fluentui/react-icons": "^2.0.224",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0"
+    },
     "devDependencies": {
-        "@tailwindcss/typography": "latest",
-        "@types/node": "latest",
-        "@types/react-dom": "latest",
-        "@types/react": "latest",
-        "@vitejs/plugin-react-swc": "latest",
-        "autoprefixer": "latest",
-        "postcss-load-config": "latest",
-        "postcss": "latest",
-        "prettier-plugin-tailwindcss": "latest",
-        "prettier": "latest",
-        "react-dom": "latest",
-        "react": "latest",
-        "rollup": "latest",
-        "tailwindcss": "latest",
-        "typescript": "latest",
-        "vite": "latest"
+        "@tailwindcss/typography": "^0.5.10",
+        "@types/node": "^20.10.5",
+        "@types/react": "^18.2.45",
+        "@types/react-dom": "^18.2.18",
+        "@vitejs/plugin-react-swc": "^3.5.0",
+        "autoprefixer": "^10.4.16",
+        "postcss": "^8.4.32",
+        "postcss-load-config": "^5.0.2",
+        "prettier": "^3.1.1",
+        "prettier-plugin-tailwindcss": "^0.5.9",
+        "tailwindcss": "^3.4.0",
+        "typescript": "^5.3.3",
+        "vite": "^5.0.10"
     }
 }
