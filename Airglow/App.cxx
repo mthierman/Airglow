@@ -27,44 +27,29 @@ auto App::handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> 
     switch (uMsg)
     {
     case WM_KEYDOWN: return on_key_down(wParam);
-    case WM_NOTIFY: return on_notify();
     case WM_SIZE: return on_size();
     }
 
     return DefWindowProcA(hwnd, uMsg, wParam, lParam);
 }
 
-auto CALLBACK App::enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL
+auto CALLBACK App::enum_child_proc(HWND hWnd, LPARAM lParam) -> BOOL
 {
-    auto childId{GetWindowLongPtrA(hwnd, GWL_ID)};
+    auto self{InstanceFromEnumChildProc<App>(hWnd, lParam)};
 
+    auto childId{GetWindowLongPtrA(hWnd, GWL_ID)};
     auto rcParent{(LPRECT)lParam};
 
     if (childId == 1)
-        SetWindowPos(hwnd, nullptr, 0, 0, (rcParent->right - rcParent->left) / 2,
+        SetWindowPos(hWnd, nullptr, 0, 0, (rcParent->right - rcParent->left) / 2,
                      (rcParent->bottom - rcParent->top), SWP_NOZORDER);
 
     if (childId == 2)
-        SetWindowPos(hwnd, nullptr, (rcParent->right - rcParent->left) / 2, 0,
+        SetWindowPos(hWnd, nullptr, (rcParent->right - rcParent->left) / 2, 0,
                      (rcParent->right - rcParent->left) / 2, (rcParent->bottom - rcParent->top),
                      SWP_NOZORDER);
 
-    // if (childId == 3)
-    //     SetWindowPos(hwnd, nullptr, 0, 0, (rcParent->right - rcParent->left), 40, SWP_NOZORDER);
-
-    // if (childId == 3)
-    //     SetWindowPos(hwnd, HWND_TOP, 0, 0, (rcParent->right - rcParent->left),
-    //                  (rcParent->bottom - rcParent->top), 0);
-
-    // BLACK BORDERS:
-    // if (childId == 1)
-    //     SetWindowPos(hwnd, nullptr, 1, 1, ((rcParent->right - rcParent->left) / 2) - 2,
-    //                  (rcParent->bottom - rcParent->top) - 2, SWP_NOZORDER);
-
-    // if (childId == 2)
-    //     SetWindowPos(hwnd, nullptr, ((rcParent->right - rcParent->left) / 2) + 1, 1,
-    //                  ((rcParent->right - rcParent->left) / 2) - 2,
-    //                  (rcParent->bottom - rcParent->top) - 2, SWP_NOZORDER);
+    if (childId == 3) SetWindowPos(hWnd, nullptr, 0, 0, 0, 0, SWP_NOZORDER);
 
     return 1;
 }
@@ -92,16 +77,6 @@ auto App::on_key_down(WPARAM wParam) -> int
     case VK_F8: OutputDebugStringA("F8"); break;
     case VK_F11: OutputDebugStringA("F11"); break;
     }
-
-    return 0;
-}
-
-auto App::on_notify() -> int
-{
-    //
-    OutputDebugStringA("Notified!");
-    // if (wv3.m_initialized) wv3.navigate("https://localhost:8000/tabs/index.html");
-    // if (m_browser3.m_initialized) m_browser3.m_core20->Navigate(L"http://localhost:8000/");
 
     return 0;
 }

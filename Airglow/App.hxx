@@ -52,22 +52,21 @@ inline void from_json(const json& j, Settings& settings)
 
 struct App final : public glow::gui::MainWindow
 {
-    using glow::gui::MainWindow::MainWindow;
+    using MainWindow::MainWindow;
 
     static auto run() -> void;
     auto save() -> void;
     auto load() -> void;
 
-    auto handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override;
-    static auto enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL;
+    auto handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override;
+    static auto enum_child_proc(HWND hWnd, LPARAM lParam) -> BOOL;
 
     auto on_key_down(WPARAM wParam) -> int;
-    auto on_notify() -> int;
     auto on_size() -> int;
 
     Browser m_browser1{m_hwnd.get(), 1};
     Browser m_browser2{m_hwnd.get(), 2};
-    // Browser m_browser3{m_hwnd.get(), 3};
+    Browser m_browser3{m_hwnd.get(), 3};
     Settings m_settings;
 };
 
