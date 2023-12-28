@@ -9,15 +9,15 @@
 #pragma once
 
 #include <config/airglow.hxx>
-
 #include <gui/webview.hxx>
 
-namespace airglow
+namespace Airglow
 {
+using namespace glow::gui;
 
-struct WebView final : public glow::gui::WebView2
+struct Browser final : public WebView2
 {
-    using glow::gui::WebView2::WebView2;
+    using WebView2::WebView2;
 
   private:
     auto web_message_received_handler() -> void override;
@@ -25,4 +25,4 @@ struct WebView final : public glow::gui::WebView2
         -> void override;
 };
 
-} // namespace airglow
+} // namespace Airglow

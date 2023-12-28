@@ -6,14 +6,14 @@
 // ╚─────────────────────╝
 // clang-format on
 
-#include "WebView.hxx"
+#include "Browser.hxx"
 
-namespace airglow
+namespace Airglow
 {
 
-auto WebView::web_message_received_handler() -> void {}
+auto Browser::web_message_received_handler() -> void {}
 
-auto WebView::accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressedEventArgs* args)
+auto Browser::accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressedEventArgs* args)
     -> void
 {
     COREWEBVIEW2_KEY_EVENT_KIND kind{};
@@ -107,4 +107,4 @@ auto WebView::accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressed
     }
 }
 
-} // namespace airglow
+} // namespace Airglow

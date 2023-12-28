@@ -11,7 +11,7 @@
 auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nCmdShow)
     -> int
 {
-    airglow::run();
+    Airglow::App::run();
 
     return 0;
 }

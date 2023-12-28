@@ -14,7 +14,7 @@ target_sources(
     Airglow
     PRIVATE Airglow.cxx
             App.cxx
-            WebView.cxx
+            Browser.cxx
             ${AIRGLOW_RC}
             ${PROJECT_SOURCE_DIR}/Data/airglow.manifest
     PUBLIC FILE_SET
@@ -25,7 +25,7 @@ target_sources(
            FILES
            ${CMAKE_CURRENT_BINARY_DIR}/Include/config/airglow.hxx
            App.hxx
-           WebView.hxx
+           Browser.hxx
 )
 
 target_link_libraries(
