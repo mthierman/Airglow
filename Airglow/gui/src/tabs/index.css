@@ -4,9 +4,13 @@
 
 html,
 body {
-    @apply h-full w-full;
+    /* @apply h-full w-full; */
+}
+
+div {
+    @apply bg-transparent;
 }
 
 #app {
-    @apply grid h-full w-full justify-center bg-black;
+    @apply grid justify-center self-center place-self-center place-content-center bg-neutral-700 h-full w-full overflow-clip;
 }

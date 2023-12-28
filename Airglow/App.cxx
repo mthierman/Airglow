@@ -17,6 +17,14 @@ auto run() -> void
 
     glow::gui::set_title(app.m_hwnd.get(), "Airglow");
 
+    // auto exStyle{GetWindowLongPtrA(app.wv3.m_hwnd.get(), GWL_EXSTYLE)};
+    SetWindowLongPtrA(app.wv3.m_hwnd.get(), GWL_EXSTYLE, WS_EX_TRANSPARENT | WS_EX_LAYERED);
+    SetWindowPos(app.wv3.m_hwnd.get(), nullptr, 0, 0, 0, 0,
+                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
+
+    glow::gui::set_caption_color(app.m_hwnd.get(), false);
+    glow::gui::set_system_backdrop(app.m_hwnd.get(), DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
+    glow::gui::set_darkmode(app.m_hwnd.get());
     glow::gui::message_loop();
 }
 
@@ -39,7 +47,7 @@ auto CALLBACK App::enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL
     auto rcParent{(LPRECT)lParam};
 
     if (childId == 1)
-        SetWindowPos(hwnd, nullptr, 40, 0, ((rcParent->right - rcParent->left) / 2) - 40,
+        SetWindowPos(hwnd, nullptr, 0, 0, (rcParent->right - rcParent->left) / 2,
                      (rcParent->bottom - rcParent->top), SWP_NOZORDER);
 
     if (childId == 2)
@@ -47,8 +55,12 @@ auto CALLBACK App::enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL
                      (rcParent->right - rcParent->left) / 2, (rcParent->bottom - rcParent->top),
                      SWP_NOZORDER);
 
+    // if (childId == 3)
+    //     SetWindowPos(hwnd, nullptr, 0, 0, (rcParent->right - rcParent->left), 40, SWP_NOZORDER);
+
     if (childId == 3)
-        SetWindowPos(hwnd, nullptr, 0, 0, 40, (rcParent->bottom - rcParent->top), SWP_NOZORDER);
+        SetWindowPos(hwnd, HWND_TOP, 0, 0, (rcParent->right - rcParent->left),
+                     (rcParent->bottom - rcParent->top), 0);
 
     // BLACK BORDERS:
     // if (childId == 1)
@@ -95,7 +107,7 @@ auto App::on_notify() -> int
     //
     OutputDebugStringA("Notified!");
     // if (wv3.m_initialized) wv3.navigate("https://localhost:8000/tabs/index.html");
-    if (wv3.m_initialized) wv3.m_core20->Navigate(L"https://localhost:8000/tabs/index.html");
+    if (wv3.m_initialized) wv3.m_core20->Navigate(L"http://localhost:8000/");
 
     return 0;
 }

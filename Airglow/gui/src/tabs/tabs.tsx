@@ -5,49 +5,26 @@
 // https://github.com/microsoft/fluentui-system-icons
 // https://master--628d031b55e942004ac95df1.chromatic.com/?path=/docs/concepts-developer-icons-icons-catalog--page
 
-import {
-    makeStyles,
-    shorthands,
-    Tab,
-    TabList,
-    TabListProps,
-    Tooltip,
-    TooltipProps,
-} from "@fluentui/react-components";
-
-import { Tab24Filled } from "@fluentui/react-icons";
-
-const useStyles = makeStyles({
-    root: {
-        alignItems: "flex-start",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-start",
-        ...shorthands.padding("0px", "0px"),
-        rowGap: "0px",
-    },
-});
+import { Tab, TabList, TabListProps, Tooltip } from "@fluentui/react-components";
 
 export const Default = (props: Partial<TabListProps>) => {
-    const styles = useStyles();
-
     return (
-        <div className={styles.root}>
-            <TabList {...props} appearance="subtle" size="small" vertical>
-                <Tab className="bg-red-400" value="tab1">
-                    <Tooltip content="Google" relationship="label">
-                        <Tab24Filled />
-                    </Tooltip>
+        <div className="bg-transparent">
+            <TabList {...props} appearance="subtle" size="small" className="bg-transparent">
+                <Tab value="tab1" className="bg-transparent">
+                    Google.com
                 </Tab>
                 <Tab value="tab2">
-                    <Tab24Filled />
+                    <Tooltip content="Google.com" relationship="label">
+                        <span>Google.com</span>
+                    </Tooltip>
                 </Tab>
-                <Tab value="tab3">
-                    <Tab24Filled />
-                </Tab>
-                <Tab value="tab4">
-                    <Tab24Filled />
-                </Tab>
+                <Tab value="tab3">Google.com</Tab>
+                <Tab value="tab4">Google.com</Tab>
+                <Tab value="tab5">Google.com</Tab>
+                <Tab value="tab6">Google.com</Tab>
+                <Tab value="tab7">Google.com</Tab>
+                <Tab value="tab8">Google.com</Tab>
             </TabList>
         </div>
     );
