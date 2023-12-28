@@ -23,6 +23,7 @@ auto run() -> void
                  SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
 
     glow::gui::set_caption_color(app.m_hwnd.get(), false);
+    glow::gui::set_border_color(app.m_hwnd.get(), false);
     glow::gui::set_system_backdrop(app.m_hwnd.get(), DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
     glow::gui::set_darkmode(app.m_hwnd.get());
     glow::gui::message_loop();
