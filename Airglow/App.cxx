@@ -14,11 +14,13 @@ namespace Airglow
 auto App::run() -> void
 {
     App app;
+
     set_title(app.m_hwnd.get(), "Airglow");
     set_caption_color(app.m_hwnd.get(), false);
     set_border_color(app.m_hwnd.get(), true);
     set_system_backdrop(app.m_hwnd.get(), DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
     set_theme(app.m_hwnd.get());
+
     message_loop();
 }
 
@@ -41,13 +43,13 @@ auto CALLBACK App::enum_child_proc(HWND hWnd, LPARAM lParam) -> BOOL
     auto rcParent{(LPRECT)lParam};
 
     if (childId == 1)
-        SetWindowPos(hWnd, nullptr, 0, 0, (rcParent->right - rcParent->left) / 2,
+        SetWindowPos(hWnd, nullptr, 0, 0, ((rcParent->right - rcParent->left) / 2) - 2,
                      (rcParent->bottom - rcParent->top), SWP_NOZORDER);
 
     if (childId == 2)
-        SetWindowPos(hWnd, nullptr, (rcParent->right - rcParent->left) / 2, 0,
-                     (rcParent->right - rcParent->left) / 2, (rcParent->bottom - rcParent->top),
-                     SWP_NOZORDER);
+        SetWindowPos(hWnd, nullptr, ((rcParent->right - rcParent->left) / 2) + 2, 0,
+                     ((rcParent->right - rcParent->left) / 2) - 2,
+                     (rcParent->bottom - rcParent->top), SWP_NOZORDER);
 
     if (childId == 3) SetWindowPos(hWnd, nullptr, 0, 0, 0, 0, SWP_NOZORDER);
 
