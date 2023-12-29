@@ -11,7 +11,7 @@
 namespace Airglow
 {
 
-auto App::handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+auto App::handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     switch (uMsg)
     {
@@ -19,38 +19,45 @@ auto App::handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> 
     case WM_SIZE: return on_size();
     }
 
-    return DefWindowProcA(hwnd, uMsg, wParam, lParam);
+    return DefWindowProcA(hWnd, uMsg, wParam, lParam);
 }
 
 auto CALLBACK App::enum_child_proc(HWND hWnd, LPARAM lParam) -> BOOL
 {
-    // auto self{InstanceFromEnumChildProc<App>(hWnd, lParam)};
+    auto self{InstanceFromEnumChildProc<App>(hWnd, lParam)};
 
-    auto childId{GetWindowLongPtrA(hWnd, GWL_ID)};
-    auto rcParent{(LPRECT)lParam};
+    if (self)
+    {
+        auto gwlId{GetWindowLongPtrA(hWnd, GWL_ID)};
+        auto rectParent{*std::bit_cast<LPRECT>(lParam)};
 
-    auto panelWidth{static_cast<int>((rcParent->right - rcParent->left) / 2)};
-    auto panelHeight{20};
+        auto position{rect_to_position(rectParent)};
+        auto panelHeight{40};
+        auto border{2};
 
-    if (childId == 1)
-        SetWindowPos(hWnd, nullptr, 0, 0, ((rcParent->right - rcParent->left) / 2) - 2,
-                     (rcParent->bottom - rcParent->top) - panelHeight, SWP_NOZORDER);
+        auto width{(position.width / 2) - border};
+        auto height{(position.height) - panelHeight};
 
-    if (childId == 2)
-        SetWindowPos(hWnd, nullptr, ((rcParent->right - rcParent->left) / 2) + 2, 0,
-                     ((rcParent->right - rcParent->left) / 2) - 2,
-                     (rcParent->bottom - rcParent->top) - panelHeight, SWP_NOZORDER);
+        if (gwlId == 1) { SetWindowPos(hWnd, nullptr, 0, 0, width, height, SWP_NOZORDER); }
 
-    if (childId == 3)
-        SetWindowPos(hWnd, nullptr, 0, (rcParent->bottom - rcParent->top) - 20, panelWidth,
-                     panelHeight, SWP_NOZORDER);
+        if (gwlId == 2)
+        {
+            SetWindowPos(hWnd, nullptr, width + (border * 2), 0, width, height, SWP_NOZORDER);
+        }
 
-    if (childId == 4)
-        SetWindowPos(hWnd, nullptr, ((rcParent->right - rcParent->left) / 2),
-                     (rcParent->bottom - rcParent->top) - 20, panelWidth, panelHeight,
-                     SWP_NOZORDER);
+        if (gwlId == 3)
+        {
+            SetWindowPos(hWnd, nullptr, 0, position.height - panelHeight, width, panelHeight,
+                         SWP_NOZORDER);
+        }
 
-    return 1;
+        // if (childId == 4)
+        //     SetWindowPos(hWnd, nullptr, ((rcParent->right - rcParent->left) / 2),
+        //                  (rcParent->bottom - rcParent->top) - panelHeight, panelWidth,
+        //                  panelHeight, SWP_NOZORDER);
+    }
+
+    return TRUE;
 }
 
 auto App::on_key_down(WPARAM wParam) -> int

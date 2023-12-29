@@ -40,10 +40,10 @@ struct App final : public MainWindow
     auto on_key_down(WPARAM wParam) -> int;
     auto on_size() -> int;
 
-    Browser m_browser1{"https://www.google.com/", m_hwnd.get(), 1};
-    Browser m_browser2{"https://www.google.com/", m_hwnd.get(), 2};
-    Browser m_browser3{"https://www.google.com/", m_hwnd.get(), 3};
-    Browser m_browser4{"https://www.google.com/", m_hwnd.get(), 4};
+    Browser m_browser1{m_hwnd.get(), 1, "https://www.google.com/"};
+    Browser m_browser2{m_hwnd.get(), 2, "https://www.google.com/"};
+    Browser m_browser3{m_hwnd.get(), 3, "http://localhost:8000/"};
+    Browser m_browser4{m_hwnd.get(), 4, "http://localhost:8000/"};
 
     Settings m_settings;
 };
