@@ -51,8 +51,6 @@ auto CALLBACK App::enum_child_proc(HWND hWnd, LPARAM lParam) -> BOOL
                      ((rcParent->right - rcParent->left) / 2) - 2,
                      (rcParent->bottom - rcParent->top), SWP_NOZORDER);
 
-    if (childId == 3) SetWindowPos(hWnd, nullptr, 0, 0, 0, 0, SWP_NOZORDER);
-
     return 1;
 }
 
