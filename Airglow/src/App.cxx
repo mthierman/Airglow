@@ -29,14 +29,26 @@ auto CALLBACK App::enum_child_proc(HWND hWnd, LPARAM lParam) -> BOOL
     auto childId{GetWindowLongPtrA(hWnd, GWL_ID)};
     auto rcParent{(LPRECT)lParam};
 
+    auto panelWidth{static_cast<int>((rcParent->right - rcParent->left) / 2)};
+    auto panelHeight{20};
+
     if (childId == 1)
         SetWindowPos(hWnd, nullptr, 0, 0, ((rcParent->right - rcParent->left) / 2) - 2,
-                     (rcParent->bottom - rcParent->top), SWP_NOZORDER);
+                     (rcParent->bottom - rcParent->top) - panelHeight, SWP_NOZORDER);
 
     if (childId == 2)
         SetWindowPos(hWnd, nullptr, ((rcParent->right - rcParent->left) / 2) + 2, 0,
                      ((rcParent->right - rcParent->left) / 2) - 2,
-                     (rcParent->bottom - rcParent->top), SWP_NOZORDER);
+                     (rcParent->bottom - rcParent->top) - panelHeight, SWP_NOZORDER);
+
+    if (childId == 3)
+        SetWindowPos(hWnd, nullptr, 0, (rcParent->bottom - rcParent->top) - 20, panelWidth,
+                     panelHeight, SWP_NOZORDER);
+
+    if (childId == 4)
+        SetWindowPos(hWnd, nullptr, ((rcParent->right - rcParent->left) / 2),
+                     (rcParent->bottom - rcParent->top) - 20, panelWidth, panelHeight,
+                     SWP_NOZORDER);
 
     return 1;
 }
