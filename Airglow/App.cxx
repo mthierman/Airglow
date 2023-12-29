@@ -35,7 +35,7 @@ auto App::handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> 
 
 auto CALLBACK App::enum_child_proc(HWND hWnd, LPARAM lParam) -> BOOL
 {
-    auto self{InstanceFromEnumChildProc<App>(hWnd, lParam)};
+    // auto self{InstanceFromEnumChildProc<App>(hWnd, lParam)};
 
     auto childId{GetWindowLongPtrA(hWnd, GWL_ID)};
     auto rcParent{(LPRECT)lParam};
