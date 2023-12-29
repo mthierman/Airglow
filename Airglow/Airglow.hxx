@@ -6,16 +6,14 @@
 // ╚─────────────────────╝
 // clang-format on
 
-#include "Airglow.hxx"
+#pragma once
 
-auto Airglow::run() -> void
+#include "App.hxx"
+
+namespace Airglow
 {
-    App app;
+using namespace glow::gui;
 
-    set_title(app.m_hwnd.get(), "Airglow");
-    enable_caption_color(app.m_hwnd.get(), false);
-    set_system_backdrop(app.m_hwnd.get(), DWM_SYSTEMBACKDROP_TYPE::DWMSBT_TABBEDWINDOW);
-    use_immersive_dark_mode(app.m_hwnd.get());
+auto run() -> void;
 
-    message_loop();
-}
+} // namespace Airglow

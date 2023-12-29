@@ -8,14 +8,10 @@
 
 #include "Airglow.hxx"
 
-auto Airglow::run() -> void
+auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nCmdShow)
+    -> int
 {
-    App app;
+    Airglow::run();
 
-    set_title(app.m_hwnd.get(), "Airglow");
-    enable_caption_color(app.m_hwnd.get(), false);
-    set_system_backdrop(app.m_hwnd.get(), DWM_SYSTEMBACKDROP_TYPE::DWMSBT_TABBEDWINDOW);
-    use_immersive_dark_mode(app.m_hwnd.get());
-
-    message_loop();
+    return 0;
 }
