@@ -8,8 +8,17 @@
 
 #include "App.hxx"
 
-namespace Airglow
+auto App::run() -> void
 {
+    App app;
+
+    set_title(app.m_hwnd.get(), "Airglow");
+    enable_caption_color(app.m_hwnd.get(), false);
+    set_system_backdrop(app.m_hwnd.get(), DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
+    use_immersive_dark_mode(app.m_hwnd.get());
+
+    message_loop();
+}
 
 auto App::handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
@@ -37,24 +46,20 @@ auto CALLBACK App::enum_child_proc(HWND hWnd, LPARAM lParam) -> BOOL
 
         auto width{(position.width / 2) - border};
         auto height{(position.height) - panelHeight};
+        auto rightX{width + (border * 2)};
+        auto panelY{position.height - panelHeight};
 
         if (gwlId == 1) { SetWindowPos(hWnd, nullptr, 0, 0, width, height, SWP_NOZORDER); }
 
-        if (gwlId == 2)
-        {
-            SetWindowPos(hWnd, nullptr, width + (border * 2), 0, width, height, SWP_NOZORDER);
-        }
+        if (gwlId == 2) { SetWindowPos(hWnd, nullptr, rightX, 0, width, height, SWP_NOZORDER); }
 
         if (gwlId == 3)
         {
-            SetWindowPos(hWnd, nullptr, 0, position.height - panelHeight, width, panelHeight,
-                         SWP_NOZORDER);
+            SetWindowPos(hWnd, nullptr, 0, panelY, width, panelHeight, SWP_NOZORDER);
         }
 
-        // if (childId == 4)
-        //     SetWindowPos(hWnd, nullptr, ((rcParent->right - rcParent->left) / 2),
-        //                  (rcParent->bottom - rcParent->top) - panelHeight, panelWidth,
-        //                  panelHeight, SWP_NOZORDER);
+        if (gwlId == 4)
+            SetWindowPos(hWnd, nullptr, rightX, panelY, width, panelHeight, SWP_NOZORDER);
     }
 
     return TRUE;
@@ -96,92 +101,3 @@ auto App::on_size() -> int
 
     return 0;
 }
-
-auto App::save() -> void
-{
-    auto path{glow::filesystem::get_pgmptr()};
-    if (!path.empty())
-    {
-        auto settingsFile{path / "settings.json"};
-
-        try
-        {
-            if (!std::filesystem::exists(settingsFile))
-            {
-                try
-                {
-                    json j = m_settings;
-                    std::ofstream f(settingsFile);
-                    f << std::setw(4) << j << "\n";
-                    f.close();
-                }
-                catch (const std::exception& e)
-                {
-                    std::println("{}", e.what());
-                }
-            }
-            else
-            {
-                try
-                {
-                    json j = m_settings;
-                    std::ofstream f(settingsFile);
-                    f << std::setw(4) << j << "\n";
-                    f.close();
-                }
-                catch (const std::exception& e)
-                {
-                    std::println("{}", e.what());
-                }
-            }
-        }
-        catch (const std::filesystem::filesystem_error& e)
-        {
-            std::println("{}", e.what());
-        }
-    }
-}
-
-auto App::load() -> void
-{
-    auto path{glow::filesystem::get_pgmptr()};
-    if (!path.empty())
-    {
-        auto settingsFile{path / "settings.json"};
-
-        try
-        {
-            if (!std::filesystem::exists(settingsFile))
-            {
-                try
-                {
-                    json j = m_settings;
-                    std::ofstream f(settingsFile);
-                    f << std::setw(4) << j << "\n";
-                    f.close();
-                }
-                catch (const std::exception& e)
-                {
-                    std::println("{}", e.what());
-                }
-            }
-            else
-            {
-                try
-                {
-                    //
-                }
-                catch (const std::exception& e)
-                {
-                    std::println("{}", e.what());
-                }
-            }
-        }
-        catch (const std::filesystem::filesystem_error& e)
-        {
-            std::println("{}", e.what());
-        }
-    }
-}
-
-} // namespace Airglow

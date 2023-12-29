@@ -6,12 +6,12 @@
 // ╚─────────────────────╝
 // clang-format on
 
-#include "Airglow.hxx"
+#include "App.hxx"
 
 auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nCmdShow)
     -> int
 {
-    Airglow::run();
+    App::run();
 
     return 0;
 }

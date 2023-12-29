@@ -11,8 +11,6 @@
 #include <config/airglow.hxx>
 #include <gui/webview.hxx>
 
-namespace Airglow
-{
 using namespace glow::gui;
 
 struct Browser final : public WebView2
@@ -24,5 +22,3 @@ struct Browser final : public WebView2
     auto accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressedEventArgs* args)
         -> void override;
 };
-
-} // namespace Airglow

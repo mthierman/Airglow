@@ -8,9 +8,6 @@
 
 #include "Settings.hxx"
 
-namespace Airglow
-{
-
 void to_json(json& j, const Settings& settings)
 {
     j = json{{"name", settings.m_name},
@@ -27,4 +24,89 @@ void from_json(const json& j, Settings& settings)
     j.at("height").get_to(settings.m_height);
 }
 
-} // namespace Airglow
+auto save_settings(Settings settings) -> void
+{
+    auto path{glow::filesystem::get_pgmptr()};
+    if (!path.empty())
+    {
+        auto settingsFile{path / "settings.json"};
+
+        try
+        {
+            if (!std::filesystem::exists(settingsFile))
+            {
+                try
+                {
+                    json j = settings;
+                    std::ofstream f(settingsFile);
+                    f << std::setw(4) << j << "\n";
+                    f.close();
+                }
+                catch (const std::exception& e)
+                {
+                    std::println("{}", e.what());
+                }
+            }
+            else
+            {
+                try
+                {
+                    json j = settings;
+                    std::ofstream f(settingsFile);
+                    f << std::setw(4) << j << "\n";
+                    f.close();
+                }
+                catch (const std::exception& e)
+                {
+                    std::println("{}", e.what());
+                }
+            }
+        }
+        catch (const std::filesystem::filesystem_error& e)
+        {
+            std::println("{}", e.what());
+        }
+    }
+}
+
+auto load_settings(Settings settings) -> void
+{
+    auto path{glow::filesystem::get_pgmptr()};
+    if (!path.empty())
+    {
+        auto settingsFile{path / "settings.json"};
+
+        try
+        {
+            if (!std::filesystem::exists(settingsFile))
+            {
+                try
+                {
+                    json j = settings;
+                    std::ofstream f(settingsFile);
+                    f << std::setw(4) << j << "\n";
+                    f.close();
+                }
+                catch (const std::exception& e)
+                {
+                    std::println("{}", e.what());
+                }
+            }
+            else
+            {
+                try
+                {
+                    //
+                }
+                catch (const std::exception& e)
+                {
+                    std::println("{}", e.what());
+                }
+            }
+        }
+        catch (const std::filesystem::filesystem_error& e)
+        {
+            std::println("{}", e.what());
+        }
+    }
+}

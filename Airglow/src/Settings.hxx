@@ -8,12 +8,14 @@
 
 #pragma once
 
+#include <fstream>
+#include <print>
+
 #include <nlohmann/json.hpp>
 
 #include <config/airglow.hxx>
+#include <filesystem/filesystem.hxx>
 
-namespace Airglow
-{
 using json = nlohmann::json;
 
 struct Settings
@@ -27,4 +29,5 @@ struct Settings
 void to_json(json& j, const Settings& settings);
 void from_json(const json& j, Settings& settings);
 
-} // namespace Airglow
+auto save_settings(Settings settings) -> void;
+auto load_settings(Settings settings) -> void;

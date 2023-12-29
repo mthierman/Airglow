@@ -8,9 +8,6 @@
 
 #include "Browser.hxx"
 
-namespace Airglow
-{
-
 auto Browser::web_message_received_handler() -> void {}
 
 auto Browser::accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressedEventArgs* args)
@@ -106,5 +103,3 @@ auto Browser::accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressed
         }
     }
 }
-
-} // namespace Airglow
