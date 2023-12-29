@@ -35,6 +35,7 @@ std::string to_string(std::wstring in)
 
 std::wstring to_wstring(std::string in)
 {
+    if (!in.empty())
     {
         auto inSize{static_cast<int>(in.size())};
 
