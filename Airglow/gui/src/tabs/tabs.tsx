@@ -9,9 +9,9 @@ import { Tab, TabList, TabListProps, Tooltip } from "@fluentui/react-components"
 
 export const Default = (props: Partial<TabListProps>) => {
     return (
-        <div className="bg-transparent">
+        <div className="bg-red-400">
             <TabList {...props} appearance="subtle" size="small" className="bg-transparent">
-                <Tab value="tab1" className="bg-transparent">
+                <Tab value="tab1" title="TEST" className="bg-transparent">
                     Google.com
                 </Tab>
                 <Tab value="tab2">

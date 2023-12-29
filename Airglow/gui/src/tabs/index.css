@@ -4,7 +4,7 @@
 
 html,
 body {
-    /* @apply h-full w-full; */
+    @apply h-full w-full;
 }
 
 div {
@@ -12,5 +12,5 @@ div {
 }
 
 #app {
-    @apply grid justify-center self-center place-self-center place-content-center bg-neutral-700 h-full w-full overflow-clip;
+    @apply grid place-content-end h-full w-full overflow-clip;
 }
