@@ -16,10 +16,9 @@ auto App::run() -> void
     App app;
 
     set_title(app.m_hwnd.get(), "Airglow");
-    set_caption_color(app.m_hwnd.get(), false);
-    set_border_color(app.m_hwnd.get(), true);
-    set_system_backdrop(app.m_hwnd.get(), DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
-    set_theme(app.m_hwnd.get());
+    enable_caption_color(app.m_hwnd.get(), false);
+    set_system_backdrop(app.m_hwnd.get(), DWM_SYSTEMBACKDROP_TYPE::DWMSBT_TABBEDWINDOW);
+    use_immersive_dark_mode(app.m_hwnd.get());
 
     message_loop();
 }
