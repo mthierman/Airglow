@@ -17,6 +17,10 @@ auto App::run() -> void
     set_system_backdrop(app.m_hwnd.get(), DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
     use_immersive_dark_mode(app.m_hwnd.get());
 
+    // nullptr here, need to set a virtual initialization function for each browser
+    // app.m_browser3.m_settings8->put_IsZoomControlEnabled(false);
+    // app.m_browser4.m_settings8->put_IsZoomControlEnabled(false);
+
     message_loop();
 }
 
@@ -41,7 +45,7 @@ auto CALLBACK App::enum_child_proc(HWND hWnd, LPARAM lParam) -> BOOL
         auto rectParent{*std::bit_cast<LPRECT>(lParam)};
 
         auto position{rect_to_position(rectParent)};
-        auto panelHeight{40};
+        auto panelHeight{32};
         auto border{2};
 
         auto width{(position.width / 2) - border};

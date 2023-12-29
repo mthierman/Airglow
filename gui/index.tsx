@@ -1,20 +1,14 @@
-// clang-format off
-// ╔─────────────────────────────╗
-// │                             │
-// │     ╔═╗╦╦═╗╔═╗╦  ╔═╗╦ ╦     │  Airglow - https://github.com/mthierman/Airglow
-// │     ╠═╣║╠╦╝║ ╦║  ║ ║║║║     │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
-// │     ╩ ╩╩╩╚═╚═╝╩═╝╚═╝╚╩╝     │  SPDX-License-Identifier: MIT
-// │                             │
-// ╚─────────────────────────────╝
-// clang-format on
-
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { FluentProvider, webDarkTheme, webLightTheme } from "@fluentui/react-components";
+
 import App from "./app";
 import "./index.css";
 
 createRoot(document.getElementById("root") as HTMLElement).render(
     <StrictMode>
-        <App />
+        <FluentProvider theme={webDarkTheme}>
+            <App />
+        </FluentProvider>
     </StrictMode>,
 );
