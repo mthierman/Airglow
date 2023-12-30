@@ -27,7 +27,7 @@ struct App final : public MainWindow
 {
     using MainWindow::MainWindow;
 
-    static auto run() -> void;
+    static auto run() -> int;
     auto save() -> void;
     auto load() -> void;
 
@@ -39,7 +39,7 @@ struct App final : public MainWindow
 
     Browser m_browser1{m_hwnd.get(), 1, "https://www.google.com/"};
     Browser m_browser2{m_hwnd.get(), 2, "https://www.google.com/"};
-    Browser m_browser3{m_hwnd.get(), 3, "https://localhost:8000/"};
+    // Browser m_browser3{m_hwnd.get(), 3, "https://localhost:8000/"};
     // Browser m_browser4{m_hwnd.get(), 4, "https://localhost:8000/"};
 
     Settings m_settings;

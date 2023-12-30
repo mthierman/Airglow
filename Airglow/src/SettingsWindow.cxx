@@ -14,8 +14,6 @@ SettingsWindow::SettingsWindow()
     enable_caption_color(m_hwnd.get(), false);
     set_system_backdrop(m_hwnd.get(), DWM_SYSTEMBACKDROP_TYPE::DWMSBT_TRANSIENTWINDOW);
     use_immersive_dark_mode(m_hwnd.get());
-
-    message_loop();
 }
 
 auto SettingsWindow::handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT

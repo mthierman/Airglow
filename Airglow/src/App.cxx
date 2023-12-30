@@ -8,7 +8,7 @@
 
 #include "App.hxx"
 
-auto App::run() -> void
+auto App::run() -> int
 {
     App app;
 
@@ -23,7 +23,7 @@ auto App::run() -> void
 
     SettingsWindow settingsWindow;
 
-    message_loop();
+    return message_loop();
 }
 
 auto App::handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT

@@ -11,7 +11,7 @@
 auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nCmdShow)
     -> int
 {
-    App::run();
+    auto app{App::run()};
 
-    return 0;
+    return app;
 }
