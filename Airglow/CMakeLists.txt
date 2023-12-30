@@ -42,3 +42,11 @@ add_dependencies(
     Airglow
     CopyIcon
 )
+
+target_link_options(
+    Airglow
+    PRIVATE
+    $<$<CXX_COMPILER_ID:MSVC>:
+    /entry:mainCRTStartup
+    >
+)

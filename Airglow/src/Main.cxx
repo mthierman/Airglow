@@ -8,8 +8,7 @@
 
 #include "App.hxx"
 
-auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nCmdShow)
-    -> int
+auto main() -> int
 {
     auto app{App::run()};
 
