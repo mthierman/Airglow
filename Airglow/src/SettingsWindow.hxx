@@ -29,5 +29,5 @@ struct SettingsWindow final : public Window
     auto on_key_down(WPARAM wParam) -> int;
     auto on_size() -> int;
 
-    Browser m_browser{m_hwnd.get(), 1, "https://localhost:8000/"};
+    std::unique_ptr<Browser> m_browser1;
 };

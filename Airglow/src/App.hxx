@@ -9,6 +9,7 @@
 #pragma once
 
 #include <bit>
+#include <memory>
 
 #include <nlohmann/json.hpp>
 
@@ -35,12 +36,14 @@ struct App final : public MainWindow
     static auto enum_child_proc(HWND hWnd, LPARAM lParam) -> BOOL;
 
     auto on_key_down(WPARAM wParam) -> int;
+    auto on_show_window(WPARAM wParam, LPARAM lParam) -> int;
     auto on_size() -> int;
 
-    Browser m_browser1{m_hwnd.get(), 1, "https://www.google.com/"};
-    Browser m_browser2{m_hwnd.get(), 2, "https://www.google.com/"};
-    // Browser m_browser3{m_hwnd.get(), 3, "https://localhost:8000/"};
-    // Browser m_browser4{m_hwnd.get(), 4, "https://localhost:8000/"};
+    std::unique_ptr<Browser> m_browser1;
+    std::unique_ptr<Browser> m_browser2;
+    std::unique_ptr<Browser> m_browser3;
+    std::unique_ptr<Browser> m_browser4;
 
-    Settings m_settings;
+    std::unique_ptr<Settings> m_settings;
+    std::unique_ptr<SettingsWindow> m_settingsWindow;
 };

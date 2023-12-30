@@ -10,20 +10,32 @@
 
 auto App::run() -> int
 {
-    App app;
-    show_normal(app.m_hwnd.get());
+    SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
+    SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
+                            "--allow-file-access-from-files");
 
-    set_title(app.m_hwnd.get(), "Airglow");
-    enable_caption_color(app.m_hwnd.get(), false);
-    set_system_backdrop(app.m_hwnd.get(), DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
-    use_immersive_dark_mode(app.m_hwnd.get());
+    auto app{std::make_unique<App>()};
+
+    set_title(app->m_hwnd.get(), "Airglow");
+    enable_caption_color(app->m_hwnd.get(), false);
+    set_system_backdrop(app->m_hwnd.get(), DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
+    use_immersive_dark_mode(app->m_hwnd.get());
+
+    show_normal(app->m_hwnd.get());
+
+    app->m_browser1 = std::make_unique<Browser>(app->m_hwnd.get(), 1, "https://www.google.com/");
+    app->m_browser2 = std::make_unique<Browser>(app->m_hwnd.get(), 2, "https://www.google.com/");
+    app->m_browser3 = std::make_unique<Browser>(app->m_hwnd.get(), 3, "https://www.google.com/");
+    app->m_browser4 = std::make_unique<Browser>(app->m_hwnd.get(), 4, "https://www.google.com/");
+
+    // show_normal(app->m_hwnd.get());
 
     // nullptr here, need to set a virtual initialization function for each browser
     // app.m_browser3.m_settings8->put_IsZoomControlEnabled(false);
     // app.m_browser4.m_settings8->put_IsZoomControlEnabled(false);
 
-    SettingsWindow settingsWindow;
-    show_normal(settingsWindow.m_hwnd.get());
+    // app->m_settingsWindow = std::make_unique<SettingsWindow>();
+    // show_normal(app->m_settingsWindow->m_hwnd.get());
 
     return message_loop();
 }
@@ -32,6 +44,7 @@ auto App::handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> 
 {
     switch (uMsg)
     {
+    // case WM_SHOWWINDOW: return on_show_window(wParam, lParam);
     case WM_KEYDOWN: return on_key_down(wParam);
     case WM_SIZE: return on_size();
     }
@@ -41,52 +54,24 @@ auto App::handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> 
 
 auto CALLBACK App::enum_child_proc(HWND hWnd, LPARAM lParam) -> BOOL
 {
-    auto self{InstanceFromEnumChildProc<App>(hWnd, lParam)};
+    auto gwlId{GetWindowLongPtrA(hWnd, GWL_ID)};
+    auto rectParent{*std::bit_cast<LPRECT>(lParam)};
 
-    if (self)
-    {
-        auto gwlId{GetWindowLongPtrA(hWnd, GWL_ID)};
-        auto rectParent{*std::bit_cast<LPRECT>(lParam)};
+    auto position{rect_to_position(rectParent)};
+    auto panelHeight{32};
+    auto border{2};
+    auto width{(position.width / 2) - border};
+    auto height{(position.height) - panelHeight};
+    auto rightX{width + (border * 2)};
+    auto panelY{position.height - panelHeight};
 
-        auto position{rect_to_position(rectParent)};
-        auto panelWidth{100};
-        auto border{2};
-        auto height{(position.height)};
+    if (gwlId == 1) { SetWindowPos(hWnd, nullptr, 0, 0, width, height, SWP_NOZORDER); }
 
-        auto width{(position.width / 2) - (panelWidth / 2) - (border)};
-        auto rightX{(position.width / 2) + (panelWidth / 2) + (border * 2)};
+    if (gwlId == 2) { SetWindowPos(hWnd, nullptr, rightX, 0, width, height, SWP_NOZORDER); }
 
-        // if (gwlId == 1) { SetWindowPos(hWnd, nullptr, panelWidth, 0, width, height,
-        // SWP_NOZORDER); } if (gwlId == 2) { SetWindowPos(hWnd, nullptr, rightX, 0, width, height,
-        // SWP_NOZORDER); } if (gwlId == 3) { SetWindowPos(hWnd, nullptr, 0, 0, panelWidth, height,
-        // SWP_NOZORDER); }
+    if (gwlId == 3) { SetWindowPos(hWnd, nullptr, 0, panelY, width, panelHeight, SWP_NOZORDER); }
 
-        if (gwlId == 3)
-        {
-            SetWindowPos(hWnd, nullptr, 0, 0, position.width, position.height, SWP_NOZORDER);
-        }
-
-        // auto position{rect_to_position(rectParent)};
-        // auto panelHeight{32};
-        // auto border{2};
-
-        // auto width{(position.width / 2) - border};
-        // auto height{(position.height) - panelHeight};
-        // auto rightX{width + (border * 2)};
-        // auto panelY{position.height - panelHeight};
-
-        // if (gwlId == 1) { SetWindowPos(hWnd, nullptr, 0, 0, width, height, SWP_NOZORDER); }
-
-        // if (gwlId == 2) { SetWindowPos(hWnd, nullptr, rightX, 0, width, height, SWP_NOZORDER); }
-
-        // if (gwlId == 3)
-        // {
-        //     SetWindowPos(hWnd, nullptr, 0, panelY, width, panelHeight, SWP_NOZORDER);
-        // }
-
-        // if (gwlId == 4)
-        //     SetWindowPos(hWnd, nullptr, rightX, panelY, width, panelHeight, SWP_NOZORDER);
-    }
+    if (gwlId == 4) SetWindowPos(hWnd, nullptr, rightX, panelY, width, panelHeight, SWP_NOZORDER);
 
     return TRUE;
 }
@@ -118,12 +103,26 @@ auto App::on_key_down(WPARAM wParam) -> int
     return 0;
 }
 
+auto App::on_show_window(WPARAM wParam, LPARAM lParam) -> int
+{
+    if (wParam) OutputDebugStringA("wParam is TRUE");
+    if (!lParam) OutputDebugStringA("lParam is 0");
+
+    if ((wParam == TRUE) && (lParam == 0))
+    {
+        OutputDebugStringA("SHOW WINDOW!");
+        on_size();
+    }
+
+    return 0;
+}
+
 auto App::on_size() -> int
 {
     RECT clientRect{0};
     GetClientRect(m_hwnd.get(), &clientRect);
     EnumChildWindows(m_hwnd.get(), enum_child_proc, std::bit_cast<LPARAM>(&clientRect));
-    Sleep(1);
+    // Sleep(1);
 
     return 0;
 }
