@@ -11,6 +11,7 @@
 auto App::run() -> int
 {
     App app;
+    show_normal(app.m_hwnd.get());
 
     set_title(app.m_hwnd.get(), "Airglow");
     enable_caption_color(app.m_hwnd.get(), false);
@@ -22,6 +23,7 @@ auto App::run() -> int
     // app.m_browser4.m_settings8->put_IsZoomControlEnabled(false);
 
     SettingsWindow settingsWindow;
+    show_normal(settingsWindow.m_hwnd.get());
 
     return message_loop();
 }
