@@ -16,6 +16,7 @@ target_sources(
             src/App.cxx
             src/Browser.cxx
             src/Settings.cxx
+            src/SettingsWindow.cxx
             ${AIRGLOW_RC}
             ${PROJECT_SOURCE_DIR}/Data/airglow.manifest
     PUBLIC FILE_SET
@@ -28,6 +29,7 @@ target_sources(
            src/App.hxx
            src/Browser.hxx
            src/Settings.hxx
+           src/SettingsWindow.hxx
 )
 
 target_link_libraries(

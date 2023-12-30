@@ -21,6 +21,8 @@ auto App::run() -> void
     // app.m_browser3.m_settings8->put_IsZoomControlEnabled(false);
     // app.m_browser4.m_settings8->put_IsZoomControlEnabled(false);
 
+    SettingsWindow settingsWindow;
+
     message_loop();
 }
 

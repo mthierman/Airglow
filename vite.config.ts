@@ -11,7 +11,7 @@ const defaults: UserConfig = {
         rollupOptions: {
             input: {
                 index: path.resolve("gui/index.html"),
-                settings: path.resolve("gui/settings/index.html"),
+                settings: path.resolve("gui/settings.html"),
             },
         },
     },

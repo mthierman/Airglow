@@ -7,11 +7,11 @@ html {
 }
 
 body {
-    @apply grid min-h-full min-w-full grid-cols-1 grid-rows-1 bg-orange-800;
+    @apply grid min-h-full min-w-full grid-cols-1 grid-rows-1;
 }
 
 #root {
-    @apply grid h-full w-full place-content-center bg-amber-900;
+    @apply grid h-full w-full place-content-center;
 }
 
 button {

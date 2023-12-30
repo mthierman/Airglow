@@ -3,12 +3,12 @@ import { createRoot } from "react-dom/client";
 import { Button } from "./components/button";
 import "./index.css";
 
-function App() {
-    return <Button text="Index" />;
+function Settings() {
+    return <Button text="Settings" />;
 }
 
 createRoot(document.getElementById("root") as HTMLElement).render(
     <StrictMode>
-        <App />
+        <Settings />
     </StrictMode>,
 );
