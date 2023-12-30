@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html {
+    @apply h-full w-full;
+}
+
+body {
+    @apply grid min-h-full min-w-full grid-cols-1 grid-rows-1 bg-orange-800;
+}
+
+#root {
+    @apply grid h-full w-full place-content-center bg-amber-900;
+}
+
+button {
+    @apply flex-grow rounded-lg border-2 border-amber-950 bg-amber-400 p-2 text-black outline-none hover:bg-amber-500 active:bg-amber-600;
+}
