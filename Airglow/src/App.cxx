@@ -52,11 +52,15 @@ auto CALLBACK App::enum_child_proc(HWND hWnd, LPARAM lParam) -> BOOL
         auto width{(position.width / 2) - (panelWidth / 2) - (border)};
         auto rightX{(position.width / 2) + (panelWidth / 2) + (border * 2)};
 
-        if (gwlId == 1) { SetWindowPos(hWnd, nullptr, panelWidth, 0, width, height, SWP_NOZORDER); }
+        // if (gwlId == 1) { SetWindowPos(hWnd, nullptr, panelWidth, 0, width, height,
+        // SWP_NOZORDER); } if (gwlId == 2) { SetWindowPos(hWnd, nullptr, rightX, 0, width, height,
+        // SWP_NOZORDER); } if (gwlId == 3) { SetWindowPos(hWnd, nullptr, 0, 0, panelWidth, height,
+        // SWP_NOZORDER); }
 
-        if (gwlId == 2) { SetWindowPos(hWnd, nullptr, rightX, 0, width, height, SWP_NOZORDER); }
-
-        if (gwlId == 3) { SetWindowPos(hWnd, nullptr, 0, 0, panelWidth, height, SWP_NOZORDER); }
+        if (gwlId == 3)
+        {
+            SetWindowPos(hWnd, nullptr, 0, 0, position.width, position.height, SWP_NOZORDER);
+        }
 
         // auto position{rect_to_position(rectParent)};
         // auto panelHeight{32};
