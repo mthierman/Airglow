@@ -54,6 +54,26 @@ auto App::run() -> int
     return message_loop();
 }
 
+auto App::run_server() -> int
+{
+    std::println("Starting server...");
+
+    STARTUPINFOA si{sizeof(STARTUPINFOA)};
+    PROCESS_INFORMATION pi{};
+
+    auto server{(glow::filesystem::get_pgmptr() / "server.exe").string()};
+    auto pServer{server.data()};
+
+    std::println("Server path: {}", server);
+
+    CreateProcessA(pServer, nullptr, nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi);
+    WaitForSingleObject(pi.hProcess, INFINITE);
+    CloseHandle(pi.hProcess);
+    CloseHandle(pi.hThread);
+
+    return 0;
+}
+
 auto CALLBACK App::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 {
     auto gwlId{GetWindowLongPtrA(hWnd, GWL_ID)};

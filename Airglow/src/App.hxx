@@ -30,6 +30,8 @@ struct App final : public MainWindow
     using MainWindow::MainWindow;
 
     static auto run() -> int;
+    static auto run_server() -> int;
+
     auto save() -> void;
     auto load() -> void;
 
