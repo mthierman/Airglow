@@ -17,6 +17,7 @@
 #include <filesystem/filesystem.hxx>
 #include <gui/gui.hxx>
 #include <gui/mainwindow.hxx>
+#include <logging/logging.hxx>
 
 #include "Browser.hxx"
 #include "Settings.hxx"

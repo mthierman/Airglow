@@ -8,16 +8,4 @@
 
 #include "App.hxx"
 
-auto main() -> int
-{
-    glow::gui::CoInitialize init;
-
-    if (SUCCEEDED(init))
-    {
-        auto app{App::run()};
-
-        return app;
-    }
-
-    return 1;
-}
+auto main() -> int { return App::run(); }
