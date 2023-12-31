@@ -1,12 +1,7 @@
 import type { Config } from "tailwindcss";
 
 export default {
-    plugins: [
-        require("@tailwindcss/aspect-ratio"),
-        require("@tailwindcss/container-queries"),
-        require("@tailwindcss/forms"),
-        require("@tailwindcss/typography"),
-    ],
+    plugins: [require("@tailwindcss/forms"), require("@tailwindcss/typography")],
     content: ["./gui/**/*.{html,js,jsx,ts,tsx}"],
     theme: {
         fontFamily: {
