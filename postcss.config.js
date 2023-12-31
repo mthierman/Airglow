@@ -2,9 +2,7 @@
 
 export default {
     plugins: {
-        "tailwindcss": {},
-        "@tailwindcss/forms": {},
-        "@tailwindcss/typography": {},
-        "autoprefixer": {},
+        tailwindcss: {},
+        autoprefixer: {},
     },
 };

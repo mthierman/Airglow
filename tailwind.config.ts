@@ -2,7 +2,6 @@ import type { Config } from "tailwindcss";
 import Flexoki from "./flexoki";
 
 export default {
-    plugins: [require("@tailwindcss/forms"), require("@tailwindcss/typography")],
     content: ["./gui/**/*.{html,js,jsx,ts,tsx}"],
     theme: {
         fontFamily: {
