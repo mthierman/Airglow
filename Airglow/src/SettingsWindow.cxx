@@ -18,7 +18,20 @@ SettingsWindow::SettingsWindow()
     m_browser1 = std::make_unique<Browser>(m_hwnd.get(), 1, "https://localhost:8000/");
 }
 
-auto SettingsWindow::handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+auto CALLBACK SettingsWindow::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
+{
+    auto gwlId{GetWindowLongPtrA(hWnd, GWL_ID)};
+
+    auto rect{*std::bit_cast<LPRECT>(lParam)};
+    auto position{glow::gui::rect_to_position(rect)};
+
+    if (gwlId == 1)
+        SetWindowPos(hWnd, nullptr, 0, 0, position.width, position.height, SWP_NOZORDER);
+
+    return TRUE;
+}
+
+auto SettingsWindow::handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     switch (uMsg)
     {
@@ -27,26 +40,6 @@ auto SettingsWindow::handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM 
     }
 
     return DefWindowProcA(hWnd, uMsg, wParam, lParam);
-}
-
-auto CALLBACK SettingsWindow::enum_child_proc(HWND hWnd, LPARAM lParam) -> BOOL
-{
-    auto self{InstanceFromEnumChildProc<SettingsWindow>(hWnd, lParam)};
-
-    if (self)
-    {
-        auto gwlId{GetWindowLongPtrA(hWnd, GWL_ID)};
-        auto rectParent{*std::bit_cast<LPRECT>(lParam)};
-
-        auto position{rect_to_position(rectParent)};
-
-        if (gwlId == 1)
-        {
-            SetWindowPos(hWnd, nullptr, 0, 0, position.width, position.height, SWP_NOZORDER);
-        }
-    }
-
-    return TRUE;
 }
 
 auto SettingsWindow::on_key_down(WPARAM wParam) -> int
@@ -80,7 +73,7 @@ auto SettingsWindow::on_size() -> int
 {
     RECT clientRect{0};
     GetClientRect(m_hwnd.get(), &clientRect);
-    EnumChildWindows(m_hwnd.get(), enum_child_proc, std::bit_cast<LPARAM>(&clientRect));
+    EnumChildWindows(m_hwnd.get(), EnumChildProc, std::bit_cast<LPARAM>(&clientRect));
     Sleep(1);
 
     return 0;

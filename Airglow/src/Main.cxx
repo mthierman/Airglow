@@ -10,7 +10,14 @@
 
 auto main() -> int
 {
-    auto app{App::run()};
+    glow::gui::CoInitialize init;
 
-    return app;
+    if (SUCCEEDED(init))
+    {
+        auto app{App::run()};
+
+        return app;
+    }
+
+    return 1;
 }

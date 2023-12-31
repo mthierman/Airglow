@@ -23,9 +23,9 @@ struct SettingsWindow final : public Window
 
     SettingsWindow();
 
-    auto handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override;
-    static auto enum_child_proc(HWND hWnd, LPARAM lParam) -> BOOL;
+    static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
 
+    auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override;
     auto on_key_down(WPARAM wParam) -> int;
     auto on_size() -> int;
 

@@ -21,38 +21,29 @@ auto App::run() -> int
     set_system_backdrop(app->m_hwnd.get(), DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
     use_immersive_dark_mode(app->m_hwnd.get());
 
-    show_normal(app->m_hwnd.get());
+    app->show_normal();
 
-    app->m_browser1 = std::make_unique<Browser>(app->m_hwnd.get(), 1, "https://www.google.com/");
-    app->m_browser2 = std::make_unique<Browser>(app->m_hwnd.get(), 2, "https://www.google.com/");
-    app->m_browser3 = std::make_unique<Browser>(app->m_hwnd.get(), 3, "https://www.google.com/");
-    app->m_browser4 = std::make_unique<Browser>(app->m_hwnd.get(), 4, "https://www.google.com/");
+    app->m_browser1 = std::make_unique<Browser>(app->m_hwnd.get(), 1);
+    app->m_browser2 = std::make_unique<Browser>(app->m_hwnd.get(), 2);
+    app->m_browser3 = std::make_unique<Browser>(app->m_hwnd.get(), 3);
+    app->m_browser4 = std::make_unique<Browser>(app->m_hwnd.get(), 4);
 
-    // show_normal(app->m_hwnd.get());
+    app->m_browser1->show_normal();
+    app->m_browser2->show_normal();
+    app->m_browser3->show_normal();
+    app->m_browser4->show_normal();
 
     // nullptr here, need to set a virtual initialization function for each browser
     // app.m_browser3.m_settings8->put_IsZoomControlEnabled(false);
     // app.m_browser4.m_settings8->put_IsZoomControlEnabled(false);
 
-    // app->m_settingsWindow = std::make_unique<SettingsWindow>();
-    // show_normal(app->m_settingsWindow->m_hwnd.get());
+    app->m_settingsWindow = std::make_unique<SettingsWindow>();
+    app->m_settingsWindow->show_normal();
 
     return message_loop();
 }
 
-auto App::handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
-{
-    switch (uMsg)
-    {
-    // case WM_SHOWWINDOW: return on_show_window(wParam, lParam);
-    case WM_KEYDOWN: return on_key_down(wParam);
-    case WM_SIZE: return on_size();
-    }
-
-    return DefWindowProcA(hWnd, uMsg, wParam, lParam);
-}
-
-auto CALLBACK App::enum_child_proc(HWND hWnd, LPARAM lParam) -> BOOL
+auto CALLBACK App::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 {
     auto gwlId{GetWindowLongPtrA(hWnd, GWL_ID)};
     auto rectParent{*std::bit_cast<LPRECT>(lParam)};
@@ -74,6 +65,18 @@ auto CALLBACK App::enum_child_proc(HWND hWnd, LPARAM lParam) -> BOOL
     if (gwlId == 4) SetWindowPos(hWnd, nullptr, rightX, panelY, width, panelHeight, SWP_NOZORDER);
 
     return TRUE;
+}
+
+auto App::handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+{
+    switch (uMsg)
+    {
+    case WM_PARENTNOTIFY: return on_parent_notify(wParam);
+    case WM_KEYDOWN: return on_key_down(wParam);
+    case WM_SIZE: return on_size();
+    }
+
+    return DefWindowProcA(hWnd, uMsg, wParam, lParam);
 }
 
 auto App::on_key_down(WPARAM wParam) -> int
@@ -103,25 +106,18 @@ auto App::on_key_down(WPARAM wParam) -> int
     return 0;
 }
 
-auto App::on_show_window(WPARAM wParam, LPARAM lParam) -> int
+auto App::on_parent_notify(WPARAM wParam) -> int
 {
-    if (wParam) OutputDebugStringA("wParam is TRUE");
-    if (!lParam) OutputDebugStringA("lParam is 0");
-
-    if ((wParam == TRUE) && (lParam == 0))
-    {
-        OutputDebugStringA("SHOW WINDOW!");
-        on_size();
-    }
+    if (LOWORD(wParam) == WM_CREATE) on_size();
 
     return 0;
 }
 
 auto App::on_size() -> int
 {
-    RECT clientRect{0};
-    GetClientRect(m_hwnd.get(), &clientRect);
-    EnumChildWindows(m_hwnd.get(), enum_child_proc, std::bit_cast<LPARAM>(&clientRect));
+    RECT rect{0};
+    GetClientRect(m_hwnd.get(), &rect);
+    EnumChildWindows(m_hwnd.get(), EnumChildProc, std::bit_cast<LPARAM>(&rect));
     // Sleep(1);
 
     return 0;
