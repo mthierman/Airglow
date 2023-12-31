@@ -16,6 +16,8 @@ SettingsWindow::SettingsWindow()
     use_immersive_dark_mode(m_hwnd.get());
 
     m_browser1 = std::make_unique<Browser>(m_hwnd.get(), 1, "https://localhost:8000/");
+
+    m_browser1->show_normal();
 }
 
 auto CALLBACK SettingsWindow::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
