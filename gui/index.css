@@ -11,9 +11,5 @@ body {
 }
 
 #root {
-    @apply grid h-full w-full place-content-center;
-}
-
-button {
-    @apply flex-grow rounded-lg border-2 border-amber-950 bg-amber-400 p-2 text-black outline-none hover:bg-amber-500 active:bg-amber-600;
+    @apply grid place-content-center;
 }
