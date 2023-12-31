@@ -1,11 +1,11 @@
 import { useEffect, useState, useRef } from "react";
 
 export default function Text() {
-    let container = useRef(null);
-    let [height, setHeight] = useState(null);
+    let container = useRef<HTMLDivElement>(null);
+    let [height, setHeight] = useState<number | undefined>(undefined);
 
     useEffect(() => {
-        setHeight(container.current.offsetHeight);
+        setHeight(container.current?.offsetHeight);
         if (height) console.log(height);
     });
 
