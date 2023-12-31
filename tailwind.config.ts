@@ -1,5 +1,5 @@
 import type { Config } from "tailwindcss";
-import Flexoki from "./gui/flexoki";
+import Flexoki from "./flexoki";
 
 export default {
     plugins: [require("@tailwindcss/forms"), require("@tailwindcss/typography")],
