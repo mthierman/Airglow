@@ -118,7 +118,7 @@ auto App::on_size() -> int
     RECT rect{0};
     GetClientRect(m_hwnd.get(), &rect);
     EnumChildWindows(m_hwnd.get(), EnumChildProc, std::bit_cast<LPARAM>(&rect));
-    // Sleep(1);
+    Sleep(1);
 
     return 0;
 }
