@@ -32,13 +32,15 @@ Frame::Frame()
         Frame::m_atom = RegisterClassExA(&wcex);
     }
 
-    CreateWindowExA(0, MAKEINTATOM(Frame::m_atom), "Frame", WS_POPUP, 200, 200, 400, 400, nullptr,
-                    nullptr, GetModuleHandleA(nullptr), this);
+    CreateWindowExA(WS_EX_TOOLWINDOW | WS_EX_TRANSPARENT | WS_EX_COMPOSITED | WS_EX_LAYERED |
+                        WS_EX_TOPMOST,
+                    MAKEINTATOM(Frame::m_atom), "Frame", WS_POPUP, 0, 0, 0, 0, nullptr, nullptr,
+                    GetModuleHandleA(nullptr), this);
 
     show_normal();
-
     glow::gui::set_rounded_corners(m_hwnd.get(), true);
     glow::gui::enable_border_color(m_hwnd.get(), false);
+    EnableWindow(m_hwnd.get(), FALSE);
 }
 
 Frame::~Frame() {}

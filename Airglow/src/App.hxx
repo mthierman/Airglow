@@ -22,6 +22,7 @@
 #include "AddressBar.hxx"
 #include "Browser.hxx"
 #include "Enums.hxx"
+#include "Frame.hxx"
 #include "Settings.hxx"
 #include "SettingsWindow.hxx"
 
@@ -51,4 +52,7 @@ struct App final : public MainWindow
 
     std::unique_ptr<Settings> m_settings;
     std::unique_ptr<SettingsWindow> m_settingsWindow;
+
+    std::unique_ptr<Frame> m_frame1;
+    std::unique_ptr<Frame> m_frame2;
 };

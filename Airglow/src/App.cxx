@@ -8,8 +8,6 @@
 
 #include "App.hxx"
 
-#include "Frame.hxx"
-
 auto App::run() -> int
 {
     try
@@ -53,9 +51,10 @@ auto App::run() -> int
     // app.m_browser4.m_settings8->put_IsZoomControlEnabled(false);
 
     app->m_settingsWindow = std::make_unique<SettingsWindow>();
-    app->m_settingsWindow->show_normal();
+    // app->m_settingsWindow->show_normal();
 
-    auto frame{std::make_unique<Frame>()};
+    app->m_frame1 = std::make_unique<Frame>();
+    app->m_frame2 = std::make_unique<Frame>();
 
     return message_loop();
 }
@@ -165,7 +164,38 @@ auto App::on_size() -> int
     RECT rect{0};
     GetClientRect(m_hwnd.get(), &rect);
     EnumChildWindows(m_hwnd.get(), EnumChildProc, std::bit_cast<LPARAM>(&rect));
-    Sleep(1);
+    // Sleep(1);
+
+    // if (m_frame1)
+    // {
+    //     RECT wRect{0};
+    //     GetWindowRect(m_hwnd.get(), &wRect);
+    //     auto position{rect_to_position(wRect)};
+    //     auto panelHeight{100};
+    //     auto border{2};
+    //     auto width{(position.width / 2) - border};
+    //     auto height{(position.height) - panelHeight};
+    //     auto rightX{width + (border * 2)};
+    //     auto panelY{position.height - panelHeight};
+    //     SetWindowPos(m_frame1->m_hwnd.get(), nullptr, 0, 0, width, height, SWP_NOZORDER);
+    //     SetWindowPos(m_frame2->m_hwnd.get(), nullptr, rightX, 0, width, height, SWP_NOZORDER);
+    // }
+
+    if (m_frame1)
+    {
+        auto position{rect_to_position(rect)};
+        auto panelHeight{100};
+        auto border{2};
+        auto width{(position.width / 2) - border};
+        auto height{(position.height) - panelHeight};
+        auto rightX{width + (border * 2)};
+        auto panelY{position.height - panelHeight};
+
+        // RECT wRect{};
+        // GetWindowRect(m_hwnd.get(), &wRect);
+        SetWindowPos(m_frame1->m_hwnd.get(), 0, position.x, position.y, width, height,
+                     SWP_NOACTIVATE | SWP_NOREDRAW);
+    }
 
     return 0;
 }
