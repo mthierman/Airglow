@@ -16,6 +16,7 @@ target_sources(
             src/AddressBar.cxx
             src/App.cxx
             src/Browser.cxx
+            src/Frame.cxx
             src/Settings.cxx
             src/SettingsWindow.cxx
             ${AIRGLOW_RC}
@@ -31,6 +32,7 @@ target_sources(
            src/App.hxx
            src/Browser.hxx
            src/Enums.hxx
+           src/Frame.hxx
            src/Settings.hxx
            src/SettingsWindow.hxx
 )

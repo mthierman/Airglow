@@ -8,6 +8,8 @@
 
 #include "App.hxx"
 
+#include "Frame.hxx"
+
 auto App::run() -> int
 {
     try
@@ -52,6 +54,8 @@ auto App::run() -> int
 
     app->m_settingsWindow = std::make_unique<SettingsWindow>();
     app->m_settingsWindow->show_normal();
+
+    auto frame{std::make_unique<Frame>()};
 
     return message_loop();
 }
