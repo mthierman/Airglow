@@ -19,6 +19,7 @@
 #include <gui/mainwindow.hxx>
 #include <logging/logging.hxx>
 
+#include "AddressBar.hxx"
 #include "Browser.hxx"
 #include "Settings.hxx"
 #include "SettingsWindow.hxx"
@@ -44,8 +45,8 @@ struct App final : public MainWindow
 
     std::unique_ptr<Browser> m_browser1;
     std::unique_ptr<Browser> m_browser2;
-    std::unique_ptr<Browser> m_browser3;
-    std::unique_ptr<Browser> m_browser4;
+    std::unique_ptr<AddressBar> m_addressBar1;
+    std::unique_ptr<AddressBar> m_addressBar2;
 
     std::unique_ptr<Settings> m_settings;
     std::unique_ptr<SettingsWindow> m_settingsWindow;

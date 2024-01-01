@@ -6,12 +6,14 @@
 // ╚─────────────────────╝
 // clang-format on
 
-#include "Browser.hxx"
+#include "AddressBar.hxx"
 
-auto Browser::initialized() -> void
+auto AddressBar::initialized() -> void
 {
+    OutputDebugStringA("Initialized!");
+
     // m_settings8->put_AreBrowserAcceleratorKeysEnabled(true);
-    // m_settings8->put_AreDefaultContextMenusEnabled(true);
+    m_settings8->put_AreDefaultContextMenusEnabled(false);
     // m_settings8->put_AreDefaultScriptDialogsEnabled(true);
     // m_settings8->put_AreDevToolsEnabled(true);
     // m_settings8->put_AreHostObjectsAllowed(true);
@@ -29,9 +31,9 @@ auto Browser::initialized() -> void
     // m_settings8->put_IsZoomControlEnabled(true);
 }
 
-auto Browser::web_message_received_handler() -> void {}
+auto AddressBar::web_message_received_handler() -> void {}
 
-auto Browser::accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressedEventArgs* args)
+auto AddressBar::accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressedEventArgs* args)
     -> void
 {
     COREWEBVIEW2_KEY_EVENT_KIND kind{};

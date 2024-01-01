@@ -12,6 +12,7 @@ const defaults: UserConfig = {
             input: {
                 index: path.resolve("gui/index.html"),
                 settings: path.resolve("gui/settings.html"),
+                addressBar: path.resolve("gui/addressbar.html"),
             },
         },
     },

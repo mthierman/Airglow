@@ -12,10 +12,17 @@
 
 #include <config/airglow.hxx>
 #include <gui/window.hxx>
-
-#include "Browser.hxx"
+#include <gui/webview.hxx>
 
 using namespace glow::gui;
+
+struct SettingsWebView final : public WebView2
+{
+    using WebView2::WebView2;
+
+  private:
+    auto initialized() -> void override;
+};
 
 struct SettingsWindow final : public Window
 {
@@ -29,5 +36,5 @@ struct SettingsWindow final : public Window
     auto on_key_down(WPARAM wParam) -> int;
     auto on_size() -> int;
 
-    std::unique_ptr<Browser> m_browser1;
+    std::unique_ptr<SettingsWebView> m_browser;
 };

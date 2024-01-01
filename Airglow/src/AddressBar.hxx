@@ -13,7 +13,7 @@
 
 using namespace glow::gui;
 
-struct Browser final : public WebView2
+struct AddressBar final : public WebView2
 {
     using WebView2::WebView2;
 

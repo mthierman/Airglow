@@ -36,13 +36,15 @@ auto App::run() -> int
 
     app->m_browser1 = std::make_unique<Browser>(app->m_hwnd.get(), 1);
     app->m_browser2 = std::make_unique<Browser>(app->m_hwnd.get(), 2);
-    app->m_browser3 = std::make_unique<Browser>(app->m_hwnd.get(), 3);
-    app->m_browser4 = std::make_unique<Browser>(app->m_hwnd.get(), 4);
+    app->m_addressBar1 = std::make_unique<AddressBar>(app->m_hwnd.get(), 3,
+                                                      "https://localhost:8000/addressbar.html");
+    app->m_addressBar2 = std::make_unique<AddressBar>(app->m_hwnd.get(), 4,
+                                                      "https://localhost:8000/addressbar.html");
 
     app->m_browser1->show_normal();
     app->m_browser2->show_normal();
-    app->m_browser3->show_normal();
-    app->m_browser4->show_normal();
+    app->m_addressBar1->show_normal();
+    app->m_addressBar2->show_normal();
 
     // nullptr here, need to set a virtual initialization function for each browser
     // app.m_browser3.m_settings8->put_IsZoomControlEnabled(false);
@@ -80,7 +82,7 @@ auto CALLBACK App::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     auto rectParent{*std::bit_cast<LPRECT>(lParam)};
 
     auto position{rect_to_position(rectParent)};
-    auto panelHeight{32};
+    auto panelHeight{100};
     auto border{2};
     auto width{(position.width / 2) - border};
     auto height{(position.height) - panelHeight};
