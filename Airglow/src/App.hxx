@@ -21,6 +21,7 @@
 
 #include "AddressBar.hxx"
 #include "Browser.hxx"
+#include "Enums.hxx"
 #include "Settings.hxx"
 #include "SettingsWindow.hxx"
 

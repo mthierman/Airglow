@@ -30,6 +30,7 @@ target_sources(
            src/AddressBar.hxx
            src/App.hxx
            src/Browser.hxx
+           src/Enums.hxx
            src/Settings.hxx
            src/SettingsWindow.hxx
 )

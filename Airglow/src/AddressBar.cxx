@@ -28,7 +28,7 @@ auto AddressBar::initialized() -> void
     // m_settings8->put_IsStatusBarEnabled(true);
     // m_settings8->put_IsSwipeNavigationEnabled(true);
     // m_settings8->put_IsWebMessageEnabled(true);
-    // m_settings8->put_IsZoomControlEnabled(true);
+    m_settings8->put_IsZoomControlEnabled(false);
 }
 
 auto AddressBar::web_message_received_handler() -> void {}

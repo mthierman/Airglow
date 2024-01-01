@@ -14,6 +14,8 @@
 #include <gui/window.hxx>
 #include <gui/webview.hxx>
 
+#include "Enums.hxx"
+
 using namespace glow::gui;
 
 struct SettingsWebView final : public WebView2

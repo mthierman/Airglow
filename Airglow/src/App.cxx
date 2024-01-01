@@ -34,12 +34,12 @@ auto App::run() -> int
 
     app->show_normal();
 
-    app->m_browser1 = std::make_unique<Browser>(app->m_hwnd.get(), 1);
-    app->m_browser2 = std::make_unique<Browser>(app->m_hwnd.get(), 2);
+    app->m_browser1 = std::make_unique<Browser>(app->m_hwnd.get(), VIEWS::browser1);
+    app->m_browser2 = std::make_unique<Browser>(app->m_hwnd.get(), VIEWS::browser2);
     app->m_addressBar1 = std::make_unique<AddressBar>(
-        app->m_hwnd.get(), 3, "https://localhost:8000/addressbar/index.html");
+        app->m_hwnd.get(), VIEWS::bar1, "https://localhost:8000/addressbar/index.html");
     app->m_addressBar2 = std::make_unique<AddressBar>(
-        app->m_hwnd.get(), 4, "https://localhost:8000/addressbar/index.html");
+        app->m_hwnd.get(), VIEWS::bar2, "https://localhost:8000/addressbar/index.html");
 
     app->m_browser1->show_normal();
     app->m_browser2->show_normal();
@@ -89,13 +89,23 @@ auto CALLBACK App::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     auto rightX{width + (border * 2)};
     auto panelY{position.height - panelHeight};
 
-    if (gwlId == 1) { SetWindowPos(hWnd, nullptr, 0, 0, width, height, SWP_NOZORDER); }
+    if (gwlId == VIEWS::browser1)
+    {
+        SetWindowPos(hWnd, nullptr, 0, 0, width, height, SWP_NOZORDER);
+    }
 
-    if (gwlId == 2) { SetWindowPos(hWnd, nullptr, rightX, 0, width, height, SWP_NOZORDER); }
+    if (gwlId == VIEWS::browser2)
+    {
+        SetWindowPos(hWnd, nullptr, rightX, 0, width, height, SWP_NOZORDER);
+    }
 
-    if (gwlId == 3) { SetWindowPos(hWnd, nullptr, 0, panelY, width, panelHeight, SWP_NOZORDER); }
+    if (gwlId == VIEWS::bar1)
+    {
+        SetWindowPos(hWnd, nullptr, 0, panelY, width, panelHeight, SWP_NOZORDER);
+    }
 
-    if (gwlId == 4) SetWindowPos(hWnd, nullptr, rightX, panelY, width, panelHeight, SWP_NOZORDER);
+    if (gwlId == VIEWS::bar2)
+        SetWindowPos(hWnd, nullptr, rightX, panelY, width, panelHeight, SWP_NOZORDER);
 
     return TRUE;
 }
