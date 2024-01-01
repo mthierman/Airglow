@@ -117,13 +117,39 @@ auto App::handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) ->
 {
     switch (uMsg)
     {
+    // case WM_ACTIVATE: return on_activate(wParam);
     case WM_PARENTNOTIFY: return on_parent_notify(wParam);
     case WM_KEYDOWN: return on_key_down(wParam);
+    case WM_MOVE: return on_move();
     case WM_SIZE: return on_size();
     }
 
     return DefWindowProcA(hWnd, uMsg, wParam, lParam);
 }
+
+// auto App::on_activate(WPARAM wParam) -> int
+// {
+//     if (m_frame1 && m_frame2)
+//     {
+//         if ((LOWORD(wParam) == WA_ACTIVE) || (LOWORD(wParam) == WA_CLICKACTIVE))
+//         {
+//             glow::gui::cloak(m_frame1->m_hwnd.get(), false);
+//             glow::gui::cloak(m_frame2->m_hwnd.get(), false);
+//             position_frame();
+//             return 0;
+//         }
+
+//         if (LOWORD(wParam) == WA_INACTIVE)
+//         {
+//             glow::gui::cloak(m_frame1->m_hwnd.get(), true);
+//             glow::gui::cloak(m_frame2->m_hwnd.get(), true);
+//             return 0;
+//         }
+//         else return 0;
+//     }
+
+//     else return 0;
+// }
 
 auto App::on_key_down(WPARAM wParam) -> int
 {
@@ -159,39 +185,42 @@ auto App::on_parent_notify(WPARAM wParam) -> int
     return 0;
 }
 
+auto App::on_move() -> int
+{
+    // position_frame();
+
+    return 0;
+}
+
 auto App::on_size() -> int
 {
     RECT rect{0};
     GetClientRect(m_hwnd.get(), &rect);
     EnumChildWindows(m_hwnd.get(), EnumChildProc, std::bit_cast<LPARAM>(&rect));
-    // Sleep(1);
+    Sleep(1);
 
-    // if (m_frame1)
-    // {
-    //     RECT wRect{0};
-    //     GetWindowRect(m_hwnd.get(), &wRect);
-    //     auto position{rect_to_position(wRect)};
-    //     auto panelHeight{100};
-    //     auto border{2};
-    //     auto width{(position.width / 2) - border};
-    //     auto height{(position.height) - panelHeight};
-    //     auto rightX{width + (border * 2)};
-    //     auto panelY{position.height - panelHeight};
-    //     SetWindowPos(m_frame1->m_hwnd.get(), nullptr, 0, 0, width, height, SWP_NOZORDER);
-    //     SetWindowPos(m_frame2->m_hwnd.get(), nullptr, rightX, 0, width, height, SWP_NOZORDER);
-    // }
-
-    if (m_frame1)
-    {
-        RECT wRect{};
-        GetWindowRect(m_browser1->m_hwnd.get(), &wRect);
-        auto position{rect_to_position(wRect)};
-
-        // RECT wRect{};
-        // GetWindowRect(m_hwnd.get(), &wRect);
-        SetWindowPos(m_frame1->m_hwnd.get(), 0, position.x - 3, position.y - 3, position.width + 6,
-                     position.height + 6, SWP_NOACTIVATE);
-    }
+    // position_frame();
 
     return 0;
 }
+
+// auto App::position_frame() -> void
+// {
+//     if (m_frame1)
+//     {
+//         RECT wRect{};
+//         GetWindowRect(m_browser1->m_hwnd.get(), &wRect);
+//         auto position{rect_to_position(wRect)};
+//         SetWindowPos(m_frame1->m_hwnd.get(), 0, position.x, position.y, position.width,
+//                      position.height, SWP_NOACTIVATE);
+//     }
+
+//     if (m_frame2)
+//     {
+//         RECT wRect{};
+//         GetWindowRect(m_browser2->m_hwnd.get(), &wRect);
+//         auto position{rect_to_position(wRect)};
+//         SetWindowPos(m_frame2->m_hwnd.get(), 0, position.x, position.y, position.width,
+//                      position.height, SWP_NOACTIVATE);
+//     }
+// }
