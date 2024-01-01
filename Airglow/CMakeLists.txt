@@ -31,10 +31,10 @@ target_sources(
            src/AddressBar.hxx
            src/App.hxx
            src/Browser.hxx
-           src/Enums.hxx
            src/Frame.hxx
            src/Settings.hxx
            src/SettingsWindow.hxx
+           src/WebViews.hxx
 )
 
 target_link_libraries(
