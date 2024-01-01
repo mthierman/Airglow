@@ -183,18 +183,14 @@ auto App::on_size() -> int
 
     if (m_frame1)
     {
-        auto position{rect_to_position(rect)};
-        auto panelHeight{100};
-        auto border{2};
-        auto width{(position.width / 2) - border};
-        auto height{(position.height) - panelHeight};
-        auto rightX{width + (border * 2)};
-        auto panelY{position.height - panelHeight};
+        RECT wRect{};
+        GetWindowRect(m_browser1->m_hwnd.get(), &wRect);
+        auto position{rect_to_position(wRect)};
 
         // RECT wRect{};
         // GetWindowRect(m_hwnd.get(), &wRect);
-        SetWindowPos(m_frame1->m_hwnd.get(), 0, position.x, position.y, width, height,
-                     SWP_NOACTIVATE | SWP_NOREDRAW);
+        SetWindowPos(m_frame1->m_hwnd.get(), 0, position.x, position.y, position.width,
+                     position.height, SWP_NOACTIVATE | SWP_NOREDRAW);
     }
 
     return 0;
