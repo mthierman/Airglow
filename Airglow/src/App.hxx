@@ -46,6 +46,9 @@ struct App final : public MainWindow
 
     auto position_frame() -> void;
 
+    UINT dpi{};
+    float scale{};
+
     std::unique_ptr<Browser> m_browser1;
     std::unique_ptr<Browser> m_browser2;
     // std::unique_ptr<Frame> m_frame1;

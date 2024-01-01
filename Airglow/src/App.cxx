@@ -34,6 +34,9 @@ auto App::run() -> int
 
     app->show_normal();
 
+    app->dpi = glow::gui::get_dpi(app->m_hwnd.get());
+    app->scale = glow::gui::get_scale(app->m_hwnd.get());
+
     app->m_browser1 = std::make_unique<Browser>(app->m_hwnd.get(), +WebViews::browser1);
     app->m_browser2 = std::make_unique<Browser>(app->m_hwnd.get(), +WebViews::browser2);
     // app->m_frame1 = std::make_unique<Frame>();
