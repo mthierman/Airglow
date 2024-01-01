@@ -8,13 +8,14 @@
 
 #pragma once
 
-#include <config/airglow.hxx>
+#include <cstdint>
+#include <utility>
 
-enum VIEWS
+enum struct VIEWS : int64_t
 {
-    browser1 = 201,
-    browser2 = 202,
-    bar1 = 301,
-    bar2 = 302,
-    settings = 401
+    browser1 = 1,
+    browser2 = 2,
+    bar1 = 3,
+    bar2 = 4,
+    settings = 5,
 };

@@ -34,12 +34,16 @@ auto App::run() -> int
 
     app->show_normal();
 
-    app->m_browser1 = std::make_unique<Browser>(app->m_hwnd.get(), VIEWS::browser1);
-    app->m_browser2 = std::make_unique<Browser>(app->m_hwnd.get(), VIEWS::browser2);
-    app->m_addressBar1 = std::make_unique<AddressBar>(
-        app->m_hwnd.get(), VIEWS::bar1, "https://localhost:8000/addressbar/index.html");
-    app->m_addressBar2 = std::make_unique<AddressBar>(
-        app->m_hwnd.get(), VIEWS::bar2, "https://localhost:8000/addressbar/index.html");
+    app->m_browser1 =
+        std::make_unique<Browser>(app->m_hwnd.get(), std::to_underlying(VIEWS::browser1));
+    app->m_browser2 =
+        std::make_unique<Browser>(app->m_hwnd.get(), std::to_underlying(VIEWS::browser2));
+    app->m_addressBar1 =
+        std::make_unique<AddressBar>(app->m_hwnd.get(), std::to_underlying(VIEWS::bar1),
+                                     "https://localhost:8000/addressbar/index.html");
+    app->m_addressBar2 =
+        std::make_unique<AddressBar>(app->m_hwnd.get(), std::to_underlying(VIEWS::bar2),
+                                     "https://localhost:8000/addressbar/index.html");
 
     app->m_browser1->show_normal();
     app->m_browser2->show_normal();
@@ -51,7 +55,7 @@ auto App::run() -> int
     // app.m_browser4.m_settings8->put_IsZoomControlEnabled(false);
 
     app->m_settingsWindow = std::make_unique<SettingsWindow>();
-    // app->m_settingsWindow->show_normal();
+    app->m_settingsWindow->show_normal();
 
     // app->m_frame1 = std::make_unique<Frame>();
     // app->m_frame2 = std::make_unique<Frame>();
@@ -81,7 +85,7 @@ auto App::run_server() -> int
 
 auto CALLBACK App::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 {
-    auto gwlId{GetWindowLongPtrA(hWnd, GWL_ID)};
+    auto gwlId{static_cast<int64_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
     auto rectParent{*std::bit_cast<LPRECT>(lParam)};
 
     auto position{rect_to_position(rectParent)};
@@ -92,22 +96,22 @@ auto CALLBACK App::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     auto rightX{width + (border * 2)};
     auto panelY{position.height - panelHeight};
 
-    if (gwlId == VIEWS::browser1)
+    if (gwlId == std::to_underlying(VIEWS::browser1))
     {
         SetWindowPos(hWnd, nullptr, 0, 0, width, height, SWP_NOZORDER);
     }
 
-    if (gwlId == VIEWS::browser2)
+    if (gwlId == std::to_underlying(VIEWS::browser2))
     {
         SetWindowPos(hWnd, nullptr, rightX, 0, width, height, SWP_NOZORDER);
     }
 
-    if (gwlId == VIEWS::bar1)
+    if (gwlId == std::to_underlying(VIEWS::bar1))
     {
         SetWindowPos(hWnd, nullptr, 0, panelY, width, panelHeight, SWP_NOZORDER);
     }
 
-    if (gwlId == VIEWS::bar2)
+    if (gwlId == std::to_underlying(VIEWS::bar2))
         SetWindowPos(hWnd, nullptr, rightX, panelY, width, panelHeight, SWP_NOZORDER);
 
     return TRUE;
