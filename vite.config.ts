@@ -17,7 +17,6 @@ const defaults: UserConfig = {
     },
     resolve: {
         alias: {
-            "@": path.resolve("gui"),
             "@components": path.resolve("gui/components"),
             "@css": path.resolve("gui/css"),
         },

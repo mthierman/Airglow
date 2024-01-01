@@ -1,7 +1,5 @@
-import { Button } from "@/components/Button";
+import { Button } from "@components/Button";
 
-function App() {
+export default function App() {
     return <Button text="Settings" />;
 }
-
-export default App;
