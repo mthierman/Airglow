@@ -33,15 +33,20 @@ Frame::Frame()
     }
 
     // https://stackoverflow.com/questions/31313624/click-through-transparent-window-no-dragging-allowed-c
+    // https://stackoverflow.com/questions/64041296/how-to-programatically-hinder-windows-from-playing-default-beep-sound-when-use
     CreateWindowExA(WS_EX_TOOLWINDOW | WS_EX_TRANSPARENT | WS_EX_COMPOSITED | WS_EX_LAYERED |
                         WS_EX_TOPMOST,
                     MAKEINTATOM(Frame::m_atom), "Frame", WS_POPUP, 0, 0, 0, 0, nullptr, nullptr,
                     GetModuleHandleA(nullptr), this);
 
     show_normal();
+
+    // SetLayeredWindowAttributes(m_hwnd.get(), RGB(0, 0, 0), 200, LWA_ALPHA);
     glow::gui::set_rounded_corners(m_hwnd.get(), true);
     glow::gui::enable_border_color(m_hwnd.get(), true);
     glow::gui::use_immersive_dark_mode(m_hwnd.get());
+    glow::gui::set_border_color(m_hwnd.get(), RGB(0, 0, 0));
+    // glow::gui::set_system_backdrop(m_hwnd.get(), DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
     EnableWindow(m_hwnd.get(), FALSE);
 }
 
