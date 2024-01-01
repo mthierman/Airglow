@@ -189,8 +189,8 @@ auto App::on_size() -> int
 
         // RECT wRect{};
         // GetWindowRect(m_hwnd.get(), &wRect);
-        SetWindowPos(m_frame1->m_hwnd.get(), 0, position.x - 4, position.y - 4, position.width + 8,
-                     position.height + 8, SWP_NOACTIVATE);
+        SetWindowPos(m_frame1->m_hwnd.get(), 0, position.x - 3, position.y - 3, position.width + 6,
+                     position.height + 6, SWP_NOACTIVATE);
     }
 
     return 0;
