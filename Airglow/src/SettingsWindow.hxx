@@ -14,7 +14,7 @@
 #include <gui/window.hxx>
 #include <gui/webview.hxx>
 
-#include "Enums.hxx"
+#include "WebViews.hxx"
 
 using namespace glow::gui;
 

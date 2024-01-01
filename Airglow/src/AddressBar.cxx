@@ -10,8 +10,6 @@
 
 auto AddressBar::initialized() -> void
 {
-    OutputDebugStringA("Initialized!");
-
     // m_settings8->put_AreBrowserAcceleratorKeysEnabled(true);
     m_settings8->put_AreDefaultContextMenusEnabled(false);
     // m_settings8->put_AreDefaultScriptDialogsEnabled(true);

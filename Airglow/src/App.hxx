@@ -21,10 +21,10 @@
 
 #include "AddressBar.hxx"
 #include "Browser.hxx"
-#include "Enums.hxx"
 #include "Frame.hxx"
 #include "Settings.hxx"
 #include "SettingsWindow.hxx"
+#include "WebViews.hxx"
 
 using namespace glow::gui;
 
@@ -48,12 +48,12 @@ struct App final : public MainWindow
 
     std::unique_ptr<Browser> m_browser1;
     std::unique_ptr<Browser> m_browser2;
+    // std::unique_ptr<Frame> m_frame1;
+    // std::unique_ptr<Frame> m_frame2;
     std::unique_ptr<AddressBar> m_addressBar1;
     std::unique_ptr<AddressBar> m_addressBar2;
 
-    std::unique_ptr<Settings> m_settings;
     std::unique_ptr<SettingsWindow> m_settingsWindow;
 
-    // std::unique_ptr<Frame> m_frame1;
-    // std::unique_ptr<Frame> m_frame2;
+    std::unique_ptr<Settings> m_settings;
 };

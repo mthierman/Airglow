@@ -10,8 +10,6 @@
 
 auto SettingsWebView::initialized() -> void
 {
-    OutputDebugStringA("Initialized!");
-
     // m_settings8->put_AreBrowserAcceleratorKeysEnabled(true);
     m_settings8->put_AreDefaultContextMenusEnabled(false);
     // m_settings8->put_AreDefaultScriptDialogsEnabled(true);
@@ -38,7 +36,7 @@ SettingsWindow::SettingsWindow()
     set_system_backdrop(m_hwnd.get(), DWM_SYSTEMBACKDROP_TYPE::DWMSBT_TRANSIENTWINDOW);
     use_immersive_dark_mode(m_hwnd.get());
 
-    m_browser = std::make_unique<SettingsWebView>(m_hwnd.get(), std::to_underlying(VIEWS::settings),
+    m_browser = std::make_unique<SettingsWebView>(m_hwnd.get(), +WebViews::settings,
                                                   "https://localhost:8000/settings/index.html");
 
     m_browser->show_normal();
@@ -51,7 +49,7 @@ auto CALLBACK SettingsWindow::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     auto rect{*std::bit_cast<LPRECT>(lParam)};
     auto position{glow::gui::rect_to_position(rect)};
 
-    if (gwlId == std::to_underlying(VIEWS::settings))
+    if (gwlId == +WebViews::settings)
         SetWindowPos(hWnd, nullptr, 0, 0, position.width, position.height, SWP_NOZORDER);
 
     return TRUE;
