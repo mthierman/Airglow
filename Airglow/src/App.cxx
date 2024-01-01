@@ -36,10 +36,10 @@ auto App::run() -> int
 
     app->m_browser1 = std::make_unique<Browser>(app->m_hwnd.get(), 1);
     app->m_browser2 = std::make_unique<Browser>(app->m_hwnd.get(), 2);
-    app->m_addressBar1 = std::make_unique<AddressBar>(app->m_hwnd.get(), 3,
-                                                      "https://localhost:8000/addressbar.html");
-    app->m_addressBar2 = std::make_unique<AddressBar>(app->m_hwnd.get(), 4,
-                                                      "https://localhost:8000/addressbar.html");
+    app->m_addressBar1 = std::make_unique<AddressBar>(
+        app->m_hwnd.get(), 3, "https://localhost:8000/addressbar/index.html");
+    app->m_addressBar2 = std::make_unique<AddressBar>(
+        app->m_hwnd.get(), 4, "https://localhost:8000/addressbar/index.html");
 
     app->m_browser1->show_normal();
     app->m_browser2->show_normal();

@@ -38,8 +38,8 @@ SettingsWindow::SettingsWindow()
     set_system_backdrop(m_hwnd.get(), DWM_SYSTEMBACKDROP_TYPE::DWMSBT_TRANSIENTWINDOW);
     use_immersive_dark_mode(m_hwnd.get());
 
-    m_browser =
-        std::make_unique<SettingsWebView>(m_hwnd.get(), 1, "https://localhost:8000/settings.html");
+    m_browser = std::make_unique<SettingsWebView>(m_hwnd.get(), 1,
+                                                  "https://localhost:8000/settings/index.html");
 
     m_browser->show_normal();
 }
