@@ -1,14 +1,11 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { Button } from "./components/button";
-import "./index.css";
-
-function Settings() {
-    return <Button text="Settings" />;
-}
+import App from "./App";
+import "@css/tailwind.css";
+import "@css/index.css";
 
 createRoot(document.getElementById("root") as HTMLElement).render(
     <StrictMode>
-        <Settings />
+        <App />
     </StrictMode>,
 );

@@ -5,15 +5,21 @@ import react from "@vitejs/plugin-react-swc";
 const defaults: UserConfig = {
     plugins: [react()],
     base: "./",
-    root: "gui",
+    root: "gui/apps",
     build: {
         outDir: "../build/gui",
         rollupOptions: {
             input: {
-                index: path.resolve("gui/index.html"),
-                settings: path.resolve("gui/settings.html"),
-                addressBar: path.resolve("gui/addressbar.html"),
+                settings: path.resolve("settings/index.html"),
+                addressbar: path.resolve("addressbar/index.html"),
             },
+        },
+    },
+    resolve: {
+        alias: {
+            "@": path.resolve("gui"),
+            "@components": path.resolve("gui/components"),
+            "@css": path.resolve("gui/css"),
         },
     },
 };
