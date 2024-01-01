@@ -9,7 +9,7 @@
 #pragma once
 
 #include <cstdint>
-#include <utility>
+#include <type_traits>
 
 enum struct WebViews : int64_t
 {
@@ -21,4 +21,7 @@ enum struct WebViews : int64_t
 };
 
 // https://www.learncpp.com/cpp-tutorial/scoped-enumerations-enum-classes/
-constexpr auto operator+(WebViews w) noexcept { return static_cast<std::underlying_type_t<WebViews>>(w); }
+constexpr auto operator+(WebViews w) noexcept
+{
+    return static_cast<std::underlying_type_t<WebViews>>(w);
+}
