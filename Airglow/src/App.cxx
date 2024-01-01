@@ -53,8 +53,8 @@ auto App::run() -> int
     app->m_settingsWindow = std::make_unique<SettingsWindow>();
     // app->m_settingsWindow->show_normal();
 
-    app->m_frame1 = std::make_unique<Frame>();
-    app->m_frame2 = std::make_unique<Frame>();
+    // app->m_frame1 = std::make_unique<Frame>();
+    // app->m_frame2 = std::make_unique<Frame>();
 
     return message_loop();
 }
