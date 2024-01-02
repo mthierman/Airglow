@@ -6,66 +6,144 @@
 // ╚─────────────────────╝
 // clang-format on
 
-#include <airglow/app.hxx>
+#include <airglow/mainwindow.hxx>
 
-auto run() -> int
+auto CALLBACK MainWindow::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 {
-    SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
-    SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
-                            "--allow-file-access-from-files");
+    auto gwlId{static_cast<int64_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
+    auto rectParent{*std::bit_cast<LPRECT>(lParam)};
 
-    MainWindow mainWindow{"Airglow"};
-    mainWindow();
-    mainWindow.dwm_caption_color(false);
-    mainWindow.dwm_dark_mode(true);
-    mainWindow.dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
-    mainWindow.m_dpi = mainWindow.dpi();
-    mainWindow.m_scale = mainWindow.scale();
+    auto position{window::rect_to_position(rectParent)};
+    auto panelHeight{100};
+    auto border{2};
+    auto width{(position.width / 2) - border};
+    auto height{(position.height) - panelHeight};
+    auto rightX{width + (border * 2)};
+    auto panelY{position.height - panelHeight};
 
-    mainWindow.m_browser1 = std::make_unique<Browser>(+WebViews::browser1, mainWindow.m_hwnd.get());
-    mainWindow.m_browser2 = std::make_unique<Browser>(+WebViews::browser2, mainWindow.m_hwnd.get());
-    (*mainWindow.m_browser1)();
-    (*mainWindow.m_browser2)();
+    if (gwlId == +WebViews::browser1)
+        SetWindowPos(hWnd, nullptr, 0, 0, width, height, SWP_NOZORDER);
 
-    // mainWindow.m_frame1 = std::make_unique<Frame>();
-    // mainWindow.m_frame2 = std::make_unique<Frame>();
+    if (gwlId == +WebViews::browser2)
+        SetWindowPos(hWnd, nullptr, rightX, 0, width, height, SWP_NOZORDER);
 
-    mainWindow.m_addressBar1 = std::make_unique<AddressBar>(
-        +WebViews::bar1, mainWindow.m_hwnd.get(), "https://localhost:8000/addressbar/index.html");
-    mainWindow.m_addressBar2 = std::make_unique<AddressBar>(
-        +WebViews::bar2, mainWindow.m_hwnd.get(), "https://localhost:8000/addressbar/index.html");
-    (*mainWindow.m_addressBar1)();
-    (*mainWindow.m_addressBar2)();
+    if (gwlId == +WebViews::bar1)
+        SetWindowPos(hWnd, nullptr, 0, panelY, width, panelHeight, SWP_NOZORDER);
 
-    mainWindow.m_settingsWindow = std::make_unique<SettingsWindow>("Settings");
-    (*mainWindow.m_settingsWindow)();
+    if (gwlId == +WebViews::bar2)
+        SetWindowPos(hWnd, nullptr, rightX, panelY, width, panelHeight, SWP_NOZORDER);
 
-    mainWindow.m_settingsWindow->dwm_caption_color(false);
-    mainWindow.m_settingsWindow->dwm_dark_mode(true);
-    mainWindow.m_settingsWindow->dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
-
-    mainWindow.m_settingsWindow->m_browser = std::make_unique<SettingsWebView>(
-        +WebViews::settings, mainWindow.m_settingsWindow->m_hwnd.get());
-
-    return window::message_loop();
+    return TRUE;
 }
 
-auto run_server() -> int
+auto MainWindow::handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
-    std::println("Starting server...");
+    switch (uMsg)
+    {
+    // case WM_ACTIVATE: return on_activate(wParam);
+    case WM_PARENTNOTIFY: return on_parent_notify(wParam);
+    case WM_KEYDOWN: return on_key_down(wParam);
+    case WM_MOVE: return on_move();
+    case WM_SIZE: return on_size();
+    }
 
-    STARTUPINFOA si{sizeof(STARTUPINFOA)};
-    PROCESS_INFORMATION pi{};
+    return DefWindowProcA(hWnd, uMsg, wParam, lParam);
+}
 
-    auto server{(glow::filesystem::portable() / "server.exe").string()};
-    auto pServer{server.data()};
+// auto MainWindow::on_activate(WPARAM wParam) -> int
+// {
+//     if (m_frame1 && m_frame2)
+//     {
+//         if ((LOWORD(wParam) == WA_ACTIVE) || (LOWORD(wParam) == WA_CLICKACTIVE))
+//         {
+//             glow::gui::cloak(m_frame1->m_hwnd.get(), false);
+//             glow::gui::cloak(m_frame2->m_hwnd.get(), false);
+//             position_frame();
+//             return 0;
+//         }
 
-    std::println("Server path: {}", server);
+//         if (LOWORD(wParam) == WA_INACTIVE)
+//         {
+//             glow::gui::cloak(m_frame1->m_hwnd.get(), true);
+//             glow::gui::cloak(m_frame2->m_hwnd.get(), true);
+//             return 0;
+//         }
+//         else return 0;
+//     }
 
-    CreateProcessA(pServer, nullptr, nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi);
-    WaitForSingleObject(pi.hProcess, INFINITE);
-    CloseHandle(pi.hProcess);
-    CloseHandle(pi.hThread);
+//     else return 0;
+// }
+
+auto MainWindow::on_key_down(WPARAM wParam) -> int
+{
+    switch (wParam)
+    {
+    case VK_PAUSE: OutputDebugStringA("PAUSE"); break;
+    case 0x4C:
+        if (GetKeyState(VK_CONTROL) & 0x8000) OutputDebugStringA("L");
+        break;
+    case 0x57:
+        if (GetKeyState(VK_CONTROL) & 0x8000)
+        {
+            OutputDebugStringA("W");
+            PostMessageA(m_hwnd.get(), WM_CLOSE, 0, 0);
+        }
+        break;
+    case VK_F1: OutputDebugStringA("F1"); break;
+    case VK_F2: OutputDebugStringA("F2"); break;
+    case VK_F3: OutputDebugStringA("F3"); break;
+    case VK_F4: OutputDebugStringA("F4"); break;
+    case VK_F6: OutputDebugStringA("F6"); break;
+    case VK_F8: OutputDebugStringA("F8"); break;
+    case VK_F11: OutputDebugStringA("F11"); break;
+    }
 
     return 0;
 }
+
+auto MainWindow::on_parent_notify(WPARAM wParam) -> int
+{
+    if (LOWORD(wParam) == WM_CREATE) on_size();
+
+    return 0;
+}
+
+auto MainWindow::on_move() -> int
+{
+    // position_frame();
+
+    return 0;
+}
+
+auto MainWindow::on_size() -> int
+{
+    RECT rect{0};
+    GetClientRect(m_hwnd.get(), &rect);
+    EnumChildWindows(m_hwnd.get(), EnumChildProc, std::bit_cast<LPARAM>(&rect));
+    Sleep(1);
+
+    // position_frame();
+
+    return 0;
+}
+
+// auto App::position_frame() -> void
+// {
+//     if (m_frame1)
+//     {
+//         RECT wRect{};
+//         GetWindowRect(m_browser1->m_hwnd.get(), &wRect);
+//         auto position{rect_to_position(wRect)};
+//         SetWindowPos(m_frame1->m_hwnd.get(), 0, position.x, position.y, position.width,
+//                      position.height, SWP_NOACTIVATE);
+//     }
+
+//     if (m_frame2)
+//     {
+//         RECT wRect{};
+//         GetWindowRect(m_browser2->m_hwnd.get(), &wRect);
+//         auto position{rect_to_position(wRect)};
+//         SetWindowPos(m_frame2->m_hwnd.get(), 0, position.x, position.y, position.width,
+//                      position.height, SWP_NOACTIVATE);
+//     }
+// }

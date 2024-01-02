@@ -13,13 +13,7 @@ add_executable(
 target_sources(
     Airglow
     PRIVATE airglow/main.cxx
-            airglow/addressbar.cxx
-            airglow/app.cxx
-            airglow/browser.cxx
-            # airglow/frame.cxx
-            airglow/mainwindow.cxx
-            airglow/settings.cxx
-            airglow/settingswindow.cxx
+            airglow/run.cxx
             ${AIRGLOW_RC}
             ${PROJECT_SOURCE_DIR}/Data/airglow.manifest
     PUBLIC FILE_SET
@@ -29,14 +23,7 @@ target_sources(
            ${CMAKE_CURRENT_BINARY_DIR}/config
            FILES
            ${CMAKE_CURRENT_BINARY_DIR}/config/airglow/config.hxx
-           airglow/addressbar.hxx
-           airglow/app.hxx
-           airglow/browser.hxx
-           # airglow/frame.hxx
-           airglow/mainwindow.hxx
-           airglow/settings.hxx
-           airglow/settingswindow.hxx
-           airglow/webviews.hxx
+           airglow/run.hxx
 )
 
 target_include_directories(

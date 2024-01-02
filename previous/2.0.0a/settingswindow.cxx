@@ -8,35 +8,34 @@
 
 #include <airglow/settingswindow.hxx>
 
-auto SettingsWebView::initialized() -> void
-{
-    // m_settings8->put_AreBrowserAcceleratorKeysEnabled(true);
-    m_settings8->put_AreDefaultContextMenusEnabled(false);
-    // m_settings8->put_AreDefaultScriptDialogsEnabled(true);
-    // m_settings8->put_AreDevToolsEnabled(true);
-    // m_settings8->put_AreHostObjectsAllowed(true);
-    // m_settings8->put_HiddenPdfToolbarItems(
-    //     COREWEBVIEW2_PDF_TOOLBAR_ITEMS::COREWEBVIEW2_PDF_TOOLBAR_ITEMS_NONE);
-    // m_settings8->put_IsBuiltInErrorPageEnabled(true);
-    // m_settings8->put_IsGeneralAutofillEnabled(true);
-    // m_settings8->put_IsPasswordAutosaveEnabled(true);
-    // m_settings8->put_IsPinchZoomEnabled(true);
-    // m_settings8->put_IsReputationCheckingRequired(true);
-    // m_settings8->put_IsScriptEnabled(true);
-    // m_settings8->put_IsStatusBarEnabled(true);
-    // m_settings8->put_IsSwipeNavigationEnabled(true);
-    // m_settings8->put_IsWebMessageEnabled(true);
-    m_settings8->put_IsZoomControlEnabled(false);
-}
+// auto SettingsWebView::initialized() -> void
+// {
+//     // m_settings8->put_AreBrowserAcceleratorKeysEnabled(true);
+//     m_settings8->put_AreDefaultContextMenusEnabled(false);
+//     // m_settings8->put_AreDefaultScriptDialogsEnabled(true);
+//     // m_settings8->put_AreDevToolsEnabled(true);
+//     // m_settings8->put_AreHostObjectsAllowed(true);
+//     // m_settings8->put_HiddenPdfToolbarItems(
+//     //     COREWEBVIEW2_PDF_TOOLBAR_ITEMS::COREWEBVIEW2_PDF_TOOLBAR_ITEMS_NONE);
+//     // m_settings8->put_IsBuiltInErrorPageEnabled(true);
+//     // m_settings8->put_IsGeneralAutofillEnabled(true);
+//     // m_settings8->put_IsPasswordAutosaveEnabled(true);
+//     // m_settings8->put_IsPinchZoomEnabled(true);
+//     // m_settings8->put_IsReputationCheckingRequired(true);
+//     // m_settings8->put_IsScriptEnabled(true);
+//     // m_settings8->put_IsStatusBarEnabled(true);
+//     // m_settings8->put_IsSwipeNavigationEnabled(true);
+//     // m_settings8->put_IsWebMessageEnabled(true);
+//     m_settings8->put_IsZoomControlEnabled(false);
+// }
 
 auto CALLBACK SettingsWindow::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 {
     auto gwlId{GetWindowLongPtrA(hWnd, GWL_ID)};
+    console::debug(std::to_string(gwlId));
 
     auto rect{*std::bit_cast<LPRECT>(lParam)};
     auto position{window::rect_to_position(rect)};
-
-    console::debug(std::to_string(gwlId));
 
     if (gwlId == +WebViews::settings)
     {

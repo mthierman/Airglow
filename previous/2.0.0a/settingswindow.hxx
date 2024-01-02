@@ -16,12 +16,12 @@
 
 using namespace glow;
 
-struct SettingsWebView final : public window::WebView
-{
-    using window::WebView::WebView;
+// struct SettingsWebView final : public window::WebView
+// {
+//     using window::WebView::WebView;
 
-    auto initialized() -> void override;
-};
+//     auto initialized() -> void override;
+// };
 
 struct SettingsWindow final : public window::Window
 {
@@ -33,5 +33,5 @@ struct SettingsWindow final : public window::Window
     auto on_key_down(WPARAM wParam) -> int;
     auto on_size() -> int;
 
-    std::unique_ptr<SettingsWebView> m_browser;
+    // std::unique_ptr<SettingsWebView> m_browser;
 };
