@@ -13,7 +13,7 @@ add_executable(
 target_sources(
     Airglow
     PRIVATE airglow/main.cxx
-            airglow/run.cxx
+            airglow/app.cxx
             ${AIRGLOW_RC}
             ${PROJECT_SOURCE_DIR}/Data/airglow.manifest
     PUBLIC FILE_SET
@@ -23,7 +23,8 @@ target_sources(
            ${CMAKE_CURRENT_BINARY_DIR}/config
            FILES
            ${CMAKE_CURRENT_BINARY_DIR}/config/airglow/config.hxx
-           airglow/run.hxx
+           airglow/app.hxx
+           airglow/webviews.hxx
 )
 
 target_include_directories(
