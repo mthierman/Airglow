@@ -20,7 +20,6 @@ struct SettingsWebView final : public window::WebView
 {
     using WebView::WebView;
 
-  private:
     auto initialized() -> void override;
 };
 

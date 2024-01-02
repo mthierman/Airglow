@@ -91,7 +91,7 @@ auto SettingsWindow::on_key_down(WPARAM wParam) -> int
 
 auto SettingsWindow::on_size() -> int
 {
-    RECT clientRect{0};
+    RECT clientRect{};
     GetClientRect(m_hwnd.get(), &clientRect);
     EnumChildWindows(m_hwnd.get(), EnumChildProc, std::bit_cast<LPARAM>(&clientRect));
     Sleep(1);
