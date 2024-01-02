@@ -17,6 +17,7 @@ target_sources(
             airglow/app.cxx
             airglow/browser.cxx
             # airglow/frame.cxx
+            airglow/mainwindow.cxx
             airglow/settings.cxx
             airglow/settingswindow.cxx
             ${AIRGLOW_RC}
@@ -32,6 +33,7 @@ target_sources(
            airglow/app.hxx
            airglow/browser.hxx
            # airglow/frame.hxx
+           airglow/mainwindow.hxx
            airglow/settings.hxx
            airglow/settingswindow.hxx
            airglow/webviews.hxx

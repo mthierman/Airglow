@@ -33,9 +33,6 @@ SettingsWindow::SettingsWindow()
 {
     m_browser = std::make_unique<SettingsWebView>(+WebViews::settings, m_hwnd.get(),
                                                   "https://localhost:8000/settings/index.html");
-
-    m_browser->create();
-    m_browser->show_normal();
 }
 
 auto CALLBACK SettingsWindow::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL

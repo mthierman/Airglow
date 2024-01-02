@@ -12,11 +12,11 @@ auto main() -> int
 {
     try
     {
-        return App::run();
+        return run();
     }
     catch (std::exception& e)
     {
-        glow::console::debug(e.what());
+        console::debug(e.what());
         std::terminate();
     }
 }

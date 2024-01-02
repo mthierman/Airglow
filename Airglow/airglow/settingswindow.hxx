@@ -27,8 +27,6 @@ struct SettingsWindow final : public window::Window
 {
     using Window::Window;
 
-    SettingsWindow();
-
     static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
 
     auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override;
