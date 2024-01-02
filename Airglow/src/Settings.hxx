@@ -14,7 +14,8 @@
 #include <nlohmann/json.hpp>
 
 #include <config/airglow.hxx>
-#include <filesystem/filesystem.hxx>
+
+#include <glow/filesystem.hxx>
 
 using json = nlohmann::json;
 

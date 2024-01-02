@@ -26,7 +26,7 @@ void from_json(const json& j, Settings& settings)
 
 auto save_settings(Settings settings) -> void
 {
-    auto path{glow::filesystem::get_pgmptr()};
+    auto path{glow::filesystem::portable()};
     if (!path.empty())
     {
         auto settingsFile{path / "settings.json"};
@@ -71,7 +71,7 @@ auto save_settings(Settings settings) -> void
 
 auto load_settings(Settings settings) -> void
 {
-    auto path{glow::filesystem::get_pgmptr()};
+    auto path{glow::filesystem::portable()};
     if (!path.empty())
     {
         auto settingsFile{path / "settings.json"};

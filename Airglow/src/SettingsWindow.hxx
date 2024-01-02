@@ -11,8 +11,9 @@
 #include <bit>
 
 #include <config/airglow.hxx>
-#include <gui/window.hxx>
-#include <gui/webview.hxx>
+
+#include <glow/window.hxx>
+#include <glow/webview.hxx>
 
 #include "WebViews.hxx"
 

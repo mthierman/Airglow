@@ -9,7 +9,8 @@
 #pragma once
 
 #include <config/airglow.hxx>
-#include <gui/webview.hxx>
+
+#include <glow/webview.hxx>
 
 using namespace glow::gui;
 

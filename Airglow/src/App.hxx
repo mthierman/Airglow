@@ -14,10 +14,11 @@
 #include <nlohmann/json.hpp>
 
 #include <config/airglow.hxx>
-#include <filesystem/filesystem.hxx>
-#include <gui/gui.hxx>
-#include <gui/mainwindow.hxx>
-#include <logging/logging.hxx>
+
+#include <glow/filesystem.hxx>
+#include <glow/gui.hxx>
+#include <glow/mainwindow.hxx>
+#include <glow/log.hxx>
 
 #include "AddressBar.hxx"
 #include "Browser.hxx"

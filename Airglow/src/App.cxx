@@ -21,7 +21,7 @@ auto App::run() -> int
     set_system_backdrop(app->m_hwnd.get(), DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
     use_immersive_dark_mode(app->m_hwnd.get());
 
-    // app->show_normal();
+    app->show_normal();
 
     app->dpi = glow::gui::get_dpi(app->m_hwnd.get());
     app->scale = glow::gui::get_scale(app->m_hwnd.get());
@@ -53,7 +53,7 @@ auto App::run_server() -> int
     STARTUPINFOA si{sizeof(STARTUPINFOA)};
     PROCESS_INFORMATION pi{};
 
-    auto server{(glow::filesystem::get_pgmptr() / "server.exe").string()};
+    auto server{(glow::filesystem::portable() / "server.exe").string()};
     auto pServer{server.data()};
 
     std::println("Server path: {}", server);
