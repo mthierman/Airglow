@@ -24,7 +24,7 @@ target_sources(
     PUBLIC FILE_SET
            HEADERS
            BASE_DIRS
-           ${CMAKE_CURRENT_SOURCE_DIR}
+           ${PROJECT_SOURCE_DIR}/Airglow
            ${CMAKE_CURRENT_BINARY_DIR}/config
            FILES
            ${CMAKE_CURRENT_BINARY_DIR}/config/airglow/config.hxx
@@ -35,6 +35,11 @@ target_sources(
            airglow/settings.hxx
            airglow/settingswindow.hxx
            airglow/webviews.hxx
+)
+
+target_include_directories(
+    Glow
+    PUBLIC ${PROJECT_SOURCE_DIR}/Airglow
 )
 
 target_link_libraries(
