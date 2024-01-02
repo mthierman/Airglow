@@ -46,6 +46,9 @@ struct App final : public MainWindow
 
     auto position_frame() -> void;
 
+    glow::gui::GdiPlus gdiInit;
+    glow::gui::CoInitialize coInit;
+
     UINT dpi{};
     float scale{};
 

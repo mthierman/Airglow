@@ -10,17 +10,6 @@
 
 auto App::run() -> int
 {
-    try
-    {
-        glow::gui::GdiPlus gdiInit;
-        glow::gui::CoInitialize coInit;
-    }
-    catch (std::exception& e)
-    {
-        glow::logging::shell_err(e.what());
-        std::terminate();
-    }
-
     SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
     SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
                             "--allow-file-access-from-files");
@@ -32,7 +21,7 @@ auto App::run() -> int
     set_system_backdrop(app->m_hwnd.get(), DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
     use_immersive_dark_mode(app->m_hwnd.get());
 
-    app->show_normal();
+    // app->show_normal();
 
     app->dpi = glow::gui::get_dpi(app->m_hwnd.get());
     app->scale = glow::gui::get_scale(app->m_hwnd.get());

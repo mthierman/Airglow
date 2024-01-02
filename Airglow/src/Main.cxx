@@ -8,4 +8,15 @@
 
 #include "App.hxx"
 
-auto main() -> int { return App::run(); }
+auto main() -> int
+{
+    try
+    {
+        return App::run();
+    }
+    catch (std::exception& e)
+    {
+        glow::logging::shell_err(e.what());
+        std::terminate();
+    }
+}
