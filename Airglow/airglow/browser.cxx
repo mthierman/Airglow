@@ -6,12 +6,12 @@
 // ╚─────────────────────╝
 // clang-format on
 
-#include "AddressBar.hxx"
+#include <airglow/browser.hxx>
 
-auto AddressBar::initialized() -> void
+auto Browser::initialized() -> void
 {
     // m_settings8->put_AreBrowserAcceleratorKeysEnabled(true);
-    m_settings8->put_AreDefaultContextMenusEnabled(false);
+    // m_settings8->put_AreDefaultContextMenusEnabled(true);
     // m_settings8->put_AreDefaultScriptDialogsEnabled(true);
     // m_settings8->put_AreDevToolsEnabled(true);
     // m_settings8->put_AreHostObjectsAllowed(true);
@@ -26,12 +26,12 @@ auto AddressBar::initialized() -> void
     // m_settings8->put_IsStatusBarEnabled(true);
     // m_settings8->put_IsSwipeNavigationEnabled(true);
     // m_settings8->put_IsWebMessageEnabled(true);
-    m_settings8->put_IsZoomControlEnabled(false);
+    // m_settings8->put_IsZoomControlEnabled(true);
 }
 
-auto AddressBar::web_message_received_handler() -> void {}
+auto Browser::web_message_received_handler() -> void {}
 
-auto AddressBar::accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressedEventArgs* args)
+auto Browser::accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressedEventArgs* args)
     -> void
 {
     COREWEBVIEW2_KEY_EVENT_KIND kind{};

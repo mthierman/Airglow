@@ -8,8 +8,6 @@
 
 #pragma once
 
-#include <config/airglow.hxx>
-
 #include <glow/webview.hxx>
 
 using namespace glow::gui;

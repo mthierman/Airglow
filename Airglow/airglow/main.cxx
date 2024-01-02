@@ -6,29 +6,17 @@
 // ╚─────────────────────╝
 // clang-format on
 
-#pragma once
+#include <airglow/app.hxx>
 
-#include <fstream>
-#include <print>
-
-#include <nlohmann/json.hpp>
-
-#include <config/airglow.hxx>
-
-#include <glow/filesystem.hxx>
-
-using json = nlohmann::json;
-
-struct Settings
+auto main() -> int
 {
-    std::string m_name{PROJECT_NAME};
-    std::string m_version{PROJECT_VERSION};
-    int m_width{};
-    int m_height{};
-};
-
-void to_json(json& j, const Settings& settings);
-void from_json(const json& j, Settings& settings);
-
-auto save_settings(Settings settings) -> void;
-auto load_settings(Settings settings) -> void;
+    try
+    {
+        return App::run();
+    }
+    catch (std::exception& e)
+    {
+        glow::log::debug(e.what());
+        std::terminate();
+    }
+}

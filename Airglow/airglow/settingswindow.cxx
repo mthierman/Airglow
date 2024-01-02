@@ -6,7 +6,7 @@
 // ╚─────────────────────╝
 // clang-format on
 
-#include "SettingsWindow.hxx"
+#include <airglow/settingswindow.hxx>
 
 auto SettingsWebView::initialized() -> void
 {

@@ -13,19 +13,17 @@
 
 #include <nlohmann/json.hpp>
 
-#include <config/airglow.hxx>
-
 #include <glow/filesystem.hxx>
 #include <glow/gui.hxx>
 #include <glow/mainwindow.hxx>
 #include <glow/log.hxx>
 
-#include "AddressBar.hxx"
-#include "Browser.hxx"
-#include "Frame.hxx"
-#include "Settings.hxx"
-#include "SettingsWindow.hxx"
-#include "WebViews.hxx"
+#include <airglow/addressbar.hxx>
+#include <airglow/browser.hxx>
+#include <airglow/frame.hxx>
+#include <airglow/settings.hxx>
+#include <airglow/settingswindow.hxx>
+#include <airglow/webviews.hxx>
 
 using namespace glow::gui;
 

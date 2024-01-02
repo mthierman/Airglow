@@ -6,7 +6,7 @@
 // ╚─────────────────────╝
 // clang-format on
 
-#include "Settings.hxx"
+#include <airglow/settings.hxx>
 
 void to_json(json& j, const Settings& settings)
 {

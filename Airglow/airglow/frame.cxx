@@ -6,7 +6,7 @@
 // ╚──────────────╝
 // clang-format on
 
-#include "Frame.hxx"
+#include <airglow/frame.hxx>
 
 Frame::Frame()
 {

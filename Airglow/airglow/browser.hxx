@@ -6,17 +6,20 @@
 // ╚─────────────────────╝
 // clang-format on
 
-#include "App.hxx"
+#pragma once
 
-auto main() -> int
+#include <glow/webview.hxx>
+
+using namespace glow::gui;
+
+struct Browser final : public WebView2
 {
-    try
-    {
-        return App::run();
-    }
-    catch (std::exception& e)
-    {
-        glow::log::debug(e.what());
-        std::terminate();
-    }
-}
+    using WebView2::WebView2;
+
+  private:
+    auto initialized() -> void override;
+
+    auto web_message_received_handler() -> void override;
+    auto accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressedEventArgs* args)
+        -> void override;
+};

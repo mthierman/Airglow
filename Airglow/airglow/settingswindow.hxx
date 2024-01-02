@@ -10,12 +10,10 @@
 
 #include <bit>
 
-#include <config/airglow.hxx>
-
 #include <glow/window.hxx>
 #include <glow/webview.hxx>
 
-#include "WebViews.hxx"
+#include <airglow/webviews.hxx>
 
 using namespace glow::gui;
 

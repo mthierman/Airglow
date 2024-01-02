@@ -8,20 +8,27 @@
 
 #pragma once
 
-#include <config/airglow.hxx>
+#include <fstream>
+#include <print>
 
-#include <glow/webview.hxx>
+#include <nlohmann/json.hpp>
 
-using namespace glow::gui;
+#include <glow/filesystem.hxx>
 
-struct Browser final : public WebView2
+#include <airglow/config.hxx>
+
+using json = nlohmann::json;
+
+struct Settings
 {
-    using WebView2::WebView2;
-
-  private:
-    auto initialized() -> void override;
-
-    auto web_message_received_handler() -> void override;
-    auto accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressedEventArgs* args)
-        -> void override;
+    std::string m_name{PROJECT_NAME};
+    std::string m_version{PROJECT_VERSION};
+    int m_width{};
+    int m_height{};
 };
+
+void to_json(json& j, const Settings& settings);
+void from_json(const json& j, Settings& settings);
+
+auto save_settings(Settings settings) -> void;
+auto load_settings(Settings settings) -> void;
