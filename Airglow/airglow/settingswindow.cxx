@@ -29,12 +29,6 @@ auto SettingsWebView::initialized() -> void
     m_settings8->put_IsZoomControlEnabled(false);
 }
 
-SettingsWindow::SettingsWindow()
-{
-    m_browser = std::make_unique<SettingsWebView>(+WebViews::settings, m_hwnd.get(),
-                                                  "https://localhost:8000/settings/index.html");
-}
-
 auto CALLBACK SettingsWindow::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 {
     auto gwlId{GetWindowLongPtrA(hWnd, GWL_ID)};
@@ -42,8 +36,12 @@ auto CALLBACK SettingsWindow::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     auto rect{*std::bit_cast<LPRECT>(lParam)};
     auto position{window::rect_to_position(rect)};
 
+    console::debug(std::to_string(gwlId));
+
     if (gwlId == +WebViews::settings)
+    {
         SetWindowPos(hWnd, nullptr, 0, 0, position.width, position.height, SWP_NOZORDER);
+    }
 
     return TRUE;
 }

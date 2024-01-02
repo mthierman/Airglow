@@ -44,6 +44,9 @@ auto run() -> int
     mainWindow.m_settingsWindow->dwm_dark_mode(true);
     mainWindow.m_settingsWindow->dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
 
+    mainWindow.m_settingsWindow->m_browser = std::make_unique<SettingsWebView>(
+        +WebViews::settings, mainWindow.m_settingsWindow->m_hwnd.get());
+
     return window::message_loop();
 }
 

@@ -18,14 +18,14 @@ using namespace glow;
 
 struct SettingsWebView final : public window::WebView
 {
-    using WebView::WebView;
+    using window::WebView::WebView;
 
     auto initialized() -> void override;
 };
 
 struct SettingsWindow final : public window::Window
 {
-    using Window::Window;
+    using window::Window::Window;
 
     static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
 
