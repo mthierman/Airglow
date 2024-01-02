@@ -16,34 +16,46 @@ auto App::run() -> int
 
     auto app{std::make_unique<App>()};
 
-    set_title(app->m_hwnd.get(), "Airglow");
-    enable_caption_color(app->m_hwnd.get(), false);
-    set_system_backdrop(app->m_hwnd.get(), DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
-    use_immersive_dark_mode(app->m_hwnd.get());
-
+    app->create();
+    app->title("Airglow");
+    app->dwm_caption_color(false);
+    app->dwm_dark_mode(true);
+    app->dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
     app->show_normal();
 
-    app->dpi = glow::gui::get_dpi(app->m_hwnd.get());
-    app->scale = glow::gui::get_scale(app->m_hwnd.get());
+    app->m_dpi = app->dpi();
+    app->m_scale = app->scale();
 
-    app->m_browser1 = std::make_unique<Browser>(app->m_hwnd.get(), +WebViews::browser1);
-    app->m_browser2 = std::make_unique<Browser>(app->m_hwnd.get(), +WebViews::browser2);
+    app->m_browser1 = std::make_unique<Browser>(+WebViews::browser1, app->m_hwnd.get());
+    app->m_browser2 = std::make_unique<Browser>(+WebViews::browser2, app->m_hwnd.get());
+    app->m_browser1->create();
+    app->m_browser2->create();
+
     // app->m_frame1 = std::make_unique<Frame>();
     // app->m_frame2 = std::make_unique<Frame>();
+
     app->m_addressBar1 = std::make_unique<AddressBar>(
-        app->m_hwnd.get(), +WebViews::bar1, "https://localhost:8000/addressbar/index.html");
+        +WebViews::bar1, app->m_hwnd.get(), "https://localhost:8000/addressbar/index.html");
     app->m_addressBar2 = std::make_unique<AddressBar>(
-        app->m_hwnd.get(), +WebViews::bar2, "https://localhost:8000/addressbar/index.html");
+        +WebViews::bar2, app->m_hwnd.get(), "https://localhost:8000/addressbar/index.html");
+    app->m_addressBar1->create();
+    app->m_addressBar2->create();
+
+    app->m_settingsWindow = std::make_unique<SettingsWindow>();
+
+    app->m_settingsWindow->create();
+    app->m_settingsWindow->title("Airglow - Settings");
+    app->m_settingsWindow->dwm_caption_color(false);
+    app->m_settingsWindow->dwm_dark_mode(true);
+    app->m_settingsWindow->dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
 
     app->m_browser1->show_normal();
     app->m_browser2->show_normal();
     app->m_addressBar1->show_normal();
     app->m_addressBar2->show_normal();
-
-    app->m_settingsWindow = std::make_unique<SettingsWindow>();
     app->m_settingsWindow->show_normal();
 
-    return message_loop();
+    return window::message_loop();
 }
 
 auto App::run_server() -> int
@@ -71,7 +83,7 @@ auto CALLBACK App::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     auto gwlId{static_cast<int64_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
     auto rectParent{*std::bit_cast<LPRECT>(lParam)};
 
-    auto position{rect_to_position(rectParent)};
+    auto position{window::rect_to_position(rectParent)};
     auto panelHeight{100};
     auto border{2};
     auto width{(position.width / 2) - border};

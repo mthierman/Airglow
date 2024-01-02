@@ -42,25 +42,25 @@ Frame::Frame()
     show_normal();
 
     // SetLayeredWindowAttributes(m_hwnd.get(), RGB(0, 0, 0), 200, LWA_ALPHA);
-    glow::gui::set_rounded_corners(m_hwnd.get(), true);
-    glow::gui::enable_border_color(m_hwnd.get(), true);
-    glow::gui::use_immersive_dark_mode(m_hwnd.get());
-    glow::gui::set_border_color(m_hwnd.get(), RGB(0, 0, 0));
+    // glow::gui::set_rounded_corners(m_hwnd.get(), true);
+    // glow::gui::enable_border_color(m_hwnd.get(), true);
+    // glow::gui::use_immersive_dark_mode(m_hwnd.get());
+    // glow::gui::set_border_color(m_hwnd.get(), RGB(0, 0, 0));
     // glow::gui::set_system_backdrop(m_hwnd.get(), DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
     EnableWindow(m_hwnd.get(), FALSE);
 }
 
 Frame::~Frame() {}
 
-auto Frame::show_normal() -> void { glow::gui::show_normal(m_hwnd.get()); }
+// auto Frame::show_normal() -> void { glow::gui::show_normal(m_hwnd.get()); }
 
-auto Frame::show() -> void { glow::gui::show(m_hwnd.get()); }
+// auto Frame::show() -> void { glow::gui::show(m_hwnd.get()); }
 
-auto Frame::hide() -> void { glow::gui::hide(m_hwnd.get()); }
+// auto Frame::hide() -> void { glow::gui::hide(m_hwnd.get()); }
 
 auto CALLBACK Frame::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
-    auto self{glow::gui::InstanceFromWndProc<Frame>(hWnd, uMsg, lParam)};
+    auto self{window::<Frame>(hWnd, uMsg, lParam)};
 
     if (self)
     {

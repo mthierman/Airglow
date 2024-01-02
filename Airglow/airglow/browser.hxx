@@ -8,13 +8,13 @@
 
 #pragma once
 
-#include <glow/webview.hxx>
+#include <glow/window.hxx>
 
-using namespace glow::gui;
+using namespace glow;
 
-struct Browser final : public WebView2
+struct Browser final : public window::WebView
 {
-    using WebView2::WebView2;
+    using WebView::WebView;
 
   private:
     auto initialized() -> void override;

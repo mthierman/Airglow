@@ -13,21 +13,20 @@
 
 #include <nlohmann/json.hpp>
 
+#include <glow/console.hxx>
 #include <glow/filesystem.hxx>
-#include <glow/gui.hxx>
-#include <glow/mainwindow.hxx>
-#include <glow/log.hxx>
+#include <glow/window.hxx>
 
 #include <airglow/addressbar.hxx>
 #include <airglow/browser.hxx>
-#include <airglow/frame.hxx>
+// #include <airglow/frame.hxx>
 #include <airglow/settings.hxx>
 #include <airglow/settingswindow.hxx>
 #include <airglow/webviews.hxx>
 
-using namespace glow::gui;
+using namespace glow;
 
-struct App final : public MainWindow
+struct App final : public window::MainWindow
 {
     using MainWindow::MainWindow;
 
@@ -45,11 +44,11 @@ struct App final : public MainWindow
 
     auto position_frame() -> void;
 
-    glow::gui::GdiPlus gdiInit;
-    glow::gui::CoInitialize coInit;
+    window::GdiPlus m_gdiInit;
+    window::CoInitialize m_coInit;
 
-    UINT dpi{};
-    float scale{};
+    UINT m_dpi{};
+    float m_scale{};
 
     std::unique_ptr<Browser> m_browser1;
     std::unique_ptr<Browser> m_browser2;

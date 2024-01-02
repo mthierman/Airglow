@@ -31,14 +31,10 @@ auto SettingsWebView::initialized() -> void
 
 SettingsWindow::SettingsWindow()
 {
-    set_title(m_hwnd.get(), "Airglow - Settings");
-    enable_caption_color(m_hwnd.get(), false);
-    set_system_backdrop(m_hwnd.get(), DWM_SYSTEMBACKDROP_TYPE::DWMSBT_TRANSIENTWINDOW);
-    use_immersive_dark_mode(m_hwnd.get());
-
-    m_browser = std::make_unique<SettingsWebView>(m_hwnd.get(), +WebViews::settings,
+    m_browser = std::make_unique<SettingsWebView>(+WebViews::settings, m_hwnd.get(),
                                                   "https://localhost:8000/settings/index.html");
 
+    m_browser->create();
     m_browser->show_normal();
 }
 
@@ -47,7 +43,7 @@ auto CALLBACK SettingsWindow::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     auto gwlId{GetWindowLongPtrA(hWnd, GWL_ID)};
 
     auto rect{*std::bit_cast<LPRECT>(lParam)};
-    auto position{glow::gui::rect_to_position(rect)};
+    auto position{window::rect_to_position(rect)};
 
     if (gwlId == +WebViews::settings)
         SetWindowPos(hWnd, nullptr, 0, 0, position.width, position.height, SWP_NOZORDER);

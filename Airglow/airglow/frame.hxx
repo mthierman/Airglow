@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <glow/gui.hxx>
+#include <glow/window.hxx>
 
 struct Frame
 {

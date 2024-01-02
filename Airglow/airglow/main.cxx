@@ -16,7 +16,7 @@ auto main() -> int
     }
     catch (std::exception& e)
     {
-        glow::log::debug(e.what());
+        glow::console::debug(e.what());
         std::terminate();
     }
 }

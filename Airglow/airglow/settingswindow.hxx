@@ -11,21 +11,20 @@
 #include <bit>
 
 #include <glow/window.hxx>
-#include <glow/webview.hxx>
 
 #include <airglow/webviews.hxx>
 
-using namespace glow::gui;
+using namespace glow;
 
-struct SettingsWebView final : public WebView2
+struct SettingsWebView final : public window::WebView
 {
-    using WebView2::WebView2;
+    using WebView::WebView;
 
   private:
     auto initialized() -> void override;
 };
 
-struct SettingsWindow final : public Window
+struct SettingsWindow final : public window::Window
 {
     using Window::Window;
 
