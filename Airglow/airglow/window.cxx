@@ -73,18 +73,7 @@ auto Window::on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 {
     RECT rect{0};
     GetClientRect(hWnd, &rect);
-
-    auto position{glow::window::rect_to_position(rect)};
-
-    auto panelHeight{100};
-    auto border{2};
-    auto width{(position.width / 2) - border};
-    auto height{(position.height) - panelHeight};
-    auto rightX{width + (border * 2)};
-    auto panelY{position.height - panelHeight};
-
-    EnumChildWindows(hWnd, EnumChildProc, std::bit_cast<LPARAM>(&position));
-
+    EnumChildWindows(hWnd, EnumChildProc, std::bit_cast<LPARAM>(&rect));
     Sleep(1);
 
     return 0;
@@ -93,26 +82,23 @@ auto Window::on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 {
     auto gwlId{static_cast<int64_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
-    auto position{std::bit_cast<glow::window::Position*>(lParam)};
+    auto rect{*std::bit_cast<RECT*>(lParam)};
 
-    auto panelHeight{100};
     auto border{2};
-    auto width{(position->width / 2) - border};
-    auto height{(position->height) - panelHeight};
-    auto rightX{width + (border * 2)};
-    auto panelY{position->height - panelHeight};
 
     if (gwlId == +Browsers::browser1)
-        SetWindowPos(hWnd, nullptr, 0, 0, width, height, SWP_NOZORDER);
+        SetWindowPos(hWnd, nullptr, 0, 0, ((rect.right - rect.left) / 2) - border,
+                     rect.bottom - rect.top, SWP_NOZORDER);
 
     if (gwlId == +Browsers::browser2)
-        SetWindowPos(hWnd, nullptr, rightX, 0, width, height, SWP_NOZORDER);
+        SetWindowPos(hWnd, nullptr, ((rect.right - rect.left) / 2) + border, 0,
+                     ((rect.right - rect.left) / 2) - border, rect.bottom - rect.top, SWP_NOZORDER);
 
-    if (gwlId == +Browsers::bar1)
-        SetWindowPos(hWnd, nullptr, 0, panelY, width, panelHeight, SWP_NOZORDER);
+    // if (gwlId == +Browsers::bar1)
+    //     SetWindowPos(hWnd, nullptr, 0, panelY, width, panelHeight, SWP_NOZORDER);
 
-    if (gwlId == +Browsers::bar2)
-        SetWindowPos(hWnd, nullptr, rightX, panelY, width, panelHeight, SWP_NOZORDER);
+    // if (gwlId == +Browsers::bar2)
+    //     SetWindowPos(hWnd, nullptr, rightX, panelY, width, panelHeight, SWP_NOZORDER);
 
     return TRUE;
 }
