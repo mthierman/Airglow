@@ -76,7 +76,7 @@ auto Window::on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
     RECT rect{0};
     GetClientRect(hWnd, &rect);
     EnumChildWindows(hWnd, EnumChildProc, std::bit_cast<LPARAM>(&rect));
-    // Sleep(1);
+    Sleep(1);
 
     return 0;
 }
