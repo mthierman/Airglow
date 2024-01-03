@@ -11,7 +11,7 @@
 namespace airglow
 {
 
-Window::Window(HWND app, std::string name) : m_app{app} {}
+Window::Window(HWND app, std::string className) : glow::window::Window(className) { m_app = app; }
 
 auto Window::operator()(bool show) -> void
 {

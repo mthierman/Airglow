@@ -27,7 +27,7 @@ struct Window final : public glow::window::Window
 {
     using glow::window::Window::Window;
 
-    Window(HWND app, std::string name);
+    Window(HWND app, std::string className);
 
     virtual auto operator()(bool show = true) -> void override;
 

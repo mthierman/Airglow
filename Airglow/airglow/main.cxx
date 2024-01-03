@@ -8,6 +8,7 @@
 
 #include <airglow/app.hxx>
 #include <airglow/definitions.hxx>
+#include <airglow/settings.hxx>
 #include <airglow/window.hxx>
 
 auto run() -> int;
@@ -34,12 +35,11 @@ auto run() -> int
     airglow::App app;
     app();
 
-    airglow::Window window1{app.m_hwnd.get(), "window1"};
-    window1();
-    // window1.m_browser1();
+    airglow::Window mainWindow{app.m_hwnd.get(), "MainWindow"};
+    mainWindow();
 
-    // airglow::Window window2{app.m_hwnd.get(), "window2"};
-    // window2();
+    airglow::settings::Window settingsWindow{app.m_hwnd.get(), "Settings"};
+    settingsWindow();
 
     return glow::window::message_loop();
 }
