@@ -50,7 +50,7 @@ struct Settings
     // STORE POSITION HERE?
     std::string name{config::name};
     std::string version{config::version};
-    std::string theme{"dark"};
+    bool dark_mode{true};
     int64_t dpi{};
     float scale{};
     bool maximized{false};
@@ -68,7 +68,8 @@ struct Settings
 
 // struct Colors
 // {
-//     std::string accent{util::system_color(winrt::Windows::UI::ViewManagement::UIColorType::Accent)};
+//     std::string
+//     accent{util::system_color(winrt::Windows::UI::ViewManagement::UIColorType::Accent)};
 //     std::string accentDark1{
 //         util::system_color(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark1)};
 //     std::string accentDark2{
@@ -100,5 +101,18 @@ void from_json(const nlohmann::json& j, Settings& settings);
 
 auto save_settings(Settings settings) -> void;
 auto load_settings(Settings settings) -> void;
+
+// std::filesystem::path path_appdata();
+// std::filesystem::path path_portable();
+// std::filesystem::path path_gui();
+// std::filesystem::path path_home();
+// std::filesystem::path path_settings();
+// std::filesystem::path path_bar();
+// std::filesystem::path path_json();
+// std::filesystem::path path_db();
+
+// std::string home_url();
+// std::string settings_url();
+// std::string bar_url();
 
 } // namespace airglow::settings
