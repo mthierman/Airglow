@@ -18,25 +18,17 @@ auto App::create_window() -> void
                     this);
 }
 
-auto CALLBACK App::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
-{
-    auto gwlId{static_cast<int64_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
-    auto rect{*std::bit_cast<LPRECT>(lParam)};
-
-    return TRUE;
-}
-
 auto App::handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     switch (uMsg)
     {
-    case WM_NOTIFY: return on_notify(lParam);
+    case WM_NOTIFY: return on_notify(hWnd, wParam, lParam);
     }
 
     return DefWindowProcA(hWnd, uMsg, wParam, lParam);
 }
 
-auto App::on_notify(LPARAM lParam) -> int
+auto App::on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 {
     auto nmhdr{*std::bit_cast<LPNMHDR>(lParam)};
 

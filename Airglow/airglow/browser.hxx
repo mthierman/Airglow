@@ -8,27 +8,20 @@
 
 #pragma once
 
-#define CUSTOM_CREATE_WINDOW (WM_APP + 1)
-#define CUSTOM_CLOSE_WINDOW (WM_APP + 2)
-
-#include <cstdint>
-#include <type_traits>
+#include <glow/window.hxx>
 
 namespace airglow
 {
 
-enum struct Browsers : int64_t
+struct Browser final : public glow::window::WebView
 {
-    settings = 1,
-    browser1 = 2,
-    browser2 = 3,
-    bar1 = 4,
-    bar2 = 5,
-};
+    using glow::window::WebView::WebView;
 
-constexpr auto operator+(Browsers browsers) noexcept
-{
-    return static_cast<std::underlying_type_t<Browsers>>(browsers);
-}
+    auto initialized() -> void override;
+
+    auto web_message_received_handler() -> void override;
+    auto accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressedEventArgs* args)
+        -> void override;
+};
 
 } // namespace airglow

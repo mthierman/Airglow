@@ -28,12 +28,9 @@ struct App final : public glow::window::Window
 
     virtual auto create_window() -> void override;
 
-    static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
-
     virtual auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         -> LRESULT override;
-    auto on_notify(LPARAM lParam) -> int;
-    auto on_size(HWND hWnd) -> int;
+    auto on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
 
     glow::window::GdiPlus m_gdiInit;
     glow::window::CoInitialize m_coInit;

@@ -36,9 +36,10 @@ auto run() -> int
 
     airglow::Window window1{app.m_hwnd.get(), "window1"};
     window1();
+    // window1.m_browser1();
 
-    airglow::Window window2{app.m_hwnd.get(), "window2"};
-    window2();
+    // airglow::Window window2{app.m_hwnd.get(), "window2"};
+    // window2();
 
     return glow::window::message_loop();
 }

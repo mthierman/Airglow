@@ -17,6 +17,7 @@
 #include <glow/window.hxx>
 
 #include <airglow/definitions.hxx>
+#include <airglow/browser.hxx>
 
 namespace airglow
 {
@@ -31,11 +32,19 @@ struct Window final : public glow::window::Window
 
     virtual auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         -> LRESULT override;
-    auto on_create() -> int;
-    auto on_close() -> int;
+    auto on_create(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
+    auto on_close(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int override;
+    auto on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
+
+    static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
 
     HWND m_app{nullptr};
-    int64_t m_id{glow::text::random_int()};
+    int64_t m_id{glow::text::random_int64()};
+
+    std::unique_ptr<Browser> m_browser1;
+    std::unique_ptr<Browser> m_browser2;
+    std::unique_ptr<Browser> m_bar1;
+    std::unique_ptr<Browser> m_bar2;
 };
 
 } // namespace airglow

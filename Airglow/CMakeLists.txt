@@ -14,6 +14,7 @@ target_sources(
     Airglow
     PRIVATE airglow/main.cxx
             airglow/app.cxx
+            airglow/browser.cxx
             airglow/window.cxx
             ${AIRGLOW_RC}
             ${PROJECT_SOURCE_DIR}/Data/airglow.manifest
@@ -27,6 +28,7 @@ target_sources(
            airglow/definitions.hxx
            airglow/server.hxx
            airglow/app.hxx
+           airglow/browser.hxx
            airglow/window.hxx
 )
 
