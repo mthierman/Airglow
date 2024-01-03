@@ -14,7 +14,7 @@ namespace airglow
 auto AddressBar::initialized() -> void
 {
     // webView.m_settings8->put_AreBrowserAcceleratorKeysEnabled(true);
-    webView.m_settings8->put_AreDefaultContextMenusEnabled(false);
+    m_webView.m_settings8->put_AreDefaultContextMenusEnabled(false);
     // webView.m_settings8->put_AreDefaultScriptDialogsEnabled(true);
     // webView.m_settings8->put_AreDevToolsEnabled(true);
     // webView.m_settings8->put_AreHostObjectsAllowed(true);
@@ -29,7 +29,7 @@ auto AddressBar::initialized() -> void
     // webView.m_settings8->put_IsStatusBarEnabled(true);
     // webView.m_settings8->put_IsSwipeNavigationEnabled(true);
     // webView.m_settings8->put_IsWebMessageEnabled(true);
-    webView.m_settings8->put_IsZoomControlEnabled(false);
+    m_webView.m_settings8->put_IsZoomControlEnabled(false);
 }
 
 auto AddressBar::web_message_received_handler() -> void {}

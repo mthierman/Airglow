@@ -1,3 +1,17 @@
+/* @font-face {
+    font-family: "Noto Color Emoji";
+    src: url("/fonts/NotoColorEmoji-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: "Noto Emoji";
+    src: url("/fonts/NotoEmoji-VariableFont_wght.ttf") format("woff");
+    font-style: normal;
+    font-weight: normal;
+} */
+
 html {
     @apply h-full w-full;
 }

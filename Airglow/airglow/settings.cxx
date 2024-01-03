@@ -104,18 +104,18 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 
 void to_json(nlohmann::json& j, const Settings& settings)
 {
-    j = nlohmann::json{{"name", settings.m_name},
-                       {"version", settings.m_version},
-                       {"width", settings.m_width},
-                       {"height", settings.m_height}};
+    j = nlohmann::json{{"name", settings.name},
+                       {"version", settings.version},
+                       {"dpi", settings.dpi},
+                       {"scale", settings.scale}};
 }
 
 void from_json(const nlohmann::json& j, Settings& settings)
 {
-    j.at("name").get_to(settings.m_name);
-    j.at("version").get_to(settings.m_version);
-    j.at("width").get_to(settings.m_width);
-    j.at("height").get_to(settings.m_height);
+    j.at("name").get_to(settings.name);
+    j.at("version").get_to(settings.version);
+    j.at("dpi").get_to(settings.dpi);
+    j.at("scale").get_to(settings.scale);
 }
 
 auto save_settings(Settings settings) -> void
