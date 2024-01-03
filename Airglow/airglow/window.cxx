@@ -26,10 +26,12 @@ auto Window::operator()(bool show) -> void
     m_browser2 = std::make_unique<Browser>(+Browsers::browser2, m_hwnd.get());
     (*m_browser2)();
 
-    m_bar1 = std::make_unique<Browser>(+Browsers::bar1, m_hwnd.get());
+    m_bar1 = std::make_unique<Browser>(+Browsers::bar1, m_hwnd.get(),
+                                       "https://localhost:8000/addressbar/index.html");
     (*m_bar1)();
 
-    m_bar2 = std::make_unique<Browser>(+Browsers::bar2, m_hwnd.get());
+    m_bar2 = std::make_unique<Browser>(+Browsers::bar2, m_hwnd.get(),
+                                       "https://localhost:8000/addressbar/index.html");
     (*m_bar2)();
 }
 
@@ -86,18 +88,20 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 
     if (gwlId == +Browsers::browser1)
         SetWindowPos(hWnd, nullptr, 0, 0, ((rect.right - rect.left) / 2) - s_border,
-                     rect.bottom - rect.top, SWP_NOZORDER);
+                     (rect.bottom - rect.top) - s_bar, SWP_NOZORDER);
 
     if (gwlId == +Browsers::browser2)
         SetWindowPos(hWnd, nullptr, ((rect.right - rect.left) / 2) + s_border, 0,
-                     ((rect.right - rect.left) / 2) - s_border, rect.bottom - rect.top,
+                     ((rect.right - rect.left) / 2) - s_border, (rect.bottom - rect.top) - s_bar,
                      SWP_NOZORDER);
 
-    // if (gwlId == +Browsers::bar1)
-    //     SetWindowPos(hWnd, nullptr, 0, panelY, width, panelHeight, SWP_NOZORDER);
+    if (gwlId == +Browsers::bar1)
+        SetWindowPos(hWnd, nullptr, 0, rect.bottom - s_bar,
+                     ((rect.right - rect.left) / 2) - s_border, s_bar, SWP_NOZORDER);
 
-    // if (gwlId == +Browsers::bar2)
-    //     SetWindowPos(hWnd, nullptr, rightX, panelY, width, panelHeight, SWP_NOZORDER);
+    if (gwlId == +Browsers::bar2)
+        SetWindowPos(hWnd, nullptr, ((rect.right - rect.left) / 2) + s_border, rect.bottom - s_bar,
+                     ((rect.right - rect.left) / 2) - s_border, s_bar, SWP_NOZORDER);
 
     return TRUE;
 }
