@@ -75,7 +75,7 @@ auto Window::on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
     GetClientRect(hWnd, &rect);
     // auto position{glow::window::rect_to_position(rect)};
     EnumChildWindows(hWnd, EnumChildProc, std::bit_cast<LPARAM>(&rect));
-    Sleep(1);
+    // Sleep(1);
 
     return 0;
 }
@@ -93,7 +93,7 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     auto rightX{width + (border * 2)};
     auto panelY{position.height - panelHeight};
 
-    glow::console::debug(std::to_string(gwlId));
+    // glow::console::debug(std::to_string(gwlId));
 
     if (gwlId == +Browsers::browser1)
         SetWindowPos(hWnd, nullptr, 0, 0, width, height, SWP_NOZORDER);
