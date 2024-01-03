@@ -26,12 +26,12 @@ auto Window::operator()(bool show) -> void
     m_browser2 = std::make_unique<Browser>(+Browsers::browser2, m_hwnd.get());
     (*m_browser2)();
 
-    m_bar1 = std::make_unique<Browser>(+Browsers::bar1, m_hwnd.get(),
-                                       "https://localhost:8000/addressbar/index.html");
+    m_bar1 = std::make_unique<AddressBar>(+Browsers::bar1, m_hwnd.get(),
+                                          "https://localhost:8000/addressbar/index.html");
     (*m_bar1)();
 
-    m_bar2 = std::make_unique<Browser>(+Browsers::bar2, m_hwnd.get(),
-                                       "https://localhost:8000/addressbar/index.html");
+    m_bar2 = std::make_unique<AddressBar>(+Browsers::bar2, m_hwnd.get(),
+                                          "https://localhost:8000/addressbar/index.html");
     (*m_bar2)();
 }
 

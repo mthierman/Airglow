@@ -30,6 +30,7 @@ struct App final : public glow::window::Window
 
     virtual auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         -> LRESULT override;
+    auto on_key_down(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
     auto on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
 
     glow::window::GdiPlus m_gdiInit;

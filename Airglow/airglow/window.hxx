@@ -17,6 +17,7 @@
 #include <glow/window.hxx>
 
 #include <airglow/definitions.hxx>
+#include <airglow/addressbar.hxx>
 #include <airglow/browser.hxx>
 
 namespace airglow
@@ -41,12 +42,12 @@ struct Window final : public glow::window::Window
     constexpr static int s_bar{100};
 
     HWND m_app{nullptr};
-    int64_t m_id{glow::text::random_int64()};
+    const int64_t m_id{glow::text::random_int64()};
 
     std::unique_ptr<Browser> m_browser1;
     std::unique_ptr<Browser> m_browser2;
-    std::unique_ptr<Browser> m_bar1;
-    std::unique_ptr<Browser> m_bar2;
+    std::unique_ptr<AddressBar> m_bar1;
+    std::unique_ptr<AddressBar> m_bar2;
 };
 
 } // namespace airglow
