@@ -23,20 +23,6 @@
 namespace airglow::settings
 {
 
-struct Settings
-{
-    std::string m_name{config::name};
-    std::string m_version{config::version};
-    int m_width{};
-    int m_height{};
-};
-
-void to_json(nlohmann::json& j, const Settings& settings);
-void from_json(const nlohmann::json& j, Settings& settings);
-
-auto save_settings(Settings settings) -> void;
-auto load_settings(Settings settings) -> void;
-
 struct Window final : public glow::window::Window
 {
     using glow::window::Window::Window;
@@ -58,5 +44,19 @@ struct Window final : public glow::window::Window
 
     std::unique_ptr<airglow::Browser> m_browser;
 };
+
+struct Settings
+{
+    std::string m_name{config::name};
+    std::string m_version{config::version};
+    int m_width{};
+    int m_height{};
+};
+
+void to_json(nlohmann::json& j, const Settings& settings);
+void from_json(const nlohmann::json& j, Settings& settings);
+
+auto save_settings(Settings settings) -> void;
+auto load_settings(Settings settings) -> void;
 
 } // namespace airglow::settings
