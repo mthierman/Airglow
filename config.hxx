@@ -6,9 +6,14 @@
 // ╚─────────────────────╝
 // clang-format on
 
-// clang-format off
 #pragma once
 
-#define PROJECT_NAME "@PROJECT_NAME@"
-#define PROJECT_VERSION "@PROJECT_VERSION@"
-// clang-format on
+#include <string>
+
+namespace airglow::config
+{
+
+std::string name{"@PROJECT_NAME@"};
+std::string version{"@PROJECT_VERSION@"};
+
+} // namespace airglow::config

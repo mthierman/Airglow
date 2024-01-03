@@ -17,10 +17,13 @@
 
 #include <airglow/config.hxx>
 
+namespace airglow
+{
+
 struct Settings
 {
-    std::string m_name{PROJECT_NAME};
-    std::string m_version{PROJECT_VERSION};
+    std::string m_name{config::name};
+    std::string m_version{config::version};
     int m_width{};
     int m_height{};
 };
@@ -30,3 +33,5 @@ void from_json(const nlohmann::json& j, Settings& settings);
 
 auto save_settings(Settings settings) -> void;
 auto load_settings(Settings settings) -> void;
+
+} // namespace airglow

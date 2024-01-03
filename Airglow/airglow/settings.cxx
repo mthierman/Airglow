@@ -8,6 +8,9 @@
 
 #include <airglow/settings.hxx>
 
+namespace airglow
+{
+
 void to_json(nlohmann::json& j, const Settings& settings)
 {
     j = nlohmann::json{{"name", settings.m_name},
@@ -110,3 +113,5 @@ auto load_settings(Settings settings) -> void
         }
     }
 }
+
+} // namespace airglow
