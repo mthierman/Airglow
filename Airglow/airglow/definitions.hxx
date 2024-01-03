@@ -8,8 +8,14 @@
 
 #pragma once
 
+#define CUSTOM_CREATE_WINDOW (WM_APP + 1)
+#define CUSTOM_CLOSE_WINDOW (WM_APP + 2)
+
 #include <cstdint>
 #include <type_traits>
+
+namespace airglow
+{
 
 enum struct WebViews : int64_t
 {
@@ -20,8 +26,9 @@ enum struct WebViews : int64_t
     settings = 5,
 };
 
-// https://www.learncpp.com/cpp-tutorial/scoped-enumerations-enum-classes/
 constexpr auto operator+(WebViews w) noexcept
 {
     return static_cast<std::underlying_type_t<WebViews>>(w);
 }
+
+} // namespace Airglow

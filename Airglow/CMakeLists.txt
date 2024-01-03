@@ -24,7 +24,7 @@ target_sources(
            FILES
            ${CMAKE_CURRENT_BINARY_DIR}/config/airglow/config.hxx
            airglow/app.hxx
-           airglow/webviews.hxx
+           airglow/definitions.hxx
 )
 
 target_include_directories(
