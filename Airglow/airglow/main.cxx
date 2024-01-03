@@ -11,7 +11,6 @@
 #include <airglow/window.hxx>
 
 auto run() -> int;
-auto run_server() -> int;
 
 auto main() -> int
 {
@@ -42,24 +41,4 @@ auto run() -> int
     window2();
 
     return glow::window::message_loop();
-}
-
-auto run_server() -> int
-{
-    std::println("Starting server...");
-
-    STARTUPINFOA si{sizeof(STARTUPINFOA)};
-    PROCESS_INFORMATION pi{};
-
-    auto server{(glow::filesystem::portable() / "server.exe").string()};
-    auto pServer{server.data()};
-
-    std::println("Server path: {}", server);
-
-    CreateProcessA(pServer, nullptr, nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi);
-    WaitForSingleObject(pi.hProcess, INFINITE);
-    CloseHandle(pi.hProcess);
-    CloseHandle(pi.hThread);
-
-    return 0;
 }
