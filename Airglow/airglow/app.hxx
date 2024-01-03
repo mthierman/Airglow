@@ -47,6 +47,8 @@ struct Window final : public glow::window::Window
 
     Window(HWND app, std::string name);
 
+    virtual auto operator()(bool show = true) -> void override;
+
     virtual auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         -> LRESULT override;
     auto on_create() -> int;

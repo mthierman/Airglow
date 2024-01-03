@@ -34,15 +34,9 @@ auto run() -> int
 
     airglow::Window window1{app.m_hwnd.get(), "window1"};
     window1();
-    window1.dwm_caption_color(false);
-    window1.dwm_dark_mode(true);
-    window1.dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
 
     airglow::Window window2{app.m_hwnd.get(), "window2"};
     window2();
-    window2.dwm_caption_color(false);
-    window2.dwm_dark_mode(true);
-    window2.dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
 
     return glow::window::message_loop();
 }

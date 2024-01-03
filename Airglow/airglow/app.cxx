@@ -57,6 +57,14 @@ auto App::on_notify(LPARAM lParam) -> int
 
 Window::Window(HWND app, std::string name) : m_app{app} {}
 
+auto Window::operator()(bool show) -> void
+{
+    glow::window::Window::operator()(show);
+    dwm_caption_color(false);
+    dwm_dark_mode(true);
+    dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
+}
+
 auto Window::handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     switch (uMsg)
