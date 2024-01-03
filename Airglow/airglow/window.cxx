@@ -84,15 +84,14 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     auto gwlId{static_cast<int64_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
     auto rect{*std::bit_cast<RECT*>(lParam)};
 
-    auto border{2};
-
     if (gwlId == +Browsers::browser1)
-        SetWindowPos(hWnd, nullptr, 0, 0, ((rect.right - rect.left) / 2) - border,
+        SetWindowPos(hWnd, nullptr, 0, 0, ((rect.right - rect.left) / 2) - s_border,
                      rect.bottom - rect.top, SWP_NOZORDER);
 
     if (gwlId == +Browsers::browser2)
-        SetWindowPos(hWnd, nullptr, ((rect.right - rect.left) / 2) + border, 0,
-                     ((rect.right - rect.left) / 2) - border, rect.bottom - rect.top, SWP_NOZORDER);
+        SetWindowPos(hWnd, nullptr, ((rect.right - rect.left) / 2) + s_border, 0,
+                     ((rect.right - rect.left) / 2) - s_border, rect.bottom - rect.top,
+                     SWP_NOZORDER);
 
     // if (gwlId == +Browsers::bar1)
     //     SetWindowPos(hWnd, nullptr, 0, panelY, width, panelHeight, SWP_NOZORDER);
