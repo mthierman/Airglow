@@ -76,7 +76,7 @@ auto Window::on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
     RECT rect{0};
     GetClientRect(hWnd, &rect);
     EnumChildWindows(hWnd, EnumChildProc, std::bit_cast<LPARAM>(&rect));
-    Sleep(1);
+    // Sleep(1);
 
     return 0;
 }
@@ -86,22 +86,66 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     auto gwlId{static_cast<int64_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
     auto rect{*std::bit_cast<RECT*>(lParam)};
 
-    if (gwlId == +Browsers::browser1)
-        SetWindowPos(hWnd, nullptr, 0, 0, ((rect.right - rect.left) / 2) - s_border,
-                     (rect.bottom - rect.top) - s_bar, SWP_NOZORDER);
+    auto defer{true};
 
-    if (gwlId == +Browsers::browser2)
-        SetWindowPos(hWnd, nullptr, ((rect.right - rect.left) / 2) + s_border, 0,
-                     ((rect.right - rect.left) / 2) - s_border, (rect.bottom - rect.top) - s_bar,
-                     SWP_NOZORDER);
+    if (defer)
+    {
+        auto hdwp{BeginDeferWindowPos(4)};
 
-    if (gwlId == +Browsers::bar1)
-        SetWindowPos(hWnd, nullptr, 0, rect.bottom - s_bar,
-                     ((rect.right - rect.left) / 2) - s_border, s_bar, SWP_NOZORDER);
+        if (gwlId == +Browsers::browser1)
+            if (hdwp)
+                hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, 0,
+                                      ((rect.right - rect.left) / 2) - s_border,
+                                      (rect.bottom - rect.top) - s_bar,
+                                      SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
+                                          SWP_NOREDRAW | SWP_NOCOPYBITS);
 
-    if (gwlId == +Browsers::bar2)
-        SetWindowPos(hWnd, nullptr, ((rect.right - rect.left) / 2) + s_border, rect.bottom - s_bar,
-                     ((rect.right - rect.left) / 2) - s_border, s_bar, SWP_NOZORDER);
+        if (gwlId == +Browsers::browser2)
+            if (hdwp)
+                hdwp = DeferWindowPos(
+                    hdwp, hWnd, nullptr, ((rect.right - rect.left) / 2) + s_border, 0,
+                    ((rect.right - rect.left) / 2) - s_border, (rect.bottom - rect.top) - s_bar,
+                    SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOREDRAW |
+                        SWP_NOCOPYBITS);
+
+        if (gwlId == +Browsers::bar1)
+            if (hdwp)
+                hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, rect.bottom - s_bar,
+                                      ((rect.right - rect.left) / 2) - s_border, s_bar,
+                                      SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
+                                          SWP_NOREDRAW | SWP_NOCOPYBITS);
+
+        if (gwlId == +Browsers::bar2)
+            if (hdwp)
+                hdwp = DeferWindowPos(
+                    hdwp, hWnd, nullptr, ((rect.right - rect.left) / 2) + s_border,
+                    rect.bottom - s_bar, ((rect.right - rect.left) / 2) - s_border, s_bar,
+                    SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOREDRAW |
+                        SWP_NOCOPYBITS);
+
+        if (hdwp) EndDeferWindowPos(hdwp);
+    }
+
+    else
+    {
+        if (gwlId == +Browsers::browser1)
+            SetWindowPos(hWnd, nullptr, 0, 0, ((rect.right - rect.left) / 2) - s_border,
+                         (rect.bottom - rect.top) - s_bar, SWP_NOZORDER);
+
+        if (gwlId == +Browsers::browser2)
+            SetWindowPos(hWnd, nullptr, ((rect.right - rect.left) / 2) + s_border, 0,
+                         ((rect.right - rect.left) / 2) - s_border,
+                         (rect.bottom - rect.top) - s_bar, SWP_NOZORDER);
+
+        if (gwlId == +Browsers::bar1)
+            SetWindowPos(hWnd, nullptr, 0, rect.bottom - s_bar,
+                         ((rect.right - rect.left) / 2) - s_border, s_bar, SWP_NOZORDER);
+
+        if (gwlId == +Browsers::bar2)
+            SetWindowPos(hWnd, nullptr, ((rect.right - rect.left) / 2) + s_border,
+                         rect.bottom - s_bar, ((rect.right - rect.left) / 2) - s_border, s_bar,
+                         SWP_NOZORDER);
+    }
 
     return TRUE;
 }
