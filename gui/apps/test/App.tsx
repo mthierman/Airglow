@@ -1,6 +1,14 @@
+// https://www.freecodecamp.org/news/how-to-build-forms-in-react/
 import * as url from "@libs/url";
 import { SyntheticEvent } from "react";
 import { useState } from "react";
+
+if (window.chrome.webview) {
+    window.chrome.webview.addEventListener("message", (event: Event) => {
+        const data = (event as MessageEvent).data;
+        console.log(data);
+    });
+}
 
 export default function App() {
     const [mainUrl, setMainUrl] = useState("");
