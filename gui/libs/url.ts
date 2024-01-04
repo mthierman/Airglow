@@ -13,8 +13,8 @@ export const tests = {
 export const values = Object.values(tests);
 export const searchEngine = "https://www.google.com/search?q=";
 
-export const getTrimmed = (input: string) => {
-    let trim = input.trim();
+export const trimInput = (input: string) => {
+    const trim = input.trim();
 
     if (trim.startsWith("http://") || trim.startsWith("https://")) {
         return trim;
@@ -26,14 +26,14 @@ export const getTrimmed = (input: string) => {
     }
 };
 
-export const parseUrl = (input: string): URL => {
-    let trim = input.trim();
+export const parseInput = (input: string): URL => {
+    const trim = input.trim();
     let url: URL;
 
     if (URL.canParse(trim)) {
         url = new URL(trim);
     } else {
-        url = parseUrl(`${searchEngine}${encodeURIComponent(trim)}`);
+        url = parseInput(`${searchEngine}${encodeURIComponent(trim)}`);
     }
 
     return url;
@@ -50,4 +50,8 @@ export const getResponse = async (input: string) => {
     } catch (error) {
         return false;
     }
+};
+
+export const parseUrl = (input: string) => {
+    return parseInput(trimInput(input));
 };

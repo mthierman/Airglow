@@ -1,6 +1,6 @@
 import * as url from "./url";
 
-let trim = url.getTrimmed(url.tests.spaces);
+let trim = url.trimInput(url.tests.spaces);
 console.log(trim);
 
 let parse = url.parseUrl(trim);
