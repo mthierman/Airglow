@@ -9,7 +9,9 @@ export default function App() {
         const rawData = new FormData(e.target);
         const data = Object.fromEntries(rawData.entries());
 
-        if (data.mainUrl.toString() != "") {
+        console.log(data.mainUrl);
+
+        if (data.mainUrl != "") {
             console.log(data.mainUrl);
             // window.chrome.webview.postMessage({
             //     mainCurrentPage: data.mainCurrentPage.toString().trim(),

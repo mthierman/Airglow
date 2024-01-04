@@ -82,7 +82,7 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     auto gwlId{static_cast<int64_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
     auto rect{*std::bit_cast<RECT*>(lParam)};
 
-    auto defer{true};
+    auto defer{false};
 
     if (defer)
     {
