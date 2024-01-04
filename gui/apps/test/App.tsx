@@ -1,4 +1,4 @@
-import "./test.css";
+import * as url from "@libs/url";
 
 export default function App() {
     const handleForm = (e: any) => {
@@ -27,24 +27,22 @@ export default function App() {
     };
 
     return (
-        <div>
-            <form
-                name="url"
-                id="url"
-                method="post"
-                onSubmit={handleForm}
-                autoComplete="off"
-                spellCheck="false">
-                <label>
-                    <input type="text" name="mainUrl" id="mainUrl"></input>
-                </label>
+        <form
+            name="url"
+            id="url"
+            method="post"
+            onSubmit={handleForm}
+            autoComplete="off"
+            spellCheck="false">
+            <label>
+                <input type="text" name="mainUrl" id="mainUrl"></input>
+            </label>
 
-                <label>
-                    <input type="text" name="sideUrl" id="sideUrl"></input>
-                </label>
+            <label>
+                <input type="text" name="sideUrl" id="sideUrl"></input>
+            </label>
 
-                <input type="submit" hidden />
-            </form>
-        </div>
+            <input type="submit" hidden />
+        </form>
     );
 }

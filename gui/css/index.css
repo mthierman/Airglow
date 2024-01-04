@@ -1,25 +1,19 @@
-/* @font-face {
-    font-family: "Noto Color Emoji";
-    src: url("/fonts/NotoColorEmoji-Regular.ttf") format("truetype");
-    font-style: normal;
-    font-weight: normal;
-}
-
-@font-face {
-    font-family: "Noto Emoji";
-    src: url("/fonts/NotoEmoji-VariableFont_wght.ttf") format("woff");
-    font-style: normal;
-    font-weight: normal;
-} */
-
-html {
-    @apply h-full w-full;
-}
-
 body {
-    @apply grid min-h-full min-w-full grid-cols-1 grid-rows-1;
+    @apply bg-transparent;
 }
 
 #root {
-    @apply grid place-content-center;
+    @apply bg-transparent;
+}
+
+form {
+    @apply flex gap-2 bg-transparent p-2;
+}
+
+label {
+    @apply flex flex-grow bg-transparent;
+}
+
+input {
+    @apply w-full rounded-lg bg-flexoki-base-paper p-2 shadow-md shadow-flexoki-base-50 outline-none dark:bg-flexoki-base-950 dark:shadow-flexoki-base-black;
 }

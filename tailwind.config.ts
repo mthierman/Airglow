@@ -1,5 +1,5 @@
 import type { Config } from "tailwindcss";
-import Flexoki from "./flexoki";
+import Flexoki from "./gui/libs/flexoki";
 
 export default {
     content: ["./gui/**/*.{html,js,jsx,ts,tsx}"],

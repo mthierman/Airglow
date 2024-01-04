@@ -21,6 +21,7 @@ const defaults: UserConfig = {
         alias: {
             "@components": path.resolve("gui/components"),
             "@css": path.resolve("gui/css"),
+            "@libs": path.resolve("gui/libs"),
         },
     },
 };
