@@ -5,15 +5,3 @@ body {
 #root {
     @apply bg-transparent;
 }
-
-form {
-    @apply flex gap-2 bg-transparent p-2;
-}
-
-label {
-    @apply flex flex-grow bg-transparent;
-}
-
-input {
-    @apply w-full rounded-lg bg-flexoki-base-paper p-2 shadow-md shadow-flexoki-base-50 outline-none dark:bg-flexoki-base-950 dark:shadow-flexoki-base-black;
-}

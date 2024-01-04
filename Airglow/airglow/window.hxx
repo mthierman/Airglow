@@ -39,7 +39,7 @@ struct Window final : public glow::window::Window
 
     static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
     constexpr static int s_border{2};
-    constexpr static int s_bar{100};
+    constexpr static int s_bar{65};
 
     HWND m_app{nullptr};
     const int64_t m_id{glow::text::random_int64()};

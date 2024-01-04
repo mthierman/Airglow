@@ -26,13 +26,9 @@ auto Window::operator()(bool show) -> void
     m_browser2 = std::make_unique<Browser>(+Browsers::browser2, m_hwnd.get());
     (*m_browser2)();
 
-    m_bar1 = std::make_unique<AddressBar>(+Browsers::bar1, m_hwnd.get(),
-                                          "https://localhost:8000/addressbar/index.html");
+    m_bar1 = std::make_unique<AddressBar>(+Browsers::addressBar, m_hwnd.get(),
+                                          "https://localhost:8000/test/index.html");
     (*m_bar1)();
-
-    m_bar2 = std::make_unique<AddressBar>(+Browsers::bar2, m_hwnd.get(),
-                                          "https://localhost:8000/addressbar/index.html");
-    (*m_bar2)();
 }
 
 auto Window::handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
@@ -108,20 +104,12 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
                     SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOREDRAW |
                         SWP_NOCOPYBITS);
 
-        if (gwlId == +Browsers::bar1)
+        if (gwlId == +Browsers::addressBar)
             if (hdwp)
                 hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, rect.bottom - s_bar,
-                                      ((rect.right - rect.left) / 2) - s_border, s_bar,
+                                      rect.right - rect.left, s_bar,
                                       SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
                                           SWP_NOREDRAW | SWP_NOCOPYBITS);
-
-        if (gwlId == +Browsers::bar2)
-            if (hdwp)
-                hdwp = DeferWindowPos(
-                    hdwp, hWnd, nullptr, ((rect.right - rect.left) / 2) + s_border,
-                    rect.bottom - s_bar, ((rect.right - rect.left) / 2) - s_border, s_bar,
-                    SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOREDRAW |
-                        SWP_NOCOPYBITS);
 
         if (hdwp) EndDeferWindowPos(hdwp);
     }
@@ -137,13 +125,8 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
                          ((rect.right - rect.left) / 2) - s_border,
                          (rect.bottom - rect.top) - s_bar, SWP_NOZORDER);
 
-        if (gwlId == +Browsers::bar1)
-            SetWindowPos(hWnd, nullptr, 0, rect.bottom - s_bar,
-                         ((rect.right - rect.left) / 2) - s_border, s_bar, SWP_NOZORDER);
-
-        if (gwlId == +Browsers::bar2)
-            SetWindowPos(hWnd, nullptr, ((rect.right - rect.left) / 2) + s_border,
-                         rect.bottom - s_bar, ((rect.right - rect.left) / 2) - s_border, s_bar,
+        if (gwlId == +Browsers::addressBar)
+            SetWindowPos(hWnd, nullptr, 0, rect.bottom - s_bar, rect.right - rect.left, s_bar,
                          SWP_NOZORDER);
     }
 

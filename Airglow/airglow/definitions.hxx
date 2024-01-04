@@ -22,8 +22,7 @@ enum struct Browsers : int64_t
     settings = 1,
     browser1 = 2,
     browser2 = 3,
-    bar1 = 4,
-    bar2 = 5,
+    addressBar = 4,
 };
 
 constexpr auto operator+(Browsers browsers) noexcept
