@@ -1,17 +1,24 @@
 import * as url from "@libs/url";
+import { SyntheticEvent } from "react";
+import { useState } from "react";
 
 export default function App() {
-    const handleMain = (e: any) => {
-        e.preventDefault();
+    const [mainUrl, setMainUrl] = useState("");
 
-        const form = document.getElementById("mainForm") as HTMLFormElement;
+    const handleMainChange = (event: SyntheticEvent) => {
+        let input = event.target as HTMLInputElement;
+        setMainUrl(input.value);
+    };
 
-        const rawData = new FormData(e.target);
-        const data = Object.fromEntries(rawData.entries());
+    const handleMainSubmit = (event: SyntheticEvent) => {
+        event.preventDefault();
 
-        console.log(data.mainUrl);
+        let address = url.getTrimmed(mainUrl);
+        console.log(address);
 
-        form.reset();
+        console.log(mainUrl);
+
+        (document.getElementById("mainForm") as HTMLFormElement).reset();
     };
 
     const handleSide = (e: any) => {
@@ -35,14 +42,16 @@ export default function App() {
                 name="mainForm"
                 id="mainForm"
                 method="post"
-                onSubmit={handleMain}
+                onSubmit={handleMainSubmit}
                 autoComplete="off"
                 spellCheck="false">
                 <input
                     className="w-full rounded-lg bg-flexoki-base-paper p-2 shadow-md shadow-flexoki-base-50 outline-none dark:bg-flexoki-base-950 dark:shadow-flexoki-base-black"
                     type="text"
                     name="mainUrl"
-                    id="mainUrl"></input>
+                    id="mainUrl"
+                    value={mainUrl}
+                    onChange={handleMainChange}></input>
             </form>
 
             <form
