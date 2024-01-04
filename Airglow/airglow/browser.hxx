@@ -19,7 +19,6 @@ struct Browser final : public glow::window::WebView
 
     auto initialized() -> void override;
 
-    auto web_message_received_handler() -> void override;
     auto accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressedEventArgs* args)
         -> void override;
 };

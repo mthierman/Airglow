@@ -32,8 +32,6 @@ auto Browser::initialized() -> void
     // m_settings8->put_IsZoomControlEnabled(true);
 }
 
-auto Browser::web_message_received_handler() -> void {}
-
 auto Browser::accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressedEventArgs* args)
     -> void
 {

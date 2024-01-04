@@ -13,15 +13,17 @@
 namespace airglow
 {
 
-struct AddressBar final : public glow::window::WebView
+struct URL final : public glow::window::WebView
 {
     using glow::window::WebView::WebView;
 
     auto initialized() -> void override;
 
-    auto web_message_received_handler() -> void override;
-    auto accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressedEventArgs* args)
-        -> void override;
+    auto web_message_received_handler(ICoreWebView2* sender,
+                                      ICoreWebView2WebMessageReceivedEventArgs* args)
+        -> HRESULT override;
+
+    std::wstring m_source{L"https://localhost:8000/url/index.html"};
 };
 
 } // namespace airglow

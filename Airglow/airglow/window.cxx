@@ -26,9 +26,9 @@ auto Window::operator()(bool show) -> void
     m_browser2 = std::make_unique<Browser>(+Browsers::browser2, m_hwnd.get());
     (*m_browser2)();
 
-    m_addressBar = std::make_unique<AddressBar>(+Browsers::addressBar, m_hwnd.get(),
-                                                "https://localhost:8000/test/index.html");
-    (*m_addressBar)();
+    m_url = std::make_unique<URL>(+Browsers::url, m_hwnd.get(),
+                                  "https://localhost:8000/url/index.html");
+    (*m_url)();
 }
 
 auto Window::handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
@@ -104,7 +104,7 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
                     SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOREDRAW |
                         SWP_NOCOPYBITS);
 
-        if (gwlId == +Browsers::addressBar)
+        if (gwlId == +Browsers::url)
             if (hdwp)
                 hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, rect.bottom - s_bar,
                                       rect.right - rect.left, s_bar,
@@ -125,7 +125,7 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
                          ((rect.right - rect.left) / 2) - s_border,
                          (rect.bottom - rect.top) - s_bar, SWP_NOZORDER);
 
-        if (gwlId == +Browsers::addressBar)
+        if (gwlId == +Browsers::url)
             SetWindowPos(hWnd, nullptr, 0, rect.bottom - s_bar, rect.right - rect.left, s_bar,
                          SWP_NOZORDER);
     }

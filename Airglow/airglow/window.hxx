@@ -16,9 +16,9 @@
 #include <glow/text.hxx>
 #include <glow/window.hxx>
 
-#include <airglow/definitions.hxx>
-#include <airglow/addressbar.hxx>
 #include <airglow/browser.hxx>
+#include <airglow/definitions.hxx>
+#include <airglow/url.hxx>
 
 namespace airglow
 {
@@ -46,7 +46,7 @@ struct Window final : public glow::window::Window
 
     std::unique_ptr<Browser> m_browser1;
     std::unique_ptr<Browser> m_browser2;
-    std::unique_ptr<AddressBar> m_addressBar;
+    std::unique_ptr<URL> m_url;
 };
 
 } // namespace airglow
