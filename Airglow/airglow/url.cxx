@@ -11,11 +11,6 @@
 namespace airglow
 {
 
-auto URL::operator()(bool show) -> void
-{
-    glow::window::Window::operator()(show);
-}
-
 auto URL::initialized() -> void
 {
     m_webView.m_settings8->put_AreDefaultContextMenusEnabled(false);

@@ -23,6 +23,7 @@ auto Window::operator()(bool show) -> void
     m_browser = std::make_unique<airglow::Browser>(+Browsers::settings, m_hwnd.get(),
                                                    "https://localhost:8000/settings/index.html");
     (*m_browser)();
+    m_browser->create();
 }
 
 auto Window::handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
@@ -213,7 +214,8 @@ auto load_settings(Settings settings) -> void
 //         return std::filesystem::path{};
 
 //     std::filesystem::path data =
-//         std::wstring(buffer) + std::filesystem::path::preferred_separator + to_wstring("Airglow");
+//         std::wstring(buffer) + std::filesystem::path::preferred_separator +
+//         to_wstring("Airglow");
 
 //     CoTaskMemFree(buffer);
 

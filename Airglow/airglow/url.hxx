@@ -19,8 +19,6 @@ struct URL final : public glow::window::WebView
 {
     using glow::window::WebView::WebView;
 
-    virtual auto operator()(bool show = true) -> void override;
-
     auto initialized() -> void override;
 
     auto web_message_received_handler(ICoreWebView2* sender,
