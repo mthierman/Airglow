@@ -22,6 +22,7 @@ export default function App() {
     const handleMainSubmit = (event: SyntheticEvent) => {
         event.preventDefault();
         setMainUrl(url.parseUrl(mainUrl).href);
+        window.chrome.webview.postMessage({ mainUrl: mainUrl });
     };
 
     const handleSideChange = (event: SyntheticEvent) => {
@@ -32,6 +33,11 @@ export default function App() {
     const handleSideSubmit = (event: SyntheticEvent) => {
         event.preventDefault();
         setSideUrl(url.parseUrl(sideUrl).href);
+        window.chrome.webview.postMessage({ sideUrl: sideUrl });
+    };
+
+    const handleClipboard = async (url: string) => {
+        await navigator.clipboard.writeText(url);
     };
 
     return (
