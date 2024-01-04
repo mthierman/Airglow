@@ -10,12 +10,16 @@
 
 #include <glow/window.hxx>
 
+#include <airglow/definitions.hxx>
+
 namespace airglow
 {
 
 struct URL final : public glow::window::WebView
 {
     using glow::window::WebView::WebView;
+
+    virtual auto operator()(bool show = true) -> void override;
 
     auto initialized() -> void override;
 

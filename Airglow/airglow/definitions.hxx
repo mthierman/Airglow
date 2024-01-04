@@ -10,6 +10,8 @@
 
 #define CUSTOM_CREATE_WINDOW (WM_APP + 1)
 #define CUSTOM_CLOSE_WINDOW (WM_APP + 2)
+#define CUSTOM_MAINURL (WM_APP + 3)
+#define CUSTOM_SIDEURL (WM_APP + 4)
 
 #include <cstdint>
 #include <type_traits>

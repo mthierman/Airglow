@@ -11,6 +11,11 @@
 namespace airglow
 {
 
+auto URL::operator()(bool show) -> void
+{
+    glow::window::Window::operator()(show);
+}
+
 auto URL::initialized() -> void
 {
     m_webView.m_settings8->put_AreDefaultContextMenusEnabled(false);
@@ -24,6 +29,11 @@ auto URL::web_message_received_handler(ICoreWebView2* sender,
     // https://learn.microsoft.com/en-us/microsoft-edge/webview2/concepts/win32-api-conventions
     // https://learn.microsoft.com/en-us/microsoft-edge/webview2/reference/win32/icorewebview2?view=webview2-1.0.2210.55#add_webmessagereceived
     // https://learn.microsoft.com/en-us/microsoft-edge/webview2/reference/win32/icorewebview2webmessagereceivedeventargs?view=webview2-1.0.2210.55#trygetwebmessageasstring
+
+    NMHDR nmhdr;
+    nmhdr.code = CUSTOM_MAINURL;
+    nmhdr.hwndFrom = m_hwnd.get();
+    nmhdr.idFrom = m_id;
 
     wil::unique_cotaskmem_string source;
     auto getSource{args->get_Source(&source)};
@@ -41,6 +51,9 @@ auto URL::web_message_received_handler(ICoreWebView2* sender,
     auto parse{nlohmann::json::parse(message)};
     auto mainUrl{parse["mainUrl"].get<std::string>()};
     glow::console::debug(mainUrl);
+    // m_webView.m_core20->Navigate(glow::text::widen(mainUrl).c_str());
+    // SendMessageA(m_parent, WM_NOTIFY, 0, mainUrl);
+    // SendMessageA(m_app, WM_NOTIFY, nmhdr.idFrom, std::bit_cast<LPARAM>(&nmhdr));
 
     // std::wstring message{messageRaw.get()};
     // if (std::wstring_view(messageRaw.get()) == std::wstring_view(L"mainUrl"))
