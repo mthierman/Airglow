@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-// import { Button } from "@components/Button";
 
 export default function App() {
     const [colors, setColors] = useState({

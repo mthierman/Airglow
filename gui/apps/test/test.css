@@ -1,0 +1,15 @@
+body {
+    @apply bg-sky-950 text-white;
+}
+
+form {
+    @apply grid gap-2 bg-sky-700 p-2;
+}
+
+label {
+    @apply grid gap-2 p-2;
+}
+
+input {
+    @apply grid bg-sky-950 p-2;
+}
