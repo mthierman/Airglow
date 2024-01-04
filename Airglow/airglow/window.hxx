@@ -46,8 +46,7 @@ struct Window final : public glow::window::Window
 
     std::unique_ptr<Browser> m_browser1;
     std::unique_ptr<Browser> m_browser2;
-    std::unique_ptr<AddressBar> m_bar1;
-    std::unique_ptr<AddressBar> m_bar2;
+    std::unique_ptr<AddressBar> m_addressBar;
 };
 
 } // namespace airglow

@@ -26,9 +26,9 @@ auto Window::operator()(bool show) -> void
     m_browser2 = std::make_unique<Browser>(+Browsers::browser2, m_hwnd.get());
     (*m_browser2)();
 
-    m_bar1 = std::make_unique<AddressBar>(+Browsers::addressBar, m_hwnd.get(),
-                                          "https://localhost:8000/test/index.html");
-    (*m_bar1)();
+    m_addressBar = std::make_unique<AddressBar>(+Browsers::addressBar, m_hwnd.get(),
+                                                "https://localhost:8000/test/index.html");
+    (*m_addressBar)();
 }
 
 auto Window::handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
