@@ -17,10 +17,8 @@ struct Browser final : public glow::window::WebView
 {
     using glow::window::WebView::WebView;
 
-    auto initialized() -> void override;
-
     auto accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressedEventArgs* args)
-        -> void override;
+        -> HRESULT override;
 };
 
 } // namespace airglow

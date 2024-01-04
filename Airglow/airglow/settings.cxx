@@ -23,7 +23,7 @@ auto Window::operator()(bool show) -> void
     m_browser = std::make_unique<airglow::Browser>(+Browsers::settings, m_hwnd.get(),
                                                    "https://localhost:8000/settings/index.html");
     (*m_browser)();
-    m_browser->create();
+    m_browser->create_webview();
 }
 
 auto Window::handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT

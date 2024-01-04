@@ -22,16 +22,16 @@ auto Window::operator()(bool show) -> void
 
     m_browser1 = std::make_unique<Browser>(+Browsers::browser1, m_hwnd.get());
     (*m_browser1)();
-    m_browser1->create();
+    m_browser1->create_webview();
 
     m_browser2 = std::make_unique<Browser>(+Browsers::browser2, m_hwnd.get());
     (*m_browser2)();
-    m_browser2->create();
+    m_browser2->create_webview();
 
     m_url = std::make_unique<URL>(+Browsers::url, m_hwnd.get(),
                                   "https://localhost:8000/url/index.html");
     (*m_url)();
-    m_url->create();
+    m_url->create_webview();
 }
 
 auto Window::handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT

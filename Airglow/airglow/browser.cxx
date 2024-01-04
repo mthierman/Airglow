@@ -11,29 +11,8 @@
 namespace airglow
 {
 
-auto Browser::initialized() -> void
-{
-    // m_settings8->put_AreBrowserAcceleratorKeysEnabled(true);
-    // m_settings8->put_AreDefaultContextMenusEnabled(true);
-    // m_settings8->put_AreDefaultScriptDialogsEnabled(true);
-    // m_settings8->put_AreDevToolsEnabled(true);
-    // m_settings8->put_AreHostObjectsAllowed(true);
-    // m_settings8->put_HiddenPdfToolbarItems(
-    //     COREWEBVIEW2_PDF_TOOLBAR_ITEMS::COREWEBVIEW2_PDF_TOOLBAR_ITEMS_NONE);
-    // m_settings8->put_IsBuiltInErrorPageEnabled(true);
-    // m_settings8->put_IsGeneralAutofillEnabled(true);
-    // m_settings8->put_IsPasswordAutosaveEnabled(true);
-    // m_settings8->put_IsPinchZoomEnabled(true);
-    // m_settings8->put_IsReputationCheckingRequired(true);
-    // m_settings8->put_IsScriptEnabled(true);
-    // m_settings8->put_IsStatusBarEnabled(true);
-    // m_settings8->put_IsSwipeNavigationEnabled(true);
-    // m_settings8->put_IsWebMessageEnabled(true);
-    // m_settings8->put_IsZoomControlEnabled(true);
-}
-
 auto Browser::accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressedEventArgs* args)
-    -> void
+    -> HRESULT
 {
     COREWEBVIEW2_KEY_EVENT_KIND kind{};
     args->get_KeyEventKind(&kind);
@@ -124,6 +103,8 @@ auto Browser::accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressed
             break;
         }
     }
+
+    return S_OK;
 }
 
 } // namespace airglow
