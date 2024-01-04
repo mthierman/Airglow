@@ -1,5 +1,4 @@
-import { SyntheticEvent } from "react";
-import { useState } from "react";
+import { SyntheticEvent, useState, useRef } from "react";
 import * as url from "@libs/url";
 
 if (window.chrome.webview) {
@@ -10,11 +9,16 @@ if (window.chrome.webview) {
 }
 
 export default function App() {
+    const mainRef = useRef<HTMLInputElement | null>(null);
+    const sideRef = useRef<HTMLInputElement | null>(null);
     const [mainUrl, setMainUrl] = useState("");
     const [sideUrl, setSideUrl] = useState("");
 
     const handleChange = (event: SyntheticEvent) => {
         let input = event.target as HTMLInputElement;
+
+        console.log(mainRef.current?.value);
+        console.log(sideRef.current?.value);
 
         if (input.id === "mainUrl") {
             setMainUrl(input.value);
@@ -30,13 +34,21 @@ export default function App() {
         let input = event.target as HTMLFormElement;
 
         if (input.id === "mainForm") {
-            setMainUrl(url.parseUrl(mainUrl).href);
-            if (window.chrome.webview) window.chrome.webview.postMessage({ mainUrl: mainUrl });
+            if (mainRef.current?.value !== "") {
+                let parsed = url.parseUrl(mainRef.current?.value!).href;
+                setMainUrl(parsed);
+                console.log(parsed);
+                if (window.chrome.webview) window.chrome.webview.postMessage({ mainUrl: parsed });
+            }
         }
 
         if (input.id === "sideForm") {
-            setSideUrl(url.parseUrl(sideUrl).href);
-            if (window.chrome.webview) window.chrome.webview.postMessage({ sideUrl: sideUrl });
+            if (sideRef.current?.value !== "") {
+                let parsed = url.parseUrl(sideRef.current?.value!).href;
+                setSideUrl(parsed);
+                console.log(parsed);
+                if (window.chrome.webview) window.chrome.webview.postMessage({ sideUrl: parsed });
+            }
         }
     };
 
@@ -58,6 +70,7 @@ export default function App() {
                     type="text"
                     id="mainUrl"
                     value={mainUrl}
+                    ref={mainRef}
                     onChange={handleChange}></input>
             </form>
 
@@ -73,6 +86,7 @@ export default function App() {
                     type="text"
                     id="sideUrl"
                     value={sideUrl}
+                    ref={sideRef}
                     onChange={handleChange}></input>
             </form>
         </div>
