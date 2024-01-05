@@ -3,6 +3,8 @@ import * as url from "@libs/url";
 
 export default function App() {
     const containerRef = useRef<HTMLDivElement | null>(null);
+    const mainForm = useRef<HTMLFormElement | null>(null);
+    const sideForm = useRef<HTMLFormElement | null>(null);
     const [height, setHeight] = useState(0);
     const mainInput = useRef<HTMLInputElement | null>(null);
     const sideInput = useRef<HTMLInputElement | null>(null);
@@ -95,43 +97,61 @@ export default function App() {
         }
     });
 
+    useEffect(() => {
+        const form = mainForm.current;
+        if (form) {
+            form.addEventListener("focusout", () => {
+                mainInput.current?.blur();
+            });
+        }
+    });
+
+    useEffect(() => {
+        const form = sideForm.current;
+        if (form) {
+            form.addEventListener("focusout", () => {
+                sideInput.current?.blur();
+            });
+        }
+    });
+
     return (
         <div ref={containerRef} id="container" className="flex bg-transparent">
             <form
-                className="flex-grow"
+                className="flex flex-grow"
                 id="mainForm"
                 method="post"
                 onSubmit={handleSubmit}
+                ref={mainForm}
                 autoComplete="off"
                 spellCheck="false">
                 <input
-                    className="w-full text-ellipsis bg-transparent p-2 outline-none"
+                    className="flex-grow text-ellipsis bg-transparent p-2 outline-none"
                     type="text"
                     id="mainUrl"
                     value={main}
                     placeholder={mainUrlPlaceholder}
                     title={mainUrlPlaceholder}
                     ref={mainInput}
-                    // onClick={handleClick}
                     onChange={handleChange}></input>
             </form>
 
             <form
-                className="flex-grow"
+                className="flex flex-grow"
                 id="sideForm"
                 method="post"
                 onSubmit={handleSubmit}
+                ref={sideForm}
                 autoComplete="off"
                 spellCheck="false">
                 <input
-                    className="w-full text-ellipsis bg-transparent p-2 outline-none"
+                    className="flex-grow text-ellipsis bg-transparent p-2 outline-none"
                     type="text"
                     id="sideUrl"
                     value={side}
                     placeholder={sideUrlPlaceholder}
                     title={sideUrlPlaceholder}
                     ref={sideInput}
-                    // onClick={handleClick}
                     onChange={handleChange}></input>
             </form>
         </div>
