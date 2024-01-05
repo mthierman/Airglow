@@ -111,8 +111,8 @@ auto Browser::accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
 auto URL::initialized() -> void
 {
     m_webView.m_settings8->put_AreDefaultContextMenusEnabled(false);
-    m_webView.m_settings8->put_IsZoomControlEnabled(true);
-    m_webView.m_core20->OpenDevToolsWindow();
+    m_webView.m_settings8->put_IsZoomControlEnabled(false);
+    // m_webView.m_core20->OpenDevToolsWindow();
 }
 
 auto URL::web_message_received_handler(ICoreWebView2* sender,
