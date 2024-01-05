@@ -16,12 +16,6 @@ export default function App() {
         if (height) window.chrome.webview.postMessage({ height: height });
     });
 
-    // useEffect(() => {
-    //     console.log(main);
-    //     sessionStorage.setItem("main", main);
-    //     sessionStorage.setItem("side", side);
-    // }, [main]);
-
     if (window.chrome.webview) {
         window.chrome.webview.addEventListener("message", (event: Event) => {
             const data = (event as MessageEvent).data;
@@ -56,7 +50,6 @@ export default function App() {
             if (mainInput.current?.value !== "") {
                 let parsed = url.parseUrl(mainInput.current?.value!).href;
                 if (window.chrome.webview) window.chrome.webview.postMessage({ mainUrl: parsed });
-                // form.reset();
             }
         }
 
@@ -64,7 +57,6 @@ export default function App() {
             if (sideInput.current?.value !== "") {
                 let parsed = url.parseUrl(sideInput.current?.value!).href;
                 if (window.chrome.webview) window.chrome.webview.postMessage({ sideUrl: parsed });
-                // form.reset();
             }
         }
     };
@@ -85,9 +77,11 @@ export default function App() {
         }
     });
 
-    // const handleClipboard = async (url: string) => {
-    //     await navigator.clipboard.writeText(url);
-    // };
+    const handleClipboard = (event: SyntheticEvent) => {
+        // let input = event.target as HTMLInputElement;
+        // if (input.id === "main") navigator.clipboard.writeText(mainPlaceholder);
+        // if (input.id === "side") navigator.clipboard.writeText(sidePlaceholder);
+    };
 
     return (
         <div ref={containerRef} id="container" className="flex bg-transparent">
