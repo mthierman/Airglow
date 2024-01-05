@@ -4,17 +4,23 @@ import * as url from "@libs/url";
 export default function App() {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const [height, setHeight] = useState(0);
-    useEffect(() => {
-        setHeight(containerRef?.current?.offsetHeight!);
-        if (height) window.chrome.webview.postMessage({ height: height });
-    });
-
     const mainInput = useRef<HTMLInputElement | null>(null);
     const sideInput = useRef<HTMLInputElement | null>(null);
     const [main, setMain] = useState("");
     const [side, setSide] = useState("");
     const [mainUrlPlaceholder, setMainUrlPlaceholder] = useState("");
     const [sideUrlPlaceholder, setSideUrlPlaceholder] = useState("");
+
+    useEffect(() => {
+        setHeight(containerRef?.current?.offsetHeight!);
+        if (height) window.chrome.webview.postMessage({ height: height });
+    });
+
+    // useEffect(() => {
+    //     console.log(main);
+    //     sessionStorage.setItem("main", main);
+    //     sessionStorage.setItem("side", side);
+    // }, [main]);
 
     if (window.chrome.webview) {
         window.chrome.webview.addEventListener("message", (event: Event) => {
@@ -65,18 +71,17 @@ export default function App() {
 
     document.addEventListener("keydown", (event: KeyboardEvent) => {
         const key = event.key;
-        if (key === "Escape") {
-            switch (key) {
-                case "Escape":
-                    if (document.activeElement === mainInput.current) {
-                        mainInput.current!.value = mainUrlPlaceholder;
-                        break;
-                    }
-                    if (document.activeElement === sideInput.current) {
-                        sideInput.current!.value = sideUrlPlaceholder;
-                        break;
-                    }
-            }
+        if (event.ctrlKey && key === "r") event.preventDefault();
+        switch (key) {
+            case "Escape":
+                if (document.activeElement === mainInput.current) {
+                    mainInput.current!.value = mainUrlPlaceholder;
+                    break;
+                }
+                if (document.activeElement === sideInput.current) {
+                    sideInput.current!.value = sideUrlPlaceholder;
+                    break;
+                }
         }
     });
 
