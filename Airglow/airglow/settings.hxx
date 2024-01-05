@@ -18,7 +18,6 @@
 #include <airglow/browser.hxx>
 #include <airglow/config.hxx>
 #include <airglow/definitions.hxx>
-#include <airglow/settingsbrowser.hxx>
 
 namespace airglow::settings
 {

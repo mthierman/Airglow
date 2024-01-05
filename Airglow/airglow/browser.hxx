@@ -23,6 +23,19 @@ struct Browser : public glow::window::WebView
         -> HRESULT override;
 };
 
+struct URL final : public Browser
+{
+    using Browser::Browser;
+
+    auto initialized() -> void override;
+
+    auto web_message_received_handler(ICoreWebView2* sender,
+                                      ICoreWebView2WebMessageReceivedEventArgs* args)
+        -> HRESULT override;
+
+    std::wstring m_source{L"https://localhost:8000/url/index.html"};
+};
+
 struct MainBrowser final : public Browser
 {
     using Browser::Browser;
@@ -33,9 +46,6 @@ struct MainBrowser final : public Browser
     virtual auto navigation_starting_handler(ICoreWebView2* sender,
                                              ICoreWebView2NavigationStartingEventArgs* args)
         -> HRESULT override;
-    // virtual auto navigation_completed_handler(ICoreWebView2* sender,
-    //                                           ICoreWebView2NavigationCompletedEventArgs* args)
-    //     -> HRESULT override;
 };
 
 struct SideBrowser final : public Browser
@@ -48,9 +58,11 @@ struct SideBrowser final : public Browser
     virtual auto navigation_starting_handler(ICoreWebView2* sender,
                                              ICoreWebView2NavigationStartingEventArgs* args)
         -> HRESULT override;
-    // virtual auto navigation_completed_handler(ICoreWebView2* sender,
-    //                                           ICoreWebView2NavigationCompletedEventArgs* args)
-    //     -> HRESULT override;
+};
+
+struct SettingsBrowser final : public Browser
+{
+    using Browser::Browser;
 };
 
 } // namespace airglow

@@ -14,10 +14,7 @@ target_sources(
     Airglow
     PRIVATE airglow/browser.cxx
             airglow/main.cxx
-            airglow/messagewindow.cxx
             airglow/settings.cxx
-            airglow/settingsbrowser.cxx
-            airglow/url.cxx
             airglow/window.cxx
             ${AIRGLOW_RC}
             ${PROJECT_SOURCE_DIR}/Data/airglow.manifest
@@ -30,11 +27,8 @@ target_sources(
            ${CMAKE_CURRENT_BINARY_DIR}/config/airglow/config.hxx
            airglow/browser.hxx
            airglow/definitions.hxx
-           airglow/messagewindow.hxx
            airglow/server.hxx
            airglow/settings.hxx
-           airglow/settingsbrowser.hxx
-           airglow/url.hxx
            airglow/window.hxx
 )
 
