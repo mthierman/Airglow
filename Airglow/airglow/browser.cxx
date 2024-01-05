@@ -11,7 +11,8 @@
 namespace airglow
 {
 
-auto Browser::accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressedEventArgs* args)
+auto Browser::accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
+                                              ICoreWebView2AcceleratorKeyPressedEventArgs* args)
     -> HRESULT
 {
     COREWEBVIEW2_KEY_EVENT_KIND kind{};
@@ -103,6 +104,44 @@ auto Browser::accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressed
             break;
         }
     }
+
+    return S_OK;
+}
+
+auto MainBrowser::source_changed_handler(ICoreWebView2* sender,
+                                         ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
+{
+    wil::unique_cotaskmem_string uriRaw;
+    sender->get_Source(&uriRaw);
+
+    auto uri{glow::text::narrow(uriRaw.get())};
+    NotificationMsg nMsg;
+    nMsg.nmhdr.hwndFrom = m_hwnd.get();
+    nMsg.nmhdr.idFrom = m_id;
+    nMsg.nmhdr.code = CUSTOM_RECEIVE_MAINURL;
+    nMsg.message = uri;
+
+    glow::console::debug(uri);
+    // SendMessage();
+
+    return S_OK;
+}
+
+auto SideBrowser::source_changed_handler(ICoreWebView2* sender,
+                                         ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
+{
+    wil::unique_cotaskmem_string uriRaw;
+    sender->get_Source(&uriRaw);
+
+    auto uri{glow::text::narrow(uriRaw.get())};
+    NotificationMsg nMsg;
+    nMsg.nmhdr.hwndFrom = m_hwnd.get();
+    nMsg.nmhdr.idFrom = m_id;
+    nMsg.nmhdr.code = CUSTOM_RECEIVE_SIDEURL;
+    nMsg.message = uri;
+
+    glow::console::debug(uri);
+    // SendMessage();
 
     return S_OK;
 }

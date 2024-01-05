@@ -6,25 +6,9 @@
 // ╚─────────────────────╝
 // clang-format on
 
-#pragma once
-
-#include <glow/window.hxx>
-#include <airglow/definitions.hxx>
+#include <airglow/settingsbrowser.hxx>
 
 namespace airglow
 {
-
-struct URL final : public glow::window::WebView
-{
-    using glow::window::WebView::WebView;
-
-    auto initialized() -> void override;
-
-    auto web_message_received_handler(ICoreWebView2* sender,
-                                      ICoreWebView2WebMessageReceivedEventArgs* args)
-        -> HRESULT override;
-
-    std::wstring m_source{L"https://localhost:8000/url/index.html"};
-};
 
 } // namespace airglow

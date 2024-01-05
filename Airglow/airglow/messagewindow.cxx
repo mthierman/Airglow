@@ -6,19 +6,19 @@
 // ╚─────────────────────╝
 // clang-format on
 
-#include <airglow/app.hxx>
+#include <airglow/messagewindow.hxx>
 
 namespace airglow
 {
 
-auto App::create_window() -> void
+auto MessageWindow::create_window() -> void
 {
     CreateWindowExA(0, m_wcex.lpszClassName, m_wcex.lpszClassName, 0, CW_USEDEFAULT, CW_USEDEFAULT,
                     CW_USEDEFAULT, CW_USEDEFAULT, HWND_MESSAGE, nullptr, GetModuleHandleA(nullptr),
                     this);
 }
 
-auto App::handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+auto MessageWindow::handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     switch (uMsg)
     {
@@ -29,7 +29,7 @@ auto App::handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) ->
     return DefWindowProcA(hWnd, uMsg, wParam, lParam);
 }
 
-auto App::on_key_down(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
+auto MessageWindow::on_key_down(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 {
     switch (wParam)
     {
@@ -56,7 +56,7 @@ auto App::on_key_down(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
     return 0;
 }
 
-auto App::on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
+auto MessageWindow::on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 {
     auto nmhdr{*std::bit_cast<LPNMHDR>(lParam)};
 

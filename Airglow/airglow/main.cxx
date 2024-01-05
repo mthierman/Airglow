@@ -6,8 +6,7 @@
 // ╚─────────────────────╝
 // clang-format on
 
-#include <airglow/app.hxx>
-#include <airglow/definitions.hxx>
+#include <airglow/messagewindow.hxx>
 #include <airglow/settings.hxx>
 #include <airglow/window.hxx>
 
@@ -32,13 +31,13 @@ auto run() -> int
     SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
                             "--allow-file-access-from-files");
 
-    airglow::App app;
-    app();
+    airglow::MessageWindow messageWindow;
+    messageWindow();
 
-    airglow::Window mainWindow{app.m_hwnd.get(), "MainWindow"};
+    airglow::Window mainWindow{messageWindow.m_hwnd.get(), "MainWindow"};
     mainWindow();
 
-    airglow::settings::Window settingsWindow{app.m_hwnd.get(), "Settings"};
+    airglow::settings::Window settingsWindow{messageWindow.m_hwnd.get(), "Settings"};
     // settingsWindow();
 
     return glow::window::message_loop();

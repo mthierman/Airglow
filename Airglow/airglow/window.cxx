@@ -20,11 +20,11 @@ auto Window::operator()(bool show) -> void
     dwm_dark_mode(true);
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
 
-    m_browser1 = std::make_unique<Browser>(+Browsers::browser1, m_hwnd.get());
+    m_browser1 = std::make_unique<MainBrowser>(+Browsers::browser1, m_hwnd.get());
     (*m_browser1)();
     m_browser1->create_webview();
 
-    m_browser2 = std::make_unique<Browser>(+Browsers::browser2, m_hwnd.get());
+    m_browser2 = std::make_unique<SideBrowser>(+Browsers::browser2, m_hwnd.get());
     (*m_browser2)();
     m_browser2->create_webview();
 
@@ -77,12 +77,16 @@ auto Window::on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 
     switch (nMsg.nmhdr.code)
     {
-    case CUSTOM_MAINURL:
-        m_browser1->m_webView.m_core20->Navigate(glow::text::widen(nMsg.message).c_str());
+    case CUSTOM_POST_MAINURL:
+        if (m_browser1 && m_browser1->m_webView.m_core20)
+            m_browser1->m_webView.m_core20->Navigate(glow::text::widen(nMsg.message).c_str());
         break;
-    case CUSTOM_SIDEURL:
-        m_browser2->m_webView.m_core20->Navigate(glow::text::widen(nMsg.message).c_str());
+    case CUSTOM_POST_SIDEURL:
+        if (m_browser2 && m_browser2->m_webView.m_core20)
+            m_browser2->m_webView.m_core20->Navigate(glow::text::widen(nMsg.message).c_str());
         break;
+    case CUSTOM_RECEIVE_MAINURL: break;
+    case CUSTOM_RECEIVE_SIDEURL: break;
     }
 
     return 0;
@@ -93,7 +97,7 @@ auto Window::on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
     RECT rect{0};
     GetClientRect(hWnd, &rect);
     EnumChildWindows(hWnd, EnumChildProc, std::bit_cast<LPARAM>(&rect));
-    // Sleep(1);
+    Sleep(1);
 
     // https://stackoverflow.com/questions/7771142/non-blocking-sleep-timer-in-c
     // https://learn.microsoft.com/en-us/windows/win32/sync/using-waitable-timer-objects?redirectedfrom=MSDN

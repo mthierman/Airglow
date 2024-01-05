@@ -9,15 +9,35 @@
 #pragma once
 
 #include <glow/window.hxx>
+#include <airglow/definitions.hxx>
 
 namespace airglow
 {
 
-struct Browser final : public glow::window::WebView
+struct Browser : public glow::window::WebView
 {
     using glow::window::WebView::WebView;
 
-    auto accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressedEventArgs* args)
+    virtual auto accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
+                                                 ICoreWebView2AcceleratorKeyPressedEventArgs* args)
+        -> HRESULT override;
+};
+
+struct MainBrowser final : public Browser
+{
+    using Browser::Browser;
+
+    virtual auto source_changed_handler(ICoreWebView2* sender,
+                                        ICoreWebView2SourceChangedEventArgs* args)
+        -> HRESULT override;
+};
+
+struct SideBrowser final : public Browser
+{
+    using Browser::Browser;
+
+    virtual auto source_changed_handler(ICoreWebView2* sender,
+                                        ICoreWebView2SourceChangedEventArgs* args)
         -> HRESULT override;
 };
 

@@ -8,14 +8,16 @@
 
 #pragma once
 
-#define CUSTOM_CREATE_WINDOW (WM_APP + 1)
-#define CUSTOM_CLOSE_WINDOW (WM_APP + 2)
-#define CUSTOM_MAINURL (WM_APP + 3)
-#define CUSTOM_SIDEURL (WM_APP + 4)
-
 #include <cstdint>
 #include <string>
 #include <type_traits>
+
+#define CUSTOM_CREATE_WINDOW (WM_APP + 1)
+#define CUSTOM_CLOSE_WINDOW (WM_APP + 2)
+#define CUSTOM_POST_MAINURL (WM_APP + 3)
+#define CUSTOM_POST_SIDEURL (WM_APP + 4)
+#define CUSTOM_RECEIVE_MAINURL (WM_APP + 5)
+#define CUSTOM_RECEIVE_SIDEURL (WM_APP + 6)
 
 namespace airglow
 {

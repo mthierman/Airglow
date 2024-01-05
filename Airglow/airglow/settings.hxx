@@ -15,10 +15,10 @@
 
 #include <glow/filesystem.hxx>
 #include <glow/window.hxx>
-
 #include <airglow/browser.hxx>
 #include <airglow/config.hxx>
 #include <airglow/definitions.hxx>
+#include <airglow/settingsbrowser.hxx>
 
 namespace airglow::settings
 {
@@ -41,7 +41,7 @@ struct Window final : public glow::window::Window
 
     HWND m_app{nullptr};
 
-    std::unique_ptr<airglow::Browser> m_browser;
+    std::unique_ptr<airglow::SettingsBrowser> m_browser;
 };
 
 struct Settings
