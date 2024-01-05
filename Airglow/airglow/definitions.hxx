@@ -18,6 +18,7 @@
 #define CUSTOM_POST_SIDEURL (WM_APP + 4)
 #define CUSTOM_RECEIVE_MAINURL (WM_APP + 5)
 #define CUSTOM_RECEIVE_SIDEURL (WM_APP + 6)
+#define CUSTOM_POST_HEIGHT (WM_APP + 7)
 
 namespace airglow
 {
@@ -45,6 +46,7 @@ struct WindowDimensions
 {
     RECT rect{};
     float scale{};
+    HWND hwnd{};
 };
 
 } // namespace airglow

@@ -40,6 +40,7 @@ struct Window final : public glow::window::Window
     static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
     constexpr static int s_border{2};
     constexpr static int s_bar{65};
+    int m_bar{};
 
     HWND m_app{nullptr};
 

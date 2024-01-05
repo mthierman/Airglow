@@ -78,6 +78,14 @@ auto Window::on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
     switch (nMsg.nmhdr.code)
     {
 
+    case CUSTOM_POST_HEIGHT:
+    {
+        glow::console::debug(nMsg.message);
+        m_bar = std::stoi(nMsg.message);
+        SendMessageA(hWnd, WM_SIZE, 0, 0);
+        break;
+    }
+
     case CUSTOM_POST_MAINURL:
     {
         if (m_browser1 && m_browser1->m_webView.m_core20)
@@ -117,6 +125,7 @@ auto Window::on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
     WindowDimensions dimensions;
     GetClientRect(hWnd, &dimensions.rect);
     dimensions.scale = scale();
+    dimensions.hwnd = hWnd;
     EnumChildWindows(hWnd, EnumChildProc, std::bit_cast<LPARAM>(&dimensions));
     Sleep(1);
 
@@ -131,40 +140,46 @@ auto Window::on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 
 auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 {
-    auto gwlId{static_cast<int64_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
-
     auto dimensions{*std::bit_cast<WindowDimensions*>(lParam)};
+    auto self{glow::window::instance<Window>(dimensions.hwnd)};
 
-    auto r = &dimensions.rect;
-    auto width{r->right - r->left};
-    auto height{r->bottom - r->top};
+    if (self)
+    {
+        auto gwlId{static_cast<int64_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
 
-    auto border{static_cast<int>(s_border * dimensions.scale)};
-    auto bar{static_cast<int>(s_bar * dimensions.scale)};
+        auto r = &dimensions.rect;
+        auto width{r->right - r->left};
+        auto height{r->bottom - r->top};
 
-    auto defer{true};
+        auto border{static_cast<int>(s_border * dimensions.scale)};
+        // auto bar{static_cast<int>(s_bar * dimensions.scale)};
+        auto bar{static_cast<int>(self->m_bar * dimensions.scale)};
 
-    auto hdwp{BeginDeferWindowPos(4)};
+        auto defer{true};
 
-    if (gwlId == +Browsers::browser1)
-        if (hdwp)
-            hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, 0, (width / 2) - border, height - bar,
-                                  SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOREDRAW |
-                                      SWP_NOCOPYBITS);
+        auto hdwp{BeginDeferWindowPos(4)};
 
-    if (gwlId == +Browsers::browser2)
-        if (hdwp)
-            hdwp = DeferWindowPos(
-                hdwp, hWnd, nullptr, (width / 2) + border, 0, (width / 2) - border, height - bar,
-                SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOREDRAW | SWP_NOCOPYBITS);
+        if (gwlId == +Browsers::browser1)
+            if (hdwp)
+                hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, 0, (width / 2) - border, height - bar,
+                                      SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
+                                          SWP_NOREDRAW | SWP_NOCOPYBITS);
 
-    if (gwlId == +Browsers::url)
-        if (hdwp)
-            hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, r->bottom - bar, width, bar,
-                                  SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOREDRAW |
-                                      SWP_NOCOPYBITS);
+        if (gwlId == +Browsers::browser2)
+            if (hdwp)
+                hdwp = DeferWindowPos(hdwp, hWnd, nullptr, (width / 2) + border, 0,
+                                      (width / 2) - border, height - bar,
+                                      SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
+                                          SWP_NOREDRAW | SWP_NOCOPYBITS);
 
-    if (hdwp) EndDeferWindowPos(hdwp);
+        if (gwlId == +Browsers::url)
+            if (hdwp)
+                hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, r->bottom - bar, width, bar,
+                                      SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
+                                          SWP_NOREDRAW | SWP_NOCOPYBITS);
+
+        if (hdwp) EndDeferWindowPos(hdwp);
+    }
 
     return TRUE;
 }

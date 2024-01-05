@@ -1,11 +1,19 @@
-import { SyntheticEvent, useState, useRef } from "react";
+import { SyntheticEvent, useState, useRef, useEffect } from "react";
 import * as url from "@libs/url";
 
 export default function App() {
+    const containerRef = useRef<HTMLDivElement | null>(null);
+    const [height, setHeight] = useState(0);
+
     const mainRef = useRef<HTMLInputElement | null>(null);
     const sideRef = useRef<HTMLInputElement | null>(null);
     const [mainUrl, setMainUrl] = useState("");
     const [sideUrl, setSideUrl] = useState("");
+
+    useEffect(() => {
+        setHeight(containerRef?.current?.offsetHeight!);
+        if (height) window.chrome.webview.postMessage({ height: height });
+    });
 
     if (window.chrome.webview) {
         window.chrome.webview.addEventListener("message", (event: Event) => {
@@ -59,7 +67,7 @@ export default function App() {
     // };
 
     return (
-        <div className="flex gap-2 bg-transparent p-2">
+        <div ref={containerRef} id="container" className="flex bg-transparent">
             <form
                 className="flex-grow"
                 id="mainForm"
@@ -68,9 +76,10 @@ export default function App() {
                 autoComplete="off"
                 spellCheck="false">
                 <input
-                    className="w-full rounded-lg bg-flexoki-base-paper p-2 shadow-md shadow-flexoki-base-50 outline-none dark:bg-flexoki-base-950 dark:shadow-flexoki-base-black"
+                    className="w-full text-ellipsis bg-transparent p-2 outline-none"
                     type="text"
                     id="mainUrl"
+                    title={mainUrl}
                     value={mainUrl}
                     ref={mainRef}
                     onChange={handleChange}></input>
@@ -84,9 +93,10 @@ export default function App() {
                 autoComplete="off"
                 spellCheck="false">
                 <input
-                    className="w-full rounded-lg bg-flexoki-base-paper p-2 shadow-md shadow-flexoki-base-50 outline-none dark:bg-flexoki-base-950 dark:shadow-flexoki-base-black"
+                    className="w-full text-ellipsis bg-transparent p-2 outline-none"
                     type="text"
                     id="sideUrl"
+                    title={sideUrl}
                     value={sideUrl}
                     ref={sideRef}
                     onChange={handleChange}></input>

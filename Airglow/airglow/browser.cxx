@@ -121,7 +121,7 @@ auto MainBrowser::source_changed_handler(ICoreWebView2* sender,
     nMsg.nmhdr.code = CUSTOM_RECEIVE_MAINURL;
     nMsg.message = uri;
 
-    glow::console::debug(uri);
+    // glow::console::debug(uri);
     SendMessage(m_parent, WM_NOTIFY, 0, std::bit_cast<LPARAM>(&nMsg));
 
     return S_OK;
@@ -140,7 +140,7 @@ auto SideBrowser::source_changed_handler(ICoreWebView2* sender,
     nMsg.nmhdr.code = CUSTOM_RECEIVE_SIDEURL;
     nMsg.message = uri;
 
-    glow::console::debug(uri);
+    // glow::console::debug(uri);
     SendMessage(m_parent, WM_NOTIFY, 0, std::bit_cast<LPARAM>(&nMsg));
 
     return S_OK;
