@@ -77,11 +77,23 @@ export default function App() {
         }
     });
 
-    const handleClipboard = (event: SyntheticEvent) => {
-        // let input = event.target as HTMLInputElement;
-        // if (input.id === "main") navigator.clipboard.writeText(mainPlaceholder);
-        // if (input.id === "side") navigator.clipboard.writeText(sidePlaceholder);
-    };
+    useEffect(() => {
+        const input = mainInput.current;
+        if (input) {
+            input.addEventListener("click", async (event: MouseEvent) => {
+                if (event.ctrlKey) await navigator.clipboard.writeText(mainUrlPlaceholder);
+            });
+        }
+    });
+
+    useEffect(() => {
+        const input = sideInput.current;
+        if (input) {
+            input.addEventListener("click", async (event: MouseEvent) => {
+                if (event.ctrlKey) await navigator.clipboard.writeText(sideUrlPlaceholder);
+            });
+        }
+    });
 
     return (
         <div ref={containerRef} id="container" className="flex bg-transparent">
@@ -100,6 +112,7 @@ export default function App() {
                     placeholder={mainUrlPlaceholder}
                     title={mainUrlPlaceholder}
                     ref={mainInput}
+                    // onClick={handleClick}
                     onChange={handleChange}></input>
             </form>
 
@@ -118,6 +131,7 @@ export default function App() {
                     placeholder={sideUrlPlaceholder}
                     title={sideUrlPlaceholder}
                     ref={sideInput}
+                    // onClick={handleClick}
                     onChange={handleChange}></input>
             </form>
         </div>
