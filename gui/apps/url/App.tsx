@@ -43,9 +43,9 @@ export default function App() {
 
     const handleSubmit = (event: SyntheticEvent) => {
         event.preventDefault();
-        let input = event.target as HTMLFormElement;
+        let form = event.target as HTMLFormElement;
 
-        if (input.id === "mainForm") {
+        if (form.id === "mainForm") {
             if (mainRef.current?.value !== "") {
                 let parsed = url.parseUrl(mainRef.current?.value!).href;
                 setMainUrl(parsed);
@@ -53,11 +53,12 @@ export default function App() {
             }
         }
 
-        if (input.id === "sideForm") {
+        if (form.id === "sideForm") {
             if (sideRef.current?.value !== "") {
                 let parsed = url.parseUrl(sideRef.current?.value!).href;
                 setSideUrl(parsed);
                 if (window.chrome.webview) window.chrome.webview.postMessage({ sideUrl: parsed });
+                // form.reset();
             }
         }
     };
