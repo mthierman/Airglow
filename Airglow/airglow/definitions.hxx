@@ -14,6 +14,7 @@
 #define CUSTOM_SIDEURL (WM_APP + 4)
 
 #include <cstdint>
+#include <string>
 #include <type_traits>
 
 namespace airglow
@@ -31,5 +32,11 @@ constexpr auto operator+(Browsers browsers) noexcept
 {
     return static_cast<std::underlying_type_t<Browsers>>(browsers);
 }
+
+struct NotificationMsg
+{
+    NMHDR nmhdr;
+    std::string message;
+};
 
 } // namespace airglow

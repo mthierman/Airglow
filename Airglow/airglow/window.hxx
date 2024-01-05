@@ -35,6 +35,7 @@ struct Window final : public glow::window::Window
         -> LRESULT override;
     auto on_create(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
     auto on_close(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int override;
+    auto on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
     auto on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
 
     static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;

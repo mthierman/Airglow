@@ -24,40 +24,53 @@ auto URL::web_message_received_handler(ICoreWebView2* sender,
     // https://learn.microsoft.com/en-us/microsoft-edge/webview2/concepts/win32-api-conventions
     // https://learn.microsoft.com/en-us/microsoft-edge/webview2/reference/win32/icorewebview2?view=webview2-1.0.2210.55#add_webmessagereceived
     // https://learn.microsoft.com/en-us/microsoft-edge/webview2/reference/win32/icorewebview2webmessagereceivedeventargs?view=webview2-1.0.2210.55#trygetwebmessageasstring
+    // https://github.com/nlohmann/json/issues/1592
 
-    NMHDR nmhdr;
-    nmhdr.code = CUSTOM_MAINURL;
-    nmhdr.hwndFrom = m_hwnd.get();
-    nmhdr.idFrom = m_id;
+    // Create notification message structure
 
+    // Check message source
     wil::unique_cotaskmem_string source;
-    auto getSource{args->get_Source(&source)};
-    if (FAILED(getSource)) return S_OK;
+    if (FAILED(args->get_Source(&source))) return S_OK;
     if (std::wstring_view(source.get()) != std::wstring_view(m_source)) return S_OK;
 
+    // Get message as JSON
     wil::unique_cotaskmem_string messageRaw;
     auto asJson{args->get_WebMessageAsJson(&messageRaw)};
-    // Was not a string message. Ignore.
-    // if (asJson == E_INVALIDARG) return S_OK;
+    if (asJson == E_INVALIDARG) return S_OK;
     if (FAILED(asJson)) return S_OK;
 
+    // Parse the JSON and send the URL
     std::string message{glow::text::narrow(messageRaw.get())};
-    // glow::console::debug(message);
-    auto parse{nlohmann::json::parse(message)};
-    auto mainUrl{parse["mainUrl"].get<std::string>()};
-    glow::console::debug(mainUrl);
-    // m_webView.m_core20->Navigate(glow::text::widen(mainUrl).c_str());
-    // SendMessageA(m_parent, WM_NOTIFY, 0, mainUrl);
-    // SendMessageA(m_app, WM_NOTIFY, nmhdr.idFrom, std::bit_cast<LPARAM>(&nmhdr));
+    try
+    {
+        auto parseMsg{nlohmann::json::parse(message)};
 
-    // std::wstring message{messageRaw.get()};
-    // if (std::wstring_view(messageRaw.get()) == std::wstring_view(L"mainUrl"))
-    // {
-    //     auto parse{nlohmann::json::parse(glow::text::narrow(messageRaw.get()))};
-    //     if (parse["mainUrl"].empty()) return S_OK;
-    //     auto mainUrl{parse["mainUrl"].get<std::string>()};
-    //     m_webView.m_core20->Navigate(glow::text::widen(mainUrl).c_str());
-    // }
+        NotificationMsg nMsg;
+        nMsg.nmhdr.hwndFrom = m_hwnd.get();
+        nMsg.nmhdr.idFrom = m_id;
+
+        if (parseMsg.contains("mainUrl"))
+        {
+            auto mainUrl{parseMsg["mainUrl"].get<std::string>()};
+            glow::console::debug(mainUrl);
+            nMsg.nmhdr.code = CUSTOM_MAINURL;
+            nMsg.message = mainUrl;
+            SendMessageA(m_parent, WM_NOTIFY, nMsg.nmhdr.idFrom, std::bit_cast<LPARAM>(&nMsg));
+        }
+
+        if (parseMsg.contains("sideUrl"))
+        {
+            auto sideUrl{parseMsg["sideUrl"].get<std::string>()};
+            glow::console::debug(sideUrl);
+            nMsg.nmhdr.code = CUSTOM_SIDEURL;
+            nMsg.message = sideUrl;
+            SendMessageA(m_parent, WM_NOTIFY, nMsg.nmhdr.idFrom, std::bit_cast<LPARAM>(&nMsg));
+        }
+    }
+    catch (const nlohmann::json::parse_error& e)
+    {
+        glow::console::debug(e.what());
+    }
 
     return S_OK;
 }

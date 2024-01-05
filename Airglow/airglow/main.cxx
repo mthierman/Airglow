@@ -39,7 +39,7 @@ auto run() -> int
     mainWindow();
 
     airglow::settings::Window settingsWindow{app.m_hwnd.get(), "Settings"};
-    settingsWindow();
+    // settingsWindow();
 
     return glow::window::message_loop();
 }
