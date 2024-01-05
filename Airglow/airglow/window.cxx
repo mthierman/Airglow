@@ -87,31 +87,27 @@ auto Window::on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 
     case CUSTOM_POST_MAINURL:
     {
-        if (m_browser1 && m_browser1->m_webView.m_core20)
-            m_browser1->m_webView.m_core20->Navigate(glow::text::widen(nMsg.message).c_str());
+        if (m_browser1) m_browser1->navigate(nMsg.message);
         break;
     }
 
     case CUSTOM_POST_SIDEURL:
     {
-        if (m_browser2 && m_browser2->m_webView.m_core20)
-            m_browser2->m_webView.m_core20->Navigate(glow::text::widen(nMsg.message).c_str());
+        if (m_browser2) m_browser2->navigate(nMsg.message);
         break;
     }
 
     case CUSTOM_RECEIVE_MAINURL:
     {
         nlohmann::json j{{"mainUrl", nMsg.message}};
-        if (m_url && m_url->m_webView.m_core20)
-            m_url->m_webView.m_core20->PostWebMessageAsJson(glow::text::widen(j.dump()).c_str());
+        if (m_url) m_url->post_json(glow::text::widen(j.dump()).c_str());
         break;
     }
 
     case CUSTOM_RECEIVE_SIDEURL:
     {
         nlohmann::json j{{"sideUrl", nMsg.message}};
-        if (m_url && m_url->m_webView.m_core20)
-            m_url->m_webView.m_core20->PostWebMessageAsJson(glow::text::widen(j.dump()).c_str());
+        if (m_url) m_url->post_json(glow::text::widen(j.dump()).c_str());
         break;
     }
     }
