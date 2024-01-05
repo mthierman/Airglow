@@ -43,7 +43,6 @@ struct Window final : public glow::window::Window
     constexpr static int s_bar{65};
 
     HWND m_app{nullptr};
-    const int64_t m_id{glow::text::random_int64()};
 
     std::unique_ptr<Browser> m_browser1;
     std::unique_ptr<Browser> m_browser2;

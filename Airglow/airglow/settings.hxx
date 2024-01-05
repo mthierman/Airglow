@@ -40,7 +40,6 @@ struct Window final : public glow::window::Window
     static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
 
     HWND m_app{nullptr};
-    const int64_t m_id{glow::text::random_int64()};
 
     std::unique_ptr<airglow::Browser> m_browser;
 };
