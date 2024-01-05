@@ -149,41 +149,43 @@ auto MainBrowser::navigation_starting_handler(ICoreWebView2* sender,
     return S_OK;
 }
 
-auto MainBrowser::navigation_completed_handler(ICoreWebView2* sender,
-                                               ICoreWebView2NavigationCompletedEventArgs* args)
-    -> HRESULT
+auto SideBrowser::source_changed_handler(ICoreWebView2* sender,
+                                         ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
 {
-    // glow::console::debug("navigation completed..");
-    // wil::unique_cotaskmem_string uriRaw;
-    // sender->get_Source(&uriRaw);
+    glow::console::debug("navigation completed..");
+    wil::unique_cotaskmem_string uriRaw;
+    sender->get_Source(&uriRaw);
 
-    // auto uri{glow::text::narrow(uriRaw.get())};
-    // glow::console::debug(uri);
-    // NotificationMsg nMsg;
-    // nMsg.nmhdr.hwndFrom = m_hwnd.get();
-    // nMsg.nmhdr.idFrom = m_id;
-    // nMsg.nmhdr.code = CUSTOM_RECEIVE_MAINURL;
-    // nMsg.message = uri;
+    auto uri{glow::text::narrow(uriRaw.get())};
+    glow::console::debug(uri);
+    NotificationMsg nMsg;
+    nMsg.nmhdr.hwndFrom = m_hwnd.get();
+    nMsg.nmhdr.idFrom = m_id;
+    nMsg.nmhdr.code = CUSTOM_RECEIVE_SIDEURL;
+    nMsg.message = uri;
 
-    // SendMessage(m_parent, WM_NOTIFY, 0, std::bit_cast<LPARAM>(&nMsg));
+    SendMessage(m_parent, WM_NOTIFY, 0, std::bit_cast<LPARAM>(&nMsg));
 
     return S_OK;
 }
 
-auto SideBrowser::source_changed_handler(ICoreWebView2* sender,
-                                         ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
+auto SideBrowser::navigation_starting_handler(ICoreWebView2* sender,
+                                              ICoreWebView2NavigationStartingEventArgs* args)
+    -> HRESULT
 {
-    // wil::unique_cotaskmem_string uriRaw;
-    // sender->get_Source(&uriRaw);
+    glow::console::debug("navigation completed..");
+    wil::unique_cotaskmem_string uriRaw;
+    sender->get_Source(&uriRaw);
 
-    // auto uri{glow::text::narrow(uriRaw.get())};
-    // NotificationMsg nMsg;
-    // nMsg.nmhdr.hwndFrom = m_hwnd.get();
-    // nMsg.nmhdr.idFrom = m_id;
-    // nMsg.nmhdr.code = CUSTOM_RECEIVE_SIDEURL;
-    // nMsg.message = uri;
+    auto uri{glow::text::narrow(uriRaw.get())};
+    glow::console::debug(uri);
+    NotificationMsg nMsg;
+    nMsg.nmhdr.hwndFrom = m_hwnd.get();
+    nMsg.nmhdr.idFrom = m_id;
+    nMsg.nmhdr.code = CUSTOM_RECEIVE_SIDEURL;
+    nMsg.message = uri;
 
-    // SendMessage(m_parent, WM_NOTIFY, 0, std::bit_cast<LPARAM>(&nMsg));
+    SendMessage(m_parent, WM_NOTIFY, 0, std::bit_cast<LPARAM>(&nMsg));
 
     return S_OK;
 }

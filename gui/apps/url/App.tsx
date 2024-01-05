@@ -13,16 +13,20 @@ export default function App() {
     const sideInput = useRef<HTMLInputElement | null>(null);
     const [mainUrl, setMainUrl] = useState("");
     const [sideUrl, setSideUrl] = useState("");
+    const [mainUrlPlaceholder, setMainUrlPlaceholder] = useState("");
+    const [sideUrlPlaceholder, setSideUrlPlaceholder] = useState("");
 
     if (window.chrome.webview) {
         window.chrome.webview.addEventListener("message", (event: Event) => {
             const data = (event as MessageEvent).data;
             if (data.mainUrl) {
                 setMainUrl(data.mainUrl);
+                setMainUrlPlaceholder(data.mainUrl);
                 mainInput.current?.blur();
             }
             if (data.sideUrl) {
                 setSideUrl(data.sideUrl);
+                setSideUrlPlaceholder(data.sideUrl);
                 sideInput.current?.blur();
             }
         });
@@ -59,6 +63,24 @@ export default function App() {
         }
     };
 
+    document.addEventListener("keydown", (event: KeyboardEvent) => {
+        const key = event.key;
+        if (key === "Escape") {
+            console.log(event.key);
+            switch (key) {
+                case "Escape":
+                    if (document.activeElement === mainInput.current) {
+                        mainInput.current!.value = mainUrlPlaceholder;
+                        break;
+                    }
+                    if (document.activeElement === sideInput.current) {
+                        sideInput.current!.value = sideUrlPlaceholder;
+                        break;
+                    }
+            }
+        }
+    });
+
     // const handleClipboard = async (url: string) => {
     //     await navigator.clipboard.writeText(url);
     // };
@@ -78,7 +100,7 @@ export default function App() {
                     id="mainUrl"
                     value={mainUrl}
                     // defaultValue={mainUrl}
-                    placeholder={mainUrl}
+                    placeholder={mainUrlPlaceholder}
                     title={mainUrl}
                     ref={mainInput}
                     onChange={handleChange}></input>
@@ -97,7 +119,7 @@ export default function App() {
                     id="sideUrl"
                     value={sideUrl}
                     // defaultValue={sideUrl}
-                    placeholder={sideUrl}
+                    placeholder={sideUrlPlaceholder}
                     title={sideUrl}
                     ref={sideInput}
                     onChange={handleChange}></input>
