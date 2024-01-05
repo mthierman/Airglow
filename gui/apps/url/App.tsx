@@ -19,29 +19,23 @@ export default function App() {
             const data = (event as MessageEvent).data;
             if (data.mainUrl) {
                 setMainUrl(data.mainUrl);
+                mainInput.current?.blur();
             }
             if (data.sideUrl) {
                 setSideUrl(data.sideUrl);
+                sideInput.current?.blur();
             }
         });
     }
 
-    useEffect(() => {
-        mainInput.current?.blur();
-    }, [mainUrl]);
-
-    useEffect(() => {
-        sideInput.current?.blur();
-    }, [sideUrl]);
-
     const handleChange = (event: SyntheticEvent) => {
-        // let input = event.target as HTMLInputElement;
-        // if (input.id === "mainUrl") {
-        //     setMainUrl(input.value);
-        // }
-        // if (input.id === "sideUrl") {
-        //     setSideUrl(input.value);
-        // }
+        let input = event.target as HTMLInputElement;
+        if (input.id === "mainUrl") {
+            setMainUrl(input.value);
+        }
+        if (input.id === "sideUrl") {
+            setSideUrl(input.value);
+        }
     };
 
     const handleSubmit = (event: SyntheticEvent) => {
@@ -51,18 +45,16 @@ export default function App() {
         if (form.id === "mainForm") {
             if (mainInput.current?.value !== "") {
                 let parsed = url.parseUrl(mainInput.current?.value!).href;
-                // setMainUrl(parsed);
                 if (window.chrome.webview) window.chrome.webview.postMessage({ mainUrl: parsed });
-                form.reset();
+                // form.reset();
             }
         }
 
         if (form.id === "sideForm") {
             if (sideInput.current?.value !== "") {
                 let parsed = url.parseUrl(sideInput.current?.value!).href;
-                // setSideUrl(parsed);
                 if (window.chrome.webview) window.chrome.webview.postMessage({ sideUrl: parsed });
-                form.reset();
+                // form.reset();
             }
         }
     };
@@ -84,10 +76,10 @@ export default function App() {
                     className="w-full text-ellipsis bg-transparent p-2 outline-none"
                     type="text"
                     id="mainUrl"
-                    title={mainUrl}
-                    // value={mainUrl}
-                    defaultValue={mainUrl}
+                    value={mainUrl}
+                    // defaultValue={mainUrl}
                     placeholder={mainUrl}
+                    title={mainUrl}
                     ref={mainInput}
                     onChange={handleChange}></input>
             </form>
@@ -103,10 +95,10 @@ export default function App() {
                     className="w-full text-ellipsis bg-transparent p-2 outline-none"
                     type="text"
                     id="sideUrl"
-                    title={sideUrl}
-                    // value={sideUrl}
-                    defaultValue={sideUrl}
+                    value={sideUrl}
+                    // defaultValue={sideUrl}
                     placeholder={sideUrl}
+                    title={sideUrl}
                     ref={sideInput}
                     onChange={handleChange}></input>
             </form>

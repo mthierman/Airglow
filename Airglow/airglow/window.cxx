@@ -80,7 +80,6 @@ auto Window::on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 
     case CUSTOM_POST_HEIGHT:
     {
-        glow::console::debug(nMsg.message);
         m_bar = std::stoi(nMsg.message);
         SendMessageA(hWnd, WM_SIZE, 0, 0);
         break;
