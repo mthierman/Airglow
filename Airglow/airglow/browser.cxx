@@ -122,7 +122,7 @@ auto MainBrowser::source_changed_handler(ICoreWebView2* sender,
     nMsg.message = uri;
 
     glow::console::debug(uri);
-    // SendMessage();
+    SendMessage(m_parent, WM_NOTIFY, 0, std::bit_cast<LPARAM>(&nMsg));
 
     return S_OK;
 }
@@ -141,7 +141,7 @@ auto SideBrowser::source_changed_handler(ICoreWebView2* sender,
     nMsg.message = uri;
 
     glow::console::debug(uri);
-    // SendMessage();
+    SendMessage(m_parent, WM_NOTIFY, 0, std::bit_cast<LPARAM>(&nMsg));
 
     return S_OK;
 }

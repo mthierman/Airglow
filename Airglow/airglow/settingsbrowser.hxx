@@ -9,7 +9,6 @@
 #pragma once
 
 #include <glow/window.hxx>
-#include <airglow/definitions.hxx>
 
 namespace airglow
 {

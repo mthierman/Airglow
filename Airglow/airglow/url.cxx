@@ -53,7 +53,7 @@ auto URL::web_message_received_handler(ICoreWebView2* sender,
         {
             auto mainUrl{parseMsg["mainUrl"].get<std::string>()};
             glow::console::debug(mainUrl);
-            nMsg.nmhdr.code = CUSTOM_MAINURL;
+            nMsg.nmhdr.code = CUSTOM_POST_MAINURL;
             nMsg.message = mainUrl;
             SendMessageA(m_parent, WM_NOTIFY, nMsg.nmhdr.idFrom, std::bit_cast<LPARAM>(&nMsg));
         }
@@ -62,7 +62,7 @@ auto URL::web_message_received_handler(ICoreWebView2* sender,
         {
             auto sideUrl{parseMsg["sideUrl"].get<std::string>()};
             glow::console::debug(sideUrl);
-            nMsg.nmhdr.code = CUSTOM_SIDEURL;
+            nMsg.nmhdr.code = CUSTOM_POST_SIDEURL;
             nMsg.message = sideUrl;
             SendMessageA(m_parent, WM_NOTIFY, nMsg.nmhdr.idFrom, std::bit_cast<LPARAM>(&nMsg));
         }
