@@ -11,8 +11,8 @@ export default function App() {
 
     const mainInput = useRef<HTMLInputElement | null>(null);
     const sideInput = useRef<HTMLInputElement | null>(null);
-    const [mainUrl, setMainUrl] = useState("");
-    const [sideUrl, setSideUrl] = useState("");
+    const [main, setMain] = useState("");
+    const [side, setSide] = useState("");
     const [mainUrlPlaceholder, setMainUrlPlaceholder] = useState("");
     const [sideUrlPlaceholder, setSideUrlPlaceholder] = useState("");
 
@@ -20,12 +20,12 @@ export default function App() {
         window.chrome.webview.addEventListener("message", (event: Event) => {
             const data = (event as MessageEvent).data;
             if (data.mainUrl) {
-                setMainUrl(data.mainUrl);
+                setMain(data.mainUrl);
                 setMainUrlPlaceholder(data.mainUrl);
                 mainInput.current?.blur();
             }
             if (data.sideUrl) {
-                setSideUrl(data.sideUrl);
+                setSide(data.sideUrl);
                 setSideUrlPlaceholder(data.sideUrl);
                 sideInput.current?.blur();
             }
@@ -35,10 +35,10 @@ export default function App() {
     const handleChange = (event: SyntheticEvent) => {
         let input = event.target as HTMLInputElement;
         if (input.id === "mainUrl") {
-            setMainUrl(input.value);
+            setMain(input.value);
         }
         if (input.id === "sideUrl") {
-            setSideUrl(input.value);
+            setSide(input.value);
         }
     };
 
@@ -66,7 +66,6 @@ export default function App() {
     document.addEventListener("keydown", (event: KeyboardEvent) => {
         const key = event.key;
         if (key === "Escape") {
-            console.log(event.key);
             switch (key) {
                 case "Escape":
                     if (document.activeElement === mainInput.current) {
@@ -98,10 +97,9 @@ export default function App() {
                     className="w-full text-ellipsis bg-transparent p-2 outline-none"
                     type="text"
                     id="mainUrl"
-                    value={mainUrl}
-                    // defaultValue={mainUrl}
+                    value={main}
                     placeholder={mainUrlPlaceholder}
-                    title={mainUrl}
+                    title={mainUrlPlaceholder}
                     ref={mainInput}
                     onChange={handleChange}></input>
             </form>
@@ -117,10 +115,9 @@ export default function App() {
                     className="w-full text-ellipsis bg-transparent p-2 outline-none"
                     type="text"
                     id="sideUrl"
-                    value={sideUrl}
-                    // defaultValue={sideUrl}
+                    value={side}
                     placeholder={sideUrlPlaceholder}
-                    title={sideUrl}
+                    title={sideUrlPlaceholder}
                     ref={sideInput}
                     onChange={handleChange}></input>
             </form>
