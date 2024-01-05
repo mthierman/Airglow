@@ -114,9 +114,10 @@ auto Window::on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 
 auto Window::on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 {
-    RECT rect{0};
-    GetClientRect(hWnd, &rect);
-    EnumChildWindows(hWnd, EnumChildProc, std::bit_cast<LPARAM>(&rect));
+    WindowDimensions dimensions;
+    GetClientRect(hWnd, &dimensions.rect);
+    dimensions.scale = scale();
+    EnumChildWindows(hWnd, EnumChildProc, std::bit_cast<LPARAM>(&dimensions));
     Sleep(1);
 
     // https://stackoverflow.com/questions/7771142/non-blocking-sleep-timer-in-c
@@ -131,55 +132,39 @@ auto Window::on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 {
     auto gwlId{static_cast<int64_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
-    auto rect{*std::bit_cast<RECT*>(lParam)};
+
+    auto dimensions{*std::bit_cast<WindowDimensions*>(lParam)};
+
+    auto r = &dimensions.rect;
+    auto width{r->right - r->left};
+    auto height{r->bottom - r->top};
+
+    auto border{static_cast<int>(s_border * dimensions.scale)};
+    auto bar{static_cast<int>(s_bar * dimensions.scale)};
 
     auto defer{true};
 
-    if (defer)
-    {
-        auto hdwp{BeginDeferWindowPos(4)};
+    auto hdwp{BeginDeferWindowPos(4)};
 
-        if (gwlId == +Browsers::browser1)
-            if (hdwp)
-                hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, 0,
-                                      ((rect.right - rect.left) / 2) - s_border,
-                                      (rect.bottom - rect.top) - s_bar,
-                                      SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
-                                          SWP_NOREDRAW | SWP_NOCOPYBITS);
+    if (gwlId == +Browsers::browser1)
+        if (hdwp)
+            hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, 0, (width / 2) - border, height - bar,
+                                  SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOREDRAW |
+                                      SWP_NOCOPYBITS);
 
-        if (gwlId == +Browsers::browser2)
-            if (hdwp)
-                hdwp = DeferWindowPos(
-                    hdwp, hWnd, nullptr, ((rect.right - rect.left) / 2) + s_border, 0,
-                    ((rect.right - rect.left) / 2) - s_border, (rect.bottom - rect.top) - s_bar,
-                    SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOREDRAW |
-                        SWP_NOCOPYBITS);
+    if (gwlId == +Browsers::browser2)
+        if (hdwp)
+            hdwp = DeferWindowPos(
+                hdwp, hWnd, nullptr, (width / 2) + border, 0, (width / 2) - border, height - bar,
+                SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOREDRAW | SWP_NOCOPYBITS);
 
-        if (gwlId == +Browsers::url)
-            if (hdwp)
-                hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, rect.bottom - s_bar,
-                                      rect.right - rect.left, s_bar,
-                                      SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
-                                          SWP_NOREDRAW | SWP_NOCOPYBITS);
+    if (gwlId == +Browsers::url)
+        if (hdwp)
+            hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, r->bottom - bar, width, bar,
+                                  SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOREDRAW |
+                                      SWP_NOCOPYBITS);
 
-        if (hdwp) EndDeferWindowPos(hdwp);
-    }
-
-    else
-    {
-        if (gwlId == +Browsers::browser1)
-            SetWindowPos(hWnd, nullptr, 0, 0, ((rect.right - rect.left) / 2) - s_border,
-                         (rect.bottom - rect.top) - s_bar, SWP_NOZORDER);
-
-        if (gwlId == +Browsers::browser2)
-            SetWindowPos(hWnd, nullptr, ((rect.right - rect.left) / 2) + s_border, 0,
-                         ((rect.right - rect.left) / 2) - s_border,
-                         (rect.bottom - rect.top) - s_bar, SWP_NOZORDER);
-
-        if (gwlId == +Browsers::url)
-            SetWindowPos(hWnd, nullptr, 0, rect.bottom - s_bar, rect.right - rect.left, s_bar,
-                         SWP_NOZORDER);
-    }
+    if (hdwp) EndDeferWindowPos(hdwp);
 
     return TRUE;
 }

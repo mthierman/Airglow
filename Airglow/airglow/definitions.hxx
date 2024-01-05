@@ -37,8 +37,14 @@ constexpr auto operator+(Browsers browsers) noexcept
 
 struct NotificationMsg
 {
-    NMHDR nmhdr;
-    std::string message;
+    NMHDR nmhdr{};
+    std::string message{};
+};
+
+struct WindowDimensions
+{
+    RECT rect{};
+    float scale{};
 };
 
 } // namespace airglow

@@ -9,8 +9,7 @@ export default function App() {
 
     if (window.chrome.webview) {
         window.chrome.webview.addEventListener("message", (event: Event) => {
-            const message = event as MessageEvent;
-            const data = message.data;
+            const data = (event as MessageEvent).data;
             if (data.mainUrl) {
                 setMainUrl(data.mainUrl);
                 console.log(data.mainUrl);
@@ -19,16 +18,11 @@ export default function App() {
                 setSideUrl(data.sideUrl);
                 console.log(data.sideUrl);
             }
-            // const data = (event as MessageEvent).data;
-            // console.log(data);
         });
     }
 
     const handleChange = (event: SyntheticEvent) => {
         let input = event.target as HTMLInputElement;
-
-        // console.log(mainRef.current?.value);
-        // console.log(sideRef.current?.value);
 
         if (input.id === "mainUrl") {
             setMainUrl(input.value);
@@ -47,7 +41,6 @@ export default function App() {
             if (mainRef.current?.value !== "") {
                 let parsed = url.parseUrl(mainRef.current?.value!).href;
                 setMainUrl(parsed);
-                // console.log(parsed);
                 if (window.chrome.webview) window.chrome.webview.postMessage({ mainUrl: parsed });
             }
         }
@@ -56,7 +49,6 @@ export default function App() {
             if (sideRef.current?.value !== "") {
                 let parsed = url.parseUrl(sideRef.current?.value!).href;
                 setSideUrl(parsed);
-                // console.log(parsed);
                 if (window.chrome.webview) window.chrome.webview.postMessage({ sideUrl: parsed });
             }
         }
