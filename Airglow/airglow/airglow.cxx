@@ -204,10 +204,23 @@ auto App::load_settings() -> void
 
 void to_json(nlohmann::json& j, const App& app)
 {
-    j = nlohmann::json{{"name", app.m_name},
-                       {"version", app.m_version},
-                       {"dpi", app.m_dpi},
-                       {"scale", app.m_scale}};
+    j = nlohmann::json{
+        {"name", app.m_name},
+        {"version", app.m_version},
+        {"dpi", app.m_dpi},
+        {"scale", app.m_scale},
+        {"darkMode", app.m_dark_mode},
+        {"maximized", app.m_maximized},
+        {"fullscreen", app.m_fullscreen},
+        {"gui", app.m_gui},
+        {"split", app.m_split},
+        {"swapped", app.m_swapped},
+        {"horizontal", app.m_horizontal},
+        {"mainHome", app.m_mainHome},
+        {"sideHome", app.m_sideHome},
+        {"mainCurrent", app.m_mainCurrent},
+        {"sideCurrent", app.m_sideCurrent},
+    };
 }
 
 void from_json(const nlohmann::json& j, App& app)
@@ -216,6 +229,17 @@ void from_json(const nlohmann::json& j, App& app)
     j.at("version").get_to(app.m_version);
     j.at("dpi").get_to(app.m_dpi);
     j.at("scale").get_to(app.m_scale);
+    j.at("darkMode").get_to(app.m_dark_mode);
+    j.at("maximized").get_to(app.m_maximized);
+    j.at("fullscreen").get_to(app.m_fullscreen);
+    j.at("gui").get_to(app.m_gui);
+    j.at("split").get_to(app.m_split);
+    j.at("swapped").get_to(app.m_swapped);
+    j.at("horizontal").get_to(app.m_horizontal);
+    j.at("mainHome").get_to(app.m_mainHome);
+    j.at("sideHome").get_to(app.m_sideHome);
+    j.at("mainCurrent").get_to(app.m_mainCurrent);
+    j.at("sideCurrent").get_to(app.m_sideCurrent);
 }
 
 Browser::Browser(HWND app, std::string className) : glow::window::Window(className) { m_app = app; }
