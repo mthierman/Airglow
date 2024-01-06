@@ -101,11 +101,11 @@ auto Browser::operator()(bool show) -> void
     dwm_dark_mode(true);
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
 
-    m_browser1 = std::make_unique<airglow::webview::Main>(+Browsers::browser1, m_hwnd.get());
+    m_browser1 = std::make_unique<airglow::webview::Main>(+Browsers::main, m_hwnd.get());
     (*m_browser1)();
     m_browser1->create_webview();
 
-    m_browser2 = std::make_unique<airglow::webview::Side>(+Browsers::browser2, m_hwnd.get());
+    m_browser2 = std::make_unique<airglow::webview::Side>(+Browsers::side, m_hwnd.get());
     (*m_browser2)();
     m_browser2->create_webview();
 
@@ -235,13 +235,13 @@ auto CALLBACK Browser::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 
         auto hdwp{BeginDeferWindowPos(4)};
 
-        if (gwlId == +Browsers::browser1)
+        if (gwlId == +Browsers::main)
             if (hdwp)
                 hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, 0, (width / 2) - border, height - bar,
                                       SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
                                           SWP_NOREDRAW | SWP_NOCOPYBITS);
 
-        if (gwlId == +Browsers::browser2)
+        if (gwlId == +Browsers::side)
             if (hdwp)
                 hdwp = DeferWindowPos(hdwp, hWnd, nullptr, (width / 2) + border, 0,
                                       (width / 2) - border, height - bar,

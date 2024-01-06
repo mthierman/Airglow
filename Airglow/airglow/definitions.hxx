@@ -26,8 +26,8 @@ namespace airglow
 enum struct Browsers : int64_t
 {
     settings = 1,
-    browser1 = 2,
-    browser2 = 3,
+    main = 2,
+    side = 3,
     url = 4,
 };
 
