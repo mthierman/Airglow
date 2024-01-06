@@ -42,11 +42,32 @@ struct App final : public glow::window::Window
     auto on_key_down(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
     auto on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
 
+    auto save_settings() -> void;
+    auto load_settings() -> void;
+
     glow::window::GdiPlus m_gdiInit;
     glow::window::CoInitialize m_coInit;
 
     std::set<HWND> m_windows;
+
+    std::string m_name{"Airglow"};
+    std::string m_version{AIRGLOW_VERSION};
+    bool m_dark_mode{true};
+    bool m_maximized{false};
+    bool m_fullscreen{false};
+    bool m_topmost{false};
+    bool m_gui{true};
+    bool m_split{true};
+    bool m_swapped{false};
+    bool m_horizontal{false};
+    std::string m_mainHome{};
+    std::string m_sideHome{};
+    std::string m_mainCurrent{};
+    std::string m_sideCurrent{};
 };
+
+void to_json(nlohmann::json& j, const App& app);
+void from_json(const nlohmann::json& j, App& app);
 
 struct Browser final : public glow::window::Window
 {
@@ -91,30 +112,9 @@ struct Settings final : public glow::window::Window
 
     static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
 
-    auto save_settings() -> void;
-    auto load_settings() -> void;
-
     HWND m_app{nullptr};
 
     std::unique_ptr<airglow::webview::Settings> m_browser;
-
-    std::string m_name{"Airglow"};
-    std::string m_version{AIRGLOW_VERSION};
-    bool m_dark_mode{true};
-    bool m_maximized{false};
-    bool m_fullscreen{false};
-    bool m_topmost{false};
-    bool m_gui{true};
-    bool m_split{true};
-    bool m_swapped{false};
-    bool m_horizontal{false};
-    std::string m_mainHome{};
-    std::string m_sideHome{};
-    std::string m_mainCurrent{};
-    std::string m_sideCurrent{};
 };
-
-void to_json(nlohmann::json& j, const Settings& settings);
-void from_json(const nlohmann::json& j, Settings& settings);
 
 } // namespace airglow

@@ -92,7 +92,7 @@ auto App::on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
     return 0;
 }
 
-auto Settings::save_settings() -> void
+auto App::save_settings() -> void
 {
     auto path{glow::filesystem::portable()};
     if (!path.empty())
@@ -137,7 +137,7 @@ auto Settings::save_settings() -> void
     }
 }
 
-auto Settings::load_settings() -> void
+auto App::load_settings() -> void
 {
     auto path{glow::filesystem::portable()};
     if (!path.empty())
@@ -177,6 +177,22 @@ auto Settings::load_settings() -> void
             std::println("{}", e.what());
         }
     }
+}
+
+void to_json(nlohmann::json& j, const App& app)
+{
+    j = nlohmann::json{{"name", app.m_name},
+                       {"version", app.m_version},
+                       {"dpi", app.m_dpi},
+                       {"scale", app.m_scale}};
+}
+
+void from_json(const nlohmann::json& j, App& app)
+{
+    j.at("name").get_to(app.m_name);
+    j.at("version").get_to(app.m_version);
+    j.at("dpi").get_to(app.m_dpi);
+    j.at("scale").get_to(app.m_scale);
 }
 
 Browser::Browser(HWND app, std::string className) : glow::window::Window(className) { m_app = app; }
@@ -440,22 +456,6 @@ auto CALLBACK Settings::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     }
 
     return TRUE;
-}
-
-void to_json(nlohmann::json& j, const Settings& settings)
-{
-    j = nlohmann::json{{"name", settings.m_name},
-                       {"version", settings.m_version},
-                       {"dpi", settings.m_dpi},
-                       {"scale", settings.m_scale}};
-}
-
-void from_json(const nlohmann::json& j, Settings& settings)
-{
-    j.at("name").get_to(settings.m_name);
-    j.at("version").get_to(settings.m_version);
-    j.at("dpi").get_to(settings.m_dpi);
-    j.at("scale").get_to(settings.m_scale);
 }
 
 } // namespace airglow
