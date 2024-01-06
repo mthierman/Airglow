@@ -17,11 +17,11 @@ auto App::run() -> int
     SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
                             "--allow-file-access-from-files");
 
-    airglow::Browser browser{m_hwnd.get(), "Browser"};
-    browser();
+    m_browser = std::make_unique<Browser>(m_hwnd.get(), "Browser");
+    (*m_browser)();
 
-    airglow::Settings settings{m_hwnd.get(), "Settings"};
-    settings();
+    m_settings = std::make_unique<Settings>(m_hwnd.get(), "Settings");
+    (*m_settings)();
 
     // glow::console::create_process("server.exe");
 

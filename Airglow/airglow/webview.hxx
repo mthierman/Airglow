@@ -19,6 +19,12 @@
 namespace airglow::webview
 {
 
+struct WebView;
+struct URL;
+struct Main;
+struct Side;
+struct Settings;
+
 struct WebView : public glow::window::WebView
 {
     using glow::window::WebView::WebView;

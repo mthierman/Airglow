@@ -29,6 +29,10 @@
 namespace airglow
 {
 
+struct App;
+struct Browser;
+struct Settings;
+
 struct App final : public glow::window::Window
 {
     using glow::window::Window::Window;
@@ -47,6 +51,9 @@ struct App final : public glow::window::Window
 
     glow::window::GdiPlus m_gdiInit;
     glow::window::CoInitialize m_coInit;
+
+    std::unique_ptr<Browser> m_browser;
+    std::unique_ptr<Settings> m_settings;
 
     std::set<HWND> m_windows;
 
