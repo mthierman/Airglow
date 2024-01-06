@@ -108,6 +108,16 @@ auto Browser::accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
     return S_OK;
 }
 
+auto Browser::zoom_factor_changed_handler(ICoreWebView2Controller* sender, IUnknown* args)
+    -> HRESULT
+{
+    double zoomFactor;
+    sender->get_ZoomFactor(&zoomFactor);
+    m_webView.m_controller4->put_ZoomFactor(zoomFactor);
+
+    return S_OK;
+}
+
 auto URL::initialized() -> void
 {
     m_webView.m_settings8->put_AreDefaultContextMenusEnabled(false);

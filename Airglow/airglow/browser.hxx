@@ -21,6 +21,8 @@ struct Browser : public glow::window::WebView
     virtual auto accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
                                                  ICoreWebView2AcceleratorKeyPressedEventArgs* args)
         -> HRESULT override;
+    virtual auto zoom_factor_changed_handler(ICoreWebView2Controller* sender, IUnknown* args)
+        -> HRESULT override;
 };
 
 struct URL final : public Browser
