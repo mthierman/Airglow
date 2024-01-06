@@ -69,4 +69,25 @@ struct Browser final : public glow::window::Window
     std::unique_ptr<airglow::webview::URL> m_url;
 };
 
+struct Settings final : public glow::window::Window
+{
+    using glow::window::Window::Window;
+
+    Settings(HWND app, std::string className);
+
+    virtual auto operator()(bool show = true) -> void override;
+
+    virtual auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+        -> LRESULT override;
+    auto on_create(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
+    auto on_close(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int override;
+    auto on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
+
+    static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
+
+    HWND m_app{nullptr};
+
+    std::unique_ptr<airglow::webview::Settings> m_browser;
+};
+
 } // namespace airglow

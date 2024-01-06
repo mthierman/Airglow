@@ -20,8 +20,8 @@ auto App::run() -> int
     airglow::Browser browser{m_hwnd.get(), "Browser"};
     browser();
 
-    airglow::settings::Window settingsWindow{m_hwnd.get(), "Settings"};
-    settingsWindow();
+    airglow::Settings settings{m_hwnd.get(), "Settings"};
+    settings();
 
     // glow::console::create_process("server.exe");
 
@@ -255,6 +255,101 @@ auto CALLBACK Browser::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
                                           SWP_NOREDRAW | SWP_NOCOPYBITS);
 
         if (hdwp) EndDeferWindowPos(hdwp);
+    }
+
+    return TRUE;
+}
+
+Settings::Settings(HWND app, std::string className) : glow::window::Window(className)
+{
+    m_app = app;
+}
+
+auto Settings::operator()(bool show) -> void
+{
+    glow::window::Window::operator()(show);
+    dwm_caption_color(false);
+    dwm_dark_mode(true);
+    dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
+
+    m_browser = std::make_unique<airglow::webview::Settings>(
+        +Browsers::settings, m_hwnd.get(), "https://localhost:8000/settings/index.html");
+    (*m_browser)();
+    m_browser->create_webview();
+}
+
+auto Settings::handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+{
+    switch (uMsg)
+    {
+    case WM_CREATE: return on_create(hWnd, wParam, lParam);
+    case WM_CLOSE: return on_close(hWnd, wParam, lParam);
+    case WM_SIZE: return on_size(hWnd, wParam, lParam);
+    }
+
+    return DefWindowProcA(hWnd, uMsg, wParam, lParam);
+}
+
+auto Settings::on_create(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
+{
+    NMHDR nmhdr;
+    nmhdr.code = CUSTOM_CREATE_WINDOW;
+    nmhdr.hwndFrom = m_hwnd.get();
+    nmhdr.idFrom = m_id;
+    SendMessageA(m_app, WM_NOTIFY, nmhdr.idFrom, std::bit_cast<LPARAM>(&nmhdr));
+
+    return 0;
+}
+
+auto Settings::on_close(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
+{
+    NMHDR nmhdr;
+    nmhdr.code = CUSTOM_CLOSE_WINDOW;
+    nmhdr.hwndFrom = m_hwnd.get();
+    nmhdr.idFrom = m_id;
+    SendMessageA(m_app, WM_NOTIFY, nmhdr.idFrom, std::bit_cast<LPARAM>(&nmhdr));
+
+    m_hwnd.reset();
+
+    return 0;
+}
+
+auto Settings::on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
+{
+    RECT rect{0};
+    GetClientRect(hWnd, &rect);
+    EnumChildWindows(hWnd, EnumChildProc, std::bit_cast<LPARAM>(&rect));
+    Sleep(1);
+
+    return 0;
+}
+
+auto CALLBACK Settings::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
+{
+    auto gwlId{static_cast<int64_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
+    auto rect{*std::bit_cast<RECT*>(lParam)};
+
+    auto defer{true};
+
+    if (defer)
+    {
+        auto hdwp{BeginDeferWindowPos(4)};
+
+        if (gwlId == +Browsers::settings)
+            if (hdwp)
+                hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, 0, rect.right - rect.left,
+                                      rect.bottom - rect.top,
+                                      SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
+                                          SWP_NOREDRAW | SWP_NOCOPYBITS);
+
+        if (hdwp) EndDeferWindowPos(hdwp);
+    }
+
+    else
+    {
+        if (gwlId == +Browsers::settings)
+            SetWindowPos(hWnd, nullptr, 0, 0, rect.right - rect.left, rect.bottom - rect.top,
+                         SWP_NOZORDER);
     }
 
     return TRUE;

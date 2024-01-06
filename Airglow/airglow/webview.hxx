@@ -9,15 +9,12 @@
 #pragma once
 
 #include <bit>
-#include <set>
 
 #include <glow/console.hxx>
-#include <glow/filesystem.hxx>
 #include <glow/text.hxx>
 #include <glow/window.hxx>
 
 #include <airglow/definitions.hxx>
-#include <airglow/webview.hxx>
 
 namespace airglow::webview
 {
