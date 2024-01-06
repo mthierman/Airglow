@@ -92,6 +92,29 @@ auto App::on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
     return 0;
 }
 
+auto App::data_path() -> std::filesystem::path
+{
+    auto path{glow::filesystem::known_folder() / "Airglow"};
+
+    if (!std::filesystem::exists(path)) std::filesystem::create_directory(path);
+
+    return path;
+}
+
+auto App::json_path() -> std::filesystem::path
+{
+    auto path{data_path() / "Airglow.json"};
+
+    return path;
+}
+
+auto App::gui_path() -> std::filesystem::path
+{
+    auto path{"file:///" / data_path()};
+
+    return path;
+}
+
 auto App::save_settings() -> void
 {
     auto path{glow::filesystem::portable()};

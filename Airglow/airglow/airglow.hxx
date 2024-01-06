@@ -23,7 +23,6 @@
 
 #include <airglow/config.hxx>
 #include <airglow/definitions.hxx>
-#include <airglow/settings.hxx>
 #include <airglow/webview.hxx>
 
 namespace airglow
@@ -32,6 +31,7 @@ namespace airglow
 struct App;
 struct Browser;
 struct Settings;
+struct Colors;
 
 struct App final : public glow::window::Window
 {
@@ -46,6 +46,10 @@ struct App final : public glow::window::Window
     auto on_key_down(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
     auto on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
 
+    auto data_path() -> std::filesystem::path;
+    auto json_path() -> std::filesystem::path;
+    auto gui_path() -> std::filesystem::path;
+
     auto save_settings() -> void;
     auto load_settings() -> void;
 
@@ -56,6 +60,11 @@ struct App final : public glow::window::Window
     std::unique_ptr<Settings> m_settings;
 
     std::set<HWND> m_windows;
+    std::filesystem::path m_dataPath{data_path()};
+    std::filesystem::path m_jsonPath{json_path()};
+    std::filesystem::path m_guiPath{gui_path()};
+
+    glow::window::Colors m_colors;
 
     std::string m_name{"Airglow"};
     std::string m_version{AIRGLOW_VERSION};

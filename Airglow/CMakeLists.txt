@@ -14,7 +14,6 @@ target_sources(
     Airglow
     PRIVATE airglow/airglow.cxx
             airglow/main.cxx
-            airglow/settings.cxx
             airglow/webview.cxx
             ${AIRGLOW_RC}
             ${PROJECT_SOURCE_DIR}/Data/airglow.manifest
@@ -27,7 +26,6 @@ target_sources(
            ${CMAKE_CURRENT_BINARY_DIR}/config/airglow/config.hxx
            airglow/airglow.hxx
            airglow/definitions.hxx
-           airglow/settings.hxx
            airglow/webview.hxx
 )
 
