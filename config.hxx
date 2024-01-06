@@ -8,12 +8,6 @@
 
 #pragma once
 
-#include <string>
-
-namespace airglow::config
-{
-
-std::string name{"@PROJECT_NAME@"};
-std::string version{"@PROJECT_VERSION@"};
-
-} // namespace airglow::config
+// clang-format off
+#define AIRGLOW_VERSION "@PROJECT_VERSION@";
+// clang-format on

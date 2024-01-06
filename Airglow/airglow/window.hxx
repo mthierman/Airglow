@@ -11,7 +11,7 @@
 #include <bit>
 #include <set>
 
-#include <glow/config.hxx>
+// #include <glow/config.hxx>
 #include <glow/console.hxx>
 #include <glow/filesystem.hxx>
 #include <glow/text.hxx>

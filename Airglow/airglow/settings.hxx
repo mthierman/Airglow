@@ -46,8 +46,8 @@ struct Window final : public glow::window::Window
 struct Settings
 {
     // STORE POSITION HERE?
-    std::string name{config::name};
-    std::string version{config::version};
+    std::string name{"Airglow"};
+    std::string version{"VersionTest"};
     bool dark_mode{true};
     int64_t dpi{};
     float scale{};

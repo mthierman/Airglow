@@ -27,7 +27,6 @@ target_sources(
            ${CMAKE_CURRENT_BINARY_DIR}/config/airglow/config.hxx
            airglow/browser.hxx
            airglow/definitions.hxx
-           airglow/server.hxx
            airglow/settings.hxx
            airglow/window.hxx
 )
