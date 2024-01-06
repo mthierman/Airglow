@@ -39,5 +39,7 @@ auto run() -> int
     airglow::settings::Window settingsWindow{messageWindow.m_hwnd.get(), "Settings"};
     // settingsWindow();
 
+    // glow::console::create_process("server.exe");
+
     return glow::window::message_loop();
 }
