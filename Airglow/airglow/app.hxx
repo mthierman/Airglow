@@ -13,7 +13,7 @@
 #include <glow/window.hxx>
 #include <airglow/definitions.hxx>
 #include <airglow/settings.hxx>
-#include <airglow/window.hxx>
+#include <airglow/webview.hxx>
 
 namespace airglow
 {

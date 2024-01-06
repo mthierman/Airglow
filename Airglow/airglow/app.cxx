@@ -17,8 +17,8 @@ auto App::run() -> int
     SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
                             "--allow-file-access-from-files");
 
-    airglow::Window mainWindow{m_hwnd.get(), "MainWindow"};
-    mainWindow();
+    airglow::webview::Browser browser{m_hwnd.get(), "Browser"};
+    browser();
 
     airglow::settings::Window settingsWindow{m_hwnd.get(), "Settings"};
     settingsWindow();

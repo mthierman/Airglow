@@ -8,8 +8,6 @@
 
 #include <airglow/app.hxx>
 
-auto run() -> int;
-
 auto main() -> int
 {
     try
