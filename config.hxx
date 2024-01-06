@@ -9,5 +9,5 @@
 #pragma once
 
 // clang-format off
-#define AIRGLOW_VERSION "@PROJECT_VERSION@";
+#define AIRGLOW_VERSION "@PROJECT_VERSION@"
 // clang-format on

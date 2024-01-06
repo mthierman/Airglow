@@ -47,7 +47,7 @@ struct Settings
 {
     // STORE POSITION HERE?
     std::string name{"Airglow"};
-    std::string version{"VersionTest"};
+    std::string version{AIRGLOW_VERSION};
     bool dark_mode{true};
     int64_t dpi{};
     float scale{};
