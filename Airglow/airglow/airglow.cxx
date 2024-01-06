@@ -92,6 +92,93 @@ auto App::on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
     return 0;
 }
 
+auto Settings::save_settings() -> void
+{
+    auto path{glow::filesystem::portable()};
+    if (!path.empty())
+    {
+        auto settingsFile{path / "settings.json"};
+
+        try
+        {
+            if (!std::filesystem::exists(settingsFile))
+            {
+                try
+                {
+                    nlohmann::json j = *this;
+                    std::ofstream f(settingsFile);
+                    f << std::setw(4) << j << "\n";
+                    f.close();
+                }
+                catch (const std::exception& e)
+                {
+                    std::println("{}", e.what());
+                }
+            }
+            else
+            {
+                try
+                {
+                    nlohmann::json j = *this;
+                    std::ofstream f(settingsFile);
+                    f << std::setw(4) << j << "\n";
+                    f.close();
+                }
+                catch (const std::exception& e)
+                {
+                    std::println("{}", e.what());
+                }
+            }
+        }
+        catch (const std::filesystem::filesystem_error& e)
+        {
+            std::println("{}", e.what());
+        }
+    }
+}
+
+auto Settings::load_settings() -> void
+{
+    auto path{glow::filesystem::portable()};
+    if (!path.empty())
+    {
+        auto settingsFile{path / "settings.json"};
+
+        try
+        {
+            if (!std::filesystem::exists(settingsFile))
+            {
+                try
+                {
+                    nlohmann::json j = *this;
+                    std::ofstream f(settingsFile);
+                    f << std::setw(4) << j << "\n";
+                    f.close();
+                }
+                catch (const std::exception& e)
+                {
+                    std::println("{}", e.what());
+                }
+            }
+            else
+            {
+                try
+                {
+                    //
+                }
+                catch (const std::exception& e)
+                {
+                    std::println("{}", e.what());
+                }
+            }
+        }
+        catch (const std::filesystem::filesystem_error& e)
+        {
+            std::println("{}", e.what());
+        }
+    }
+}
+
 Browser::Browser(HWND app, std::string className) : glow::window::Window(className) { m_app = app; }
 
 auto Browser::operator()(bool show) -> void
@@ -353,6 +440,22 @@ auto CALLBACK Settings::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     }
 
     return TRUE;
+}
+
+void to_json(nlohmann::json& j, const Settings& settings)
+{
+    j = nlohmann::json{{"name", settings.m_name},
+                       {"version", settings.m_version},
+                       {"dpi", settings.m_dpi},
+                       {"scale", settings.m_scale}};
+}
+
+void from_json(const nlohmann::json& j, Settings& settings)
+{
+    j.at("name").get_to(settings.m_name);
+    j.at("version").get_to(settings.m_version);
+    j.at("dpi").get_to(settings.m_dpi);
+    j.at("scale").get_to(settings.m_scale);
 }
 
 } // namespace airglow

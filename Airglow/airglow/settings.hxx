@@ -8,46 +8,8 @@
 
 #pragma once
 
-#include <fstream>
-#include <print>
-
-#include <nlohmann/json.hpp>
-
-#include <glow/filesystem.hxx>
-#include <glow/window.hxx>
-#include <airglow/webview.hxx>
-#include <airglow/config.hxx>
-#include <airglow/definitions.hxx>
-
 namespace airglow::settings
 {
-
-struct Settings
-{
-    // STORE POSITION HERE?
-    std::string name{"Airglow"};
-    std::string version{AIRGLOW_VERSION};
-    bool dark_mode{true};
-    int64_t dpi{};
-    float scale{};
-    bool maximized{false};
-    bool fullscreen{false};
-    bool topmost{false};
-    bool gui{true};
-    bool split{true};
-    bool swapped{false};
-    bool horizontal{false};
-    std::string mainHome{};
-    std::string sideHome{};
-    std::string mainCurrent{};
-    std::string sideCurrent{};
-};
-
-void to_json(nlohmann::json& j, const Settings& settings);
-void from_json(const nlohmann::json& j, Settings& settings);
-
-auto save_settings(Settings settings) -> void;
-auto load_settings(Settings settings) -> void;
 
 // struct Colors
 // {
