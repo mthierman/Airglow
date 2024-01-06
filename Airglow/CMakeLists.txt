@@ -12,7 +12,8 @@ add_executable(
 
 target_sources(
     Airglow
-    PRIVATE airglow/browser.cxx
+    PRIVATE airglow/app.cxx
+            airglow/browser.cxx
             airglow/main.cxx
             airglow/settings.cxx
             airglow/window.cxx
@@ -25,6 +26,7 @@ target_sources(
            ${CMAKE_CURRENT_BINARY_DIR}/config
            FILES
            ${CMAKE_CURRENT_BINARY_DIR}/config/airglow/config.hxx
+           airglow/app.hxx
            airglow/browser.hxx
            airglow/definitions.hxx
            airglow/settings.hxx

@@ -8,45 +8,33 @@
 
 #pragma once
 
-#include <bit>
 #include <set>
 
-// #include <glow/config.hxx>
-#include <glow/console.hxx>
-#include <glow/filesystem.hxx>
-#include <glow/text.hxx>
 #include <glow/window.hxx>
-#include <airglow/browser.hxx>
 #include <airglow/definitions.hxx>
+#include <airglow/settings.hxx>
+#include <airglow/window.hxx>
 
 namespace airglow
 {
 
-struct Window final : public glow::window::Window
+struct App final : public glow::window::Window
 {
     using glow::window::Window::Window;
 
-    Window(HWND app, std::string className);
+    auto run() -> int;
 
-    virtual auto operator()(bool show = true) -> void override;
+    virtual auto create_window() -> void override;
 
     virtual auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         -> LRESULT override;
-    auto on_create(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
-    auto on_close(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int override;
+    auto on_key_down(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
     auto on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
-    auto on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
 
-    static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
-    constexpr static int s_border{2};
-    constexpr static int s_bar{65};
-    int m_bar{};
+    glow::window::GdiPlus m_gdiInit;
+    glow::window::CoInitialize m_coInit;
 
-    HWND m_app{nullptr};
-
-    std::unique_ptr<MainBrowser> m_browser1;
-    std::unique_ptr<SideBrowser> m_browser2;
-    std::unique_ptr<URL> m_url;
+    std::set<HWND> m_windows;
 };
 
 } // namespace airglow
