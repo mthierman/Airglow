@@ -6,6 +6,8 @@
 // ╚─────────────────────╝
 // clang-format on
 
+#pragma once
+
 #include <Windows.h>
 
 #include <print>
