@@ -15,7 +15,7 @@
 
 #include <glow/filesystem.hxx>
 #include <glow/window.hxx>
-#include <airglow/browser.hxx>
+#include <airglow/webview.hxx>
 #include <airglow/config.hxx>
 #include <airglow/definitions.hxx>
 

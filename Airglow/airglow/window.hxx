@@ -11,12 +11,11 @@
 #include <bit>
 #include <set>
 
-// #include <glow/config.hxx>
 #include <glow/console.hxx>
 #include <glow/filesystem.hxx>
 #include <glow/text.hxx>
 #include <glow/window.hxx>
-#include <airglow/browser.hxx>
+#include <airglow/webview.hxx>
 #include <airglow/definitions.hxx>
 
 namespace airglow

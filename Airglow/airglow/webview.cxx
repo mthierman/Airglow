@@ -6,12 +6,12 @@
 // ╚─────────────────────╝
 // clang-format on
 
-#include <airglow/browser.hxx>
+#include <airglow/webview.hxx>
 
 namespace airglow
 {
 
-auto Browser::accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
+auto WebView::accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
                                               ICoreWebView2AcceleratorKeyPressedEventArgs* args)
     -> HRESULT
 {
@@ -108,7 +108,7 @@ auto Browser::accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
     return S_OK;
 }
 
-auto Browser::zoom_factor_changed_handler(ICoreWebView2Controller* sender, IUnknown* args)
+auto WebView::zoom_factor_changed_handler(ICoreWebView2Controller* sender, IUnknown* args)
     -> HRESULT
 {
     double zoomFactor;

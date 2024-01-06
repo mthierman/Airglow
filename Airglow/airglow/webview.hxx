@@ -14,7 +14,7 @@
 namespace airglow
 {
 
-struct Browser : public glow::window::WebView
+struct WebView : public glow::window::WebView
 {
     using glow::window::WebView::WebView;
 
@@ -25,9 +25,9 @@ struct Browser : public glow::window::WebView
         -> HRESULT override;
 };
 
-struct URL final : public Browser
+struct URL final : public WebView
 {
-    using Browser::Browser;
+    using WebView::WebView;
 
     auto initialized() -> void override;
 
@@ -38,9 +38,9 @@ struct URL final : public Browser
     std::wstring m_source{L"https://localhost:8000/url/index.html"};
 };
 
-struct MainBrowser final : public Browser
+struct MainBrowser final : public WebView
 {
-    using Browser::Browser;
+    using WebView::WebView;
 
     virtual auto source_changed_handler(ICoreWebView2* sender,
                                         ICoreWebView2SourceChangedEventArgs* args)
@@ -50,9 +50,9 @@ struct MainBrowser final : public Browser
         -> HRESULT override;
 };
 
-struct SideBrowser final : public Browser
+struct SideBrowser final : public WebView
 {
-    using Browser::Browser;
+    using WebView::WebView;
 
     virtual auto source_changed_handler(ICoreWebView2* sender,
                                         ICoreWebView2SourceChangedEventArgs* args)
@@ -62,9 +62,9 @@ struct SideBrowser final : public Browser
         -> HRESULT override;
 };
 
-struct SettingsBrowser final : public Browser
+struct SettingsBrowser final : public WebView
 {
-    using Browser::Browser;
+    using WebView::WebView;
 };
 
 } // namespace airglow
