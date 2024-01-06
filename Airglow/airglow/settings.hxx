@@ -40,7 +40,7 @@ struct Window final : public glow::window::Window
 
     HWND m_app{nullptr};
 
-    std::unique_ptr<airglow::SettingsBrowser> m_browser;
+    std::unique_ptr<airglow::webview::Settings> m_browser;
 };
 
 struct Settings

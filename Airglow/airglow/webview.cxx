@@ -8,7 +8,7 @@
 
 #include <airglow/webview.hxx>
 
-namespace airglow
+namespace airglow::webview
 {
 
 auto WebView::accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
@@ -192,7 +192,7 @@ auto URL::web_message_received_handler(ICoreWebView2* sender,
     return S_OK;
 }
 
-auto MainBrowser::source_changed_handler(ICoreWebView2* sender,
+auto Main::source_changed_handler(ICoreWebView2* sender,
                                          ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
 {
     glow::console::debug("navigation completed..");
@@ -212,7 +212,7 @@ auto MainBrowser::source_changed_handler(ICoreWebView2* sender,
     return S_OK;
 }
 
-auto MainBrowser::navigation_starting_handler(ICoreWebView2* sender,
+auto Main::navigation_starting_handler(ICoreWebView2* sender,
                                               ICoreWebView2NavigationStartingEventArgs* args)
     -> HRESULT
 {
@@ -233,7 +233,7 @@ auto MainBrowser::navigation_starting_handler(ICoreWebView2* sender,
     return S_OK;
 }
 
-auto SideBrowser::source_changed_handler(ICoreWebView2* sender,
+auto Side::source_changed_handler(ICoreWebView2* sender,
                                          ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
 {
     glow::console::debug("navigation completed..");
@@ -253,7 +253,7 @@ auto SideBrowser::source_changed_handler(ICoreWebView2* sender,
     return S_OK;
 }
 
-auto SideBrowser::navigation_starting_handler(ICoreWebView2* sender,
+auto Side::navigation_starting_handler(ICoreWebView2* sender,
                                               ICoreWebView2NavigationStartingEventArgs* args)
     -> HRESULT
 {

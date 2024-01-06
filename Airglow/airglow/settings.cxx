@@ -20,7 +20,7 @@ auto Window::operator()(bool show) -> void
     dwm_dark_mode(true);
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
 
-    m_browser = std::make_unique<airglow::SettingsBrowser>(+Browsers::settings, m_hwnd.get(),
+    m_browser = std::make_unique<airglow::webview::Settings>(+Browsers::settings, m_hwnd.get(),
                                                    "https://localhost:8000/settings/index.html");
     (*m_browser)();
     m_browser->create_webview();

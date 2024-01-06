@@ -11,7 +11,7 @@
 #include <glow/window.hxx>
 #include <airglow/definitions.hxx>
 
-namespace airglow
+namespace airglow::webview
 {
 
 struct WebView : public glow::window::WebView
@@ -38,7 +38,7 @@ struct URL final : public WebView
     std::wstring m_source{L"https://localhost:8000/url/index.html"};
 };
 
-struct MainBrowser final : public WebView
+struct Main final : public WebView
 {
     using WebView::WebView;
 
@@ -50,7 +50,7 @@ struct MainBrowser final : public WebView
         -> HRESULT override;
 };
 
-struct SideBrowser final : public WebView
+struct Side final : public WebView
 {
     using WebView::WebView;
 
@@ -62,7 +62,7 @@ struct SideBrowser final : public WebView
         -> HRESULT override;
 };
 
-struct SettingsBrowser final : public WebView
+struct Settings final : public WebView
 {
     using WebView::WebView;
 };

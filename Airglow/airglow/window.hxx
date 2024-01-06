@@ -43,9 +43,9 @@ struct Window final : public glow::window::Window
 
     HWND m_app{nullptr};
 
-    std::unique_ptr<MainBrowser> m_browser1;
-    std::unique_ptr<SideBrowser> m_browser2;
-    std::unique_ptr<URL> m_url;
+    std::unique_ptr<airglow::webview::Main> m_browser1;
+    std::unique_ptr<airglow::webview::Side> m_browser2;
+    std::unique_ptr<airglow::webview::URL> m_url;
 };
 
 } // namespace airglow

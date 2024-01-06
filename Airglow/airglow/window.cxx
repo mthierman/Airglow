@@ -20,16 +20,16 @@ auto Window::operator()(bool show) -> void
     dwm_dark_mode(true);
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
 
-    m_browser1 = std::make_unique<MainBrowser>(+Browsers::browser1, m_hwnd.get());
+    m_browser1 = std::make_unique<airglow::webview::Main>(+Browsers::browser1, m_hwnd.get());
     (*m_browser1)();
     m_browser1->create_webview();
 
-    m_browser2 = std::make_unique<SideBrowser>(+Browsers::browser2, m_hwnd.get());
+    m_browser2 = std::make_unique<airglow::webview::Side>(+Browsers::browser2, m_hwnd.get());
     (*m_browser2)();
     m_browser2->create_webview();
 
-    m_url = std::make_unique<URL>(+Browsers::url, m_hwnd.get(),
-                                  "https://localhost:8000/url/index.html");
+    m_url = std::make_unique<airglow::webview::URL>(+Browsers::url, m_hwnd.get(),
+                                                    "https://localhost:8000/url/index.html");
     (*m_url)();
     m_url->create_webview();
 }
