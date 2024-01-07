@@ -7,12 +7,12 @@ const defaults: UserConfig = {
     base: "./",
     root: "gui/apps",
     build: {
-        outDir: "../build/gui",
+        outDir: "../../build/gui",
         rollupOptions: {
             input: {
-                home: path.resolve("home/index.html"),
-                url: path.resolve("url/index.html"),
-                settings: path.resolve("settings/index.html"),
+                home: path.resolve("gui/apps/home/index.html"),
+                url: path.resolve("gui/apps/url/index.html"),
+                settings: path.resolve("gui/apps/settings/index.html"),
             },
         },
     },
