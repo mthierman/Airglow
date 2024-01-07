@@ -139,7 +139,7 @@ auto URL::web_message_received_handler(ICoreWebView2* sender,
     // Check message source
     wil::unique_cotaskmem_string source;
     if (FAILED(args->get_Source(&source))) return S_OK;
-    if (std::wstring_view(source.get()) != std::wstring_view(m_source)) return S_OK;
+    if (std::wstring_view(source.get()) != std::wstring_view(glow::text::widen(m_url))) return S_OK;
 
     // Get message as JSON
     wil::unique_cotaskmem_string messageRaw;
@@ -160,7 +160,6 @@ auto URL::web_message_received_handler(ICoreWebView2* sender,
         if (parseMsg.contains("mainUrl"))
         {
             auto mainUrl{parseMsg["mainUrl"].get<std::string>()};
-            // glow::console::debug(mainUrl);
             nMsg.nmhdr.code = CUSTOM_POST_MAINURL;
             nMsg.message = mainUrl;
             SendMessageA(m_parent, WM_NOTIFY, nMsg.nmhdr.idFrom, std::bit_cast<LPARAM>(&nMsg));
@@ -169,7 +168,6 @@ auto URL::web_message_received_handler(ICoreWebView2* sender,
         if (parseMsg.contains("sideUrl"))
         {
             auto sideUrl{parseMsg["sideUrl"].get<std::string>()};
-            // glow::console::debug(sideUrl);
             nMsg.nmhdr.code = CUSTOM_POST_SIDEURL;
             nMsg.message = sideUrl;
             SendMessageA(m_parent, WM_NOTIFY, nMsg.nmhdr.idFrom, std::bit_cast<LPARAM>(&nMsg));
@@ -178,7 +176,6 @@ auto URL::web_message_received_handler(ICoreWebView2* sender,
         if (parseMsg.contains("height"))
         {
             auto height{parseMsg["height"].get<int>()};
-            // glow::console::debug(std::to_string(height));
             nMsg.nmhdr.code = CUSTOM_POST_HEIGHT;
             nMsg.message = std::to_string(height);
             SendMessageA(m_parent, WM_NOTIFY, nMsg.nmhdr.idFrom, std::bit_cast<LPARAM>(&nMsg));
@@ -195,12 +192,10 @@ auto URL::web_message_received_handler(ICoreWebView2* sender,
 auto Main::source_changed_handler(ICoreWebView2* sender, ICoreWebView2SourceChangedEventArgs* args)
     -> HRESULT
 {
-    glow::console::debug("navigation completed..");
     wil::unique_cotaskmem_string uriRaw;
     sender->get_Source(&uriRaw);
 
     auto uri{glow::text::narrow(uriRaw.get())};
-    glow::console::debug(uri);
     NotificationMsg nMsg;
     nMsg.nmhdr.hwndFrom = m_hwnd.get();
     nMsg.nmhdr.idFrom = m_id;
@@ -215,12 +210,10 @@ auto Main::source_changed_handler(ICoreWebView2* sender, ICoreWebView2SourceChan
 auto Main::navigation_starting_handler(ICoreWebView2* sender,
                                        ICoreWebView2NavigationStartingEventArgs* args) -> HRESULT
 {
-    glow::console::debug("navigation completed..");
     wil::unique_cotaskmem_string uriRaw;
     sender->get_Source(&uriRaw);
 
     auto uri{glow::text::narrow(uriRaw.get())};
-    glow::console::debug(uri);
     NotificationMsg nMsg;
     nMsg.nmhdr.hwndFrom = m_hwnd.get();
     nMsg.nmhdr.idFrom = m_id;
@@ -235,12 +228,10 @@ auto Main::navigation_starting_handler(ICoreWebView2* sender,
 auto Side::source_changed_handler(ICoreWebView2* sender, ICoreWebView2SourceChangedEventArgs* args)
     -> HRESULT
 {
-    glow::console::debug("navigation completed..");
     wil::unique_cotaskmem_string uriRaw;
     sender->get_Source(&uriRaw);
 
     auto uri{glow::text::narrow(uriRaw.get())};
-    glow::console::debug(uri);
     NotificationMsg nMsg;
     nMsg.nmhdr.hwndFrom = m_hwnd.get();
     nMsg.nmhdr.idFrom = m_id;
@@ -255,12 +246,10 @@ auto Side::source_changed_handler(ICoreWebView2* sender, ICoreWebView2SourceChan
 auto Side::navigation_starting_handler(ICoreWebView2* sender,
                                        ICoreWebView2NavigationStartingEventArgs* args) -> HRESULT
 {
-    glow::console::debug("navigation completed..");
     wil::unique_cotaskmem_string uriRaw;
     sender->get_Source(&uriRaw);
 
     auto uri{glow::text::narrow(uriRaw.get())};
-    glow::console::debug(uri);
     NotificationMsg nMsg;
     nMsg.nmhdr.hwndFrom = m_hwnd.get();
     nMsg.nmhdr.idFrom = m_id;

@@ -45,8 +45,6 @@ struct URL final : public WebView
     auto web_message_received_handler(ICoreWebView2* sender,
                                       ICoreWebView2WebMessageReceivedEventArgs* args)
         -> HRESULT override;
-
-    std::wstring m_source{L"https://localhost:8000/url/index.html"};
 };
 
 struct Main final : public WebView

@@ -30,6 +30,9 @@ struct App;
 struct Browser;
 struct Settings;
 
+auto data_path() -> std::filesystem::path;
+auto json_path() -> std::filesystem::path;
+
 struct App final : public glow::window::Window
 {
     using glow::window::Window::Window;
@@ -43,10 +46,6 @@ struct App final : public glow::window::Window
 
     auto on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
 
-    auto data_path() -> std::filesystem::path;
-    auto json_path() -> std::filesystem::path;
-    auto gui_path() -> std::filesystem::path;
-
     glow::window::GdiPlus m_gdiInit;
     glow::window::CoInitialize m_coInit;
 
@@ -54,9 +53,6 @@ struct App final : public glow::window::Window
     std::unique_ptr<Settings> m_settings;
 
     std::set<HWND> m_windows;
-    std::filesystem::path m_dataPath{data_path()};
-    std::filesystem::path m_jsonPath{json_path()};
-    std::filesystem::path m_guiPath{gui_path()};
 };
 
 struct Browser final : public glow::window::Window
@@ -78,17 +74,18 @@ struct Browser final : public glow::window::Window
 
     static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
 
+    auto url_path() -> std::string;
+
     auto save_settings() -> void;
     auto load_settings() -> void;
 
     constexpr static int s_border{2};
-    constexpr static int s_bar{65};
-    int m_bar{};
+    int m_bar{100};
 
     HWND m_app{nullptr};
 
-    std::unique_ptr<airglow::webview::Main> m_browser1;
-    std::unique_ptr<airglow::webview::Side> m_browser2;
+    std::unique_ptr<airglow::webview::Main> m_main;
+    std::unique_ptr<airglow::webview::Side> m_side;
     std::unique_ptr<airglow::webview::URL> m_url;
 
     glow::window::Position m_position;

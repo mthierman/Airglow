@@ -11,6 +11,22 @@
 namespace airglow
 {
 
+auto data_path() -> std::filesystem::path
+{
+    auto path{glow::filesystem::known_folder() / "Airglow"};
+
+    if (!std::filesystem::exists(path)) std::filesystem::create_directory(path);
+
+    return path;
+}
+
+auto json_path() -> std::filesystem::path
+{
+    auto path{data_path() / "Airglow.json"};
+
+    return path;
+}
+
 auto App::run() -> int
 {
     SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
@@ -20,8 +36,8 @@ auto App::run() -> int
     m_browser = std::make_unique<Browser>(m_hwnd.get(), "Browser");
     (*m_browser)();
 
-    m_settings = std::make_unique<Settings>(m_hwnd.get(), "Settings");
-    (*m_settings)();
+    // m_settings = std::make_unique<Settings>(m_hwnd.get(), "Settings");
+    // (*m_settings)();
 
     // glow::console::create_process("server.exe");
 
@@ -64,29 +80,6 @@ auto App::on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
     return 0;
 }
 
-auto App::data_path() -> std::filesystem::path
-{
-    auto path{glow::filesystem::known_folder() / "Airglow"};
-
-    if (!std::filesystem::exists(path)) std::filesystem::create_directory(path);
-
-    return path;
-}
-
-auto App::json_path() -> std::filesystem::path
-{
-    auto path{data_path() / "Airglow.json"};
-
-    return path;
-}
-
-auto App::gui_path() -> std::filesystem::path
-{
-    auto path{"file:///" / data_path()};
-
-    return path;
-}
-
 Browser::Browser(HWND app, std::string className) : glow::window::Window(className) { m_app = app; }
 
 auto Browser::operator()(bool show) -> void
@@ -96,16 +89,17 @@ auto Browser::operator()(bool show) -> void
     dwm_dark_mode(true);
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
 
-    m_browser1 = std::make_unique<airglow::webview::Main>(+Browsers::main, m_hwnd.get());
-    (*m_browser1)();
-    m_browser1->create_webview();
+    m_main = std::make_unique<airglow::webview::Main>(+Browsers::main, m_hwnd.get());
+    (*m_main)();
+    m_main->create_webview();
 
-    m_browser2 = std::make_unique<airglow::webview::Side>(+Browsers::side, m_hwnd.get());
-    (*m_browser2)();
-    m_browser2->create_webview();
+    m_side = std::make_unique<airglow::webview::Side>(+Browsers::side, m_hwnd.get());
+    (*m_side)();
+    m_side->create_webview();
 
-    m_url = std::make_unique<airglow::webview::URL>(+Browsers::url, m_hwnd.get(),
-                                                    "https://localhost:8000/url/index.html");
+    // m_url = std::make_unique<airglow::webview::URL>(+Browsers::url, m_hwnd.get(),
+    // "https://localhost:8000/url/index.html");
+    m_url = std::make_unique<airglow::webview::URL>(+Browsers::url, m_hwnd.get(), url_path());
     (*m_url)();
     m_url->create_webview();
 }
@@ -191,13 +185,13 @@ auto Browser::on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 
     case CUSTOM_POST_MAINURL:
     {
-        if (m_browser1) m_browser1->navigate(nMsg.message);
+        if (m_main) m_main->navigate(nMsg.message);
         break;
     }
 
     case CUSTOM_POST_SIDEURL:
     {
-        if (m_browser2) m_browser2->navigate(nMsg.message);
+        if (m_main) m_main->navigate(nMsg.message);
         break;
     }
 
@@ -274,6 +268,19 @@ auto CALLBACK Browser::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     }
 
     return TRUE;
+}
+
+auto Browser::url_path() -> std::string
+{
+#if _DEBUG
+    std::string path{"https://localhost:8000/url/index.html"};
+#else
+    auto path{"file:///" + glow::filesystem::known_folder().string() +
+              "\\Airglow\\gui\\url\\index.html"};
+#endif
+    glow::console::debug(path);
+
+    return path;
 }
 
 auto Browser::save_settings() -> void
