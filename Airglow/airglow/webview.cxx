@@ -8,7 +8,7 @@
 
 #include <airglow/webview.hxx>
 
-namespace airglow::webview
+namespace airglow::wv
 {
 
 auto WebView::accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
@@ -139,7 +139,7 @@ auto URL::web_message_received_handler(ICoreWebView2* sender,
     // Check message source
     wil::unique_cotaskmem_string source;
     if (FAILED(args->get_Source(&source))) return S_OK;
-    if (std::wstring_view(source.get()) != std::wstring_view(glow::text::widen(m_url))) return S_OK;
+    if (std::wstring_view(source.get()) != std::wstring_view(text::widen(m_url))) return S_OK;
 
     // Get message as JSON
     wil::unique_cotaskmem_string messageRaw;
@@ -148,7 +148,7 @@ auto URL::web_message_received_handler(ICoreWebView2* sender,
     if (FAILED(asJson)) return S_OK;
 
     // Parse the JSON and send the URL
-    std::string message{glow::text::narrow(messageRaw.get())};
+    std::string message{text::narrow(messageRaw.get())};
     try
     {
         auto parseMsg{nlohmann::json::parse(message)};
@@ -183,7 +183,7 @@ auto URL::web_message_received_handler(ICoreWebView2* sender,
     }
     catch (const nlohmann::json::parse_error& e)
     {
-        glow::console::debug(e.what());
+        console::debug(e.what());
     }
 
     return S_OK;
@@ -195,7 +195,7 @@ auto Main::source_changed_handler(ICoreWebView2* sender, ICoreWebView2SourceChan
     wil::unique_cotaskmem_string uriRaw;
     sender->get_Source(&uriRaw);
 
-    auto uri{glow::text::narrow(uriRaw.get())};
+    auto uri{text::narrow(uriRaw.get())};
     NotificationMsg nMsg;
     nMsg.nmhdr.hwndFrom = m_hwnd.get();
     nMsg.nmhdr.idFrom = m_id;
@@ -213,7 +213,7 @@ auto Main::navigation_starting_handler(ICoreWebView2* sender,
     wil::unique_cotaskmem_string uriRaw;
     sender->get_Source(&uriRaw);
 
-    auto uri{glow::text::narrow(uriRaw.get())};
+    auto uri{text::narrow(uriRaw.get())};
     NotificationMsg nMsg;
     nMsg.nmhdr.hwndFrom = m_hwnd.get();
     nMsg.nmhdr.idFrom = m_id;
@@ -231,7 +231,7 @@ auto Side::source_changed_handler(ICoreWebView2* sender, ICoreWebView2SourceChan
     wil::unique_cotaskmem_string uriRaw;
     sender->get_Source(&uriRaw);
 
-    auto uri{glow::text::narrow(uriRaw.get())};
+    auto uri{text::narrow(uriRaw.get())};
     NotificationMsg nMsg;
     nMsg.nmhdr.hwndFrom = m_hwnd.get();
     nMsg.nmhdr.idFrom = m_id;
@@ -249,7 +249,7 @@ auto Side::navigation_starting_handler(ICoreWebView2* sender,
     wil::unique_cotaskmem_string uriRaw;
     sender->get_Source(&uriRaw);
 
-    auto uri{glow::text::narrow(uriRaw.get())};
+    auto uri{text::narrow(uriRaw.get())};
     NotificationMsg nMsg;
     nMsg.nmhdr.hwndFrom = m_hwnd.get();
     nMsg.nmhdr.idFrom = m_id;

@@ -11,13 +11,14 @@
 #include <bit>
 
 #include <glow/console.hxx>
+#include <glow/gui.hxx>
 #include <glow/text.hxx>
-#include <glow/window.hxx>
 
 #include <airglow/definitions.hxx>
 
-namespace airglow::webview
+namespace airglow::wv
 {
+using namespace glow;
 
 struct WebView;
 struct URL;
@@ -25,9 +26,9 @@ struct Main;
 struct Side;
 struct Settings;
 
-struct WebView : public glow::window::WebView
+struct WebView : public gui::WebView
 {
-    using glow::window::WebView::WebView;
+    using gui::WebView::WebView;
 
     virtual auto accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
                                                  ICoreWebView2AcceleratorKeyPressedEventArgs* args)

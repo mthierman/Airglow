@@ -13,7 +13,7 @@ namespace airglow
 
 auto data_path() -> std::filesystem::path
 {
-    auto path{glow::filesystem::known_folder() / "Airglow"};
+    auto path{filesystem::known_folder() / "Airglow"};
 
     if (!std::filesystem::exists(path)) std::filesystem::create_directory(path);
 
@@ -39,9 +39,9 @@ auto App::run() -> int
     // m_settings = std::make_unique<Settings>(m_hwnd.get(), "Settings");
     // (*m_settings)();
 
-    // glow::console::create_process("server.exe");
+    // console::create_process("server.exe");
 
-    return glow::window::message_loop();
+    return gui::message_loop();
 }
 
 auto App::create_window() -> void
@@ -80,26 +80,24 @@ auto App::on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
     return 0;
 }
 
-Browser::Browser(HWND app, std::string className) : glow::window::Window(className) { m_app = app; }
+Browser::Browser(HWND app, std::string className) : gui::Window(className) { m_app = app; }
 
 auto Browser::operator()(bool show) -> void
 {
-    glow::window::Window::operator()(show);
+    gui::Window::operator()(show);
     dwm_caption_color(false);
     dwm_dark_mode(true);
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
 
-    m_main = std::make_unique<airglow::webview::Main>(+Browsers::main, m_hwnd.get());
+    m_main = std::make_unique<wv::Main>(+Browsers::main, m_hwnd.get());
     (*m_main)();
     m_main->create_webview();
 
-    m_side = std::make_unique<airglow::webview::Side>(+Browsers::side, m_hwnd.get());
+    m_side = std::make_unique<wv::Side>(+Browsers::side, m_hwnd.get());
     (*m_side)();
     m_side->create_webview();
 
-    // m_url = std::make_unique<airglow::webview::URL>(+Browsers::url, m_hwnd.get(),
-    // "https://localhost:8000/url/index.html");
-    m_url = std::make_unique<airglow::webview::URL>(+Browsers::url, m_hwnd.get(), url_path());
+    m_url = std::make_unique<wv::URL>(+Browsers::url, m_hwnd.get(), url_path());
     (*m_url)();
     m_url->create_webview();
 }
@@ -198,14 +196,14 @@ auto Browser::on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
     case CUSTOM_RECEIVE_MAINURL:
     {
         nlohmann::json j{{"mainUrl", nMsg.message}};
-        if (m_url) m_url->post_json(glow::text::widen(j.dump()).c_str());
+        if (m_url) m_url->post_json(text::widen(j.dump()).c_str());
         break;
     }
 
     case CUSTOM_RECEIVE_SIDEURL:
     {
         nlohmann::json j{{"sideUrl", nMsg.message}};
-        if (m_url) m_url->post_json(glow::text::widen(j.dump()).c_str());
+        if (m_url) m_url->post_json(text::widen(j.dump()).c_str());
         break;
     }
     }
@@ -228,7 +226,7 @@ auto Browser::on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 auto CALLBACK Browser::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 {
     auto dimensions{*std::bit_cast<WindowDimensions*>(lParam)};
-    auto self{glow::window::instance<Browser>(dimensions.hwnd)};
+    auto self{gui::instance<Browser>(dimensions.hwnd)};
 
     if (self)
     {
@@ -275,17 +273,15 @@ auto Browser::url_path() -> std::string
 #if _DEBUG
     std::string path{"https://localhost:8000/url/index.html"};
 #else
-    auto path{"file:///" + glow::filesystem::known_folder().string() +
-              "\\Airglow\\gui\\url\\index.html"};
+    auto path{"file:///" + filesystem::known_folder().string() + "\\Airglow\\gui\\url\\index.html"};
 #endif
-    glow::console::debug(path);
 
     return path;
 }
 
 auto Browser::save_settings() -> void
 {
-    auto path{glow::filesystem::portable()};
+    auto path{filesystem::portable()};
     if (!path.empty())
     {
         auto settingsFile{path / "settings.json"};
@@ -330,7 +326,7 @@ auto Browser::save_settings() -> void
 
 auto Browser::load_settings() -> void
 {
-    auto path{glow::filesystem::portable()};
+    auto path{filesystem::portable()};
     if (!path.empty())
     {
         auto settingsFile{path / "settings.json"};
@@ -406,20 +402,17 @@ void from_json(const nlohmann::json& j, Browser& browser)
     j.at("sideCurrent").get_to(browser.m_sideCurrent);
 }
 
-Settings::Settings(HWND app, std::string className) : glow::window::Window(className)
-{
-    m_app = app;
-}
+Settings::Settings(HWND app, std::string className) : gui::Window(className) { m_app = app; }
 
 auto Settings::operator()(bool show) -> void
 {
-    glow::window::Window::operator()(show);
+    gui::Window::operator()(show);
     dwm_caption_color(false);
     dwm_dark_mode(true);
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
 
-    m_browser = std::make_unique<airglow::webview::Settings>(
-        +Browsers::settings, m_hwnd.get(), "https://localhost:8000/settings/index.html");
+    m_browser = std::make_unique<wv::Settings>(+Browsers::settings, m_hwnd.get(),
+                                               "https://localhost:8000/settings/index.html");
     (*m_browser)();
     m_browser->create_webview();
 }

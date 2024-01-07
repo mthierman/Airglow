@@ -16,8 +16,8 @@
 #include <glow/config.hxx>
 #include <glow/console.hxx>
 #include <glow/filesystem.hxx>
+#include <glow/gui.hxx>
 #include <glow/text.hxx>
-#include <glow/window.hxx>
 
 #include <airglow/config.hxx>
 #include <airglow/definitions.hxx>
@@ -25,6 +25,7 @@
 
 namespace airglow
 {
+using namespace glow;
 
 struct App;
 struct Browser;
@@ -33,9 +34,9 @@ struct Settings;
 auto data_path() -> std::filesystem::path;
 auto json_path() -> std::filesystem::path;
 
-struct App final : public glow::window::Window
+struct App final : public gui::Window
 {
-    using glow::window::Window::Window;
+    using gui::Window::Window;
 
     auto run() -> int;
 
@@ -43,21 +44,19 @@ struct App final : public glow::window::Window
 
     virtual auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         -> LRESULT override;
-
     auto on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
 
-    glow::window::GdiPlus m_gdiInit;
-    glow::window::CoInitialize m_coInit;
-
-    std::unique_ptr<Browser> m_browser;
-    std::unique_ptr<Settings> m_settings;
+    gui::GdiPlus m_gdiInit;
+    gui::CoInitialize m_coInit;
 
     std::set<HWND> m_windows;
+    std::unique_ptr<Browser> m_browser;
+    std::unique_ptr<Settings> m_settings;
 };
 
-struct Browser final : public glow::window::Window
+struct Browser final : public gui::Window
 {
-    using glow::window::Window::Window;
+    using gui::Window::Window;
 
     Browser(HWND app, std::string className);
 
@@ -84,12 +83,12 @@ struct Browser final : public glow::window::Window
 
     HWND m_app{nullptr};
 
-    std::unique_ptr<airglow::webview::Main> m_main;
-    std::unique_ptr<airglow::webview::Side> m_side;
-    std::unique_ptr<airglow::webview::URL> m_url;
+    std::unique_ptr<wv::Main> m_main;
+    std::unique_ptr<wv::Side> m_side;
+    std::unique_ptr<wv::URL> m_url;
 
-    glow::window::Position m_position;
-    glow::window::Colors m_colors;
+    gui::Position m_position;
+    gui::Colors m_colors;
     bool m_dark_mode{true};
     bool m_maximized{false};
     bool m_fullscreen{false};
@@ -107,9 +106,9 @@ struct Browser final : public glow::window::Window
 void to_json(nlohmann::json& j, const Browser& app);
 void from_json(const nlohmann::json& j, Browser& app);
 
-struct Settings final : public glow::window::Window
+struct Settings final : public gui::Window
 {
-    using glow::window::Window::Window;
+    using gui::Window::Window;
 
     Settings(HWND app, std::string className);
 
@@ -125,7 +124,7 @@ struct Settings final : public glow::window::Window
 
     HWND m_app{nullptr};
 
-    std::unique_ptr<airglow::webview::Settings> m_browser;
+    std::unique_ptr<wv::Settings> m_browser;
 };
 
 } // namespace airglow
