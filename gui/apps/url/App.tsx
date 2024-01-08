@@ -14,6 +14,11 @@ export default function App() {
     const [sideUrlPlaceholder, setSideUrlPlaceholder] = useState("");
 
     useEffect(() => {
+        setMainUrlPlaceholder(sessionStorage.getItem("mainUrl")!);
+        setSideUrlPlaceholder(sessionStorage.getItem("sideUrl")!);
+    });
+
+    useEffect(() => {
         setHeight(containerRef?.current?.offsetHeight!);
         if (height) window.chrome.webview.postMessage({ height: height });
     });
@@ -22,11 +27,13 @@ export default function App() {
         window.chrome.webview.addEventListener("message", (event: Event) => {
             const data = (event as MessageEvent).data;
             if (data.mainUrl) {
+                sessionStorage.setItem("mainUrl", data.mainUrl);
                 setMain(data.mainUrl);
                 setMainUrlPlaceholder(data.mainUrl);
                 mainInput.current?.blur();
             }
             if (data.sideUrl) {
+                sessionStorage.setItem("sideUrl", data.sideUrl);
                 setSide(data.sideUrl);
                 setSideUrlPlaceholder(data.sideUrl);
                 sideInput.current?.blur();
@@ -126,7 +133,7 @@ export default function App() {
                 autoComplete="off"
                 spellCheck="false">
                 <input
-                    className="flex-grow text-ellipsis bg-transparent p-2 outline-none"
+                    className="flex-grow text-ellipsis bg-transparent p-2 text-center outline-none"
                     type="text"
                     id="mainUrl"
                     value={main}
@@ -145,7 +152,7 @@ export default function App() {
                 autoComplete="off"
                 spellCheck="false">
                 <input
-                    className="flex-grow text-ellipsis bg-transparent p-2 outline-none"
+                    className="flex-grow text-ellipsis bg-transparent p-2 text-center outline-none"
                     type="text"
                     id="sideUrl"
                     value={side}
