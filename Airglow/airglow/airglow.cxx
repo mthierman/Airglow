@@ -32,21 +32,18 @@ auto App::run() -> int
     SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
     SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
                             "--allow-file-access-from-files");
-    std::string mainUrl{""};
-    std::string sideUrl{""};
 
-    try
+    auto argv = console::argv();
+
+    if (argv.size() == 2) { m_mainUrl = argv.at(1); }
+
+    if (argv.size() > 2)
     {
-        auto argv = console::argv();
-        if (!argv.at(1).empty()) mainUrl = argv.at(1);
-        if (!argv.at(2).empty()) sideUrl = argv.at(2);
-    }
-    catch (const std::out_of_range& e)
-    {
-        console::debug(e.what());
+        m_mainUrl = argv.at(1);
+        m_sideUrl = argv.at(2);
     }
 
-    m_browser = std::make_unique<Browser>(m_hwnd.get(), "Browser", mainUrl, sideUrl);
+    m_browser = std::make_unique<Browser>(m_hwnd.get(), "Browser", m_mainUrl, m_sideUrl);
     (*m_browser)();
 
     // console::debug(gui::webview_version());
@@ -99,8 +96,8 @@ Browser::Browser(HWND app, std::string className, std::string mainUrl, std::stri
     : gui::Window(className)
 {
     m_app = app;
-    if (!mainUrl.empty()) m_mainUrl = mainUrl;
-    if (!sideUrl.empty()) m_sideUrl = sideUrl;
+    m_mainUrl = mainUrl;
+    m_sideUrl = sideUrl;
 }
 
 auto Browser::operator()(bool show) -> void
@@ -110,6 +107,10 @@ auto Browser::operator()(bool show) -> void
     dwm_dark_mode(true);
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
 
+    m_url = std::make_unique<wv::URL>(+Browsers::url, m_hwnd.get(), url_path());
+    (*m_url)();
+    m_url->create_webview();
+
     m_main = std::make_unique<wv::Main>(+Browsers::main, m_hwnd.get(), m_mainUrl);
     (*m_main)();
     m_main->create_webview();
@@ -117,10 +118,6 @@ auto Browser::operator()(bool show) -> void
     m_side = std::make_unique<wv::Side>(+Browsers::side, m_hwnd.get(), m_sideUrl);
     (*m_side)();
     m_side->create_webview();
-
-    m_url = std::make_unique<wv::URL>(+Browsers::url, m_hwnd.get(), url_path());
-    (*m_url)();
-    m_url->create_webview();
 }
 
 auto Browser::handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT

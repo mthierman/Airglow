@@ -50,6 +50,9 @@ struct App final : public gui::Window
     gui::GdiPlus m_gdiInit;
     gui::CoInitialize m_coInit;
 
+    std::string m_mainUrl{"about:blank"};
+    std::string m_sideUrl{"about:blank"};
+
     std::set<HWND> m_windows;
     std::unique_ptr<Browser> m_browser;
     std::unique_ptr<Settings> m_settings;
@@ -83,8 +86,8 @@ struct Browser final : public gui::Window
     int m_bar{0};
 
     HWND m_app{nullptr};
-    std::string m_mainUrl{"https://www.google.com/"};
-    std::string m_sideUrl{"https://www.google.com/"};
+    std::string m_mainUrl{"about:blank"};
+    std::string m_sideUrl{"about:blank"};
 
     std::unique_ptr<wv::Main> m_main;
     std::unique_ptr<wv::Side> m_side;
