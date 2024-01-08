@@ -118,6 +118,15 @@ auto WebView::zoom_factor_changed_handler(ICoreWebView2Controller* sender, IUnkn
     return S_OK;
 }
 
+auto WebView::context_menu_requested_handler(ICoreWebView2* sender,
+                                             ICoreWebView2ContextMenuRequestedEventArgs* args)
+    -> HRESULT
+{
+    // https://learn.microsoft.com/en-us/microsoft-edge/webview2/how-to/context-menus?tabs=cpp#example-adding-a-custom-context-menu
+
+    return S_OK;
+}
+
 auto URL::initialized() -> void
 {
     m_webView.m_settings8->put_AreDefaultContextMenusEnabled(false);

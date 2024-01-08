@@ -35,6 +35,9 @@ struct WebView : public gui::WebView
         -> HRESULT override;
     virtual auto zoom_factor_changed_handler(ICoreWebView2Controller* sender, IUnknown* args)
         -> HRESULT override;
+    virtual auto context_menu_requested_handler(ICoreWebView2* sender,
+                                                ICoreWebView2ContextMenuRequestedEventArgs* args)
+        -> HRESULT override;
 };
 
 struct URL final : public WebView
@@ -77,4 +80,4 @@ struct Settings final : public WebView
     using WebView::WebView;
 };
 
-} // namespace airglow::webview
+} // namespace airglow::wv
