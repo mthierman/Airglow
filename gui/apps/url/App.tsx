@@ -13,6 +13,18 @@ export default function App() {
     const [mainUrlPlaceholder, setMainUrlPlaceholder] = useState("");
     const [sideUrlPlaceholder, setSideUrlPlaceholder] = useState("");
 
+    // if (window.chrome.webview) {
+    //     window.chrome.webview.addEventListener("message", (event: Event) => {
+    //         const data = (event as MessageEvent).data;
+    //         if (data.mainUrl) {
+    //             sessionStorage.setItem("mainUrl", data.mainUrl);
+    //         }
+    //         if (data.sideUrl) {
+    //             sessionStorage.setItem("sideUrl", data.sideUrl);
+    //         }
+    //     });
+    // }
+
     useEffect(() => {
         setMainUrlPlaceholder(sessionStorage.getItem("mainUrl")!);
         setSideUrlPlaceholder(sessionStorage.getItem("sideUrl")!);
