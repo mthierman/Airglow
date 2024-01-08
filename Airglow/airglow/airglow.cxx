@@ -36,6 +36,8 @@ auto App::run() -> int
     m_browser = std::make_unique<Browser>(m_hwnd.get(), "Browser");
     (*m_browser)();
 
+    // console::debug(gui::webview_version());
+
     // m_settings = std::make_unique<Settings>(m_hwnd.get(), "Settings");
     // (*m_settings)();
 
