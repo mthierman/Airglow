@@ -32,8 +32,21 @@ auto App::run() -> int
     SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
     SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
                             "--allow-file-access-from-files");
+    std::string mainUrl{""};
+    std::string sideUrl{""};
 
-    m_browser = std::make_unique<Browser>(m_hwnd.get(), "Browser");
+    try
+    {
+        auto argv = console::argv();
+        if (!argv.at(1).empty()) mainUrl = argv.at(1);
+        if (!argv.at(2).empty()) sideUrl = argv.at(2);
+    }
+    catch (const std::out_of_range& e)
+    {
+        console::debug(e.what());
+    }
+
+    m_browser = std::make_unique<Browser>(m_hwnd.get(), "Browser", mainUrl, sideUrl);
     (*m_browser)();
 
     // console::debug(gui::webview_version());
@@ -82,7 +95,13 @@ auto App::on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
     return 0;
 }
 
-Browser::Browser(HWND app, std::string className) : gui::Window(className) { m_app = app; }
+Browser::Browser(HWND app, std::string className, std::string mainUrl, std::string sideUrl)
+    : gui::Window(className)
+{
+    m_app = app;
+    if (!mainUrl.empty()) m_mainUrl = mainUrl;
+    if (!sideUrl.empty()) m_sideUrl = sideUrl;
+}
 
 auto Browser::operator()(bool show) -> void
 {
@@ -91,11 +110,11 @@ auto Browser::operator()(bool show) -> void
     dwm_dark_mode(true);
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
 
-    m_main = std::make_unique<wv::Main>(+Browsers::main, m_hwnd.get());
+    m_main = std::make_unique<wv::Main>(+Browsers::main, m_hwnd.get(), m_mainUrl);
     (*m_main)();
     m_main->create_webview();
 
-    m_side = std::make_unique<wv::Side>(+Browsers::side, m_hwnd.get());
+    m_side = std::make_unique<wv::Side>(+Browsers::side, m_hwnd.get(), m_sideUrl);
     (*m_side)();
     m_side->create_webview();
 

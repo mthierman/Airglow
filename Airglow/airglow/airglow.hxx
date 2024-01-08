@@ -39,6 +39,7 @@ struct App final : public gui::Window
     using gui::Window::Window;
 
     auto run() -> int;
+    auto args() -> void;
 
     virtual auto create_window() -> void override;
 
@@ -58,7 +59,7 @@ struct Browser final : public gui::Window
 {
     using gui::Window::Window;
 
-    Browser(HWND app, std::string className);
+    Browser(HWND app, std::string className, std::string mainUrl, std::string sideUrl);
 
     virtual auto operator()(bool show = true) -> void override;
 
@@ -82,6 +83,8 @@ struct Browser final : public gui::Window
     int m_bar{0};
 
     HWND m_app{nullptr};
+    std::string m_mainUrl{"https://www.google.com/"};
+    std::string m_sideUrl{"https://www.google.com/"};
 
     std::unique_ptr<wv::Main> m_main;
     std::unique_ptr<wv::Side> m_side;
