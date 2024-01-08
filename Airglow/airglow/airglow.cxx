@@ -189,6 +189,8 @@ auto Browser::on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 {
     auto nMsg{*std::bit_cast<NotificationMsg*>(lParam)};
 
+    console::debug(nMsg.message);
+
     switch (nMsg.nmhdr.code)
     {
 
