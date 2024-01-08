@@ -79,7 +79,7 @@ struct Browser final : public gui::Window
     auto load_settings() -> void;
 
     constexpr static int s_border{2};
-    int m_bar{100};
+    int m_bar{0};
 
     HWND m_app{nullptr};
 

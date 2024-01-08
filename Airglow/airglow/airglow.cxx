@@ -189,7 +189,7 @@ auto Browser::on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 
     case CUSTOM_POST_SIDEURL:
     {
-        if (m_main) m_main->navigate(nMsg.message);
+        if (m_main) m_side->navigate(nMsg.message);
         break;
     }
 

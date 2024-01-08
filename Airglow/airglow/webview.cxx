@@ -261,4 +261,4 @@ auto Side::navigation_starting_handler(ICoreWebView2* sender,
     return S_OK;
 }
 
-} // namespace airglow::webview
+} // namespace airglow::wv
