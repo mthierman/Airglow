@@ -6,17 +6,21 @@
 // ╚─────────────────────╝
 // clang-format on
 
-#include <airglow/app.hxx>
+#pragma once
 
-auto main() -> int
+#include <glow/glow.hxx>
+#include <set>
+#include <airglow/global.hxx>
+
+struct App : public glow::gui::MessageWindow<App>
 {
-    try
-    {
-        return App::run();
-    }
-    catch (std::exception& e)
-    {
-        glow::console::message_box(e.what());
-        std::terminate();
-    }
-}
+    using glow::gui::MessageWindow<App>::MessageWindow;
+
+    static auto run() -> int;
+
+    auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
+    auto on_notify(WPARAM wParam, LPARAM lParam) -> int;
+
+    std::set<int64_t> m_set;
+    // std::vector<std::unique_ptr<MainWindow>> m_vec;
+};

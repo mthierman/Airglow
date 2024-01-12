@@ -6,17 +6,15 @@
 // ╚─────────────────────╝
 // clang-format on
 
-#include <airglow/app.hxx>
+#pragma once
 
-auto main() -> int
+#include <Windows.h>
+
+#include <cstdint>
+
+namespace msg
 {
-    try
-    {
-        return App::run();
-    }
-    catch (std::exception& e)
-    {
-        glow::console::message_box(e.what());
-        std::terminate();
-    }
-}
+inline constexpr int64_t test{(WM_APP + 1)};
+inline constexpr int64_t window_create{(WM_APP + 2)};
+inline constexpr int64_t window_close{(WM_APP + 3)};
+} // namespace msg
