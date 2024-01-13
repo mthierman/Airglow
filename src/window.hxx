@@ -33,7 +33,7 @@ struct Window : public glow::window::BaseWindow<Window>
     int m_bar{0};
 
     HWND m_app;
-    std::unique_ptr<Browser> m_main;
-    std::unique_ptr<Browser> m_side;
-    std::unique_ptr<Browser> m_url;
+    std::unique_ptr<MainBrowser> m_main;
+    std::unique_ptr<SideBrowser> m_side;
+    std::unique_ptr<URLBrowser> m_url;
 };

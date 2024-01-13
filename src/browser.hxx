@@ -28,7 +28,7 @@ struct Browser : public glow::window::WebView<Browser>
 
 struct URLBrowser final : public Browser
 {
-    // using glow::window::WebView<URLBrowser>::WebView;
+    using Browser::Browser;
 
     virtual auto initialized() -> void override;
 
@@ -39,7 +39,7 @@ struct URLBrowser final : public Browser
 
 struct MainBrowser final : public Browser
 {
-    // using glow::window::WebView<MainBrowser>::WebView;
+    using Browser::Browser;
 
     virtual auto source_changed_handler(ICoreWebView2* sender,
                                         ICoreWebView2SourceChangedEventArgs* args)
@@ -51,7 +51,7 @@ struct MainBrowser final : public Browser
 
 struct SideBrowser final : public Browser
 {
-    // using glow::window::WebView<SideBrowser>::WebView;
+    using Browser::Browser;
 
     virtual auto source_changed_handler(ICoreWebView2* sender,
                                         ICoreWebView2SourceChangedEventArgs* args)
@@ -63,5 +63,5 @@ struct SideBrowser final : public Browser
 
 struct SettingsBrowser final : public Browser
 {
-    // using glow::window::WebView<SettingsBrowser>::WebView;
+    using Browser::Browser;
 };

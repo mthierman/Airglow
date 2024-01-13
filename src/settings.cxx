@@ -17,7 +17,7 @@ Settings::Settings(HWND app) : BaseWindow()
     dwm_dark_mode(true);
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
 
-    m_main = std::make_unique<Browser>(hwnd());
+    m_main = std::make_unique<SettingsBrowser>(hwnd());
     m_main->reveal();
 }
 

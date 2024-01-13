@@ -17,13 +17,13 @@ Window::Window(HWND app) : BaseWindow()
     dwm_dark_mode(true);
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
 
-    m_main = std::make_unique<Browser>(hwnd());
+    m_main = std::make_unique<MainBrowser>(hwnd());
     m_main->reveal();
 
-    m_side = std::make_unique<Browser>(hwnd());
+    m_side = std::make_unique<SideBrowser>(hwnd());
     m_side->reveal();
 
-    m_url = std::make_unique<Browser>(hwnd());
+    m_url = std::make_unique<URLBrowser>(hwnd());
     m_url->reveal();
 }
 
