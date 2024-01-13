@@ -34,6 +34,10 @@ auto App::run() -> int
     auto settings{std::make_unique<Settings>(app->hwnd())};
     settings->reveal();
 
+    // auto jsonPath{app->json_path()};
+
+    // if (jsonPath.empty()) OutputDebugStringA("json path is empty");
+
     return glow::gui::message_loop();
 }
 
@@ -80,11 +84,9 @@ auto App::json_path() -> std::filesystem::path
 
 // auto App::save_settings() -> void
 // {
-//     auto path{filesystem::portable()};
-//     if (!path.empty())
+//     auto jsonPath{json_path()};
+//     if (!jsonPath.empty())
 //     {
-//         auto settingsFile{path / "settings.json"};
-
 //         try
 //         {
 //             if (!std::filesystem::exists(settingsFile))
@@ -125,7 +127,7 @@ auto App::json_path() -> std::filesystem::path
 
 // auto App::load_settings() -> void
 // {
-//     auto path{glow::filesystem::portable()};
+//     auto path{glow::filesystem::path_portable()};
 //     if (!path.empty())
 //     {
 //         auto settingsFile{path / "settings.json"};
