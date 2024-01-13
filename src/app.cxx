@@ -28,8 +28,11 @@ auto App::run() -> int
 
     for (auto i = 0; i < 4; i++)
     {
-        app->m_windowVector.emplace_back(std::make_unique<MainWindow>(app->hwnd()))->reveal();
+        app->m_windowVector.emplace_back(std::make_unique<Window>(app->hwnd()))->reveal();
     }
+
+    auto settings{std::make_unique<Settings>()};
+    settings->reveal();
 
     return glow::gui::message_loop();
 }
@@ -74,3 +77,90 @@ auto App::json_path() -> std::filesystem::path
 
     return path;
 }
+
+// auto App::save_settings() -> void
+// {
+//     auto path{filesystem::portable()};
+//     if (!path.empty())
+//     {
+//         auto settingsFile{path / "settings.json"};
+
+//         try
+//         {
+//             if (!std::filesystem::exists(settingsFile))
+//             {
+//                 try
+//                 {
+//                     nlohmann::json j = *this;
+//                     std::ofstream f(settingsFile);
+//                     f << std::setw(4) << j << "\n";
+//                     f.close();
+//                 }
+//                 catch (const std::exception& e)
+//                 {
+//                     std::println("{}", e.what());
+//                 }
+//             }
+//             else
+//             {
+//                 try
+//                 {
+//                     nlohmann::json j = *this;
+//                     std::ofstream f(settingsFile);
+//                     f << std::setw(4) << j << "\n";
+//                     f.close();
+//                 }
+//                 catch (const std::exception& e)
+//                 {
+//                     std::println("{}", e.what());
+//                 }
+//             }
+//         }
+//         catch (const std::filesystem::filesystem_error& e)
+//         {
+//             std::println("{}", e.what());
+//         }
+//     }
+// }
+
+// auto App::load_settings() -> void
+// {
+//     auto path{glow::filesystem::portable()};
+//     if (!path.empty())
+//     {
+//         auto settingsFile{path / "settings.json"};
+
+//         try
+//         {
+//             if (!std::filesystem::exists(settingsFile))
+//             {
+//                 try
+//                 {
+//                     nlohmann::json j = *this;
+//                     std::ofstream f(settingsFile);
+//                     f << std::setw(4) << j << "\n";
+//                     f.close();
+//                 }
+//                 catch (const std::exception& e)
+//                 {
+//                     std::println("{}", e.what());
+//                 }
+//             }
+//             else
+//             {
+//                 try
+//                 {
+//                     //
+//                 }
+//                 catch (const std::exception& e)
+//                 {
+//                     std::println("{}", e.what());
+//                 }
+//             }
+//         }
+//         catch (const std::filesystem::filesystem_error& e)
+//         {
+//             std::println("{}", e.what());
+//         }
+//     }
+// }

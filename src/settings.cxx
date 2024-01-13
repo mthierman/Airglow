@@ -6,9 +6,9 @@
 // ╚─────────────────────╝
 // clang-format on
 
-#include "window.hxx"
+#include "settings.hxx"
 
-Window::Window(HWND app) : BaseWindow()
+Settings::Settings(HWND app) : BaseWindow()
 {
     m_app = app;
     notify(m_app, msg::window_create);
@@ -19,35 +19,29 @@ Window::Window(HWND app) : BaseWindow()
 
     m_main = std::make_unique<Browser>(hwnd());
     m_main->reveal();
-
-    m_side = std::make_unique<Browser>(hwnd());
-    m_side->reveal();
-
-    m_url = std::make_unique<Browser>(hwnd());
-    m_url->reveal();
 }
 
-auto Window::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+auto Settings::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     switch (uMsg)
     {
     case WM_CLOSE: return on_close(wParam, lParam);
     case WM_KEYDOWN: return on_key_down(wParam, lParam);
-    case WM_NOTIFY: return on_notify(wParam, lParam);
+    // case WM_NOTIFY: return on_notify(wParam, lParam);
     case WM_SIZE: return on_size(wParam, lParam);
     }
 
     return DefWindowProcA(hWnd, uMsg, wParam, lParam);
 }
 
-auto Window::on_close(WPARAM wParam, LPARAM lParam) -> int
+auto Settings::on_close(WPARAM wParam, LPARAM lParam) -> int
 {
     notify(m_app, msg::window_close);
 
     return close();
 }
 
-auto Window::on_size(WPARAM wParam, LPARAM lParam) -> int
+auto Settings::on_size(WPARAM wParam, LPARAM lParam) -> int
 {
     WindowDimensions dimensions;
     GetClientRect(hwnd(), &dimensions.rect);
@@ -59,7 +53,7 @@ auto Window::on_size(WPARAM wParam, LPARAM lParam) -> int
     return 0;
 }
 
-auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
+auto Settings::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 {
     switch (wParam)
     {
@@ -86,53 +80,10 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
     return 0;
 }
 
-auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
-{
-    auto nMsg{*std::bit_cast<NotificationMsg*>(lParam)};
-
-    switch (nMsg.nmhdr.code)
-    {
-    case msg::post_height:
-    {
-        m_bar = std::stoi(nMsg.message);
-        SendMessageA(hwnd(), WM_SIZE, 0, 0);
-        break;
-    }
-
-    case msg::post_mainurl:
-    {
-        if (m_main) m_main->navigate(nMsg.message);
-        break;
-    }
-
-    case msg::post_sideurl:
-    {
-        if (m_main) m_side->navigate(nMsg.message);
-        break;
-    }
-
-    case msg::receive_mainurl:
-    {
-        nlohmann::json j{{"mainUrl", nMsg.message}};
-        if (m_url) m_url->post_json(glow::text::widen(j.dump()).c_str());
-        break;
-    }
-
-    case msg::receive_sideurl:
-    {
-        nlohmann::json j{{"sideUrl", nMsg.message}};
-        if (m_url) m_url->post_json(glow::text::widen(j.dump()).c_str());
-        break;
-    }
-    }
-
-    return 0;
-}
-
-auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
+auto CALLBACK Settings::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 {
     auto dimensions{*std::bit_cast<WindowDimensions*>(lParam)};
-    auto self{glow::gui::instance_from_window_long_ptr<Window>(dimensions.hwnd)};
+    auto self{glow::gui::instance_from_window_long_ptr<Settings>(dimensions.hwnd)};
 
     if (self)
     {
@@ -142,29 +93,11 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
         auto width{r->right - r->left};
         auto height{r->bottom - r->top};
 
-        auto border{static_cast<int>(s_border * dimensions.scale)};
-        auto bar{static_cast<int>(self->m_bar * dimensions.scale)};
-
-        auto defer{true};
-
         auto hdwp{BeginDeferWindowPos(4)};
 
         if (gwlId == self->m_main->id())
             if (hdwp)
-                hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, 0, (width / 2) - border, height - bar,
-                                      SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
-                                          SWP_NOREDRAW | SWP_NOCOPYBITS);
-
-        if (gwlId == self->m_side->id())
-            if (hdwp)
-                hdwp = DeferWindowPos(hdwp, hWnd, nullptr, (width / 2) + border, 0,
-                                      (width / 2) - border, height - bar,
-                                      SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
-                                          SWP_NOREDRAW | SWP_NOCOPYBITS);
-
-        if (gwlId == self->m_url->id())
-            if (hdwp)
-                hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, r->bottom - bar, width, bar,
+                hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, 0, width, height,
                                       SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
                                           SWP_NOREDRAW | SWP_NOCOPYBITS);
 
@@ -174,12 +107,13 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     return TRUE;
 }
 
-auto Window::url_path() -> std::string
+auto Settings::url_path() -> std::string
 {
 #if _DEBUG
-    std::string path{"https://localhost:8000/url/index.html"};
+    std::string path{"https://localhost:8000/settings/index.html"};
 #else
-    auto path{"file:///" + filesystem::known_folder().string() + "\\Airglow\\gui\\url\\index.html"};
+    auto path{"file:///" + filesystem::known_folder().string() +
+              "\\Airglow\\gui\\settings\\index.html"};
 #endif
 
     return path;

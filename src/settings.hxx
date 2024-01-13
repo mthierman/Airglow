@@ -13,27 +13,22 @@
 #include "global.hxx"
 #include "browser.hxx"
 
-struct Window : public glow::window::BaseWindow<Window>
+struct Settings : public glow::window::BaseWindow<Settings>
 {
-    using glow::window::BaseWindow<Window>::BaseWindow;
+    using glow::window::BaseWindow<Settings>::BaseWindow;
 
-    Window(HWND app);
+    Settings(HWND app);
 
     auto default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     auto on_close(WPARAM wParam, LPARAM lParam) -> int;
     auto on_key_down(WPARAM wParam, LPARAM lParam) -> int;
-    auto on_notify(WPARAM wParam, LPARAM lParam) -> int;
+    // auto on_notify(WPARAM wParam, LPARAM lParam) -> int;
     auto on_size(WPARAM wParam, LPARAM lParam) -> int;
 
     static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
 
     auto url_path() -> std::string;
 
-    constexpr static int s_border{2};
-    int m_bar{0};
-
     HWND m_app;
     std::unique_ptr<Browser> m_main;
-    std::unique_ptr<Browser> m_side;
-    std::unique_ptr<Browser> m_url;
 };

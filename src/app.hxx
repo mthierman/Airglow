@@ -13,6 +13,7 @@
 #include <glow/glow.hxx>
 
 #include "global.hxx"
+#include "settings.hxx"
 #include "window.hxx"
 
 struct App : public glow::window::MessageWindow<App>
@@ -27,12 +28,15 @@ struct App : public glow::window::MessageWindow<App>
     auto data_path() -> std::filesystem::path;
     auto json_path() -> std::filesystem::path;
 
+    // auto save_settings() -> void;
+    // auto load_settings() -> void;
+
     glow::gui::GdiPlus m_gdiInit;
     glow::gui::CoInitialize m_coInit;
 
     std::string m_mainUrl{"about:blank"};
     std::string m_sideUrl{"about:blank"};
 
-    std::vector<std::unique_ptr<MainWindow>> m_windowVector;
+    std::vector<std::unique_ptr<Window>> m_windowVector;
     std::set<int64_t> m_windowSet;
 };
