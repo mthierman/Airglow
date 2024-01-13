@@ -26,12 +26,12 @@ auto App::run() -> int
         app->m_sideUrl = argv.at(2);
     }
 
-    for (auto i = 0; i < 4; i++)
-    {
-        app->m_windowVector.emplace_back(std::make_unique<Window>(app->hwnd()))->reveal();
-    }
+    // for (auto i = 0; i < 4; i++)
+    // {
+    //     app->m_windowVector.emplace_back(std::make_unique<Window>(app->hwnd()))->reveal();
+    // }
 
-    auto settings{std::make_unique<Settings>()};
+    auto settings{std::make_unique<Settings>(app->hwnd())};
     settings->reveal();
 
     return glow::gui::message_loop();
