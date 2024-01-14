@@ -20,16 +20,13 @@ Window::Window(HWND app, std::string mainUrl, std::string sideUrl) : BaseWindow(
     dwm_dark_mode(true);
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
 
-    m_dimensions.hwnd = hwnd();
-    m_dimensions.scale = scale();
-
     m_main = std::make_unique<MainBrowser>(hwnd(), m_mainUrl);
     m_main->reveal();
 
     m_side = std::make_unique<SideBrowser>(hwnd(), m_sideUrl);
     m_side->reveal();
 
-    m_url = std::make_unique<URLBrowser>(hwnd(), url_path());
+    m_url = std::make_unique<URLBrowser>(hwnd(), url());
     m_url->reveal();
 }
 
@@ -51,16 +48,6 @@ auto Window::on_close(WPARAM wParam, LPARAM lParam) -> int
     notify(m_app, msg::window_close);
 
     return close();
-}
-
-auto Window::on_size(WPARAM wParam, LPARAM lParam) -> int
-{
-    client_rect();
-    m_dimensions.rect = m_clientRect;
-    EnumChildWindows(hwnd(), EnumChildProc, std::bit_cast<LPARAM>(&m_dimensions));
-    Sleep(1);
-
-    return 0;
 }
 
 auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
@@ -133,25 +120,33 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
     return 0;
 }
 
+auto Window::on_size(WPARAM wParam, LPARAM lParam) -> int
+{
+    client_rect();
+    EnumChildWindows(hwnd(), EnumChildProc, std::bit_cast<LPARAM>(this));
+    Sleep(1);
+
+    return 0;
+}
+
 auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 {
-    auto dimensions{*std::bit_cast<WindowDimensions*>(lParam)};
-    auto self{glow::gui::instance_from_window_long_ptr<Window>(dimensions.hwnd)};
+    auto self{std::bit_cast<Window*>(lParam)};
 
     if (self)
     {
         auto gwlId{static_cast<uint64_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
 
-        auto r = &dimensions.rect;
+        auto r{&self->m_clientRect};
         auto width{r->right - r->left};
         auto height{r->bottom - r->top};
 
-        auto border{static_cast<int>(s_border * dimensions.scale)};
-        auto bar{static_cast<int>(self->m_bar * dimensions.scale)};
+        auto border{static_cast<int>(s_border * self->m_scale)};
+        auto bar{static_cast<int>(self->m_bar * self->m_scale)};
 
         auto defer{true};
 
-        auto hdwp{BeginDeferWindowPos(4)};
+        auto hdwp{BeginDeferWindowPos(3)};
 
         if (gwlId == self->m_main->id())
             if (hdwp)
@@ -178,7 +173,7 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     return TRUE;
 }
 
-auto Window::url_path() -> std::string
+auto Window::url() -> std::string
 {
 #if _DEBUG
     std::string path{"https://localhost:8000/url/index.html"};

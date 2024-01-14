@@ -29,7 +29,7 @@ struct Window : public glow::window::BaseWindow<Window>
 
     static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
 
-    auto url_path() -> std::string;
+    auto url() -> std::string;
 
     auto data_path() -> std::filesystem::path;
     auto json_path() -> std::filesystem::path;
@@ -48,6 +48,4 @@ struct Window : public glow::window::BaseWindow<Window>
 
     std::string m_mainUrl;
     std::string m_sideUrl;
-
-    WindowDimensions m_dimensions;
 };

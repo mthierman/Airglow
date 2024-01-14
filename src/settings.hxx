@@ -22,12 +22,11 @@ struct Settings : public glow::window::BaseWindow<Settings>
     auto default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     auto on_close(WPARAM wParam, LPARAM lParam) -> int;
     auto on_key_down(WPARAM wParam, LPARAM lParam) -> int;
-    // auto on_notify(WPARAM wParam, LPARAM lParam) -> int;
     auto on_size(WPARAM wParam, LPARAM lParam) -> int;
 
     static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
 
-    auto url_path() -> std::string;
+    auto url() -> std::string;
 
     HWND m_app;
     std::unique_ptr<SettingsBrowser> m_main;

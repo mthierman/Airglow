@@ -33,12 +33,3 @@ struct NotificationMsg
     NMHDR nmhdr;
     std::string message;
 };
-
-struct WindowDimensions
-{
-    WindowDimensions() : rect{0}, scale{0.0f}, hwnd{nullptr} {}
-
-    RECT rect;
-    float scale;
-    HWND hwnd;
-};

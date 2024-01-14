@@ -17,7 +17,7 @@ Settings::Settings(HWND app) : BaseWindow("Airglow - Settings")
     dwm_dark_mode(true);
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
 
-    m_main = std::make_unique<SettingsBrowser>(hwnd(), url_path());
+    m_main = std::make_unique<SettingsBrowser>(hwnd(), url());
     m_main->reveal();
 }
 
@@ -39,18 +39,6 @@ auto Settings::on_close(WPARAM wParam, LPARAM lParam) -> int
     notify(m_app, msg::window_close);
 
     return close();
-}
-
-auto Settings::on_size(WPARAM wParam, LPARAM lParam) -> int
-{
-    WindowDimensions dimensions;
-    GetClientRect(hwnd(), &dimensions.rect);
-    dimensions.scale = scale();
-    dimensions.hwnd = hwnd();
-    EnumChildWindows(hwnd(), EnumChildProc, std::bit_cast<LPARAM>(&dimensions));
-    Sleep(1);
-
-    return 0;
 }
 
 auto Settings::on_key_down(WPARAM wParam, LPARAM lParam) -> int
@@ -80,20 +68,28 @@ auto Settings::on_key_down(WPARAM wParam, LPARAM lParam) -> int
     return 0;
 }
 
+auto Settings::on_size(WPARAM wParam, LPARAM lParam) -> int
+{
+    client_rect();
+    EnumChildWindows(hwnd(), EnumChildProc, std::bit_cast<LPARAM>(this));
+    Sleep(1);
+
+    return 0;
+}
+
 auto CALLBACK Settings::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 {
-    auto dimensions{*std::bit_cast<WindowDimensions*>(lParam)};
-    auto self{glow::gui::instance_from_window_long_ptr<Settings>(dimensions.hwnd)};
+    auto self{std::bit_cast<Settings*>(lParam)};
 
     if (self)
     {
         auto gwlId{static_cast<uint64_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
 
-        auto r = &dimensions.rect;
+        auto r{&self->m_clientRect};
         auto width{r->right - r->left};
         auto height{r->bottom - r->top};
 
-        auto hdwp{BeginDeferWindowPos(4)};
+        auto hdwp{BeginDeferWindowPos(1)};
 
         if (gwlId == self->m_main->id())
             if (hdwp)
@@ -107,7 +103,7 @@ auto CALLBACK Settings::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     return TRUE;
 }
 
-auto Settings::url_path() -> std::string
+auto Settings::url() -> std::string
 {
 #if _DEBUG
     std::string path{"https://localhost:8000/settings/index.html"};
