@@ -31,13 +31,6 @@ struct Window : public glow::window::BaseWindow<Window>
 
     auto url() -> std::string;
 
-    auto data_path() -> std::filesystem::path;
-    auto json_path() -> std::filesystem::path;
-    auto save_settings() -> void;
-    auto load_settings() -> void;
-
-    std::filesystem::path m_settingsFile{json_path()};
-
     constexpr static int s_border{2};
     int m_bar{0};
 

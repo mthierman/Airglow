@@ -40,4 +40,11 @@ struct App : public glow::window::MessageWindow<App>
 
     std::vector<std::unique_ptr<Window>> m_windowVector;
     std::set<int64_t> m_windowSet;
+
+    auto data_path() -> std::filesystem::path;
+    auto json_path() -> std::filesystem::path;
+    auto save_settings() -> void;
+    auto load_settings() -> void;
+
+    std::filesystem::path m_settingsFile{json_path()};
 };

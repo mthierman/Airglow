@@ -183,29 +183,3 @@ auto Window::url() -> std::string
 
     return path;
 }
-
-auto Window::data_path() -> std::filesystem::path
-{
-    auto path{glow::filesystem::known_folder() / "Airglow"};
-
-    if (!std::filesystem::exists(path)) std::filesystem::create_directory(path);
-
-    return path;
-}
-
-auto Window::json_path() -> std::filesystem::path
-{
-    auto path{data_path() / "Airglow.json"};
-
-    return path;
-}
-
-auto Window::save_settings() -> void
-{
-    nlohmann::json position = m_position;
-    std::ofstream f(m_settingsFile);
-    f << std::setw(4) << position << "\n";
-    f.close();
-}
-
-auto Window::load_settings() -> void {}

@@ -71,3 +71,29 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
     else return 0;
 }
+
+auto App::data_path() -> std::filesystem::path
+{
+    auto path{glow::filesystem::known_folder() / "Airglow"};
+
+    if (!std::filesystem::exists(path)) std::filesystem::create_directory(path);
+
+    return path;
+}
+
+auto App::json_path() -> std::filesystem::path
+{
+    auto path{data_path() / "Airglow.json"};
+
+    return path;
+}
+
+auto App::save_settings() -> void
+{
+    // nlohmann::json position = m_position;
+    // std::ofstream f(m_settingsFile);
+    // f << std::setw(4) << position << "\n";
+    // f.close();
+}
+
+auto App::load_settings() -> void {}
