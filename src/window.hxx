@@ -41,11 +41,13 @@ struct Window : public glow::window::BaseWindow<Window>
     constexpr static int s_border{2};
     int m_bar{0};
 
-    HWND m_app;
+    HWND m_app{nullptr};
     std::unique_ptr<MainBrowser> m_main;
     std::unique_ptr<SideBrowser> m_side;
     std::unique_ptr<URLBrowser> m_url;
 
     std::string m_mainUrl;
     std::string m_sideUrl;
+
+    WindowDimensions m_dimensions;
 };

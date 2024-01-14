@@ -20,6 +20,9 @@ Window::Window(HWND app, std::string mainUrl, std::string sideUrl) : BaseWindow(
     dwm_dark_mode(true);
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
 
+    m_dimensions.hwnd = hwnd();
+    m_dimensions.scale = scale();
+
     m_main = std::make_unique<MainBrowser>(hwnd(), m_mainUrl);
     m_main->reveal();
 
@@ -52,11 +55,9 @@ auto Window::on_close(WPARAM wParam, LPARAM lParam) -> int
 
 auto Window::on_size(WPARAM wParam, LPARAM lParam) -> int
 {
-    WindowDimensions dimensions;
-    GetClientRect(hwnd(), &dimensions.rect);
-    dimensions.scale = scale();
-    dimensions.hwnd = hwnd();
-    EnumChildWindows(hwnd(), EnumChildProc, std::bit_cast<LPARAM>(&dimensions));
+    client_rect();
+    m_dimensions.rect = m_clientRect;
+    EnumChildWindows(hwnd(), EnumChildProc, std::bit_cast<LPARAM>(&m_dimensions));
     Sleep(1);
 
     return 0;

@@ -14,7 +14,7 @@ auto App::operator()() -> int
     {
         startup();
 
-        m_mainWindow = std::make_unique<Window>(hwnd());
+        m_mainWindow = std::make_unique<Window>(hwnd(), m_mainUrl, m_sideUrl);
         m_mainWindow->reveal();
 
         m_settingsWindow = std::make_unique<Settings>(hwnd());
