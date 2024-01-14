@@ -12,12 +12,13 @@ auto App::operator()() -> int
 {
     try
     {
-        startup();
+        env();
+        args();
 
         m_mainWindow = std::make_unique<Window>(hwnd(), m_mainUrl, m_sideUrl);
         m_mainWindow->reveal();
 
-        m_settingsWindow = std::make_unique<Settings>(hwnd());
+        // m_settingsWindow = std::make_unique<Settings>(hwnd());
         // m_settingsWindow->reveal();
     }
     catch (std::exception& e)
@@ -28,20 +29,21 @@ auto App::operator()() -> int
     return glow::gui::message_loop();
 }
 
-auto App::startup() -> void
+auto App::env() -> void
 {
     SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
     SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
                             "--allow-file-access-from-files");
+}
 
-    auto argv = glow::console::argv();
+auto App::args() -> void
+{
+    if (m_argv.size() == 2) { m_mainUrl = m_argv.at(1); }
 
-    if (argv.size() == 2) { m_mainUrl = argv.at(1); }
-
-    if (argv.size() > 2)
+    if (m_argv.size() > 2)
     {
-        m_mainUrl = argv.at(1);
-        m_sideUrl = argv.at(2);
+        m_mainUrl = m_argv.at(1);
+        m_sideUrl = m_argv.at(2);
     }
 }
 
@@ -57,12 +59,12 @@ auto App::wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESUL
 
 auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
 {
-    auto nmhdr{*std::bit_cast<LPNMHDR>(lParam)};
+    auto nmhdr{std::bit_cast<LPNMHDR>(lParam)};
 
-    switch (nmhdr.code)
+    switch (nmhdr->code)
     {
-    case msg::window_create: m_windowSet.insert(nmhdr.idFrom); break;
-    case msg::window_close: m_windowSet.erase(nmhdr.idFrom); break;
+    case msg::window_create: m_windowSet.insert(nmhdr->idFrom); break;
+    case msg::window_close: m_windowSet.erase(nmhdr->idFrom); break;
     }
 
     if (m_windowSet.empty()) { return close(); }

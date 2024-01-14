@@ -22,19 +22,22 @@ struct App : public glow::window::MessageWindow<App>
 
     auto operator()() -> int;
 
+    auto env() -> void;
+    auto args() -> void;
+
     auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     auto on_notify(WPARAM wParam, LPARAM lParam) -> int;
-
-    auto startup() -> void;
 
     glow::gui::GdiPlus m_gdiInit;
     glow::gui::CoInitialize m_coInit;
 
+    std::vector<std::string> m_argv{glow::console::argv()};
     std::string m_mainUrl{"https://www.google.com/"};
     std::string m_sideUrl{"https://www.google.com/"};
 
     std::unique_ptr<Window> m_mainWindow;
     std::unique_ptr<Settings> m_settingsWindow;
+
     std::vector<std::unique_ptr<Window>> m_windowVector;
     std::set<int64_t> m_windowSet;
 };
