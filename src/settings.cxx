@@ -11,11 +11,11 @@
 Settings::Settings(HWND app) : BaseWindow("Airglow - Settings")
 {
     m_app = app;
-    notify(m_app, msg::window_create);
+    // notify(m_app, msg::window_create);
 
     dwm_caption_color(false);
     dwm_dark_mode(true);
-    dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
+    dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_TRANSIENTWINDOW);
 
     m_main = std::make_unique<SettingsBrowser>(hwnd(), url());
     m_main->reveal();
@@ -36,7 +36,7 @@ auto Settings::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 
 auto Settings::on_close(WPARAM wParam, LPARAM lParam) -> int
 {
-    notify(m_app, msg::window_close);
+    // notify(m_app, msg::window_close);
 
     return close();
 }
