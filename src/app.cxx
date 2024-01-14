@@ -14,11 +14,11 @@ auto App::operator()() -> int
     {
         env();
 
-        m_mainWindow = std::make_unique<Window>(hwnd(), m_urls.first, m_urls.second);
-        m_mainWindow->reveal();
+        m_windowMain = std::make_unique<Window>(hwnd(), m_urls.first, m_urls.second);
+        m_windowMain->reveal();
 
-        m_settingsWindow = std::make_unique<Settings>(hwnd());
-        m_settingsWindow->reveal();
+        m_windowSettings = std::make_unique<Settings>(hwnd());
+        m_windowSettings->reveal();
     }
     catch (std::exception& e)
     {

@@ -24,7 +24,6 @@ struct App : public glow::window::MessageWindow<App>
     auto operator()() -> int;
 
     auto env() -> void;
-    // auto args() -> void;
     auto args() -> std::pair<std::string, std::string>;
 
     auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
@@ -43,6 +42,6 @@ struct App : public glow::window::MessageWindow<App>
     std::pair<std::string, std::string> m_urls{args()};
 
     std::set<int64_t> m_windows;
-    std::unique_ptr<Window> m_mainWindow;
-    std::unique_ptr<Settings> m_settingsWindow;
+    std::unique_ptr<Window> m_windowMain;
+    std::unique_ptr<Settings> m_windowSettings;
 };
