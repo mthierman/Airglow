@@ -10,9 +10,11 @@
 
 auto main() -> int
 {
+    App app;
+
     try
     {
-        return App::run();
+        return app();
     }
     catch (std::exception& e)
     {

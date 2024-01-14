@@ -8,35 +8,33 @@
 
 #include "app.hxx"
 
-auto App::run() -> int
+auto App::operator()() -> int
 {
     SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
     SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
                             "--allow-file-access-from-files");
 
-    auto app{std::make_unique<App>()};
-
     auto argv = glow::console::argv();
 
-    if (argv.size() == 2) { app->m_mainUrl = argv.at(1); }
+    if (argv.size() == 2) { m_mainUrl = argv.at(1); }
 
     if (argv.size() > 2)
     {
-        app->m_mainUrl = argv.at(1);
-        app->m_sideUrl = argv.at(2);
+        m_mainUrl = argv.at(1);
+        m_sideUrl = argv.at(2);
     }
 
-    // for (auto i = 0; i < 4; i++)
-    // {
-    //     app->m_windowVector.emplace_back(std::make_unique<Window>(app->hwnd()))->reveal();
-    // }
+    for (auto i = 0; i < 4; i++)
+    {
+        m_windowVector.emplace_back(std::make_unique<Window>(hwnd()))->reveal();
+    }
 
-    auto settings{std::make_unique<Settings>(app->hwnd())};
+    auto settings{std::make_unique<Settings>(hwnd())};
     settings->reveal();
 
-    // auto jsonPath{app->json_path()};
+    auto jsonPath{json_path()};
 
-    // if (jsonPath.empty()) OutputDebugStringA("json path is empty");
+    if (!jsonPath.empty()) throw std::runtime_error("TESTING EXCEPTION BOX!");
 
     return glow::gui::message_loop();
 }

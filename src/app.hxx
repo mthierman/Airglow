@@ -20,7 +20,7 @@ struct App : public glow::window::MessageWindow<App>
 {
     using glow::window::MessageWindow<App>::MessageWindow;
 
-    static auto run() -> int;
+    auto operator()() -> int;
 
     auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     auto on_notify(WPARAM wParam, LPARAM lParam) -> int;
