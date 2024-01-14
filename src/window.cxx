@@ -8,26 +8,24 @@
 
 #include "window.hxx"
 
-Window::Window(HWND app, std::string mainUrl, std::string sideUrl) : BaseWindow("Airglow")
+Window::Window(HWND app, std::pair<std::string, std::string> urls) : BaseWindow("Airglow")
 {
     m_app = app;
     notify(m_app, msg::window_create);
-
-    m_mainUrl = mainUrl;
-    m_sideUrl = sideUrl;
+    m_urls = urls;
 
     dwm_caption_color(false);
     dwm_dark_mode(true);
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
 
-    m_main = std::make_unique<MainBrowser>(hwnd(), m_mainUrl);
-    m_main->reveal();
+    m_browsers.first = std::make_unique<MainBrowser>(hwnd(), m_urls.first);
+    m_browsers.first->reveal();
 
-    m_side = std::make_unique<SideBrowser>(hwnd(), m_sideUrl);
-    m_side->reveal();
+    m_browsers.second = std::make_unique<SideBrowser>(hwnd(), m_urls.second);
+    m_browsers.second->reveal();
 
-    m_url = std::make_unique<URLBrowser>(hwnd(), url());
-    m_url->reveal();
+    m_browsers.url = std::make_unique<URLBrowser>(hwnd(), url());
+    m_browsers.url->reveal();
 }
 
 auto Window::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
@@ -92,27 +90,27 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
     case msg::post_mainurl:
     {
-        if (m_main) m_main->navigate(nMsg.message);
+        if (m_browsers.first) m_browsers.first->navigate(nMsg.message);
         break;
     }
 
     case msg::post_sideurl:
     {
-        if (m_main) m_side->navigate(nMsg.message);
+        if (m_browsers.second) m_browsers.second->navigate(nMsg.message);
         break;
     }
 
     case msg::receive_mainurl:
     {
         nlohmann::json j{{"mainUrl", nMsg.message}};
-        if (m_url) m_url->post_json(glow::text::widen(j.dump()).c_str());
+        if (m_browsers.url) m_browsers.url->post_json(glow::text::widen(j.dump()).c_str());
         break;
     }
 
     case msg::receive_sideurl:
     {
         nlohmann::json j{{"sideUrl", nMsg.message}};
-        if (m_url) m_url->post_json(glow::text::widen(j.dump()).c_str());
+        if (m_browsers.url) m_browsers.url->post_json(glow::text::widen(j.dump()).c_str());
         break;
     }
     }
@@ -148,20 +146,20 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 
         auto hdwp{BeginDeferWindowPos(4)};
 
-        if (gwlId == self->m_main->id())
+        if (gwlId == self->m_browsers.first->id())
             if (hdwp)
                 hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, 0, (width / 2) - border, height - bar,
                                       SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
                                           SWP_NOREDRAW | SWP_NOCOPYBITS);
 
-        if (gwlId == self->m_side->id())
+        if (gwlId == self->m_browsers.second->id())
             if (hdwp)
                 hdwp = DeferWindowPos(hdwp, hWnd, nullptr, (width / 2) + border, 0,
                                       (width / 2) - border, height - bar,
                                       SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
                                           SWP_NOREDRAW | SWP_NOCOPYBITS);
 
-        if (gwlId == self->m_url->id())
+        if (gwlId == self->m_browsers.url->id())
             if (hdwp)
                 hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, r->bottom - bar, width, bar,
                                       SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |

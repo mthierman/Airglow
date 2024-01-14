@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <fstream>
 #include <set>
 #include <utility>
 

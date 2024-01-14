@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <fstream>
+#include <utility>
 
 #include <glow/glow.hxx>
 
@@ -17,9 +17,16 @@
 
 struct Window : public glow::window::BaseWindow<Window>
 {
+    struct Browsers
+    {
+        std::unique_ptr<MainBrowser> first;
+        std::unique_ptr<SideBrowser> second;
+        std::unique_ptr<URLBrowser> url;
+    };
+
     using glow::window::BaseWindow<Window>::BaseWindow;
 
-    Window(HWND app, std::string mainUrl = "about:blank", std::string sideUrl = "about:blank");
+    Window(HWND app, std::pair<std::string, std::string> urls);
 
     auto default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     auto on_close(WPARAM wParam, LPARAM lParam) -> int;
@@ -35,10 +42,7 @@ struct Window : public glow::window::BaseWindow<Window>
     int m_bar{0};
 
     HWND m_app{nullptr};
-    std::unique_ptr<MainBrowser> m_main;
-    std::unique_ptr<SideBrowser> m_side;
-    std::unique_ptr<URLBrowser> m_url;
+    Browsers m_browsers;
 
-    std::string m_mainUrl;
-    std::string m_sideUrl;
+    std::pair<std::string, std::string> m_urls;
 };

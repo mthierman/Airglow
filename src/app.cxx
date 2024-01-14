@@ -14,7 +14,7 @@ auto App::operator()() -> int
     {
         env();
 
-        m_windowMain = std::make_unique<Window>(hwnd(), m_urls.first, m_urls.second);
+        m_windowMain = std::make_unique<Window>(hwnd(), m_urls);
         m_windowMain->reveal();
 
         m_windowSettings = std::make_unique<Settings>(hwnd());
@@ -37,7 +37,7 @@ auto App::env() -> void
 
 auto App::args() -> std::pair<std::string, std::string>
 {
-    std::pair<std::string, std::string> url{"about:blank", "about:blank"};
+    std::pair<std::string, std::string> url{"", ""};
 
     auto argv{glow::console::argv()};
 
