@@ -37,6 +37,8 @@ struct App : public glow::window::MessageWindow<App>
     std::string m_mainUrl{"about:blank"};
     std::string m_sideUrl{"about:blank"};
 
+    std::unique_ptr<Window> m_mainWindow;
+    std::unique_ptr<Settings> m_settingsWindow;
     std::vector<std::unique_ptr<Window>> m_windowVector;
     std::set<int64_t> m_windowSet;
 };
