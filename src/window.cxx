@@ -8,19 +8,22 @@
 
 #include "window.hxx"
 
-Window::Window(HWND app) : BaseWindow()
+Window::Window(HWND app, std::string mainUrl, std::string sideUrl) : BaseWindow("Airglow")
 {
     m_app = app;
     notify(m_app, msg::window_create);
+
+    m_mainUrl = mainUrl;
+    m_sideUrl = sideUrl;
 
     dwm_caption_color(false);
     dwm_dark_mode(true);
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
 
-    m_main = std::make_unique<MainBrowser>(hwnd());
+    m_main = std::make_unique<MainBrowser>(hwnd(), m_mainUrl);
     m_main->reveal();
 
-    m_side = std::make_unique<SideBrowser>(hwnd());
+    m_side = std::make_unique<SideBrowser>(hwnd(), m_sideUrl);
     m_side->reveal();
 
     m_url = std::make_unique<URLBrowser>(hwnd());

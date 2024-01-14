@@ -12,30 +12,13 @@ auto App::operator()() -> int
 {
     try
     {
-        SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
-        SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
-                                "--allow-file-access-from-files");
-
-        auto argv = glow::console::argv();
-
-        if (argv.size() == 2) { m_mainUrl = argv.at(1); }
-
-        if (argv.size() > 2)
-        {
-            m_mainUrl = argv.at(1);
-            m_sideUrl = argv.at(2);
-        }
+        startup();
 
         m_mainWindow = std::make_unique<Window>(hwnd());
         m_mainWindow->reveal();
 
         m_settingsWindow = std::make_unique<Settings>(hwnd());
         m_settingsWindow->reveal();
-
-        // for (auto i = 0; i < 4; i++)
-        // {
-        //     m_windowVector.emplace_back(std::make_unique<Window>(hwnd()))->reveal();
-        // }
     }
     catch (std::exception& e)
     {
@@ -43,6 +26,23 @@ auto App::operator()() -> int
     }
 
     return glow::gui::message_loop();
+}
+
+auto App::startup() -> void
+{
+    SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
+    SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
+                            "--allow-file-access-from-files");
+
+    auto argv = glow::console::argv();
+
+    if (argv.size() == 2) { m_mainUrl = argv.at(1); }
+
+    if (argv.size() > 2)
+    {
+        m_mainUrl = argv.at(1);
+        m_sideUrl = argv.at(2);
+    }
 }
 
 auto App::wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT

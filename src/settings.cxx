@@ -8,7 +8,7 @@
 
 #include "settings.hxx"
 
-Settings::Settings(HWND app) : BaseWindow()
+Settings::Settings(HWND app) : BaseWindow("Airglow - Settings")
 {
     m_app = app;
     notify(m_app, msg::window_create);
@@ -17,7 +17,7 @@ Settings::Settings(HWND app) : BaseWindow()
     dwm_dark_mode(true);
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
 
-    m_main = std::make_unique<SettingsBrowser>(hwnd());
+    m_main = std::make_unique<SettingsBrowser>(hwnd(), url_path());
     m_main->reveal();
 }
 

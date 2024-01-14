@@ -25,6 +25,8 @@ struct App : public glow::window::MessageWindow<App>
     auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     auto on_notify(WPARAM wParam, LPARAM lParam) -> int;
 
+    auto startup() -> void;
+
     glow::gui::GdiPlus m_gdiInit;
     glow::gui::CoInitialize m_coInit;
 

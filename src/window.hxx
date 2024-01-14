@@ -19,7 +19,7 @@ struct Window : public glow::window::BaseWindow<Window>
 {
     using glow::window::BaseWindow<Window>::BaseWindow;
 
-    Window(HWND app);
+    Window(HWND app, std::string mainUrl = "about:blank", std::string sideUrl = "about:blank");
 
     auto default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     auto on_close(WPARAM wParam, LPARAM lParam) -> int;
@@ -45,4 +45,7 @@ struct Window : public glow::window::BaseWindow<Window>
     std::unique_ptr<MainBrowser> m_main;
     std::unique_ptr<SideBrowser> m_side;
     std::unique_ptr<URLBrowser> m_url;
+
+    std::string m_mainUrl;
+    std::string m_sideUrl;
 };
