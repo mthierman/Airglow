@@ -11,8 +11,9 @@
 Window::Window(HWND app, std::pair<std::string, std::string> urls) : BaseWindow("Airglow")
 {
     m_app = app;
-    notify(m_app, msg::window_create);
     m_urls = urls;
+
+    notify(m_app, msg::window_create);
 
     dwm_caption_color(false);
     dwm_dark_mode(true);
@@ -138,11 +139,8 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
         auto r{&self->m_clientRect};
         auto width{r->right - r->left};
         auto height{r->bottom - r->top};
-
         auto border{static_cast<int>(self->s_border * self->m_scale)};
         auto bar{static_cast<int>(self->m_bar * self->m_scale)};
-
-        auto defer{true};
 
         auto hdwp{BeginDeferWindowPos(4)};
 
