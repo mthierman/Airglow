@@ -184,3 +184,80 @@ auto Window::url_path() -> std::string
 
     return path;
 }
+
+auto Window::data_path() -> std::filesystem::path
+{
+    auto path{glow::filesystem::known_folder() / "Airglow"};
+
+    if (!std::filesystem::exists(path)) std::filesystem::create_directory(path);
+
+    return path;
+}
+
+auto Window::json_path() -> std::filesystem::path
+{
+    auto path{data_path() / "Airglow.json"};
+
+    return path;
+}
+
+auto Window::save_settings() -> void
+{
+    if (!std::filesystem::exists(m_settingsFile))
+    {
+        nlohmann::json position = m_position;
+        std::ofstream f(m_settingsFile);
+        f << std::setw(4) << position << "\n";
+        f.close();
+    }
+
+    else
+    {
+        nlohmann::json position = m_position;
+        std::ofstream f(m_settingsFile);
+        f << std::setw(4) << position << "\n";
+        f.close();
+    }
+}
+
+// auto Window::load_settings() -> void
+// {
+//     auto path{glow::filesystem::path_portable()};
+//     if (!path.empty())
+//     {
+//         auto settingsFile{path / "settings.json"};
+
+//         try
+//         {
+//             if (!std::filesystem::exists(settingsFile))
+//             {
+//                 try
+//                 {
+//                     nlohmann::json j = *this;
+//                     std::ofstream f(settingsFile);
+//                     f << std::setw(4) << j << "\n";
+//                     f.close();
+//                 }
+//                 catch (const std::exception& e)
+//                 {
+//                     std::println("{}", e.what());
+//                 }
+//             }
+//             else
+//             {
+//                 try
+//                 {
+//                     //
+//                 }
+//                 catch (const std::exception& e)
+//                 {
+//                     std::println("{}", e.what());
+//                 }
+//             }
+//         }
+//         catch (const std::filesystem::filesystem_error& e)
+//         {
+//             std::println("{}", e.what());
+//         }
+//     }
+// }

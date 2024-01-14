@@ -25,12 +25,6 @@ struct App : public glow::window::MessageWindow<App>
     auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     auto on_notify(WPARAM wParam, LPARAM lParam) -> int;
 
-    auto data_path() -> std::filesystem::path;
-    auto json_path() -> std::filesystem::path;
-
-    // auto save_settings() -> void;
-    // auto load_settings() -> void;
-
     glow::gui::GdiPlus m_gdiInit;
     glow::gui::CoInitialize m_coInit;
 

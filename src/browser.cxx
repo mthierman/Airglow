@@ -128,7 +128,7 @@ auto URLBrowser::initialized() -> void
 {
     m_webView.settings8->put_AreDefaultContextMenusEnabled(false);
     m_webView.settings8->put_IsZoomControlEnabled(false);
-    m_webView.core20->OpenDevToolsWindow();
+    // m_webView.core20->OpenDevToolsWindow();
 }
 
 auto URLBrowser::web_message_received_handler(ICoreWebView2* sender,
