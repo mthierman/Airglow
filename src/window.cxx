@@ -141,12 +141,12 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
         auto width{r->right - r->left};
         auto height{r->bottom - r->top};
 
-        auto border{static_cast<int>(s_border * self->m_scale)};
+        auto border{static_cast<int>(self->s_border * self->m_scale)};
         auto bar{static_cast<int>(self->m_bar * self->m_scale)};
 
         auto defer{true};
 
-        auto hdwp{BeginDeferWindowPos(3)};
+        auto hdwp{BeginDeferWindowPos(4)};
 
         if (gwlId == self->m_main->id())
             if (hdwp)
