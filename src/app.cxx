@@ -96,7 +96,7 @@ auto App::json() -> std::filesystem::path
 auto App::save() -> void
 {
     // nlohmann::json position = m_position;
-    // std::ofstream f(m_settingsFile);
+    // std::ofstream f(m_settings);
     // f << std::setw(4) << position << "\n";
     // f.close();
 }

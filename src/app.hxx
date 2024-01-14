@@ -37,8 +37,7 @@ struct App : public glow::window::MessageWindow<App>
     glow::gui::GdiPlus m_gdiInit;
     glow::gui::CoInitialize m_coInit;
 
-    std::filesystem::path m_settingsFile{json()};
-
+    std::filesystem::path m_settings{json()};
     std::pair<std::string, std::string> m_urls{args()};
 
     std::set<int64_t> m_windows;
