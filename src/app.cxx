@@ -13,9 +13,8 @@ auto App::operator()() -> int
     try
     {
         env();
-        args();
 
-        m_mainWindow = std::make_unique<Window>(hwnd(), m_mainUrl, m_sideUrl);
+        m_mainWindow = std::make_unique<Window>(hwnd(), m_urls.first, m_urls.second);
         m_mainWindow->reveal();
 
         m_settingsWindow = std::make_unique<Settings>(hwnd());
@@ -36,15 +35,21 @@ auto App::env() -> void
                             "--allow-file-access-from-files");
 }
 
-auto App::args() -> void
+auto App::args() -> std::pair<std::string, std::string>
 {
-    if (m_argv.size() == 2) { m_mainUrl = m_argv.at(1); }
+    std::pair<std::string, std::string> url{"about:blank", "about:blank"};
 
-    if (m_argv.size() > 2)
+    auto argv{glow::console::argv()};
+
+    if (argv.size() == 2) { url.first = argv.at(1); }
+
+    if (argv.size() > 2)
     {
-        m_mainUrl = m_argv.at(1);
-        m_sideUrl = m_argv.at(2);
+        url.first = argv.at(1);
+        url.second = argv.at(2);
     }
+
+    return url;
 }
 
 auto App::wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
@@ -63,16 +68,16 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
     switch (nmhdr->code)
     {
-    case msg::window_create: m_windowSet.insert(nmhdr->idFrom); break;
-    case msg::window_close: m_windowSet.erase(nmhdr->idFrom); break;
+    case msg::window_create: m_windows.insert(nmhdr->idFrom); break;
+    case msg::window_close: m_windows.erase(nmhdr->idFrom); break;
     }
 
-    if (m_windowSet.empty()) { return close(); }
+    if (m_windows.empty()) { return close(); }
 
     else return 0;
 }
 
-auto App::data_path() -> std::filesystem::path
+auto App::data() -> std::filesystem::path
 {
     auto path{glow::filesystem::known_folder() / "Airglow"};
 
@@ -81,14 +86,14 @@ auto App::data_path() -> std::filesystem::path
     return path;
 }
 
-auto App::json_path() -> std::filesystem::path
+auto App::json() -> std::filesystem::path
 {
-    auto path{data_path() / "Airglow.json"};
+    auto path{data() / "Airglow.json"};
 
     return path;
 }
 
-auto App::save_settings() -> void
+auto App::save() -> void
 {
     // nlohmann::json position = m_position;
     // std::ofstream f(m_settingsFile);
@@ -96,4 +101,4 @@ auto App::save_settings() -> void
     // f.close();
 }
 
-auto App::load_settings() -> void {}
+auto App::load() -> void {}

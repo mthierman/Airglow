@@ -9,6 +9,7 @@
 #pragma once
 
 #include <set>
+#include <utility>
 
 #include <glow/glow.hxx>
 
@@ -23,28 +24,25 @@ struct App : public glow::window::MessageWindow<App>
     auto operator()() -> int;
 
     auto env() -> void;
-    auto args() -> void;
+    // auto args() -> void;
+    auto args() -> std::pair<std::string, std::string>;
 
     auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     auto on_notify(WPARAM wParam, LPARAM lParam) -> int;
 
+    auto data() -> std::filesystem::path;
+    auto json() -> std::filesystem::path;
+    auto save() -> void;
+    auto load() -> void;
+
     glow::gui::GdiPlus m_gdiInit;
     glow::gui::CoInitialize m_coInit;
 
-    std::vector<std::string> m_argv{glow::console::argv()};
-    std::string m_mainUrl{"https://www.google.com/"};
-    std::string m_sideUrl{"https://www.google.com/"};
+    std::filesystem::path m_settingsFile{json()};
 
+    std::pair<std::string, std::string> m_urls{args()};
+
+    std::set<int64_t> m_windows;
     std::unique_ptr<Window> m_mainWindow;
     std::unique_ptr<Settings> m_settingsWindow;
-
-    std::vector<std::unique_ptr<Window>> m_windowVector;
-    std::set<int64_t> m_windowSet;
-
-    auto data_path() -> std::filesystem::path;
-    auto json_path() -> std::filesystem::path;
-    auto save_settings() -> void;
-    auto load_settings() -> void;
-
-    std::filesystem::path m_settingsFile{json_path()};
 };
