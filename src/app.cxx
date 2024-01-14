@@ -10,31 +10,38 @@
 
 auto App::operator()() -> int
 {
-    SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
-    SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
-                            "--allow-file-access-from-files");
-
-    auto argv = glow::console::argv();
-
-    if (argv.size() == 2) { m_mainUrl = argv.at(1); }
-
-    if (argv.size() > 2)
+    try
     {
-        m_mainUrl = argv.at(1);
-        m_sideUrl = argv.at(2);
-    }
+        SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
+        SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
+                                "--allow-file-access-from-files");
 
-    for (auto i = 0; i < 4; i++)
+        auto argv = glow::console::argv();
+
+        if (argv.size() == 2) { m_mainUrl = argv.at(1); }
+
+        if (argv.size() > 2)
+        {
+            m_mainUrl = argv.at(1);
+            m_sideUrl = argv.at(2);
+        }
+
+        for (auto i = 0; i < 4; i++)
+        {
+            m_windowVector.emplace_back(std::make_unique<Window>(hwnd()))->reveal();
+        }
+
+        auto settings{std::make_unique<Settings>(hwnd())};
+        settings->reveal();
+
+        auto jsonPath{json_path()};
+
+        if (!jsonPath.empty()) throw std::runtime_error("Test");
+    }
+    catch (std::exception& e)
     {
-        m_windowVector.emplace_back(std::make_unique<Window>(hwnd()))->reveal();
+        glow::console::message_box(e.what());
     }
-
-    auto settings{std::make_unique<Settings>(hwnd())};
-    settings->reveal();
-
-    auto jsonPath{json_path()};
-
-    if (!jsonPath.empty()) throw std::runtime_error("TESTING EXCEPTION BOX!");
 
     return glow::gui::message_loop();
 }

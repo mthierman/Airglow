@@ -11,14 +11,15 @@
 auto main() -> int
 {
     App app;
+    return app();
 
-    try
-    {
-        return app();
-    }
-    catch (std::exception& e)
-    {
-        glow::console::message_box(e.what());
-        std::terminate();
-    }
+    // try
+    // {
+    //     return app();
+    // }
+    // catch (std::exception& e)
+    // {
+    //     glow::console::message_box(e.what());
+    //     // std::terminate();
+    // }
 }
