@@ -29,7 +29,7 @@ Window::Window(HWND app, std::string mainUrl, std::string sideUrl) : BaseWindow(
     m_side = std::make_unique<SideBrowser>(hwnd(), m_sideUrl);
     m_side->reveal();
 
-    m_url = std::make_unique<URLBrowser>(hwnd());
+    m_url = std::make_unique<URLBrowser>(hwnd(), url_path());
     m_url->reveal();
 }
 

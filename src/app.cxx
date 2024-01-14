@@ -18,7 +18,7 @@ auto App::operator()() -> int
         m_mainWindow->reveal();
 
         m_settingsWindow = std::make_unique<Settings>(hwnd());
-        m_settingsWindow->reveal();
+        // m_settingsWindow->reveal();
     }
     catch (std::exception& e)
     {

@@ -30,8 +30,8 @@ struct App : public glow::window::MessageWindow<App>
     glow::gui::GdiPlus m_gdiInit;
     glow::gui::CoInitialize m_coInit;
 
-    std::string m_mainUrl{"about:blank"};
-    std::string m_sideUrl{"about:blank"};
+    std::string m_mainUrl{"https://www.google.com/"};
+    std::string m_sideUrl{"https://www.google.com/"};
 
     std::unique_ptr<Window> m_mainWindow;
     std::unique_ptr<Settings> m_settingsWindow;
