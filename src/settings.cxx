@@ -11,7 +11,6 @@
 Settings::Settings(HWND app) : BaseWindow("Airglow - Settings")
 {
     m_app = app;
-    // notify(m_app, msg::window_create);
 
     dwm_caption_color(false);
     dwm_dark_mode(true);
@@ -25,20 +24,11 @@ auto Settings::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 {
     switch (uMsg)
     {
-    case WM_CLOSE: return on_close(wParam, lParam);
     case WM_KEYDOWN: return on_key_down(wParam, lParam);
-    // case WM_NOTIFY: return on_notify(wParam, lParam);
     case WM_SIZE: return on_size(wParam, lParam);
     }
 
     return DefWindowProcA(hWnd, uMsg, wParam, lParam);
-}
-
-auto Settings::on_close(WPARAM wParam, LPARAM lParam) -> int
-{
-    // notify(m_app, msg::window_close);
-
-    return close();
 }
 
 auto Settings::on_key_down(WPARAM wParam, LPARAM lParam) -> int

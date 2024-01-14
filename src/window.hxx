@@ -15,15 +15,15 @@
 #include "global.hxx"
 #include "browser.hxx"
 
+struct WindowBrowsers
+{
+    std::unique_ptr<MainBrowser> first;
+    std::unique_ptr<SideBrowser> second;
+    std::unique_ptr<URLBrowser> url;
+};
+
 struct Window : public glow::window::BaseWindow<Window>
 {
-    struct Browsers
-    {
-        std::unique_ptr<MainBrowser> first;
-        std::unique_ptr<SideBrowser> second;
-        std::unique_ptr<URLBrowser> url;
-    };
-
     using glow::window::BaseWindow<Window>::BaseWindow;
 
     Window(HWND app, std::pair<std::string, std::string> urls);
@@ -38,11 +38,11 @@ struct Window : public glow::window::BaseWindow<Window>
 
     auto url() -> std::string;
 
+    HWND m_app{nullptr};
+    std::pair<std::string, std::string> m_urls;
+
+    WindowBrowsers m_browsers;
+
     constexpr static int s_border{2};
     int m_bar{0};
-
-    HWND m_app{nullptr};
-    Browsers m_browsers;
-
-    std::pair<std::string, std::string> m_urls;
 };

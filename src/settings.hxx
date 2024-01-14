@@ -28,6 +28,7 @@ struct Settings : public glow::window::BaseWindow<Settings>
 
     auto url() -> std::string;
 
-    HWND m_app;
+    HWND m_app{nullptr};
+
     std::unique_ptr<SettingsBrowser> m_main;
 };
