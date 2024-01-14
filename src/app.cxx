@@ -26,17 +26,20 @@ auto App::operator()() -> int
             m_sideUrl = argv.at(2);
         }
 
-        for (auto i = 0; i < 4; i++)
-        {
-            m_windowVector.emplace_back(std::make_unique<Window>(hwnd()))->reveal();
-        }
+        auto testWindow{std::make_unique<Window>(hwnd())};
+        testWindow->reveal();
 
-        auto settings{std::make_unique<Settings>(hwnd())};
-        settings->reveal();
+        // for (auto i = 0; i < 4; i++)
+        // {
+        //     m_windowVector.emplace_back(std::make_unique<Window>(hwnd()))->reveal();
+        // }
+
+        // auto settings{std::make_unique<Settings>(hwnd())};
+        // settings->reveal();
 
         auto jsonPath{json_path()};
 
-        if (!jsonPath.empty()) throw std::runtime_error("Test");
+        // if (!jsonPath.empty()) throw std::runtime_error("Test");
     }
     catch (std::exception& e)
     {
