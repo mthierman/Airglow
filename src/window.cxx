@@ -78,39 +78,39 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
 auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 {
-    auto nMsg{*std::bit_cast<NotificationMsg*>(lParam)};
+    auto notification{*std::bit_cast<glow::gui::Notification*>(lParam)};
 
-    switch (nMsg.nmhdr.code)
+    switch (notification.nmhdr.code)
     {
     case msg::post_height:
     {
-        m_bar = std::stoi(nMsg.message);
+        m_bar = std::stoi(notification.message);
         SendMessageA(hwnd(), WM_SIZE, 0, 0);
         break;
     }
 
     case msg::post_mainurl:
     {
-        if (m_browsers.first) m_browsers.first->navigate(nMsg.message);
+        if (m_browsers.first) m_browsers.first->navigate(notification.message);
         break;
     }
 
     case msg::post_sideurl:
     {
-        if (m_browsers.second) m_browsers.second->navigate(nMsg.message);
+        if (m_browsers.second) m_browsers.second->navigate(notification.message);
         break;
     }
 
     case msg::receive_mainurl:
     {
-        nlohmann::json j{{"mainUrl", nMsg.message}};
+        nlohmann::json j{{"mainUrl", notification.message}};
         if (m_browsers.url) m_browsers.url->post_json(glow::text::widen(j.dump()).c_str());
         break;
     }
 
     case msg::receive_sideurl:
     {
-        nlohmann::json j{{"sideUrl", nMsg.message}};
+        nlohmann::json j{{"sideUrl", notification.message}};
         if (m_browsers.url) m_browsers.url->post_json(glow::text::widen(j.dump()).c_str());
         break;
     }

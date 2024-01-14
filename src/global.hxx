@@ -25,11 +25,3 @@ inline constexpr int64_t post_sideurl{(WM_APP + 6)};
 inline constexpr int64_t receive_mainurl{(WM_APP + 7)};
 inline constexpr int64_t receive_sideurl{(WM_APP + 8)};
 } // namespace msg
-
-struct NotificationMsg
-{
-    NotificationMsg() : nmhdr{0} {}
-
-    NMHDR nmhdr;
-    std::string message;
-};

@@ -63,12 +63,12 @@ auto App::wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESUL
 
 auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
 {
-    auto nmhdr{std::bit_cast<LPNMHDR>(lParam)};
+    auto notification{std::bit_cast<glow::gui::Notification*>(lParam)};
 
-    switch (nmhdr->code)
+    switch (notification->nmhdr.code)
     {
-    case msg::window_create: m_windows.insert(nmhdr->idFrom); break;
-    case msg::window_close: m_windows.erase(nmhdr->idFrom); break;
+    case msg::window_create: m_windows.insert(notification->nmhdr.idFrom); break;
+    case msg::window_close: m_windows.erase(notification->nmhdr.idFrom); break;
     }
 
     if (m_windows.empty()) { return close(); }
