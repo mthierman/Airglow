@@ -137,11 +137,13 @@ auto URLBrowser::web_message_received_handler(ICoreWebView2* sender,
 {
     // Check message source
     wil::unique_cotaskmem_string source;
+
     if (FAILED(args->get_Source(&source))) return S_OK;
     if (std::wstring_view(source.get()) != std::wstring_view(glow::text::widen(m_url))) return S_OK;
 
     // Get message as JSON
     wil::unique_cotaskmem_string messageRaw;
+    
     auto asJson{args->get_WebMessageAsJson(&messageRaw)};
     if (asJson == E_INVALIDARG) return S_OK;
     if (FAILED(asJson)) return S_OK;
@@ -194,17 +196,17 @@ auto URLBrowser::web_message_received_handler(ICoreWebView2* sender,
 auto MainBrowser::source_changed_handler(ICoreWebView2* sender,
                                          ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
 {
-    wil::unique_cotaskmem_string uriRaw;
-    sender->get_Source(&uriRaw);
+    // wil::unique_cotaskmem_string uriRaw;
+    // sender->get_Source(&uriRaw);
 
-    auto uri{glow::text::narrow(uriRaw.get())};
-    glow::gui::Notification notification;
-    notification.nmhdr.hwndFrom = hwnd();
-    notification.nmhdr.idFrom = m_id;
-    notification.nmhdr.code = msg::receive_mainurl;
-    notification.message = uri;
+    // auto uri{glow::text::narrow(uriRaw.get())};
+    // glow::gui::Notification notification;
+    // notification.nmhdr.hwndFrom = hwnd();
+    // notification.nmhdr.idFrom = m_id;
+    // notification.nmhdr.code = msg::receive_mainurl;
+    // notification.message = uri;
 
-    SendMessage(m_parent, WM_NOTIFY, 0, std::bit_cast<LPARAM>(&notification));
+    // SendMessage(m_parent, WM_NOTIFY, 0, std::bit_cast<LPARAM>(&notification));
 
     return S_OK;
 }
@@ -213,17 +215,17 @@ auto MainBrowser::navigation_starting_handler(ICoreWebView2* sender,
                                               ICoreWebView2NavigationStartingEventArgs* args)
     -> HRESULT
 {
-    wil::unique_cotaskmem_string uriRaw;
-    sender->get_Source(&uriRaw);
+    // wil::unique_cotaskmem_string uriRaw;
+    // sender->get_Source(&uriRaw);
 
-    auto uri{glow::text::narrow(uriRaw.get())};
-    glow::gui::Notification notification;
-    notification.nmhdr.hwndFrom = hwnd();
-    notification.nmhdr.idFrom = m_id;
-    notification.nmhdr.code = msg::receive_mainurl;
-    notification.message = uri;
+    // auto uri{glow::text::narrow(uriRaw.get())};
+    // glow::gui::Notification notification;
+    // notification.nmhdr.hwndFrom = hwnd();
+    // notification.nmhdr.idFrom = m_id;
+    // notification.nmhdr.code = msg::receive_mainurl;
+    // notification.message = uri;
 
-    SendMessage(m_parent, WM_NOTIFY, 0, std::bit_cast<LPARAM>(&notification));
+    // SendMessage(m_parent, WM_NOTIFY, 0, std::bit_cast<LPARAM>(&notification));
 
     return S_OK;
 }

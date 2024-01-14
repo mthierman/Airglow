@@ -82,7 +82,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
     switch (notification.nmhdr.code)
     {
-    case msg::post_height:
+    case msg::url_height:
     {
         m_bar = std::stoi(notification.message);
         SendMessageA(hwnd(), WM_SIZE, 0, 0);
@@ -103,15 +103,15 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
     case msg::receive_mainurl:
     {
-        nlohmann::json j{{"mainUrl", notification.message}};
-        if (m_browsers.url) m_browsers.url->post_json(glow::text::widen(j.dump()).c_str());
+        nlohmann::json message{{"mainUrl", notification.message}};
+        if (m_browsers.url) m_browsers.url->post_json(message);
         break;
     }
 
     case msg::receive_sideurl:
     {
-        nlohmann::json j{{"sideUrl", notification.message}};
-        if (m_browsers.url) m_browsers.url->post_json(glow::text::widen(j.dump()).c_str());
+        nlohmann::json message{{"sideUrl", notification.message}};
+        if (m_browsers.url) m_browsers.url->post_json(message);
         break;
     }
     }
