@@ -16,13 +16,13 @@
 
 namespace msg
 {
-inline constexpr size_t notify{(WM_APP)};
-inline constexpr size_t window_create{(WM_APP + 1)};
-inline constexpr size_t window_close{(WM_APP + 2)};
-inline constexpr size_t url_created{(WM_APP + 3)};
-inline constexpr size_t url_height{(WM_APP + 4)};
-inline constexpr size_t post_mainurl{(WM_APP + 5)};
-inline constexpr size_t post_sideurl{(WM_APP + 6)};
-inline constexpr size_t receive_mainurl{(WM_APP + 7)};
-inline constexpr size_t receive_sideurl{(WM_APP + 8)};
+inline constexpr unsigned int notify{(WM_APP)};
+inline constexpr unsigned int window_create{(WM_APP + 1)};
+inline constexpr unsigned int window_close{(WM_APP + 2)};
+inline constexpr unsigned int url_created{(WM_APP + 3)};
+inline constexpr unsigned int url_height{(WM_APP + 4)};
+inline constexpr unsigned int post_mainurl{(WM_APP + 5)};
+inline constexpr unsigned int post_sideurl{(WM_APP + 6)};
+inline constexpr unsigned int receive_mainurl{(WM_APP + 7)};
+inline constexpr unsigned int receive_sideurl{(WM_APP + 8)};
 } // namespace msg
