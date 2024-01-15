@@ -61,7 +61,7 @@ auto Settings::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 auto Settings::on_size(WPARAM wParam, LPARAM lParam) -> int
 {
     client_rect();
-    EnumChildWindows(hwnd(), EnumChildProc, std::bit_cast<LPARAM>(this));
+    EnumChildWindows(hwnd(), EnumChildProc, reinterpret_cast<LPARAM>(this));
     Sleep(1);
 
     return 0;
@@ -69,11 +69,11 @@ auto Settings::on_size(WPARAM wParam, LPARAM lParam) -> int
 
 auto CALLBACK Settings::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 {
-    auto self{std::bit_cast<Settings*>(lParam)};
+    auto self{reinterpret_cast<Settings*>(lParam)};
 
     if (self)
     {
-        auto gwlId{std::bit_cast<size_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
+        auto gwlId{static_cast<size_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
 
         auto r{&self->m_clientRect};
         auto width{r->right - r->left};

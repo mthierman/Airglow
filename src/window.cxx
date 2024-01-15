@@ -78,7 +78,7 @@ auto Window::on_key_down(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 
 auto Window::on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 {
-    auto notification{*std::bit_cast<glow::gui::Notification*>(lParam)};
+    auto notification{*reinterpret_cast<glow::gui::Notification*>(lParam)};
 
     switch (notification.nmhdr.code)
     {
@@ -129,7 +129,7 @@ auto Window::on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 auto Window::on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 {
     client_rect();
-    EnumChildWindows(hwnd(), EnumChildProc, std::bit_cast<LPARAM>(this));
+    EnumChildWindows(hwnd(), EnumChildProc, reinterpret_cast<LPARAM>(this));
     Sleep(1);
 
     return 0;
@@ -137,11 +137,11 @@ auto Window::on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 
 auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 {
-    auto self{std::bit_cast<Window*>(lParam)};
+    auto self{reinterpret_cast<Window*>(lParam)};
 
     if (self)
     {
-        auto gwlId{std::bit_cast<size_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
+        auto gwlId{static_cast<size_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
 
         auto r{&self->m_clientRect};
         auto width{r->right - r->left};
