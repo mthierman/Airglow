@@ -135,59 +135,34 @@ auto URLBrowser::web_message_received_handler(ICoreWebView2* sender,
                                               ICoreWebView2WebMessageReceivedEventArgs* args)
     -> HRESULT
 {
-    // Check message source
     wil::unique_cotaskmem_string source;
-
     if (FAILED(args->get_Source(&source))) return S_OK;
-    if (std::wstring_view(source.get()) != std::wstring_view(glow::text::widen(m_url))) return S_OK;
+    if (std::wstring_view(source.get()) != glow::text::widen(m_url)) return S_OK;
 
-    // Get message as JSON
     wil::unique_cotaskmem_string messageRaw;
-    
     auto asJson{args->get_WebMessageAsJson(&messageRaw)};
     if (asJson == E_INVALIDARG) return S_OK;
     if (FAILED(asJson)) return S_OK;
 
-    // Parse the JSON and send the URL
-    std::string message{glow::text::narrow(messageRaw.get())};
-    try
+    std::string narrowMessage{glow::text::narrow(messageRaw.get())};
+    auto json{nlohmann::json::parse(narrowMessage)};
+
+    if (json.contains("mainUrl"))
     {
-        auto parseMsg{nlohmann::json::parse(message)};
-
-        glow::gui::Notification notification;
-        notification.nmhdr.hwndFrom = m_hwnd.get();
-        notification.nmhdr.idFrom = m_id;
-
-        if (parseMsg.contains("mainUrl"))
-        {
-            auto mainUrl{parseMsg["mainUrl"].get<std::string>()};
-            notification.nmhdr.code = msg::post_mainurl;
-            notification.message = mainUrl;
-            SendMessageA(m_parent, WM_NOTIFY, notification.nmhdr.idFrom,
-                         std::bit_cast<LPARAM>(&notification));
-        }
-
-        if (parseMsg.contains("sideUrl"))
-        {
-            auto sideUrl{parseMsg["sideUrl"].get<std::string>()};
-            notification.nmhdr.code = msg::post_sideurl;
-            notification.message = sideUrl;
-            SendMessageA(m_parent, WM_NOTIFY, notification.nmhdr.idFrom,
-                         std::bit_cast<LPARAM>(&notification));
-        }
-
-        if (parseMsg.contains("height"))
-        {
-            auto height{parseMsg["height"].get<int>()};
-            notification.nmhdr.code = msg::post_height;
-            notification.message = std::to_string(height);
-            SendMessageA(m_parent, WM_NOTIFY, notification.nmhdr.idFrom,
-                         std::bit_cast<LPARAM>(&notification));
-        }
+        auto message{json["mainUrl"].get<std::string>()};
+        notify(m_parent, msg::post_mainurl, message);
     }
-    catch (const nlohmann::json::parse_error& e)
+
+    if (json.contains("sideUrl"))
     {
-        glow::console::message_box(e.what());
+        auto message{json["sideUrl"].get<std::string>()};
+        notify(m_parent, msg::post_sideurl, message);
+    }
+
+    if (json.contains("height"))
+    {
+        auto message{json["height"].get<int>()};
+        notify(m_parent, msg::url_height, std::to_string(message));
     }
 
     return S_OK;
