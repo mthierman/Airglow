@@ -85,7 +85,7 @@ auto Window::on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
     case msg::url_height:
     {
         m_bar = std::stoi(notification.message);
-        SendMessageA(hwnd(), WM_SIZE, 0, 0);
+        PostMessageA(hwnd(), WM_SIZE, 0, 0);
         break;
     }
 

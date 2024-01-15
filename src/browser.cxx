@@ -147,6 +147,12 @@ auto URLBrowser::web_message_received_handler(ICoreWebView2* sender,
     std::string narrowMessage{glow::text::narrow(messageRaw.get())};
     auto json{nlohmann::json::parse(narrowMessage)};
 
+    if (json.contains("height"))
+    {
+        auto message{json["height"].get<int>()};
+        notify(m_parent, msg::url_height, std::to_string(message));
+    }
+
     if (json.contains("mainUrl"))
     {
         auto message{json["mainUrl"].get<std::string>()};
@@ -157,12 +163,6 @@ auto URLBrowser::web_message_received_handler(ICoreWebView2* sender,
     {
         auto message{json["sideUrl"].get<std::string>()};
         notify(m_parent, msg::post_sideurl, message);
-    }
-
-    if (json.contains("height"))
-    {
-        auto message{json["height"].get<int>()};
-        notify(m_parent, msg::url_height, std::to_string(message));
     }
 
     return S_OK;
