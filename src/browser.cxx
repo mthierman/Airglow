@@ -129,6 +129,16 @@ auto URLBrowser::initialized() -> void
     m_webView.settings8->put_AreDefaultContextMenusEnabled(false);
     m_webView.settings8->put_IsZoomControlEnabled(false);
     // m_webView.core20->OpenDevToolsWindow();
+    navigate(url());
+}
+
+auto URLBrowser::navigation_completed_handler(ICoreWebView2* sender,
+                                              ICoreWebView2NavigationCompletedEventArgs* args)
+    -> HRESULT
+{
+    notify(m_parent, msg::url_created);
+
+    return S_OK;
 }
 
 auto URLBrowser::web_message_received_handler(ICoreWebView2* sender,
@@ -137,7 +147,7 @@ auto URLBrowser::web_message_received_handler(ICoreWebView2* sender,
 {
     wil::unique_cotaskmem_string source;
     if (FAILED(args->get_Source(&source))) return S_OK;
-    if (std::wstring_view(source.get()) != glow::text::widen(m_url)) return S_OK;
+    if (std::wstring_view(source.get()) != glow::text::widen(url())) return S_OK;
 
     wil::unique_cotaskmem_string messageRaw;
     auto asJson{args->get_WebMessageAsJson(&messageRaw)};
@@ -166,6 +176,17 @@ auto URLBrowser::web_message_received_handler(ICoreWebView2* sender,
     }
 
     return S_OK;
+}
+
+auto URLBrowser::url() -> std::string
+{
+#if _DEBUG
+    std::string path{"https://localhost:8000/url/index.html"};
+#else
+    auto path{"file:///" + filesystem::known_folder().string() + "\\Airglow\\gui\\url\\index.html"};
+#endif
+
+    return path;
 }
 
 auto MainBrowser::source_changed_handler(ICoreWebView2* sender,
@@ -216,4 +237,24 @@ auto SideBrowser::navigation_starting_handler(ICoreWebView2* sender,
     notify(m_parent, msg::receive_sideurl, uri);
 
     return S_OK;
+}
+
+auto SettingsBrowser::initialized() -> void
+{
+    m_webView.settings8->put_AreDefaultContextMenusEnabled(false);
+    m_webView.settings8->put_IsZoomControlEnabled(false);
+    // m_webView.core20->OpenDevToolsWindow();
+    navigate(url());
+}
+
+auto SettingsBrowser::url() -> std::string
+{
+#if _DEBUG
+    std::string path{"https://localhost:8000/settings/index.html"};
+#else
+    auto path{"file:///" + filesystem::known_folder().string() +
+              "\\Airglow\\gui\\settings\\index.html"};
+#endif
+
+    return path;
 }

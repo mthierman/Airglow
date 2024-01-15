@@ -36,8 +36,6 @@ struct Window : public glow::window::BaseWindow<Window>
 
     static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
 
-    auto url() -> std::string;
-
     HWND m_app{nullptr};
     std::pair<std::string, std::string> m_urls;
 

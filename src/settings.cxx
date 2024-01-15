@@ -16,7 +16,7 @@ Settings::Settings(HWND app) : BaseWindow("Airglow - Settings")
     dwm_dark_mode(true);
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_TRANSIENTWINDOW);
 
-    m_main = std::make_unique<SettingsBrowser>(hwnd(), url());
+    m_main = std::make_unique<SettingsBrowser>(hwnd());
     m_main->reveal();
 }
 
@@ -91,16 +91,4 @@ auto CALLBACK Settings::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     }
 
     return TRUE;
-}
-
-auto Settings::url() -> std::string
-{
-#if _DEBUG
-    std::string path{"https://localhost:8000/settings/index.html"};
-#else
-    auto path{"file:///" + filesystem::known_folder().string() +
-              "\\Airglow\\gui\\settings\\index.html"};
-#endif
-
-    return path;
 }

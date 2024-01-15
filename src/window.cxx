@@ -19,13 +19,13 @@ Window::Window(HWND app, std::pair<std::string, std::string> urls) : BaseWindow(
     dwm_dark_mode(true);
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
 
-    m_browsers.first = std::make_unique<MainBrowser>(hwnd(), m_urls.first);
+    m_browsers.first = std::make_unique<MainBrowser>(hwnd());
     m_browsers.first->reveal();
 
-    m_browsers.second = std::make_unique<SideBrowser>(hwnd(), m_urls.second);
+    m_browsers.second = std::make_unique<SideBrowser>(hwnd());
     m_browsers.second->reveal();
 
-    m_browsers.url = std::make_unique<URLBrowser>(hwnd(), url());
+    m_browsers.url = std::make_unique<URLBrowser>(hwnd());
     m_browsers.url->reveal();
 }
 
@@ -82,6 +82,13 @@ auto Window::on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 
     switch (notification.nmhdr.code)
     {
+    case msg::url_created:
+    {
+        if (m_browsers.first) m_browsers.first->navigate(m_urls.first);
+        if (m_browsers.second) m_browsers.second->navigate(m_urls.second);
+        break;
+    }
+
     case msg::url_height:
     {
         m_bar = std::stoi(notification.message);
@@ -167,15 +174,4 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     }
 
     return TRUE;
-}
-
-auto Window::url() -> std::string
-{
-#if _DEBUG
-    std::string path{"https://localhost:8000/url/index.html"};
-#else
-    auto path{"file:///" + filesystem::known_folder().string() + "\\Airglow\\gui\\url\\index.html"};
-#endif
-
-    return path;
 }

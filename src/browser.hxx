@@ -32,9 +32,14 @@ struct URLBrowser final : public Browser
 
     virtual auto initialized() -> void override;
 
-    auto web_message_received_handler(ICoreWebView2* sender,
-                                      ICoreWebView2WebMessageReceivedEventArgs* args)
+    virtual auto web_message_received_handler(ICoreWebView2* sender,
+                                              ICoreWebView2WebMessageReceivedEventArgs* args)
         -> HRESULT override;
+    virtual auto navigation_completed_handler(ICoreWebView2* sender,
+                                              ICoreWebView2NavigationCompletedEventArgs* args)
+        -> HRESULT override;
+
+    auto url() -> std::string;
 };
 
 struct MainBrowser final : public Browser
@@ -64,4 +69,8 @@ struct SideBrowser final : public Browser
 struct SettingsBrowser final : public Browser
 {
     using Browser::Browser;
+
+    virtual auto initialized() -> void override;
+
+    auto url() -> std::string;
 };
