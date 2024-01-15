@@ -201,34 +201,8 @@ auto MainBrowser::source_changed_handler(ICoreWebView2* sender,
     return S_OK;
 }
 
-auto MainBrowser::navigation_starting_handler(ICoreWebView2* sender,
-                                              ICoreWebView2NavigationStartingEventArgs* args)
-    -> HRESULT
-{
-    wil::unique_cotaskmem_string uriRaw;
-    if (FAILED(sender->get_Source(&uriRaw))) return S_OK;
-
-    auto uri{glow::text::narrow(uriRaw.get())};
-    notify(m_parent, msg::receive_mainurl, uri);
-
-    return S_OK;
-}
-
 auto SideBrowser::source_changed_handler(ICoreWebView2* sender,
                                          ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
-{
-    wil::unique_cotaskmem_string uriRaw;
-    if (FAILED(sender->get_Source(&uriRaw))) return S_OK;
-
-    auto uri{glow::text::narrow(uriRaw.get())};
-    notify(m_parent, msg::receive_sideurl, uri);
-
-    return S_OK;
-}
-
-auto SideBrowser::navigation_starting_handler(ICoreWebView2* sender,
-                                              ICoreWebView2NavigationStartingEventArgs* args)
-    -> HRESULT
 {
     wil::unique_cotaskmem_string uriRaw;
     if (FAILED(sender->get_Source(&uriRaw))) return S_OK;
