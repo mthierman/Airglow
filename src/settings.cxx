@@ -61,7 +61,7 @@ auto Settings::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 auto Settings::on_size(WPARAM wParam, LPARAM lParam) -> int
 {
     client_rect();
-    EnumChildWindows(hwnd(), EnumChildProc, reinterpret_cast<LPARAM>(this));
+    EnumChildWindows(hwnd(), EnumChildProc, reinterpret_cast<intptr_t>(this));
     Sleep(1);
 
     return 0;

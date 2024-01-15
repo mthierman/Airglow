@@ -129,7 +129,7 @@ auto Window::on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 auto Window::on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 {
     client_rect();
-    EnumChildWindows(hwnd(), EnumChildProc, reinterpret_cast<LPARAM>(this));
+    EnumChildWindows(hwnd(), EnumChildProc, reinterpret_cast<intptr_t>(this));
     Sleep(1);
 
     return 0;
