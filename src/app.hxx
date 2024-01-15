@@ -41,7 +41,7 @@ struct App : public glow::window::MessageWindow<App>
     std::filesystem::path m_settings{json()};
     std::pair<std::string, std::string> m_urls{args()};
 
-    std::set<int64_t> m_windows;
+    std::set<size_t> m_windows;
     std::unique_ptr<Window> m_windowMain;
     std::unique_ptr<Settings> m_windowSettings;
 };
