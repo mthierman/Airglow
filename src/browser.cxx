@@ -171,17 +171,11 @@ auto URLBrowser::web_message_received_handler(ICoreWebView2* sender,
 auto MainBrowser::source_changed_handler(ICoreWebView2* sender,
                                          ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
 {
-    // wil::unique_cotaskmem_string uriRaw;
-    // sender->get_Source(&uriRaw);
+    wil::unique_cotaskmem_string uriRaw;
+    if (FAILED(sender->get_Source(&uriRaw))) return S_OK;
 
-    // auto uri{glow::text::narrow(uriRaw.get())};
-    // glow::gui::Notification notification;
-    // notification.nmhdr.hwndFrom = hwnd();
-    // notification.nmhdr.idFrom = m_id;
-    // notification.nmhdr.code = msg::receive_mainurl;
-    // notification.message = uri;
-
-    // SendMessage(m_parent, WM_NOTIFY, 0, std::bit_cast<LPARAM>(&notification));
+    auto uri{glow::text::narrow(uriRaw.get())};
+    notify(m_parent, msg::receive_mainurl, uri);
 
     return S_OK;
 }
@@ -190,17 +184,11 @@ auto MainBrowser::navigation_starting_handler(ICoreWebView2* sender,
                                               ICoreWebView2NavigationStartingEventArgs* args)
     -> HRESULT
 {
-    // wil::unique_cotaskmem_string uriRaw;
-    // sender->get_Source(&uriRaw);
+    wil::unique_cotaskmem_string uriRaw;
+    if (FAILED(sender->get_Source(&uriRaw))) return S_OK;
 
-    // auto uri{glow::text::narrow(uriRaw.get())};
-    // glow::gui::Notification notification;
-    // notification.nmhdr.hwndFrom = hwnd();
-    // notification.nmhdr.idFrom = m_id;
-    // notification.nmhdr.code = msg::receive_mainurl;
-    // notification.message = uri;
-
-    // SendMessage(m_parent, WM_NOTIFY, 0, std::bit_cast<LPARAM>(&notification));
+    auto uri{glow::text::narrow(uriRaw.get())};
+    notify(m_parent, msg::receive_mainurl, uri);
 
     return S_OK;
 }
@@ -208,17 +196,11 @@ auto MainBrowser::navigation_starting_handler(ICoreWebView2* sender,
 auto SideBrowser::source_changed_handler(ICoreWebView2* sender,
                                          ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
 {
-    // wil::unique_cotaskmem_string uriRaw;
-    // sender->get_Source(&uriRaw);
+    wil::unique_cotaskmem_string uriRaw;
+    if (FAILED(sender->get_Source(&uriRaw))) return S_OK;
 
-    // auto uri{glow::text::narrow(uriRaw.get())};
-    // NotificationMsg nMsg;
-    // nMsg.nmhdr.hwndFrom = hwnd();
-    // nMsg.nmhdr.idFrom = m_id;
-    // nMsg.nmhdr.code = msg::receive_sideurl;
-    // nMsg.message = uri;
-
-    // SendMessage(m_parent, WM_NOTIFY, 0, std::bit_cast<LPARAM>(&nMsg));
+    auto uri{glow::text::narrow(uriRaw.get())};
+    notify(m_parent, msg::receive_sideurl, uri);
 
     return S_OK;
 }
@@ -227,17 +209,11 @@ auto SideBrowser::navigation_starting_handler(ICoreWebView2* sender,
                                               ICoreWebView2NavigationStartingEventArgs* args)
     -> HRESULT
 {
-    // wil::unique_cotaskmem_string uriRaw;
-    // sender->get_Source(&uriRaw);
+    wil::unique_cotaskmem_string uriRaw;
+    if (FAILED(sender->get_Source(&uriRaw))) return S_OK;
 
-    // auto uri{glow::text::narrow(uriRaw.get())};
-    // NotificationMsg nMsg;
-    // nMsg.nmhdr.hwndFrom = hwnd();
-    // nMsg.nmhdr.idFrom = m_id;
-    // nMsg.nmhdr.code = msg::receive_sideurl;
-    // nMsg.message = uri;
-
-    // SendMessage(m_parent, WM_NOTIFY, 0, std::bit_cast<LPARAM>(&nMsg));
+    auto uri{glow::text::narrow(uriRaw.get())};
+    notify(m_parent, msg::receive_sideurl, uri);
 
     return S_OK;
 }
