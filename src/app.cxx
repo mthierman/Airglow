@@ -36,7 +36,7 @@ auto App::env() -> void
 
 auto App::args() -> std::pair<std::string, std::string>
 {
-    std::pair<std::string, std::string> url{"", ""};
+    std::pair<std::string, std::string> url;
 
     auto argv{glow::console::argv()};
 
