@@ -50,11 +50,40 @@ auto Settings::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 {
     switch (uMsg)
     {
+    case WM_CLOSE: return on_close(wParam, lParam);
+    case WM_KEYDOWN: return on_key_down(wParam, lParam);
     case WM_SHOWWINDOW: return on_show_window(wParam, lParam);
     case WM_SIZE: return on_size(wParam, lParam);
     }
 
     return DefWindowProcA(hWnd, uMsg, wParam, lParam);
+}
+
+auto Settings::on_close(WPARAM wParam, LPARAM lParam) -> int
+{
+    hide();
+
+    return 0;
+}
+
+auto Settings::on_key_down(WPARAM wParam, LPARAM lParam) -> int
+{
+    auto key{static_cast<unsigned int>(wParam)};
+    Keys keys;
+
+    if (keys.set.contains(key))
+    {
+        switch (key)
+        {
+        case VK_PAUSE:
+        {
+            notify(m_app, msg::toggle_settings);
+            break;
+        }
+        }
+    }
+
+    return 0;
 }
 
 auto Settings::on_show_window(WPARAM wParam, LPARAM lParam) -> int

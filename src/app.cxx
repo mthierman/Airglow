@@ -18,10 +18,6 @@ auto App::operator()() -> int
         m_windowMain->reveal();
 
         m_windowSettings = std::make_unique<Settings>(hwnd());
-        // m_windowSettings->hide();
-        // m_windowSettings->reveal();
-        // m_windowSettings->hide();
-        // m_windowSettings->hide();
     }
     catch (std::exception& e)
     {

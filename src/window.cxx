@@ -74,23 +74,23 @@ auto Window::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 {
     switch (uMsg)
     {
-    case WM_CLOSE: return on_close(hWnd, wParam, lParam);
-    case WM_KEYDOWN: return on_key_down(hWnd, wParam, lParam);
-    case WM_NOTIFY: return on_notify(hWnd, wParam, lParam);
-    case WM_SIZE: return on_size(hWnd, wParam, lParam);
+    case WM_CLOSE: return on_close(wParam, lParam);
+    case WM_KEYDOWN: return on_key_down(wParam, lParam);
+    case WM_NOTIFY: return on_notify(wParam, lParam);
+    case WM_SIZE: return on_size(wParam, lParam);
     }
 
     return DefWindowProcA(hWnd, uMsg, wParam, lParam);
 }
 
-auto Window::on_close(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
+auto Window::on_close(WPARAM wParam, LPARAM lParam) -> int
 {
     notify(m_app, msg::window_close);
 
     return close();
 }
 
-auto Window::on_key_down(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
+auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 {
     auto key{static_cast<unsigned int>(wParam)};
     Keys keys;
@@ -189,7 +189,7 @@ auto Window::on_key_down(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
     return 0;
 }
 
-auto Window::on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
+auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 {
     auto notification{reinterpret_cast<glow::gui::Notification*>(lParam)};
 
@@ -239,7 +239,7 @@ auto Window::on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
     return 0;
 }
 
-auto Window::on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
+auto Window::on_size(WPARAM wParam, LPARAM lParam) -> int
 {
     client_rect();
     EnumChildWindows(hwnd(), EnumChildProc, reinterpret_cast<intptr_t>(this));
