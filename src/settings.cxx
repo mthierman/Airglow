@@ -20,53 +20,6 @@ Settings::Settings(HWND app) : BaseWindow("Airglow - Settings")
     m_main->reveal();
 }
 
-auto Settings::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
-{
-    switch (uMsg)
-    {
-    case WM_KEYDOWN: return on_key_down(wParam, lParam);
-    case WM_SIZE: return on_size(wParam, lParam);
-    }
-
-    return DefWindowProcA(hWnd, uMsg, wParam, lParam);
-}
-
-auto Settings::on_key_down(WPARAM wParam, LPARAM lParam) -> int
-{
-    switch (wParam)
-    {
-    case VK_PAUSE: OutputDebugStringA("PAUSE"); break;
-    case 0x4C:
-        if (GetKeyState(VK_CONTROL) & 0x8000) OutputDebugStringA("L");
-        break;
-    case 0x57:
-        if (GetKeyState(VK_CONTROL) & 0x8000)
-        {
-            OutputDebugStringA("W");
-            PostMessageA(m_hwnd.get(), WM_CLOSE, 0, 0);
-        }
-        break;
-    case VK_F1: OutputDebugStringA("F1"); break;
-    case VK_F2: OutputDebugStringA("F2"); break;
-    case VK_F3: OutputDebugStringA("F3"); break;
-    case VK_F4: OutputDebugStringA("F4"); break;
-    case VK_F6: OutputDebugStringA("F6"); break;
-    case VK_F8: OutputDebugStringA("F8"); break;
-    case VK_F11: OutputDebugStringA("F11"); break;
-    }
-
-    return 0;
-}
-
-auto Settings::on_size(WPARAM wParam, LPARAM lParam) -> int
-{
-    client_rect();
-    EnumChildWindows(hwnd(), EnumChildProc, reinterpret_cast<intptr_t>(this));
-    Sleep(1);
-
-    return 0;
-}
-
 auto CALLBACK Settings::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 {
     auto self{reinterpret_cast<Settings*>(lParam)};
@@ -82,7 +35,7 @@ auto CALLBACK Settings::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
         auto hdwp{BeginDeferWindowPos(1)};
 
         if (gwlId == self->m_main->id())
-            if (hdwp)
+            if (hdwp && self->m_main)
                 hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, 0, width, height,
                                       SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
                                           SWP_NOREDRAW | SWP_NOCOPYBITS);
@@ -91,4 +44,49 @@ auto CALLBACK Settings::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     }
 
     return TRUE;
+}
+
+auto Settings::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+{
+    switch (uMsg)
+    {
+    case WM_SHOWWINDOW: return on_show_window(wParam, lParam);
+    case WM_SIZE: return on_size(wParam, lParam);
+    }
+
+    return DefWindowProcA(hWnd, uMsg, wParam, lParam);
+}
+
+auto Settings::on_show_window(WPARAM wParam, LPARAM lParam) -> int
+{
+    if (m_main->m_webView.controller4)
+    {
+        switch (wParam)
+        {
+        case TRUE:
+        {
+            m_visible = true;
+            m_main->m_webView.controller4->put_IsVisible(TRUE);
+            break;
+        }
+
+        case FALSE:
+        {
+            m_visible = false;
+            m_main->m_webView.controller4->put_IsVisible(FALSE);
+            break;
+        }
+        }
+    }
+
+    return 0;
+}
+
+auto Settings::on_size(WPARAM wParam, LPARAM lParam) -> int
+{
+    client_rect();
+    EnumChildWindows(hwnd(), EnumChildProc, reinterpret_cast<intptr_t>(this));
+    Sleep(1);
+
+    return 0;
 }

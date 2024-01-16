@@ -19,17 +19,12 @@ struct Settings : public glow::window::BaseWindow<Settings>
 
     Settings(HWND app);
 
+    static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
     auto default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
-    auto on_close(WPARAM wParam, LPARAM lParam) -> int;
-    auto on_key_down(WPARAM wParam, LPARAM lParam) -> int;
+    auto on_show_window(WPARAM wParam, LPARAM lParam) -> int;
     auto on_size(WPARAM wParam, LPARAM lParam) -> int;
 
-    static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
-
-    auto url() -> std::string;
-
     HWND m_app{nullptr};
-
     std::unique_ptr<SettingsBrowser> m_main;
     bool m_visible{false};
 };

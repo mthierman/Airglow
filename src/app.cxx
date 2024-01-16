@@ -18,6 +18,10 @@ auto App::operator()() -> int
         m_windowMain->reveal();
 
         m_windowSettings = std::make_unique<Settings>(hwnd());
+        // m_windowSettings->hide();
+        // m_windowSettings->reveal();
+        // m_windowSettings->hide();
+        // m_windowSettings->hide();
     }
     catch (std::exception& e)
     {
@@ -67,9 +71,23 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
     switch (notification->nmhdr.code)
     {
-    case msg::window_create: m_windows.insert(notification->nmhdr.idFrom); break;
-    case msg::window_close: m_windows.erase(notification->nmhdr.idFrom); break;
-    case msg::toggle_settings: toggle_settings(); break;
+    case msg::window_create:
+    {
+        m_windows.insert(notification->nmhdr.idFrom);
+        break;
+    }
+
+    case msg::window_close:
+    {
+        m_windows.erase(notification->nmhdr.idFrom);
+        break;
+    }
+
+    case msg::toggle_settings:
+    {
+        m_windowSettings->m_visible ? m_windowSettings->hide() : m_windowSettings->show();
+        break;
+    }
     }
 
     if (m_windows.empty()) { return close(); }
@@ -102,18 +120,3 @@ auto App::save() -> void
 }
 
 auto App::load() -> void {}
-
-auto App::toggle_settings() -> void
-{
-    if (!m_windowSettings->m_visible)
-    {
-        m_windowSettings->m_visible = true;
-        m_windowSettings->show();
-    }
-
-    else
-    {
-        m_windowSettings->m_visible = false;
-        m_windowSettings->hide();
-    }
-}

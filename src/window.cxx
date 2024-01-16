@@ -29,6 +29,47 @@ Window::Window(HWND app, std::pair<std::string, std::string> urls) : BaseWindow(
     m_browsers.url->reveal();
 }
 
+auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
+{
+    auto self{reinterpret_cast<Window*>(lParam)};
+
+    if (self)
+    {
+        auto gwlId{static_cast<intptr_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
+
+        auto r{&self->m_clientRect};
+        auto width{r->right - r->left};
+        auto height{r->bottom - r->top};
+        auto border{static_cast<int>(self->s_border * self->m_scale)};
+        auto bar{static_cast<int>(self->m_bar * self->m_scale)};
+
+        auto hdwp{BeginDeferWindowPos(3)};
+
+        if (gwlId == self->m_browsers.first->id())
+            if (hdwp && self->m_browsers.first)
+                hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, 0, (width / 2) - border, height - bar,
+                                      SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
+                                          SWP_NOREDRAW | SWP_NOCOPYBITS);
+
+        if (gwlId == self->m_browsers.second->id())
+            if (hdwp && self->m_browsers.second)
+                hdwp = DeferWindowPos(hdwp, hWnd, nullptr, (width / 2) + border, 0,
+                                      (width / 2) - border, height - bar,
+                                      SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
+                                          SWP_NOREDRAW | SWP_NOCOPYBITS);
+
+        if (gwlId == self->m_browsers.url->id())
+            if (hdwp && self->m_browsers.url)
+                hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, r->bottom - bar, width, bar,
+                                      SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
+                                          SWP_NOREDRAW | SWP_NOCOPYBITS);
+
+        if (hdwp) EndDeferWindowPos(hdwp);
+    }
+
+    return TRUE;
+}
+
 auto Window::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     switch (uMsg)
@@ -205,45 +246,4 @@ auto Window::on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
     Sleep(1);
 
     return 0;
-}
-
-auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
-{
-    auto self{reinterpret_cast<Window*>(lParam)};
-
-    if (self)
-    {
-        auto gwlId{static_cast<intptr_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
-
-        auto r{&self->m_clientRect};
-        auto width{r->right - r->left};
-        auto height{r->bottom - r->top};
-        auto border{static_cast<int>(self->s_border * self->m_scale)};
-        auto bar{static_cast<int>(self->m_bar * self->m_scale)};
-
-        auto hdwp{BeginDeferWindowPos(3)};
-
-        if (gwlId == self->m_browsers.first->id())
-            if (hdwp && self->m_browsers.first)
-                hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, 0, (width / 2) - border, height - bar,
-                                      SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
-                                          SWP_NOREDRAW | SWP_NOCOPYBITS);
-
-        if (gwlId == self->m_browsers.second->id())
-            if (hdwp && self->m_browsers.second)
-                hdwp = DeferWindowPos(hdwp, hWnd, nullptr, (width / 2) + border, 0,
-                                      (width / 2) - border, height - bar,
-                                      SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
-                                          SWP_NOREDRAW | SWP_NOCOPYBITS);
-
-        if (gwlId == self->m_browsers.url->id())
-            if (hdwp && self->m_browsers.url)
-                hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, r->bottom - bar, width, bar,
-                                      SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
-                                          SWP_NOREDRAW | SWP_NOCOPYBITS);
-
-        if (hdwp) EndDeferWindowPos(hdwp);
-    }
-
-    return TRUE;
 }

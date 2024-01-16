@@ -35,8 +35,6 @@ struct App : public glow::window::MessageWindow<App>
     auto save() -> void;
     auto load() -> void;
 
-    auto toggle_settings() -> void;
-
     glow::gui::GdiPlus m_gdiInit;
     glow::gui::CoInitialize m_coInit;
 

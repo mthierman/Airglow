@@ -28,19 +28,16 @@ struct Window : public glow::window::BaseWindow<Window>
 
     Window(HWND app, std::pair<std::string, std::string> urls);
 
+    static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
     auto default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     auto on_close(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
     auto on_key_down(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
     auto on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
     auto on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
 
-    static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
-
     HWND m_app{nullptr};
     std::pair<std::string, std::string> m_urls;
-
     WindowBrowsers m_browsers;
-
     constexpr static int s_border{2};
     int m_bar{0};
 };

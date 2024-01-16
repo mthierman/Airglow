@@ -59,8 +59,8 @@ auto Browser::context_menu_requested_handler(ICoreWebView2* sender,
 
 auto URLBrowser::initialized() -> void
 {
-    m_webView.settings8->put_AreDefaultContextMenusEnabled(false);
-    m_webView.settings8->put_IsZoomControlEnabled(false);
+    // m_webView.settings8->put_AreDefaultContextMenusEnabled(false);
+    // m_webView.settings8->put_IsZoomControlEnabled(false);
     // m_webView.core20->OpenDevToolsWindow();
     navigate(url());
 }
@@ -148,8 +148,8 @@ auto SideBrowser::source_changed_handler(ICoreWebView2* sender,
 
 auto SettingsBrowser::initialized() -> void
 {
-    m_webView.settings8->put_AreDefaultContextMenusEnabled(false);
-    m_webView.settings8->put_IsZoomControlEnabled(false);
+    // m_webView.settings8->put_AreDefaultContextMenusEnabled(false);
+    // m_webView.settings8->put_IsZoomControlEnabled(false);
     // m_webView.core20->OpenDevToolsWindow();
     navigate(url());
 }
