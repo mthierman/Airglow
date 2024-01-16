@@ -14,7 +14,6 @@ auto Browser::accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
 {
     wil::com_ptr<ICoreWebView2AcceleratorKeyPressedEventArgs2> args2;
     args->QueryInterface(IID_PPV_ARGS(&args2));
-
     if (!args2) return S_OK;
 
     COREWEBVIEW2_KEY_EVENT_KIND kind;

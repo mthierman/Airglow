@@ -31,4 +31,5 @@ struct Settings : public glow::window::BaseWindow<Settings>
     HWND m_app{nullptr};
 
     std::unique_ptr<SettingsBrowser> m_main;
+    bool m_visible{false};
 };

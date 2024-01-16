@@ -69,6 +69,7 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
     {
     case msg::window_create: m_windows.insert(notification->nmhdr.idFrom); break;
     case msg::window_close: m_windows.erase(notification->nmhdr.idFrom); break;
+    case msg::toggle_settings: toggle_settings(); break;
     }
 
     if (m_windows.empty()) { return close(); }
@@ -101,3 +102,18 @@ auto App::save() -> void
 }
 
 auto App::load() -> void {}
+
+auto App::toggle_settings() -> void
+{
+    if (!m_windowSettings->m_visible)
+    {
+        m_windowSettings->m_visible = true;
+        m_windowSettings->show();
+    }
+
+    else
+    {
+        m_windowSettings->m_visible = false;
+        m_windowSettings->hide();
+    }
+}

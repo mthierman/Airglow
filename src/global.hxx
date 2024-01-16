@@ -31,4 +31,5 @@ inline constexpr unsigned int post_mainurl{WM_APP + 5};
 inline constexpr unsigned int post_sideurl{WM_APP + 6};
 inline constexpr unsigned int receive_mainurl{WM_APP + 7};
 inline constexpr unsigned int receive_sideurl{WM_APP + 8};
+inline constexpr unsigned int toggle_settings{WM_APP + 9};
 } // namespace msg

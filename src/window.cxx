@@ -53,7 +53,6 @@ auto Window::on_key_down(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 {
     auto key{static_cast<unsigned int>(wParam)};
     Keys keys;
-    auto check{keys.set.contains(key)};
 
     if (keys.set.contains(key))
     {
@@ -61,7 +60,7 @@ auto Window::on_key_down(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
         {
         case VK_PAUSE:
         {
-            OutputDebugStringA("PAUSE");
+            notify(m_app, msg::toggle_settings);
             break;
         }
 
