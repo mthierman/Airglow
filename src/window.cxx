@@ -84,8 +84,8 @@ auto Window::on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
     {
     case msg::url_created:
     {
-        if (m_browsers.first) m_browsers.first->navigate(m_urls.first);
-        if (m_browsers.second) m_browsers.second->navigate(m_urls.second);
+        // if (m_browsers.first) m_browsers.first->navigate(m_urls.first);
+        // if (m_browsers.second) m_browsers.second->navigate(m_urls.second);
         break;
     }
 
@@ -152,20 +152,20 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
         auto hdwp{BeginDeferWindowPos(4)};
 
         if (gwlId == self->m_browsers.first->id())
-            if (hdwp)
+            if (hdwp && self->m_browsers.first)
                 hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, 0, (width / 2) - border, height - bar,
                                       SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
                                           SWP_NOREDRAW | SWP_NOCOPYBITS);
 
         if (gwlId == self->m_browsers.second->id())
-            if (hdwp)
+            if (hdwp && self->m_browsers.second)
                 hdwp = DeferWindowPos(hdwp, hWnd, nullptr, (width / 2) + border, 0,
                                       (width / 2) - border, height - bar,
                                       SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
                                           SWP_NOREDRAW | SWP_NOCOPYBITS);
 
         if (gwlId == self->m_browsers.url->id())
-            if (hdwp)
+            if (hdwp && self->m_browsers.url)
                 hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, r->bottom - bar, width, bar,
                                       SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
                                           SWP_NOREDRAW | SWP_NOCOPYBITS);
