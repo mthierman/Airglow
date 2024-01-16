@@ -149,7 +149,7 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
         auto border{static_cast<int>(self->s_border * self->m_scale)};
         auto bar{static_cast<int>(self->m_bar * self->m_scale)};
 
-        auto hdwp{BeginDeferWindowPos(4)};
+        auto hdwp{BeginDeferWindowPos(3)};
 
         if (gwlId == self->m_browsers.first->id())
             if (hdwp && self->m_browsers.first)
