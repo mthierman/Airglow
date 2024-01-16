@@ -51,74 +51,99 @@ auto Window::on_close(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 
 auto Window::on_key_down(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 {
-    switch (wParam)
-    {
-    case key::pause:
-    {
-        OutputDebugStringA("PAUSE");
-        break;
-    }
+    auto key{static_cast<unsigned int>(wParam)};
+    Keys keys;
+    auto check{keys.set.contains(key)};
 
-    case key::l:
+    if (keys.set.contains(key))
     {
-        if (GetKeyState(VK_CONTROL) & 0x8000) OutputDebugStringA("L");
-        break;
-    }
+        switch (key)
+        {
+        case VK_PAUSE:
+        {
+            OutputDebugStringA("PAUSE");
+            break;
+        }
 
-    case key::w:
-    {
-        if (GetKeyState(VK_CONTROL) & 0x8000) SendMessageA(hwnd(), WM_CLOSE, 0, 0);
-        break;
-    }
+        case 0x4C:
+        {
+            if (GetKeyState(VK_CONTROL) & 0x8000) OutputDebugStringA("L");
+            break;
+        }
 
-    case key::f1:
-    {
-        OutputDebugStringA("F1");
-        break;
-    }
+        case 0x57:
+        {
+            if (GetKeyState(VK_CONTROL) & 0x8000) SendMessageA(hwnd(), WM_CLOSE, 0, 0);
+            break;
+        }
 
-    case key::f2:
-    {
-        OutputDebugStringA("F2");
-        break;
-    }
+        case VK_F1:
+        {
+            OutputDebugStringA("F1");
+            break;
+        }
 
-    case key::f3:
-    {
-        OutputDebugStringA("F3");
-        break;
-    }
+        case VK_F2:
+        {
+            OutputDebugStringA("F2");
+            break;
+        }
 
-    case key::f4:
-    {
-        if (GetKeyState(VK_MENU) & 0x8000) SendMessageA(hwnd(), WM_CLOSE, 0, 0);
-        OutputDebugStringA("F4");
-        break;
-    }
+        case VK_F3:
+        {
+            OutputDebugStringA("F3");
+            break;
+        }
 
-    case key::f6:
-    {
-        OutputDebugStringA("F6");
-        break;
-    }
+        case VK_F4:
+        {
+            if (GetKeyState(VK_MENU) & 0x8000) SendMessageA(hwnd(), WM_CLOSE, 0, 0);
+            OutputDebugStringA("F4");
+            break;
+        }
 
-    case key::f8:
-    {
-        OutputDebugStringA("F8");
-        break;
-    }
+        case VK_F6:
+        {
+            OutputDebugStringA("F6");
+            break;
+        }
 
-    case key::f11:
-    {
-        OutputDebugStringA("F11");
-        break;
-    }
+        case VK_F7:
+        {
+            OutputDebugStringA("F7");
+            break;
+        }
 
-    case key::f12:
-    {
-        OutputDebugStringA("F12");
-        break;
-    }
+        case VK_F8:
+        {
+            OutputDebugStringA("F8");
+            break;
+        }
+
+        case VK_F9:
+        {
+            OutputDebugStringA("F9");
+            break;
+        }
+
+        case VK_F10:
+        {
+            OutputDebugStringA("F10");
+            break;
+        }
+
+        case VK_F11:
+        {
+            OutputDebugStringA("F11");
+            break;
+        }
+
+        case VK_F12:
+        {
+            OutputDebugStringA("F12");
+            break;
+        }
+        }
     }
 
     return 0;

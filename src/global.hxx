@@ -11,27 +11,14 @@
 #include <Windows.h>
 
 #include <cstdint>
-#include <string>
-#include <type_traits>
+#include <set>
 
-namespace key
+struct Keys
 {
-inline constexpr unsigned int l{0x4C};
-inline constexpr unsigned int w{0x57};
-inline constexpr unsigned int pause{VK_PAUSE};
-inline constexpr unsigned int f1{VK_F1};
-inline constexpr unsigned int f2{VK_F2};
-inline constexpr unsigned int f3{VK_F3};
-inline constexpr unsigned int f4{VK_F4};
-inline constexpr unsigned int f5{VK_F5};
-inline constexpr unsigned int f6{VK_F6};
-inline constexpr unsigned int f7{VK_F7};
-inline constexpr unsigned int f8{VK_F8};
-inline constexpr unsigned int f9{VK_F9};
-inline constexpr unsigned int f10{VK_F10};
-inline constexpr unsigned int f11{VK_F11};
-inline constexpr unsigned int f12{VK_F12};
-} // namespace key
+    Keys();
+
+    std::set<unsigned int> set;
+};
 
 namespace msg
 {

@@ -25,6 +25,7 @@ target_sources(
     Airglow
     PRIVATE ${PROJECT_SOURCE_DIR}/src/app.cxx
             ${PROJECT_SOURCE_DIR}/src/browser.cxx
+            ${PROJECT_SOURCE_DIR}/src/global.cxx
             ${PROJECT_SOURCE_DIR}/src/main.cxx
             ${PROJECT_SOURCE_DIR}/src/settings.cxx
             ${PROJECT_SOURCE_DIR}/src/window.cxx

@@ -15,127 +15,24 @@ auto Browser::accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
     wil::com_ptr<ICoreWebView2AcceleratorKeyPressedEventArgs2> args2;
     args->QueryInterface(IID_PPV_ARGS(&args2));
 
+    if (!args2) return S_OK;
+
     COREWEBVIEW2_KEY_EVENT_KIND kind;
     args2->get_KeyEventKind(&kind);
 
-    if (args2)
+    if (kind == COREWEBVIEW2_KEY_EVENT_KIND_KEY_DOWN ||
+        kind == COREWEBVIEW2_KEY_EVENT_KIND_SYSTEM_KEY_DOWN)
     {
-        if (kind == COREWEBVIEW2_KEY_EVENT_KIND_KEY_DOWN ||
-            kind == COREWEBVIEW2_KEY_EVENT_KIND_SYSTEM_KEY_DOWN)
+        unsigned int key{};
+        args2->get_VirtualKey(&key);
+
+        Keys keys;
+
+        if (keys.set.contains(key))
         {
-            unsigned int key{};
-            args2->get_VirtualKey(&key);
-
-            switch (key)
-            {
-            case key::pause:
-            {
-                args2->put_Handled(TRUE);
-                PostMessageA(m_parent, WM_KEYDOWN, key, 0);
-                break;
-            }
-
-            case key::l:
-            {
-                args2->put_Handled(TRUE);
-                PostMessageA(m_parent, WM_KEYDOWN, key, 0);
-                break;
-            }
-
-            case key::w:
-            {
-                args2->put_Handled(TRUE);
-                PostMessageA(m_parent, WM_KEYDOWN, key, 0);
-                break;
-            }
-
-            case key::f1:
-            {
-                args2->put_Handled(TRUE);
-                PostMessageA(m_parent, WM_KEYDOWN, key, 0);
-                break;
-            }
-
-            case key::f2:
-            {
-                args2->put_Handled(TRUE);
-                PostMessageA(m_parent, WM_KEYDOWN, key, 0);
-                break;
-            }
-
-            case key::f3:
-            {
-                args2->put_Handled(TRUE);
-                args2->put_IsBrowserAcceleratorKeyEnabled(FALSE);
-                PostMessageA(m_parent, WM_KEYDOWN, key, 0);
-                break;
-            }
-
-            case key::f4:
-            {
-                args2->put_Handled(TRUE);
-                PostMessageA(m_parent, WM_KEYDOWN, key, 0);
-                break;
-            }
-
-                // case key::f5:
-                // {
-                //     args2->put_Handled(FALSE);
-                //     args2->put_IsBrowserAcceleratorKeyEnabled(TRUE);
-                //     PostMessageA(m_parent, WM_KEYDOWN, VK_F5, 0);
-                //     break;
-                // }
-
-            case key::f6:
-            {
-                args2->put_Handled(TRUE);
-                PostMessageA(m_parent, WM_KEYDOWN, key, 0);
-                break;
-            }
-
-            case key::f7:
-            {
-                args2->put_Handled(TRUE);
-                PostMessageA(m_parent, WM_KEYDOWN, key, 0);
-                break;
-            }
-
-            case key::f8:
-            {
-                args2->put_Handled(TRUE);
-                PostMessageA(m_parent, WM_KEYDOWN, key, 0);
-                break;
-            }
-
-            case key::f9:
-            {
-                args2->put_Handled(TRUE);
-                PostMessageA(m_parent, WM_KEYDOWN, key, 0);
-                break;
-            }
-
-                // case key::f10:
-                // {
-                //     args2->put_Handled(TRUE);
-                //     PostMessageA(m_parent, WM_KEYDOWN, VK_F10, 0);
-                //     break;
-                // }
-
-            case key::f11:
-            {
-                args2->put_Handled(TRUE);
-                PostMessageA(m_parent, WM_KEYDOWN, VK_F11, 0);
-                break;
-            }
-
-                // case key::f12:
-                // {
-                //     args2->put_Handled(FALSE);
-                //     args2->put_IsBrowserAcceleratorKeyEnabled(TRUE);
-                //     PostMessageA(m_parent, WM_KEYDOWN, VK_F12, 0);
-                //     break;
-                // }
-            }
+            args2->put_Handled(TRUE);
+            args2->put_IsBrowserAcceleratorKeyEnabled(FALSE);
+            PostMessageA(m_parent, WM_KEYDOWN, key, 0);
         }
     }
 
