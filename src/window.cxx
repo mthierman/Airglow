@@ -84,8 +84,8 @@ auto Window::on_notify(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
     {
     case msg::url_created:
     {
-        // if (m_browsers.first) m_browsers.first->navigate(m_urls.first);
-        // if (m_browsers.second) m_browsers.second->navigate(m_urls.second);
+        if (m_browsers.first) m_browsers.first->navigate(m_urls.first);
+        if (m_browsers.second) m_browsers.second->navigate(m_urls.second);
         break;
     }
 
