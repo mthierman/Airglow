@@ -80,18 +80,21 @@ auto Settings::on_key_down(WPARAM wParam, LPARAM lParam) -> int
         case VK_PAUSE:
         {
             notify(m_app, msg::toggle_settings);
+
             break;
         }
 
         case 0x57:
         {
             if (GetKeyState(VK_CONTROL) & 0x8000) notify(m_app, msg::toggle_settings);
+
             break;
         }
 
         case VK_F4:
         {
             if (GetKeyState(VK_MENU) & 0x8000) notify(m_app, msg::toggle_settings);
+
             break;
         }
         }
@@ -110,6 +113,7 @@ auto Settings::on_show_window(WPARAM wParam, LPARAM lParam) -> int
         {
             m_visible = true;
             m_main->m_webView.controller4->put_IsVisible(TRUE);
+
             break;
         }
 
@@ -117,6 +121,7 @@ auto Settings::on_show_window(WPARAM wParam, LPARAM lParam) -> int
         {
             m_visible = false;
             m_main->m_webView.controller4->put_IsVisible(FALSE);
+
             break;
         }
         }
