@@ -8,27 +8,6 @@
 
 #include "window.hxx"
 
-namespace window
-{
-Layout::Layout() : split{}, swapped{}, horizontal{} {}
-
-void to_json(nlohmann::json& j, const Layout& layout)
-{
-    j = nlohmann::json{
-        {"horizontal", layout.horizontal},
-        {"split", layout.split},
-        {"swapped", layout.swapped},
-    };
-}
-
-void from_json(const nlohmann::json& j, Layout& layout)
-{
-    j.at("horizontal").get_to(layout.horizontal);
-    j.at("split").get_to(layout.split);
-    j.at("swapped").get_to(layout.swapped);
-}
-} // namespace window
-
 Window::Window(HWND app, std::pair<std::string, std::string> urls) : BaseWindow("Airglow")
 {
     m_app = app;
@@ -315,7 +294,8 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
     }
 
     nlohmann::json layout = m_layout;
-    if (m_browsers.url) { m_browsers.url->post_json(layout); }
+    nlohmann::json message{{"layout", layout}};
+    if (m_browsers.url) { m_browsers.url->post_json(message); }
     PostMessageA(hwnd(), WM_SIZE, 0, 0);
 
     return 0;
