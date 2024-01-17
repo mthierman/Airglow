@@ -37,30 +37,98 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     {
         auto gwlId{static_cast<intptr_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
 
-        auto r{&self->m_clientRect};
-        auto width{r->right - r->left};
-        auto height{r->bottom - r->top};
+        auto rect{&self->m_clientRect};
+        // auto width{rect->right - rect->left};
+        // auto height{rect->bottom - rect->top};
         auto border{static_cast<int>(self->s_border * self->m_scale)};
         auto bar{static_cast<int>(self->m_bar * self->m_scale)};
+
+        glow::gui::Position left;
+        left.x = 0;
+        left.y = 0;
+        left.width = ((rect->right - rect->left) / 2) - border;
+        left.height = (rect->bottom - rect->top) - bar;
+
+        glow::gui::Position right;
+        right.x = ((rect->right - rect->left) / 2) + border;
+        right.y = 0;
+        right.width = ((rect->right - rect->left) / 2) - border;
+        right.height = (rect->bottom - rect->top) - bar;
+
+        glow::gui::Position full;
+        full.x = 0;
+        full.y = 0;
+        full.width = rect->right - rect->left;
+        full.height = (rect->bottom - rect->top) - bar;
+
+        auto first = &self->m_browsers.first->m_position;
+        auto second = &self->m_browsers.second->m_position;
+        auto url = &self->m_browsers.url->m_position;
+
+        url->x = 0;
+        url->y = rect->bottom - bar;
+        url->width = rect->right - rect->left;
+        url->height = bar;
+
+        if (self->m_split)
+        {
+            first->x = left.x;
+            first->y = left.y;
+            first->width = left.width;
+            first->height = left.height;
+
+            second->x = right.x;
+            second->y = right.y;
+            second->width = right.width;
+            second->height = right.height;
+        }
+
+        if (!self->m_split)
+        {
+            first->x = right.x;
+            first->y = right.y;
+            first->width = right.width;
+            first->height = right.height;
+
+            second->x = left.x;
+            second->y = left.y;
+            second->width = left.width;
+            second->height = left.height;
+        }
 
         auto hdwp{BeginDeferWindowPos(3)};
 
         if (gwlId == self->m_browsers.first->id())
             if (hdwp && self->m_browsers.first)
-                hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, 0, (width / 2) - border, height - bar,
+                hdwp = DeferWindowPos(hdwp, hWnd, nullptr, first->x, first->y, first->width,
+                                      first->height,
                                       SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
                                           SWP_NOREDRAW | SWP_NOCOPYBITS);
 
         if (gwlId == self->m_browsers.second->id())
             if (hdwp && self->m_browsers.second)
-                hdwp = DeferWindowPos(hdwp, hWnd, nullptr, (width / 2) + border, 0,
-                                      (width / 2) - border, height - bar,
+                hdwp = DeferWindowPos(hdwp, hWnd, nullptr, second->x, second->y, second->width,
+                                      second->height,
                                       SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
                                           SWP_NOREDRAW | SWP_NOCOPYBITS);
 
+        // if (gwlId == self->m_browsers.first->id())
+        //     if (hdwp && self->m_browsers.first)
+        //         hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, 0, (width / 2) - border, height -
+        //         bar,
+        //                               SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
+        //                                   SWP_NOREDRAW | SWP_NOCOPYBITS);
+
+        // if (gwlId == self->m_browsers.second->id())
+        //     if (hdwp && self->m_browsers.second)
+        //         hdwp = DeferWindowPos(hdwp, hWnd, nullptr, (width / 2) + border, 0,
+        //                               (width / 2) - border, height - bar,
+        //                               SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
+        //                                   SWP_NOREDRAW | SWP_NOCOPYBITS);
+
         if (gwlId == self->m_browsers.url->id())
             if (hdwp && self->m_browsers.url)
-                hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, r->bottom - bar, width, bar,
+                hdwp = DeferWindowPos(hdwp, hWnd, nullptr, url->x, url->y, url->width, url->height,
                                       SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
                                           SWP_NOREDRAW | SWP_NOCOPYBITS);
 
