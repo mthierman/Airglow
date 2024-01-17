@@ -34,7 +34,10 @@ auto Browser::accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
         {
             args2->put_Handled(TRUE);
             args2->put_IsBrowserAcceleratorKeyEnabled(FALSE);
-            PostMessageA(m_parent, WM_KEYDOWN, key, lParam);
+
+            if (key == VK_F10) { PostMessageA(m_parent, WM_SYSKEYDOWN, key, lParam); }
+
+            else { PostMessageA(m_parent, WM_KEYDOWN, key, lParam); }
         }
     }
 
