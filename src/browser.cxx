@@ -37,6 +37,11 @@ auto Browser::accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
 
             if (key == VK_F10) { PostMessageA(m_parent, WM_SYSKEYDOWN, key, lParam); }
 
+            else if (key == 0x30)
+            {
+                if (GetKeyState(VK_CONTROL) & 0x8000) m_webView.controller4->put_ZoomFactor(1.0);
+            }
+
             else { PostMessageA(m_parent, WM_KEYDOWN, key, lParam); }
         }
     }
