@@ -2,9 +2,9 @@ import { SyntheticEvent, useState, useRef, useEffect } from "react";
 // import * as url from "@libs/url";
 
 interface Position {
-    swapped: boolean;
-    split: boolean;
     horizontal: boolean;
+    split: boolean;
+    swapped: boolean;
 }
 
 export default function App() {
@@ -19,9 +19,9 @@ export default function App() {
     }, [height]);
 
     const [position, setPosition] = useState<Position>({
+        horizontal: false,
         split: false,
         swapped: false,
-        horizontal: false,
     });
 
     useEffect(() => {
@@ -37,7 +37,7 @@ export default function App() {
         return () => {
             window.chrome.webview.removeEventListener("message", onMessage);
         };
-    }, [position]);
+    });
 
     return (
         // <div ref={container} id="container" className={`flex bg-transparent`}>

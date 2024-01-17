@@ -15,6 +15,21 @@
 #include "global.hxx"
 #include "browser.hxx"
 
+namespace window
+{
+struct Layout
+{
+    Layout();
+
+    bool horizontal;
+    bool split;
+    bool swapped;
+};
+
+void to_json(nlohmann::json& j, const Layout& layout);
+void from_json(const nlohmann::json& j, Layout& layout);
+} // namespace window
+
 struct Window : public glow::window::BaseWindow<Window>
 {
     struct Browsers
@@ -50,9 +65,7 @@ struct Window : public glow::window::BaseWindow<Window>
     std::pair<std::string, std::string> m_urls;
     Browsers m_browsers;
     Positions m_positions;
-    bool m_split{false};
-    bool m_swapped{false};
-    bool m_horizontal{false};
+    window::Layout m_layout;
     constexpr static int s_border{2};
     int m_bar{0};
 };

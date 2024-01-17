@@ -8,6 +8,27 @@
 
 #include "window.hxx"
 
+namespace window
+{
+Layout::Layout() : split{}, swapped{}, horizontal{} {}
+
+void to_json(nlohmann::json& j, const Layout& layout)
+{
+    j = nlohmann::json{
+        {"horizontal", layout.horizontal},
+        {"split", layout.split},
+        {"swapped", layout.swapped},
+    };
+}
+
+void from_json(const nlohmann::json& j, Layout& layout)
+{
+    j.at("horizontal").get_to(layout.horizontal);
+    j.at("split").get_to(layout.split);
+    j.at("swapped").get_to(layout.swapped);
+}
+} // namespace window
+
 Window::Window(HWND app, std::pair<std::string, std::string> urls) : BaseWindow("Airglow")
 {
     m_app = app;
@@ -84,32 +105,32 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
         bottom->width = width;
         bottom->height = halfHeight - (barHeight / 2) - border;
 
-        if (self->m_split)
+        if (self->m_layout.split)
         {
-            if (!self->m_horizontal)
+            if (!self->m_layout.horizontal)
             {
-                if (!self->m_swapped)
+                if (!self->m_layout.swapped)
                 {
                     *first = *left;
                     *second = *right;
                 }
 
-                if (self->m_swapped)
+                if (self->m_layout.swapped)
                 {
                     *first = *right;
                     *second = *left;
                 }
             }
 
-            if (self->m_horizontal)
+            if (self->m_layout.horizontal)
             {
-                if (!self->m_swapped)
+                if (!self->m_layout.swapped)
                 {
                     *first = *top;
                     *second = *bottom;
                 }
 
-                if (self->m_swapped)
+                if (self->m_layout.swapped)
                 {
                     *first = *bottom;
                     *second = *top;
@@ -119,13 +140,13 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 
         else
         {
-            if (!self->m_swapped)
+            if (!self->m_layout.swapped)
             {
                 *first = *full;
                 *second = *empty;
             }
 
-            if (self->m_swapped)
+            if (self->m_layout.swapped)
             {
                 *first = *empty;
                 *second = *full;
@@ -223,33 +244,21 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
         case VK_F1:
         {
-            m_split = !m_split;
-            PostMessageA(hwnd(), WM_SIZE, 0, 0);
-            nlohmann::json message{{"split", m_split}};
-            if (m_browsers.url) { m_browsers.url->post_json(message); }
+            m_layout.split = !m_layout.split;
 
             break;
         }
 
         case VK_F2:
         {
-            m_swapped = !m_swapped;
-            PostMessageA(hwnd(), WM_SIZE, 0, 0);
-            nlohmann::json message{{"swapped", m_swapped}};
-            if (m_browsers.url) { m_browsers.url->post_json(message); }
+            m_layout.swapped = !m_layout.swapped;
 
             break;
         }
 
         case VK_F3:
         {
-            if (m_split)
-            {
-                m_horizontal = !m_horizontal;
-                PostMessageA(hwnd(), WM_SIZE, 0, 0);
-                nlohmann::json message{{"horizontal", m_horizontal}};
-                if (m_browsers.url) { m_browsers.url->post_json(message); }
-            }
+            if (m_layout.split) { m_layout.horizontal = !m_layout.horizontal; }
 
             break;
         }
@@ -304,6 +313,10 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
         }
         }
     }
+
+    nlohmann::json layout = m_layout;
+    if (m_browsers.url) { m_browsers.url->post_json(layout); }
+    PostMessageA(hwnd(), WM_SIZE, 0, 0);
 
     return 0;
 }
