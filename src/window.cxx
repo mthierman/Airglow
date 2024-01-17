@@ -254,19 +254,16 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
         case VK_F6:
         {
-            OutputDebugStringA("F6");
             break;
         }
 
         case VK_F7:
         {
-            OutputDebugStringA("F7");
             break;
         }
 
         case VK_F8:
         {
-            OutputDebugStringA("F8");
             break;
         }
 
@@ -277,22 +274,15 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
             break;
         }
 
-        case VK_F10:
-        {
-            break;
-        }
-
         case VK_F11:
         {
             m_position.fullscreen = !m_position.fullscreen;
             fullscreen();
-            // OutputDebugStringA("F11");
             break;
         }
 
         case VK_F12:
         {
-            OutputDebugStringA("F12");
             break;
         }
         }
