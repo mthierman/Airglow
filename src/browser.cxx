@@ -22,10 +22,13 @@ auto Browser::accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
     if (kind == COREWEBVIEW2_KEY_EVENT_KIND_KEY_DOWN ||
         kind == COREWEBVIEW2_KEY_EVENT_KIND_SYSTEM_KEY_DOWN)
     {
-        unsigned int key{};
-        args2->get_VirtualKey(&key);
+        COREWEBVIEW2_PHYSICAL_KEY_STATUS status;
+        args2->get_PhysicalKeyStatus(&status);
+        if (status.WasKeyDown) return S_OK;
 
         Keys keys;
+        unsigned int key{};
+        args2->get_VirtualKey(&key);
 
         if (keys.set.contains(key))
         {
