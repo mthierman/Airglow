@@ -171,6 +171,7 @@ auto Window::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
     {
     case WM_CLOSE: return on_close(wParam, lParam);
     case WM_KEYDOWN: return on_key_down(wParam, lParam);
+    case WM_SYSKEYDOWN: return on_sys_key_down(wParam, lParam);
     case WM_NOTIFY: return on_notify(wParam, lParam);
     case WM_SIZE: return on_size(wParam, lParam);
     }
@@ -292,6 +293,28 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
         case VK_F12:
         {
             OutputDebugStringA("F12");
+            break;
+        }
+        }
+    }
+
+    return 0;
+}
+
+auto Window::on_sys_key_down(WPARAM wParam, LPARAM lParam) -> int
+{
+    auto key{static_cast<unsigned int>(wParam)};
+    Keys keys;
+
+    if ((HIWORD(lParam) & KF_REPEAT) == KF_REPEAT) return 0;
+
+    if (keys.set.contains(key))
+    {
+        switch (key)
+        {
+        case VK_F10:
+        {
+            OutputDebugStringA("VK_F10");
             break;
         }
         }
