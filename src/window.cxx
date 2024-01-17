@@ -225,13 +225,18 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
         {
             m_swapped = !m_swapped;
             PostMessageA(hwnd(), WM_SIZE, 0, 0);
+
             break;
         }
 
         case VK_F3:
         {
-            m_horizontal = !m_horizontal;
-            PostMessageA(hwnd(), WM_SIZE, 0, 0);
+            if (m_split)
+            {
+                m_horizontal = !m_horizontal;
+                PostMessageA(hwnd(), WM_SIZE, 0, 0);
+            }
+
             break;
         }
 
