@@ -22,19 +22,23 @@ auto Browser::accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
     if (kind == COREWEBVIEW2_KEY_EVENT_KIND_KEY_DOWN ||
         kind == COREWEBVIEW2_KEY_EVENT_KIND_SYSTEM_KEY_DOWN)
     {
-        COREWEBVIEW2_PHYSICAL_KEY_STATUS status;
-        args2->get_PhysicalKeyStatus(&status);
-        if (status.WasKeyDown) return S_OK;
+        // COREWEBVIEW2_PHYSICAL_KEY_STATUS status;
+        // args2->get_PhysicalKeyStatus(&status);
+        // if (status.WasKeyDown) return S_OK;
 
         Keys keys;
+
         unsigned int key{};
         args2->get_VirtualKey(&key);
+
+        int lparam{};
+        args2->get_KeyEventLParam(&lparam);
 
         if (keys.set.contains(key))
         {
             args2->put_Handled(TRUE);
             args2->put_IsBrowserAcceleratorKeyEnabled(FALSE);
-            PostMessageA(m_parent, WM_KEYDOWN, key, 0);
+            PostMessageA(m_parent, WM_KEYDOWN, key, lparam);
         }
     }
 
