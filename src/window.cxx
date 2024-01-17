@@ -61,7 +61,7 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 
         full->x = 0;
         full->y = 0;
-        full->width = width;
+        full->width = width - border;
         full->height = height - barHeight;
 
         left->x = 0;
@@ -74,18 +74,46 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
         right->width = halfWidth - border;
         right->height = height - barHeight;
 
+        top->x = 0;
+        top->y = 0;
+        top->width = width;
+        top->height = halfHeight - (barHeight / 2) - border;
+
+        bottom->x = 0;
+        bottom->y = halfHeight - (barHeight / 2) + border;
+        bottom->width = width;
+        bottom->height = halfHeight - (barHeight / 2) - border;
+
         if (self->m_split)
         {
-            if (!self->m_swapped)
+            if (!self->m_horizontal)
             {
-                *first = *left;
-                *second = *right;
+                if (!self->m_swapped)
+                {
+                    *first = *left;
+                    *second = *right;
+                }
+
+                if (self->m_swapped)
+                {
+                    *first = *right;
+                    *second = *left;
+                }
             }
 
-            if (self->m_swapped)
+            if (self->m_horizontal)
             {
-                *first = *right;
-                *second = *left;
+                if (!self->m_swapped)
+                {
+                    *first = *top;
+                    *second = *bottom;
+                }
+
+                if (self->m_swapped)
+                {
+                    *first = *bottom;
+                    *second = *top;
+                }
             }
         }
 
@@ -202,7 +230,8 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
         case VK_F3:
         {
-            OutputDebugStringA("F3");
+            m_horizontal = !m_horizontal;
+            PostMessageA(hwnd(), WM_SIZE, 0, 0);
             break;
         }
 

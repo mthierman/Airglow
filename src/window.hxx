@@ -51,6 +51,7 @@ struct Window : public glow::window::BaseWindow<Window>
     Positions m_positions;
     bool m_split{false};
     bool m_swapped{false};
+    bool m_horizontal{false};
     constexpr static int s_border{2};
     int m_bar{0};
 };
