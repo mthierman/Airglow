@@ -242,7 +242,12 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
         case VK_F4:
         {
-            if (GetKeyState(VK_MENU) & 0x8000) SendMessageA(hwnd(), WM_CLOSE, 0, 0);
+            if (GetKeyState(VK_MENU) & 0x8000) { SendMessageA(hwnd(), WM_CLOSE, 0, 0); }
+            else
+            {
+                m_position.maximize = !m_position.maximize;
+                maximize();
+            }
             break;
         }
 
@@ -266,19 +271,21 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
         case VK_F9:
         {
-            OutputDebugStringA("F9");
+            m_position.topmost = !m_position.topmost;
+            topmost();
             break;
         }
 
         case VK_F10:
         {
-            OutputDebugStringA("F10");
             break;
         }
 
         case VK_F11:
         {
-            OutputDebugStringA("F11");
+            m_position.fullscreen = !m_position.fullscreen;
+            fullscreen();
+            // OutputDebugStringA("F11");
             break;
         }
 
