@@ -1,6 +1,18 @@
 import { SyntheticEvent, useState, useRef, useEffect } from "react";
 import * as url from "@libs/url";
 
+let split = false;
+let swapped = false;
+
+if (window.chrome.webview) {
+    window.chrome.webview.addEventListener("message", (event: Event) => {
+        const data = (event as MessageEvent).data;
+        // console.log(data);
+        split = !split;
+        swapped = true;
+    });
+}
+
 export default function App() {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const mainForm = useRef<HTMLFormElement | null>(null);
@@ -12,6 +24,10 @@ export default function App() {
     const [side, setSide] = useState("");
     const [mainUrlPlaceholder, setMainUrlPlaceholder] = useState("");
     const [sideUrlPlaceholder, setSideUrlPlaceholder] = useState("");
+
+    // const [split, setSplit] = useState(false);
+    // const [swapped, setSwapped] = useState(false);
+    // const [horizontal, setHorizontal] = useState(false);
 
     // if (window.chrome.webview) {
     //     window.chrome.webview.addEventListener("message", (event: Event) => {
@@ -26,6 +42,22 @@ export default function App() {
     // }
 
     useEffect(() => {
+        const handler = () => {
+            console.log("test");
+        };
+        window.chrome.webview.addEventListener("message", (handler) => {
+            // const data = (event as MessageEvent).data;
+            // console.log(data);
+            // split = !split;
+            // swapped = true;
+        });
+
+        return () => {
+            window.chrome.webview.removeEventListener("message", handler);
+        };
+    }, [split]);
+
+    useEffect(() => {
         setMainUrlPlaceholder(sessionStorage.getItem("mainUrl")!);
         setSideUrlPlaceholder(sessionStorage.getItem("sideUrl")!);
     });
@@ -35,23 +67,27 @@ export default function App() {
         if (height) window.chrome.webview.postMessage({ height: height });
     });
 
-    if (window.chrome.webview) {
-        window.chrome.webview.addEventListener("message", (event: Event) => {
-            const data = (event as MessageEvent).data;
-            if (data.mainUrl) {
-                sessionStorage.setItem("mainUrl", data.mainUrl);
-                setMain(data.mainUrl);
-                setMainUrlPlaceholder(data.mainUrl);
-                mainInput.current?.blur();
-            }
-            if (data.sideUrl) {
-                sessionStorage.setItem("sideUrl", data.sideUrl);
-                setSide(data.sideUrl);
-                setSideUrlPlaceholder(data.sideUrl);
-                sideInput.current?.blur();
-            }
-        });
-    }
+    // if (window.chrome.webview) {
+    //     window.chrome.webview.addEventListener("message", (event: Event) => {
+    //         const data = (event as MessageEvent).data;
+    //         console.log(data);
+    //         setSplit(data["split"]);
+    //         setSwapped(data["swapped"]);
+    //         setHorizontal(data["horizontal"]);
+    //         if (data.mainUrl) {
+    //             sessionStorage.setItem("mainUrl", data.mainUrl);
+    //             setMain(data.mainUrl);
+    //             setMainUrlPlaceholder(data.mainUrl);
+    //             mainInput.current?.blur();
+    //         }
+    //         if (data.sideUrl) {
+    //             sessionStorage.setItem("sideUrl", data.sideUrl);
+    //             setSide(data.sideUrl);
+    //             setSideUrlPlaceholder(data.sideUrl);
+    //             sideInput.current?.blur();
+    //         }
+    //     });
+    // }
 
     const handleChange = (event: SyntheticEvent) => {
         let input = event.target as HTMLInputElement;
@@ -135,7 +171,11 @@ export default function App() {
     });
 
     return (
-        <div ref={containerRef} id="container" className="flex bg-transparent">
+        <div
+            ref={containerRef}
+            id="container"
+            className={`flex bg-transparent ${swapped ? "flex-row-reverse" : "flex-row"}`}>
+            {/* <div ref={containerRef} id="container" className="flex bg-transparent"> */}
             <form
                 className="flex flex-grow"
                 id="mainForm"

@@ -200,18 +200,24 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
         case VK_PAUSE:
         {
             notify(m_app, msg::toggle_settings);
+
             break;
         }
 
         case 0x4C:
         {
-            if (GetKeyState(VK_CONTROL) & 0x8000) OutputDebugStringA("L");
+            if (GetKeyState(VK_CONTROL) & 0x8000)
+            {
+                if (m_browsers.url) { m_browsers.url->focus(); }
+            }
+
             break;
         }
 
         case 0x57:
         {
-            if (GetKeyState(VK_CONTROL) & 0x8000) SendMessageA(hwnd(), WM_CLOSE, 0, 0);
+            if (GetKeyState(VK_CONTROL) & 0x8000) { SendMessageA(hwnd(), WM_CLOSE, 0, 0); }
+
             break;
         }
 
@@ -219,6 +225,9 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
         {
             m_split = !m_split;
             PostMessageA(hwnd(), WM_SIZE, 0, 0);
+            nlohmann::json message{{"split", m_split}};
+            if (m_browsers.url) { m_browsers.url->post_json(message); }
+
             break;
         }
 
@@ -226,6 +235,8 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
         {
             m_swapped = !m_swapped;
             PostMessageA(hwnd(), WM_SIZE, 0, 0);
+            nlohmann::json message{{"swapped", m_swapped}};
+            if (m_browsers.url) { m_browsers.url->post_json(message); }
 
             break;
         }
@@ -236,6 +247,8 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
             {
                 m_horizontal = !m_horizontal;
                 PostMessageA(hwnd(), WM_SIZE, 0, 0);
+                nlohmann::json message{{"horizontal", m_horizontal}};
+                if (m_browsers.url) { m_browsers.url->post_json(message); }
             }
 
             break;
@@ -244,11 +257,13 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
         case VK_F4:
         {
             if (GetKeyState(VK_MENU) & 0x8000) { SendMessageA(hwnd(), WM_CLOSE, 0, 0); }
+
             else
             {
                 m_position.maximize = !m_position.maximize;
                 maximize();
             }
+
             break;
         }
 
@@ -271,6 +286,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
         {
             m_position.topmost = !m_position.topmost;
             topmost();
+
             break;
         }
 
@@ -278,6 +294,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
         {
             m_position.fullscreen = !m_position.fullscreen;
             fullscreen();
+
             break;
         }
 
@@ -304,7 +321,6 @@ auto Window::on_sys_key_down(WPARAM wParam, LPARAM lParam) -> int
         {
         case VK_F10:
         {
-            OutputDebugStringA("VK_F10");
             break;
         }
         }
@@ -323,6 +339,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
     {
         if (m_browsers.first) m_browsers.first->navigate(m_urls.first);
         if (m_browsers.second) m_browsers.second->navigate(m_urls.second);
+
         break;
     }
 
@@ -330,18 +347,21 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
     {
         m_bar = std::stoi(notification->message);
         PostMessageA(hwnd(), WM_SIZE, 0, 0);
+
         break;
     }
 
     case msg::post_mainurl:
     {
         if (m_browsers.first) m_browsers.first->navigate(notification->message);
+
         break;
     }
 
     case msg::post_sideurl:
     {
         if (m_browsers.second) m_browsers.second->navigate(notification->message);
+
         break;
     }
 
@@ -349,6 +369,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
     {
         nlohmann::json message{{"mainUrl", notification->message}};
         if (m_browsers.url) m_browsers.url->post_json(message);
+
         break;
     }
 
@@ -356,6 +377,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
     {
         nlohmann::json message{{"sideUrl", notification->message}};
         if (m_browsers.url) m_browsers.url->post_json(message);
+
         break;
     }
     }
