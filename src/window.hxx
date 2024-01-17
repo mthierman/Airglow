@@ -38,6 +38,8 @@ struct Window : public glow::window::BaseWindow<Window>
     HWND m_app{nullptr};
     std::pair<std::string, std::string> m_urls;
     WindowBrowsers m_browsers;
+    bool m_split{false};
+    bool m_swapped{false};
     constexpr static int s_border{2};
     int m_bar{0};
 };

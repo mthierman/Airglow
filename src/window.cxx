@@ -121,7 +121,8 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
         case VK_F1:
         {
-            OutputDebugStringA("F1");
+            m_split = !m_split;
+            PostMessageA(hwnd(), WM_SIZE, 0, 0);
             break;
         }
 
@@ -140,7 +141,6 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
         case VK_F4:
         {
             if (GetKeyState(VK_MENU) & 0x8000) SendMessageA(hwnd(), WM_CLOSE, 0, 0);
-            OutputDebugStringA("F4");
             break;
         }
 
@@ -243,6 +243,8 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
 auto Window::on_size(WPARAM wParam, LPARAM lParam) -> int
 {
+    // if (m_split) OutputDebugStringA("split!");
+
     client_rect();
     EnumChildWindows(hwnd(), EnumChildProc, reinterpret_cast<intptr_t>(this));
     Sleep(1);
