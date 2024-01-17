@@ -71,12 +71,15 @@ auto Settings::on_key_down(WPARAM wParam, LPARAM lParam) -> int
     auto key{static_cast<unsigned int>(wParam)};
     Keys keys;
 
+    if ((HIWORD(lParam) & KF_REPEAT) == KF_REPEAT) return 0;
+
     if (keys.set.contains(key))
     {
         switch (key)
         {
         case VK_PAUSE:
         {
+            OutputDebugStringA("SETTINGS PAUSE!\n");
             notify(m_app, msg::toggle_settings);
             break;
         }

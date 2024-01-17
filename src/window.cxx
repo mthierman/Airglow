@@ -103,7 +103,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
         {
         case VK_PAUSE:
         {
-            OutputDebugStringA("PAUSE!\n");
+            OutputDebugStringA("WINDOW PAUSE!\n");
             notify(m_app, msg::toggle_settings);
             break;
         }
