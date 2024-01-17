@@ -38,63 +38,76 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
         auto gwlId{static_cast<intptr_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
 
         auto rect{&self->m_clientRect};
-        // auto width{rect->right - rect->left};
-        // auto height{rect->bottom - rect->top};
+
+        auto width{rect->right - rect->left};
+        auto halfWidth{(rect->right - rect->left) / 2};
+
+        auto height{rect->bottom - rect->top};
+        auto halfHeight{(rect->bottom - rect->top) / 2};
+
         auto border{static_cast<int>(self->s_border * self->m_scale)};
-        auto bar{static_cast<int>(self->m_bar * self->m_scale)};
+        auto barHeight{static_cast<int>(self->m_bar * self->m_scale)};
 
-        glow::gui::Position left;
-        left.x = 0;
-        left.y = 0;
-        left.width = ((rect->right - rect->left) / 2) - border;
-        left.height = (rect->bottom - rect->top) - bar;
-
-        glow::gui::Position right;
-        right.x = ((rect->right - rect->left) / 2) + border;
-        right.y = 0;
-        right.width = ((rect->right - rect->left) / 2) - border;
-        right.height = (rect->bottom - rect->top) - bar;
-
-        glow::gui::Position full;
-        full.x = 0;
-        full.y = 0;
-        full.width = rect->right - rect->left;
-        full.height = (rect->bottom - rect->top) - bar;
+        auto full = &self->m_positions.full;
+        auto empty = &self->m_positions.empty;
+        auto left = &self->m_positions.left;
+        auto right = &self->m_positions.right;
+        auto top = &self->m_positions.top;
+        auto bottom = &self->m_positions.bottom;
 
         auto first = &self->m_browsers.first->m_position;
         auto second = &self->m_browsers.second->m_position;
         auto url = &self->m_browsers.url->m_position;
 
-        url->x = 0;
-        url->y = rect->bottom - bar;
-        url->width = rect->right - rect->left;
-        url->height = bar;
+        full->x = 0;
+        full->y = 0;
+        full->width = width;
+        full->height = height - barHeight;
+
+        left->x = 0;
+        left->y = 0;
+        left->width = halfWidth - border;
+        left->height = height - barHeight;
+
+        right->x = halfWidth + border;
+        right->y = 0;
+        right->width = halfWidth - border;
+        right->height = height - barHeight;
 
         if (self->m_split)
         {
-            first->x = left.x;
-            first->y = left.y;
-            first->width = left.width;
-            first->height = left.height;
+            if (!self->m_swapped)
+            {
+                *first = *left;
+                *second = *right;
+            }
 
-            second->x = right.x;
-            second->y = right.y;
-            second->width = right.width;
-            second->height = right.height;
+            if (self->m_swapped)
+            {
+                *first = *right;
+                *second = *left;
+            }
         }
 
-        if (!self->m_split)
+        else
         {
-            first->x = right.x;
-            first->y = right.y;
-            first->width = right.width;
-            first->height = right.height;
+            if (!self->m_swapped)
+            {
+                *first = *full;
+                *second = *empty;
+            }
 
-            second->x = left.x;
-            second->y = left.y;
-            second->width = left.width;
-            second->height = left.height;
+            if (self->m_swapped)
+            {
+                *first = *empty;
+                *second = *full;
+            }
         }
+
+        url->x = 0;
+        url->y = rect->bottom - barHeight;
+        url->width = width;
+        url->height = barHeight;
 
         auto hdwp{BeginDeferWindowPos(3)};
 
@@ -111,20 +124,6 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
                                       second->height,
                                       SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
                                           SWP_NOREDRAW | SWP_NOCOPYBITS);
-
-        // if (gwlId == self->m_browsers.first->id())
-        //     if (hdwp && self->m_browsers.first)
-        //         hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, 0, (width / 2) - border, height -
-        //         bar,
-        //                               SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
-        //                                   SWP_NOREDRAW | SWP_NOCOPYBITS);
-
-        // if (gwlId == self->m_browsers.second->id())
-        //     if (hdwp && self->m_browsers.second)
-        //         hdwp = DeferWindowPos(hdwp, hWnd, nullptr, (width / 2) + border, 0,
-        //                               (width / 2) - border, height - bar,
-        //                               SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
-        //                                   SWP_NOREDRAW | SWP_NOCOPYBITS);
 
         if (gwlId == self->m_browsers.url->id())
             if (hdwp && self->m_browsers.url)
@@ -196,7 +195,8 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
         case VK_F2:
         {
-            OutputDebugStringA("F2");
+            m_swapped = !m_swapped;
+            PostMessageA(hwnd(), WM_SIZE, 0, 0);
             break;
         }
 
