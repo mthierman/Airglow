@@ -340,8 +340,6 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
 auto Window::on_size(WPARAM wParam, LPARAM lParam) -> int
 {
-    // if (m_split) OutputDebugStringA("split!");
-
     client_rect();
     EnumChildWindows(hwnd(), EnumChildProc, reinterpret_cast<intptr_t>(this));
     Sleep(1);

@@ -15,25 +15,25 @@
 #include "global.hxx"
 #include "browser.hxx"
 
-struct WindowBrowsers
-{
-    std::unique_ptr<MainBrowser> first;
-    std::unique_ptr<SideBrowser> second;
-    std::unique_ptr<URLBrowser> url;
-};
-
-struct Positions
-{
-    glow::gui::Position full;
-    glow::gui::Position empty;
-    glow::gui::Position left;
-    glow::gui::Position right;
-    glow::gui::Position top;
-    glow::gui::Position bottom;
-};
-
 struct Window : public glow::window::BaseWindow<Window>
 {
+    struct Browsers
+    {
+        std::unique_ptr<MainBrowser> first;
+        std::unique_ptr<SideBrowser> second;
+        std::unique_ptr<URLBrowser> url;
+    };
+
+    struct Positions
+    {
+        glow::gui::Position full;
+        glow::gui::Position empty;
+        glow::gui::Position left;
+        glow::gui::Position right;
+        glow::gui::Position top;
+        glow::gui::Position bottom;
+    };
+
     using glow::window::BaseWindow<Window>::BaseWindow;
 
     Window(HWND app, std::pair<std::string, std::string> urls);
@@ -47,7 +47,7 @@ struct Window : public glow::window::BaseWindow<Window>
 
     HWND m_app{nullptr};
     std::pair<std::string, std::string> m_urls;
-    WindowBrowsers m_browsers;
+    Browsers m_browsers;
     Positions m_positions;
     bool m_split{false};
     bool m_swapped{false};
