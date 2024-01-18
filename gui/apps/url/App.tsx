@@ -1,18 +1,6 @@
 import { SyntheticEvent, useState, useRef, useEffect } from "react";
 import * as url from "@libs/url";
 
-let split = false;
-let swapped = false;
-
-if (window.chrome.webview) {
-    window.chrome.webview.addEventListener("message", (event: Event) => {
-        const data = (event as MessageEvent).data;
-        // console.log(data);
-        split = !split;
-        swapped = true;
-    });
-}
-
 export default function App() {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const mainForm = useRef<HTMLFormElement | null>(null);

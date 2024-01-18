@@ -1,5 +1,5 @@
 import { SyntheticEvent, useState, useRef, useEffect } from "react";
-// import * as url from "@libs/url";
+import * as url from "@libs/url";
 
 interface Position {
     bar: number;
@@ -9,8 +9,20 @@ interface Position {
     swapped: boolean;
 }
 
+interface URL {
+    current: string;
+    loaded: string;
+}
+
 export default function App() {
     const container = useRef<HTMLDivElement | null>(null);
+    const firstForm = useRef<HTMLFormElement | null>(null);
+    const secondForm = useRef<HTMLFormElement | null>(null);
+    const firstInput = useRef<HTMLInputElement | null>(null);
+    const secondInput = useRef<HTMLInputElement | null>(null);
+    const [first, setFirst] = useState<URL>({ current: "", loaded: "" });
+    const [second, setSecond] = useState<URL>({ current: "", loaded: "" });
+
     const [position, setPosition] = useState<Position>({
         bar: 0,
         border: 0,
@@ -18,8 +30,6 @@ export default function App() {
         split: false,
         swapped: false,
     });
-    const [first, setFirst] = useState("");
-    const [second, setSecond] = useState("");
 
     useEffect(() => {
         setPosition((prevState) => ({ ...prevState, bar: container.current!.offsetHeight }));
@@ -36,11 +46,13 @@ export default function App() {
             }
 
             if (data.first) {
-                setFirst(data.first);
+                // setFirst((prevState) => ({ ...prevState, current: data.first }));
+                setFirst({ loaded: data.first, current: data.first });
             }
 
             if (data.second) {
-                setSecond(data.second);
+                // setSecond((prevState) => ({ ...prevState, current: data.second }));
+                setSecond({ loaded: data.second, current: data.second });
             }
         };
 
@@ -51,6 +63,63 @@ export default function App() {
         };
     });
 
+    useEffect(() => {
+        const onEscape = (event: KeyboardEvent) => {
+            const key = event.key;
+            if (event.ctrlKey && key === "r") event.preventDefault();
+            switch (key) {
+                case "Escape":
+                    if (document.activeElement === firstInput.current) {
+                        firstInput.current!.value = first.loaded;
+                        break;
+                    }
+                    if (document.activeElement === secondInput.current) {
+                        secondInput.current!.value = second.loaded;
+                        break;
+                    }
+            }
+        };
+
+        document.addEventListener("keydown", onEscape);
+
+        return () => {
+            document.removeEventListener("keydown", onEscape);
+        };
+    });
+
+    const handleSubmit = (event: SyntheticEvent) => {
+        event.preventDefault();
+        let form = event.target as HTMLFormElement;
+
+        if (form.id === "firstForm") {
+            if (firstInput.current?.value !== "") {
+                let parsed = url.parseUrl(firstInput.current?.value!).href;
+                window.chrome.webview.postMessage({ first: parsed });
+            }
+        }
+
+        if (form.id === "secondForm") {
+            if (secondInput.current?.value !== "") {
+                let parsed = url.parseUrl(secondInput.current?.value!).href;
+                window.chrome.webview.postMessage({ second: parsed });
+            }
+        }
+
+        form.reset();
+    };
+
+    const handleChange = (event: SyntheticEvent) => {
+        let input = event.target as HTMLInputElement;
+
+        if (input.id === "firstInput") {
+            setFirst((prevState) => ({ ...prevState, current: input.value }));
+        }
+
+        if (input.id === "secondInput") {
+            setSecond((prevState) => ({ ...prevState, current: input.value }));
+        }
+    };
+
     return (
         <div
             ref={container}
@@ -58,42 +127,42 @@ export default function App() {
             className={`flex bg-transparent ${position.swapped ? "flex-row-reverse" : "flex-row"}`}>
             <form
                 className="flex flex-grow"
-                id="mainForm"
+                id="firstForm"
                 method="post"
-                // onSubmit={handleSubmit}
-                // ref={mainForm}
+                onSubmit={handleSubmit}
+                ref={firstForm}
                 autoComplete="off"
                 spellCheck="false">
                 <input
                     className="flex-grow text-ellipsis bg-transparent p-2 text-center outline-none"
                     type="text"
-                    id="mainUrl"
-                    value={first}
-                    // placeholder={mainUrlPlaceholder}
-                    // title={mainUrlPlaceholder}
-                    // ref={mainInput}
-                    // onChange={handleChange}
-                ></input>
+                    id="firstInput"
+                    value={first.current}
+                    // defaultValue={first.loaded}
+                    placeholder={first.loaded}
+                    title={first.loaded}
+                    ref={firstInput}
+                    onChange={handleChange}></input>
             </form>
 
             <form
                 className="flex flex-grow"
-                id="sideForm"
+                id="secondForm"
                 method="post"
-                // onSubmit={handleSubmit}
-                // ref={sideForm}
+                onSubmit={handleSubmit}
+                ref={secondForm}
                 autoComplete="off"
                 spellCheck="false">
                 <input
                     className="flex-grow text-ellipsis bg-transparent p-2 text-center outline-none"
                     type="text"
-                    id="sideUrl"
-                    value={second}
-                    // placeholder={sideUrlPlaceholder}
-                    // title={sideUrlPlaceholder}
-                    // ref={sideInput}
-                    // onChange={handleChange}
-                ></input>
+                    id="secondInput"
+                    value={second.current}
+                    // defaultValue={second.loaded}
+                    placeholder={second.loaded}
+                    title={second.loaded}
+                    ref={secondInput}
+                    onChange={handleChange}></input>
             </form>
         </div>
     );
