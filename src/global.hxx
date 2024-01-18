@@ -37,4 +37,5 @@ inline constexpr unsigned int receive_first{WM_APP + 7};
 inline constexpr unsigned int receive_second{WM_APP + 8};
 
 inline constexpr unsigned int toggle_settings{WM_APP + 9};
+inline constexpr unsigned int save_settings{WM_APP + 10};
 } // namespace msg

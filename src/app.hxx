@@ -20,6 +20,18 @@
 
 struct App : public glow::window::MessageWindow<App>
 {
+    struct BrowserSettings
+    {
+        BrowserSettings()
+            : firstHome{"https://www.google.com/"}, secondHome{"https://www.google.com/"}
+        {}
+
+        std::string firstHome;
+        std::string secondHome;
+
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(BrowserSettings, firstHome, secondHome)
+    };
+
     using glow::window::MessageWindow<App>::MessageWindow;
 
     auto operator()() -> int;
@@ -38,10 +50,12 @@ struct App : public glow::window::MessageWindow<App>
     glow::gui::GdiPlus m_gdiInit;
     glow::gui::CoInitialize m_coInit;
 
-    std::filesystem::path m_settings{json()};
-    std::pair<std::string, std::string> m_urls{args()};
+    std::pair<std::string, std::string> m_urls;
 
     std::set<size_t> m_windows;
     std::unique_ptr<Window> m_windowMain;
+
     std::unique_ptr<Settings> m_windowSettings;
+    BrowserSettings m_settings;
+    std::filesystem::path m_settingsFile;
 };

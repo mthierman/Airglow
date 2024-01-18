@@ -13,6 +13,8 @@ auto App::operator()() -> int
     try
     {
         env();
+        m_urls = args();
+        m_settingsFile = json();
 
         m_windowMain = std::make_unique<Window>(hwnd(), m_urls);
         m_windowMain->reveal();
@@ -36,16 +38,26 @@ auto App::env() -> void
 
 auto App::args() -> std::pair<std::string, std::string>
 {
-    std::pair<std::string, std::string> url;
+    std::pair<std::string, std::string> url{"", ""};
 
     auto argv{glow::console::argv()};
 
-    if (argv.size() == 2) { url.first = argv.at(1); }
+    if (argv.size() == 2)
+    {
+        url.first = argv.at(1);
+        url.second = argv.at(1);
+    }
 
-    if (argv.size() > 2)
+    else if (argv.size() > 2)
     {
         url.first = argv.at(1);
         url.second = argv.at(2);
+    }
+
+    else
+    {
+        url.first = m_settings.firstHome;
+        url.second = m_settings.secondHome;
     }
 
     return url;
@@ -70,18 +82,28 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
     case msg::window_create:
     {
         m_windows.insert(notification->nmhdr.idFrom);
+
         break;
     }
 
     case msg::window_close:
     {
         m_windows.erase(notification->nmhdr.idFrom);
+
         break;
     }
 
     case msg::toggle_settings:
     {
         m_windowSettings->m_visible ? m_windowSettings->hide() : m_windowSettings->show();
+
+        break;
+    }
+
+    case msg::save_settings:
+    {
+        save();
+
         break;
     }
     }
