@@ -1,205 +1,236 @@
 import { SyntheticEvent, useState, useRef, useEffect } from "react";
 import * as url from "@libs/url";
 
+interface Position {
+    bar: number;
+    border: number;
+    horizontal: boolean;
+    split: boolean;
+    swapped: boolean;
+}
+
+interface URL {
+    current: string;
+    loaded: string;
+}
+
+const getSessionStorage = (key: string, defaultValue: any) => {
+    const value = sessionStorage.getItem(key);
+
+    if (!value) {
+        return defaultValue;
+    } else {
+        return value;
+    }
+};
+
+const getPositionStorage = () => {
+    const value: Position = JSON.parse(sessionStorage.getItem("position")!);
+
+    const defaultValue: Position = {
+        bar: 0,
+        border: 0,
+        horizontal: false,
+        split: false,
+        swapped: false,
+    };
+
+    if (!value) {
+        return defaultValue;
+    } else {
+        return value;
+    }
+};
+
 export default function App() {
-    const containerRef = useRef<HTMLDivElement | null>(null);
-    const mainForm = useRef<HTMLFormElement | null>(null);
-    const sideForm = useRef<HTMLFormElement | null>(null);
-    const [height, setHeight] = useState(0);
-    const mainInput = useRef<HTMLInputElement | null>(null);
-    const sideInput = useRef<HTMLInputElement | null>(null);
-    const [main, setMain] = useState("");
-    const [side, setSide] = useState("");
-    const [mainUrlPlaceholder, setMainUrlPlaceholder] = useState("");
-    const [sideUrlPlaceholder, setSideUrlPlaceholder] = useState("");
-
-    // const [split, setSplit] = useState(false);
-    // const [swapped, setSwapped] = useState(false);
-    // const [horizontal, setHorizontal] = useState(false);
-
-    // if (window.chrome.webview) {
-    //     window.chrome.webview.addEventListener("message", (event: Event) => {
-    //         const data = (event as MessageEvent).data;
-    //         if (data.mainUrl) {
-    //             sessionStorage.setItem("mainUrl", data.mainUrl);
-    //         }
-    //         if (data.sideUrl) {
-    //             sessionStorage.setItem("sideUrl", data.sideUrl);
-    //         }
-    //     });
-    // }
+    const container = useRef<HTMLDivElement | null>(null);
+    const firstForm = useRef<HTMLFormElement | null>(null);
+    const secondForm = useRef<HTMLFormElement | null>(null);
+    const firstInput = useRef<HTMLInputElement | null>(null);
+    const secondInput = useRef<HTMLInputElement | null>(null);
+    const [first, setFirst] = useState<URL>({
+        current: "",
+        loaded: getSessionStorage("first", ""),
+    });
+    const [second, setSecond] = useState<URL>({
+        current: "",
+        loaded: getSessionStorage("second", ""),
+    });
+    const [position, setPosition] = useState<Position>(getPositionStorage());
 
     useEffect(() => {
-        const handler = () => {
-            console.log("test");
+        setPosition((prevState) => ({ ...prevState, bar: container.current!.offsetHeight }));
+        window.chrome.webview.postMessage({ height: position.bar });
+        sessionStorage.setItem("position", JSON.stringify(position));
+    }, [position.bar]);
+
+    useEffect(() => {
+        const onMessage = (event: Event) => {
+            const data = (event as MessageEvent).data;
+
+            if (data.layout) {
+                setPosition(data.layout);
+                sessionStorage.setItem("position", JSON.stringify(data.layout));
+                setPosition((prevState) => ({
+                    ...prevState,
+                    bar: container.current!.offsetHeight,
+                }));
+            }
+
+            if (data.first) {
+                setFirst({ loaded: data.first, current: data.first });
+                sessionStorage.setItem("first", data.first);
+            }
+
+            if (data.second) {
+                setSecond({ loaded: data.second, current: data.second });
+                sessionStorage.setItem("second", data.second);
+            }
         };
-        window.chrome.webview.addEventListener("message", (handler) => {
-            // const data = (event as MessageEvent).data;
-            // console.log(data);
-            // split = !split;
-            // swapped = true;
-        });
+
+        window.chrome.webview.addEventListener("message", onMessage);
 
         return () => {
-            window.chrome.webview.removeEventListener("message", handler);
+            window.chrome.webview.removeEventListener("message", onMessage);
         };
-    }, [split]);
-
-    useEffect(() => {
-        setMainUrlPlaceholder(sessionStorage.getItem("mainUrl")!);
-        setSideUrlPlaceholder(sessionStorage.getItem("sideUrl")!);
     });
 
     useEffect(() => {
-        setHeight(containerRef?.current?.offsetHeight!);
-        if (height) window.chrome.webview.postMessage({ height: height });
+        const onEscape = (event: KeyboardEvent) => {
+            const key = event.key;
+            if (event.ctrlKey && key === "r") event.preventDefault();
+            switch (key) {
+                case "Escape":
+                    if (document.activeElement === firstInput.current) {
+                        firstInput.current!.value = first.loaded;
+                        break;
+                    }
+                    if (document.activeElement === secondInput.current) {
+                        secondInput.current!.value = second.loaded;
+                        break;
+                    }
+            }
+        };
+
+        document.addEventListener("keydown", onEscape);
+
+        return () => {
+            document.removeEventListener("keydown", onEscape);
+        };
     });
 
-    // if (window.chrome.webview) {
-    //     window.chrome.webview.addEventListener("message", (event: Event) => {
-    //         const data = (event as MessageEvent).data;
-    //         console.log(data);
-    //         setSplit(data["split"]);
-    //         setSwapped(data["swapped"]);
-    //         setHorizontal(data["horizontal"]);
-    //         if (data.mainUrl) {
-    //             sessionStorage.setItem("mainUrl", data.mainUrl);
-    //             setMain(data.mainUrl);
-    //             setMainUrlPlaceholder(data.mainUrl);
-    //             mainInput.current?.blur();
-    //         }
-    //         if (data.sideUrl) {
-    //             sessionStorage.setItem("sideUrl", data.sideUrl);
-    //             setSide(data.sideUrl);
-    //             setSideUrlPlaceholder(data.sideUrl);
-    //             sideInput.current?.blur();
-    //         }
-    //     });
-    // }
+    useEffect(() => {
+        const onFocusOut = () => {
+            firstInput.current?.blur();
+            secondInput.current?.blur();
+        };
 
-    const handleChange = (event: SyntheticEvent) => {
-        let input = event.target as HTMLInputElement;
-        if (input.id === "mainUrl") {
-            setMain(input.value);
+        if (firstForm.current) {
+            firstForm.current.addEventListener("focusout", onFocusOut);
         }
-        if (input.id === "sideUrl") {
-            setSide(input.value);
+
+        if (secondForm.current) {
+            secondForm.current.addEventListener("focusout", onFocusOut);
         }
-    };
+
+        return () => {
+            if (firstForm.current) {
+                firstForm.current.removeEventListener("focusout", onFocusOut);
+            }
+
+            if (secondForm.current) {
+                secondForm.current.removeEventListener("focusout", onFocusOut);
+            }
+        };
+    });
 
     const handleSubmit = (event: SyntheticEvent) => {
         event.preventDefault();
         let form = event.target as HTMLFormElement;
 
-        if (form.id === "mainForm") {
-            if (mainInput.current?.value !== "") {
-                let parsed = url.parseUrl(mainInput.current?.value!).href;
-                if (window.chrome.webview) window.chrome.webview.postMessage({ mainUrl: parsed });
+        if (form.id === "firstForm") {
+            if (firstInput.current?.value !== "") {
+                let parsed = url.parseUrl(firstInput.current?.value!).href;
+                window.chrome.webview.postMessage({ first: parsed });
             }
         }
 
-        if (form.id === "sideForm") {
-            if (sideInput.current?.value !== "") {
-                let parsed = url.parseUrl(sideInput.current?.value!).href;
-                if (window.chrome.webview) window.chrome.webview.postMessage({ sideUrl: parsed });
+        if (form.id === "secondForm") {
+            if (secondInput.current?.value !== "") {
+                let parsed = url.parseUrl(secondInput.current?.value!).href;
+                window.chrome.webview.postMessage({ second: parsed });
             }
         }
     };
 
-    document.addEventListener("keydown", (event: KeyboardEvent) => {
-        const key = event.key;
-        if (event.ctrlKey && key === "r") event.preventDefault();
-        switch (key) {
-            case "Escape":
-                if (document.activeElement === mainInput.current) {
-                    mainInput.current!.value = mainUrlPlaceholder;
-                    break;
-                }
-                if (document.activeElement === sideInput.current) {
-                    sideInput.current!.value = sideUrlPlaceholder;
-                    break;
-                }
-        }
-    });
+    const handleChange = (event: SyntheticEvent) => {
+        let input = event.target as HTMLInputElement;
 
-    useEffect(() => {
-        const input = mainInput.current;
-        if (input) {
-            input.addEventListener("click", async (event: MouseEvent) => {
-                if (event.ctrlKey) await navigator.clipboard.writeText(mainUrlPlaceholder);
-            });
+        if (input.id === "firstInput") {
+            setFirst((prevState) => ({ ...prevState, current: input.value }));
         }
-    });
 
-    useEffect(() => {
-        const input = sideInput.current;
-        if (input) {
-            input.addEventListener("click", async (event: MouseEvent) => {
-                if (event.ctrlKey) await navigator.clipboard.writeText(sideUrlPlaceholder);
-            });
+        if (input.id === "secondInput") {
+            setSecond((prevState) => ({ ...prevState, current: input.value }));
         }
-    });
+    };
 
-    useEffect(() => {
-        const form = mainForm.current;
-        if (form) {
-            form.addEventListener("focusout", () => {
-                mainInput.current?.blur();
-            });
-        }
-    });
+    const handleClick = async (event: SyntheticEvent) => {
+        let input = event.target as HTMLInputElement;
+        let nativeEvent = event.nativeEvent as MouseEvent;
 
-    useEffect(() => {
-        const form = sideForm.current;
-        if (form) {
-            form.addEventListener("focusout", () => {
-                sideInput.current?.blur();
-            });
+        if (input.id === "firstInput") {
+            if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(first.loaded);
         }
-    });
+
+        if (input.id === "secondInput") {
+            if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(second.loaded);
+        }
+    };
 
     return (
         <div
-            ref={containerRef}
+            ref={container}
             id="container"
-            className={`flex bg-transparent ${swapped ? "flex-row-reverse" : "flex-row"}`}>
-            {/* <div ref={containerRef} id="container" className="flex bg-transparent"> */}
+            className={`flex bg-transparent ${position.swapped ? "flex-row-reverse" : "flex-row"}`}>
             <form
-                className="flex flex-grow"
-                id="mainForm"
+                className={`flex flex-grow ${!position.split && position.swapped ? "hidden" : ""}`}
+                id="firstForm"
                 method="post"
                 onSubmit={handleSubmit}
-                ref={mainForm}
+                ref={firstForm}
                 autoComplete="off"
                 spellCheck="false">
                 <input
-                    className="flex-grow text-ellipsis bg-transparent p-2 text-center outline-none"
+                    className={`flex-grow text-ellipsis bg-transparent p-2 text-center outline-none`}
                     type="text"
-                    id="mainUrl"
-                    value={main}
-                    placeholder={mainUrlPlaceholder}
-                    title={mainUrlPlaceholder}
-                    ref={mainInput}
-                    onChange={handleChange}></input>
+                    id="firstInput"
+                    value={first.current}
+                    placeholder={first.loaded}
+                    title={first.loaded}
+                    ref={firstInput}
+                    onChange={handleChange}
+                    onClick={handleClick}></input>
             </form>
 
             <form
-                className="flex flex-grow"
-                id="sideForm"
+                className={`flex flex-grow ${!position.split && !position.swapped ? "hidden" : ""}`}
+                id="secondForm"
                 method="post"
                 onSubmit={handleSubmit}
-                ref={sideForm}
+                ref={secondForm}
                 autoComplete="off"
                 spellCheck="false">
                 <input
-                    className="flex-grow text-ellipsis bg-transparent p-2 text-center outline-none"
+                    className={`flex-grow text-ellipsis bg-transparent p-2 text-center outline-none`}
                     type="text"
-                    id="sideUrl"
-                    value={side}
-                    placeholder={sideUrlPlaceholder}
-                    title={sideUrlPlaceholder}
-                    ref={sideInput}
-                    onChange={handleChange}></input>
+                    id="secondInput"
+                    value={second.current}
+                    placeholder={second.loaded}
+                    title={second.loaded}
+                    ref={secondInput}
+                    onChange={handleChange}
+                    onClick={handleClick}></input>
             </form>
         </div>
     );

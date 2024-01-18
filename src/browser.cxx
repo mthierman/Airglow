@@ -125,8 +125,7 @@ auto URLBrowser::web_message_received_handler(ICoreWebView2* sender,
 auto URLBrowser::url() -> std::string
 {
 #if _DEBUG
-    // std::string path{"https://localhost:8000/url/index.html"};
-    std::string path{"https://localhost:8000/test/index.html"};
+    std::string path{"https://localhost:8000/url/index.html"};
 #else
     auto path{"file:///" + filesystem::known_folder().string() + "\\Airglow\\gui\\url\\index.html"};
 #endif
