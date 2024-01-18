@@ -14,8 +14,26 @@ interface URL {
     loaded: string;
 }
 
-const getStorageURL = (key: string, defaultValue: any) => {
+const getSessionStorage = (key: string, defaultValue: any) => {
     const value = sessionStorage.getItem(key);
+
+    if (!value) {
+        return defaultValue;
+    } else {
+        return value;
+    }
+};
+
+const getPositionStorage = () => {
+    const value: Position = JSON.parse(sessionStorage.getItem("position")!);
+
+    const defaultValue: Position = {
+        bar: 0,
+        border: 0,
+        horizontal: false,
+        split: false,
+        swapped: false,
+    };
 
     if (!value) {
         return defaultValue;
@@ -32,39 +50,31 @@ export default function App() {
     const secondInput = useRef<HTMLInputElement | null>(null);
     const [first, setFirst] = useState<URL>({
         current: "",
-        loaded: getStorageURL("first", ""),
+        loaded: getSessionStorage("first", ""),
     });
     const [second, setSecond] = useState<URL>({
         current: "",
-        loaded: getStorageURL("second", ""),
+        loaded: getSessionStorage("second", ""),
     });
-
-    const [position, setPosition] = useState<Position>({
-        bar: 0,
-        border: 0,
-        horizontal: false,
-        split: false,
-        swapped: false,
-    });
+    const [position, setPosition] = useState<Position>(getPositionStorage());
 
     useEffect(() => {
         setPosition((prevState) => ({ ...prevState, bar: container.current!.offsetHeight }));
         window.chrome.webview.postMessage({ height: position.bar });
+        sessionStorage.setItem("position", JSON.stringify(position));
     }, [position.bar]);
 
     useEffect(() => {
         const onMessage = (event: Event) => {
             const data = (event as MessageEvent).data;
-            console.log(data);
 
             if (data.layout) {
                 setPosition(data.layout);
                 sessionStorage.setItem("position", JSON.stringify(data.layout));
-                // sessionStorage.setItem("bar", data.layout.bar);
-                // sessionStorage.setItem("border", data.layout.border);
-                // sessionStorage.setItem("horizontal", data.layout.horizontal);
-                // sessionStorage.setItem("split", data.layout.split);
-                // sessionStorage.setItem("swapped", data.layout.swapped);
+                setPosition((prevState) => ({
+                    ...prevState,
+                    bar: container.current!.offsetHeight,
+                }));
             }
 
             if (data.first) {
