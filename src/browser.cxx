@@ -72,7 +72,7 @@ auto URLBrowser::initialized() -> void
 {
     // m_webView.settings8->put_AreDefaultContextMenusEnabled(false);
     // m_webView.settings8->put_IsZoomControlEnabled(false);
-    m_webView.core20->OpenDevToolsWindow();
+    // m_webView.core20->OpenDevToolsWindow();
     navigate(url());
 }
 
