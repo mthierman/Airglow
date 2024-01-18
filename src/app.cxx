@@ -12,16 +12,20 @@ auto App::operator()() -> int
 {
     try
     {
-        env();
-        m_urls = args();
+        SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
+        SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
+                                "--allow-file-access-from-files");
+
         m_settingsFile = json();
+        if (!std::filesystem::exists(m_settingsFile)) { save(); }
+        else { load(); }
+
+        m_urls = args();
 
         m_windowMain = std::make_unique<Window>(hwnd(), m_urls);
         m_windowMain->reveal();
 
         m_windowSettings = std::make_unique<Settings>(hwnd());
-
-        save();
     }
     catch (std::exception& e)
     {
@@ -31,16 +35,9 @@ auto App::operator()() -> int
     return glow::gui::message_loop();
 }
 
-auto App::env() -> void
-{
-    SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
-    SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
-                            "--allow-file-access-from-files");
-}
-
 auto App::args() -> std::pair<std::string, std::string>
 {
-    std::pair<std::string, std::string> url{"", ""};
+    std::pair<std::string, std::string> url;
 
     auto argv{glow::console::argv()};
 
@@ -133,9 +130,28 @@ auto App::json() -> std::filesystem::path
 
 auto App::save() -> void
 {
-    std::ofstream f(m_settingsFile);
-    f << std::setw(4) << nlohmann::json{{"settings", m_settings}} << "\n";
-    f.close();
+    try
+    {
+        std::ofstream f(m_settingsFile);
+        f << std::setw(4) << nlohmann::json(m_settings) << std::endl;
+        f.close();
+    }
+    catch (const std::exception& e)
+    {
+        return;
+    }
 }
 
-auto App::load() -> void {}
+auto App::load() -> void
+{
+    try
+    {
+        std::ifstream f(m_settingsFile);
+        m_settings = nlohmann::json::parse(f, nullptr, false, true);
+        f.close();
+    }
+    catch (const std::exception& e)
+    {
+        return;
+    }
+}

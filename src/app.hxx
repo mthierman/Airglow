@@ -22,9 +22,7 @@ struct App : public glow::window::MessageWindow<App>
 {
     struct BrowserSettings
     {
-        BrowserSettings()
-            : firstHome{"https://www.google.com/"}, secondHome{"https://www.google.com/"}
-        {}
+        BrowserSettings() : firstHome{"about:blank"}, secondHome{"about:blank"} {}
 
         std::string firstHome;
         std::string secondHome;
@@ -36,7 +34,6 @@ struct App : public glow::window::MessageWindow<App>
 
     auto operator()() -> int;
 
-    auto env() -> void;
     auto args() -> std::pair<std::string, std::string>;
 
     auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
