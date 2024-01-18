@@ -8,6 +8,43 @@
 
 #include "browser.hxx"
 
+auto Browser::web_message_received_handler(ICoreWebView2* sender,
+                                           ICoreWebView2WebMessageReceivedEventArgs* args)
+    -> HRESULT
+{
+    // wil::unique_cotaskmem_string source;
+    // if (FAILED(args->get_Source(&source))) return S_OK;
+    // if (std::wstring_view(source.get()) != glow::text::widen(url())) return S_OK;
+
+    wil::unique_cotaskmem_string messageRaw;
+    auto asJson{args->get_WebMessageAsJson(&messageRaw)};
+    if (asJson == E_INVALIDARG) return S_OK;
+    if (FAILED(asJson)) return S_OK;
+
+    std::string narrowMessage{glow::text::narrow(messageRaw.get())};
+    auto json{nlohmann::json::parse(narrowMessage)};
+
+    if (json.contains("height"))
+    {
+        auto message{json["height"].get<int>()};
+        notify(m_parent, msg::url_height, std::to_string(message));
+    }
+
+    if (json.contains("first"))
+    {
+        auto message{json["first"].get<std::string>()};
+        notify(m_parent, msg::receive_first, message);
+    }
+
+    if (json.contains("second"))
+    {
+        auto message{json["second"].get<std::string>()};
+        notify(m_parent, msg::receive_second, message);
+    }
+
+    return S_OK;
+}
+
 auto Browser::accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
                                               ICoreWebView2AcceleratorKeyPressedEventArgs* args)
     -> HRESULT
@@ -85,42 +122,42 @@ auto URLBrowser::navigation_completed_handler(ICoreWebView2* sender,
     return S_OK;
 }
 
-auto URLBrowser::web_message_received_handler(ICoreWebView2* sender,
-                                              ICoreWebView2WebMessageReceivedEventArgs* args)
-    -> HRESULT
-{
-    wil::unique_cotaskmem_string source;
-    if (FAILED(args->get_Source(&source))) return S_OK;
-    if (std::wstring_view(source.get()) != glow::text::widen(url())) return S_OK;
+// auto URLBrowser::web_message_received_handler(ICoreWebView2* sender,
+//                                               ICoreWebView2WebMessageReceivedEventArgs* args)
+//     -> HRESULT
+// {
+//     wil::unique_cotaskmem_string source;
+//     if (FAILED(args->get_Source(&source))) return S_OK;
+//     if (std::wstring_view(source.get()) != glow::text::widen(url())) return S_OK;
 
-    wil::unique_cotaskmem_string messageRaw;
-    auto asJson{args->get_WebMessageAsJson(&messageRaw)};
-    if (asJson == E_INVALIDARG) return S_OK;
-    if (FAILED(asJson)) return S_OK;
+//     wil::unique_cotaskmem_string messageRaw;
+//     auto asJson{args->get_WebMessageAsJson(&messageRaw)};
+//     if (asJson == E_INVALIDARG) return S_OK;
+//     if (FAILED(asJson)) return S_OK;
 
-    std::string narrowMessage{glow::text::narrow(messageRaw.get())};
-    auto json{nlohmann::json::parse(narrowMessage)};
+//     std::string narrowMessage{glow::text::narrow(messageRaw.get())};
+//     auto json{nlohmann::json::parse(narrowMessage)};
 
-    if (json.contains("height"))
-    {
-        auto message{json["height"].get<int>()};
-        notify(m_parent, msg::url_height, std::to_string(message));
-    }
+//     if (json.contains("height"))
+//     {
+//         auto message{json["height"].get<int>()};
+//         notify(m_parent, msg::url_height, std::to_string(message));
+//     }
 
-    if (json.contains("first"))
-    {
-        auto message{json["first"].get<std::string>()};
-        notify(m_parent, msg::receive_first, message);
-    }
+//     if (json.contains("first"))
+//     {
+//         auto message{json["first"].get<std::string>()};
+//         notify(m_parent, msg::receive_first, message);
+//     }
 
-    if (json.contains("second"))
-    {
-        auto message{json["second"].get<std::string>()};
-        notify(m_parent, msg::receive_second, message);
-    }
+//     if (json.contains("second"))
+//     {
+//         auto message{json["second"].get<std::string>()};
+//         notify(m_parent, msg::receive_second, message);
+//     }
 
-    return S_OK;
-}
+//     return S_OK;
+// }
 
 auto URLBrowser::url() -> std::string
 {

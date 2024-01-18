@@ -16,6 +16,10 @@ struct Browser : public glow::window::WebView<Browser>
 {
     using glow::window::WebView<Browser>::WebView;
 
+    virtual auto web_message_received_handler(ICoreWebView2* sender,
+                                              ICoreWebView2WebMessageReceivedEventArgs* args)
+        -> HRESULT override;
+
     virtual auto accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
                                                  ICoreWebView2AcceleratorKeyPressedEventArgs* args)
         -> HRESULT override;
@@ -32,9 +36,9 @@ struct URLBrowser final : public Browser
 
     virtual auto initialized() -> void override;
 
-    virtual auto web_message_received_handler(ICoreWebView2* sender,
-                                              ICoreWebView2WebMessageReceivedEventArgs* args)
-        -> HRESULT override;
+    // virtual auto web_message_received_handler(ICoreWebView2* sender,
+    //                                           ICoreWebView2WebMessageReceivedEventArgs* args)
+    //     -> HRESULT override;
     virtual auto navigation_completed_handler(ICoreWebView2* sender,
                                               ICoreWebView2NavigationCompletedEventArgs* args)
         -> HRESULT override;
