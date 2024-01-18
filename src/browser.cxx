@@ -18,29 +18,31 @@ auto Browser::web_message_received_handler(ICoreWebView2* sender,
 
     wil::unique_cotaskmem_string messageRaw;
     auto asJson{args->get_WebMessageAsJson(&messageRaw)};
-    if (asJson == E_INVALIDARG) return S_OK;
-    if (FAILED(asJson)) return S_OK;
+    // if (asJson == E_INVALIDARG) return S_OK;
+    // if (FAILED(asJson)) return S_OK;
 
     std::string narrowMessage{glow::text::narrow(messageRaw.get())};
-    auto json{nlohmann::json::parse(narrowMessage)};
+    // auto json{nlohmann::json::parse(narrowMessage)};
 
-    if (json.contains("height"))
-    {
-        auto message{json["height"].get<int>()};
-        notify(m_parent, msg::url_height, std::to_string(message));
-    }
+    // if (json.contains("height"))
+    // {
+    //     auto message{json["height"].get<int>()};
+    //     notify(m_parent, msg::url_height, std::to_string(message));
+    // }
 
-    if (json.contains("first"))
-    {
-        auto message{json["first"].get<std::string>()};
-        notify(m_parent, msg::receive_first, message);
-    }
+    // if (json.contains("first"))
+    // {
+    //     auto message{json["first"].get<std::string>()};
+    //     notify(m_parent, msg::receive_first, message);
+    // }
 
-    if (json.contains("second"))
-    {
-        auto message{json["second"].get<std::string>()};
-        notify(m_parent, msg::receive_second, message);
-    }
+    // if (json.contains("second"))
+    // {
+    //     auto message{json["second"].get<std::string>()};
+    //     notify(m_parent, msg::receive_second, message);
+    // }
+
+    notify(m_parent, msg::web_message, narrowMessage);
 
     return S_OK;
 }

@@ -310,6 +310,13 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
     switch (notification->nmhdr.code)
     {
+    case msg::web_message:
+    {
+        OutputDebugStringA(notification->message.c_str());
+
+        break;
+    }
+
     case msg::url_created:
     {
         if (!m_initialized)
