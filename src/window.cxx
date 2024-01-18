@@ -320,12 +320,12 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
             PostMessageA(hwnd(), WM_SIZE, 0, 0);
         }
 
-        if (json.contains("first"))
+        else if (json.contains("first"))
         {
             if (m_browsers.first) m_browsers.first->navigate(json["first"].get<std::string>());
         }
 
-        if (json.contains("second"))
+        else if (json.contains("second"))
         {
             if (m_browsers.second) m_browsers.second->navigate(json["second"].get<std::string>());
         }
@@ -333,7 +333,24 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
         break;
     }
 
-    case msg::url_created:
+    case msg::source_changed:
+    {
+        auto json{nlohmann::json::parse(notification->message)};
+
+        if (json.contains("first"))
+        {
+            if (m_browsers.url) m_browsers.url->post_json(json);
+        }
+
+        else if (json.contains("second"))
+        {
+            if (m_browsers.url) m_browsers.url->post_json(json);
+        }
+
+        break;
+    }
+
+    case msg::url_create:
     {
         if (!m_initialized)
         {
@@ -346,44 +363,6 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
                 m_browsers.url->post_json(nlohmann::json{{"layout", nlohmann::json(m_layout)}});
             }
         }
-
-        break;
-    }
-
-        // case msg::url_height:
-        // {
-        //     m_layout.bar = std::stoi(notification->message);
-        //     PostMessageA(hwnd(), WM_SIZE, 0, 0);
-
-        //     break;
-        // }
-
-        // case msg::receive_first:
-        // {
-        //     if (m_browsers.first) m_browsers.first->navigate(notification->message);
-
-        //     break;
-        // }
-
-        // case msg::receive_second:
-        // {
-        //     if (m_browsers.second) m_browsers.second->navigate(notification->message);
-
-        //     break;
-        // }
-
-    case msg::post_first:
-    {
-        nlohmann::json message{{"first", notification->message}};
-        if (m_browsers.url) m_browsers.url->post_json(message);
-
-        break;
-    }
-
-    case msg::post_second:
-    {
-        nlohmann::json message{{"second", notification->message}};
-        if (m_browsers.url) m_browsers.url->post_json(message);
 
         break;
     }

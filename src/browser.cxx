@@ -118,7 +118,7 @@ auto URLBrowser::navigation_completed_handler(ICoreWebView2* sender,
                                               ICoreWebView2NavigationCompletedEventArgs* args)
     -> HRESULT
 {
-    notify(m_parent, msg::url_created);
+    notify(m_parent, msg::url_create);
 
     return S_OK;
 }
@@ -136,7 +136,7 @@ auto MainBrowser::source_changed_handler(ICoreWebView2* sender,
     if (FAILED(sender->get_Source(&uriRaw))) return S_OK;
 
     auto uri{glow::text::narrow(uriRaw.get())};
-    notify(m_parent, msg::post_first, uri);
+    notify(m_parent, msg::source_changed, nlohmann::json{{"first", uri}}.dump());
 
     return S_OK;
 }
@@ -148,7 +148,7 @@ auto SideBrowser::source_changed_handler(ICoreWebView2* sender,
     if (FAILED(sender->get_Source(&uriRaw))) return S_OK;
 
     auto uri{glow::text::narrow(uriRaw.get())};
-    notify(m_parent, msg::post_second, uri);
+    notify(m_parent, msg::source_changed, nlohmann::json{{"second", uri}}.dump());
 
     return S_OK;
 }
