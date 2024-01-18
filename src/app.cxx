@@ -20,6 +20,8 @@ auto App::operator()() -> int
         m_windowMain->reveal();
 
         m_windowSettings = std::make_unique<Settings>(hwnd());
+
+        save();
     }
     catch (std::exception& e)
     {
@@ -131,10 +133,9 @@ auto App::json() -> std::filesystem::path
 
 auto App::save() -> void
 {
-    // nlohmann::json position = m_position;
-    // std::ofstream f(m_settings);
-    // f << std::setw(4) << position << "\n";
-    // f.close();
+    std::ofstream f(m_settingsFile);
+    f << std::setw(4) << nlohmann::json{{"settings", m_settings}} << "\n";
+    f.close();
 }
 
 auto App::load() -> void {}
