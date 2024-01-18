@@ -107,16 +107,16 @@ auto URLBrowser::web_message_received_handler(ICoreWebView2* sender,
         notify(m_parent, msg::url_height, std::to_string(message));
     }
 
-    if (json.contains("mainUrl"))
+    if (json.contains("first"))
     {
-        auto message{json["mainUrl"].get<std::string>()};
-        notify(m_parent, msg::post_mainurl, message);
+        auto message{json["first"].get<std::string>()};
+        notify(m_parent, msg::receive_first, message);
     }
 
-    if (json.contains("sideUrl"))
+    if (json.contains("second"))
     {
-        auto message{json["sideUrl"].get<std::string>()};
-        notify(m_parent, msg::post_sideurl, message);
+        auto message{json["second"].get<std::string>()};
+        notify(m_parent, msg::receive_second, message);
     }
 
     return S_OK;
@@ -141,7 +141,7 @@ auto MainBrowser::source_changed_handler(ICoreWebView2* sender,
     if (FAILED(sender->get_Source(&uriRaw))) return S_OK;
 
     auto uri{glow::text::narrow(uriRaw.get())};
-    notify(m_parent, msg::receive_mainurl, uri);
+    notify(m_parent, msg::post_first, uri);
 
     return S_OK;
 }
@@ -153,7 +153,7 @@ auto SideBrowser::source_changed_handler(ICoreWebView2* sender,
     if (FAILED(sender->get_Source(&uriRaw))) return S_OK;
 
     auto uri{glow::text::narrow(uriRaw.get())};
-    notify(m_parent, msg::receive_sideurl, uri);
+    notify(m_parent, msg::post_second, uri);
 
     return S_OK;
 }

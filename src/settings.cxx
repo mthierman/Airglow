@@ -13,7 +13,7 @@ Settings::Settings(HWND app) : BaseWindow("Airglow - Settings")
     m_app = app;
 
     dwm_caption_color(false);
-    dwm_dark_mode(true);
+    // dwm_dark_mode(true);
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_TRANSIENTWINDOW);
 
     m_main = std::make_unique<SettingsBrowser>(hwnd());

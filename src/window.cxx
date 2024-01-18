@@ -16,7 +16,7 @@ Window::Window(HWND app, std::pair<std::string, std::string> urls) : BaseWindow(
     notify(m_app, msg::window_create);
 
     dwm_caption_color(false);
-    dwm_dark_mode(true);
+    // dwm_dark_mode(true);
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
 
     m_browsers.first = std::make_unique<MainBrowser>(hwnd());
@@ -45,8 +45,8 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
         auto height{rect->bottom - rect->top};
         auto halfHeight{(rect->bottom - rect->top) / 2};
 
-        auto border{static_cast<int>(self->s_border * self->m_scale)};
-        auto barHeight{static_cast<int>(self->m_bar * self->m_scale)};
+        auto border{static_cast<int>(self->m_layout.border * self->m_scale)};
+        auto barHeight{static_cast<int>(self->m_layout.bar * self->m_scale)};
 
         auto full = &self->m_positions.full;
         auto empty = &self->m_positions.empty;
@@ -61,7 +61,7 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 
         full->x = 0;
         full->y = 0;
-        full->width = width - border;
+        full->width = width;
         full->height = height - barHeight;
 
         left->x = 0;
@@ -223,14 +223,14 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
         case VK_F1:
         {
-            m_layout.split = !m_layout.split;
+            m_layout.swapped = !m_layout.swapped;
 
             break;
         }
 
         case VK_F2:
         {
-            m_layout.swapped = !m_layout.swapped;
+            m_layout.split = !m_layout.split;
 
             break;
         }
@@ -293,9 +293,11 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
         }
     }
 
-    nlohmann::json layout = m_layout;
-    nlohmann::json message{{"layout", layout}};
-    if (m_browsers.url) { m_browsers.url->post_json(message); }
+    if (m_browsers.url)
+    {
+        m_browsers.url->post_json(nlohmann::json{{"layout", nlohmann::json(m_layout)}});
+    }
+
     PostMessageA(hwnd(), WM_SIZE, 0, 0);
 
     return 0;
@@ -338,37 +340,37 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
     case msg::url_height:
     {
-        m_bar = std::stoi(notification->message);
+        m_layout.bar = std::stoi(notification->message);
         PostMessageA(hwnd(), WM_SIZE, 0, 0);
 
         break;
     }
 
-    case msg::post_mainurl:
+    case msg::receive_first:
     {
         if (m_browsers.first) m_browsers.first->navigate(notification->message);
 
         break;
     }
 
-    case msg::post_sideurl:
+    case msg::receive_second:
     {
         if (m_browsers.second) m_browsers.second->navigate(notification->message);
 
         break;
     }
 
-    case msg::receive_mainurl:
+    case msg::post_first:
     {
-        nlohmann::json message{{"mainUrl", notification->message}};
+        nlohmann::json message{{"first", notification->message}};
         if (m_browsers.url) m_browsers.url->post_json(message);
 
         break;
     }
 
-    case msg::receive_sideurl:
+    case msg::post_second:
     {
-        nlohmann::json message{{"sideUrl", notification->message}};
+        nlohmann::json message{{"second", notification->message}};
         if (m_browsers.url) m_browsers.url->post_json(message);
 
         break;

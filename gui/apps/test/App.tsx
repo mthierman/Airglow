@@ -2,6 +2,8 @@ import { SyntheticEvent, useState, useRef, useEffect } from "react";
 // import * as url from "@libs/url";
 
 interface Position {
+    bar: number;
+    border: number;
     horizontal: boolean;
     split: boolean;
     swapped: boolean;
@@ -9,27 +11,37 @@ interface Position {
 
 export default function App() {
     const container = useRef<HTMLDivElement | null>(null);
-    const [height, setHeight] = useState(0);
-    const [main, setMain] = useState("first");
-    const [side, setSide] = useState("second");
-
-    useEffect(() => {
-        setHeight(container.current!.offsetHeight);
-        window.chrome.webview.postMessage({ height: height });
-    }, [height]);
-
     const [position, setPosition] = useState<Position>({
+        bar: 0,
+        border: 0,
         horizontal: false,
         split: false,
         swapped: false,
     });
+    const [first, setFirst] = useState("");
+    const [second, setSecond] = useState("");
+
+    useEffect(() => {
+        setPosition((prevState) => ({ ...prevState, bar: container.current!.offsetHeight }));
+        window.chrome.webview.postMessage({ height: position.bar });
+    }, [position.bar]);
 
     useEffect(() => {
         const onMessage = (event: Event) => {
             const data = (event as MessageEvent).data;
             console.log(data);
-            setPosition(data);
-            // console.log(position);
+
+            if (data.layout) {
+                setPosition(data.layout);
+            }
+
+            if (data.first) {
+                setFirst(data.first);
+            }
+
+            if (data.second) {
+                setSecond(data.second);
+            }
         };
 
         window.chrome.webview.addEventListener("message", onMessage);
@@ -40,7 +52,6 @@ export default function App() {
     });
 
     return (
-        // <div ref={container} id="container" className={`flex bg-transparent`}>
         <div
             ref={container}
             id="container"
@@ -57,7 +68,7 @@ export default function App() {
                     className="flex-grow text-ellipsis bg-transparent p-2 text-center outline-none"
                     type="text"
                     id="mainUrl"
-                    value={main}
+                    value={first}
                     // placeholder={mainUrlPlaceholder}
                     // title={mainUrlPlaceholder}
                     // ref={mainInput}
@@ -77,7 +88,7 @@ export default function App() {
                     className="flex-grow text-ellipsis bg-transparent p-2 text-center outline-none"
                     type="text"
                     id="sideUrl"
-                    value={side}
+                    value={second}
                     // placeholder={sideUrlPlaceholder}
                     // title={sideUrlPlaceholder}
                     // ref={sideInput}

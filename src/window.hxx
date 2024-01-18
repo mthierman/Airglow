@@ -36,13 +36,15 @@ struct Window : public glow::window::BaseWindow<Window>
 
     struct Layout
     {
-        Layout() : horizontal{}, split{}, swapped{} {}
+        Layout() : bar{}, border{2}, horizontal{}, split{}, swapped{} {}
 
+        int bar;
+        int border;
         bool horizontal;
         bool split;
         bool swapped;
 
-        NLOHMANN_DEFINE_TYPE_INTRUSIVE(Layout, horizontal, split, swapped)
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(Layout, bar, horizontal, split, swapped)
     };
 
     using glow::window::BaseWindow<Window>::BaseWindow;
@@ -62,6 +64,4 @@ struct Window : public glow::window::BaseWindow<Window>
     Browsers m_browsers;
     Positions m_positions;
     Layout m_layout;
-    constexpr static int s_border{2};
-    int m_bar{0};
 };
