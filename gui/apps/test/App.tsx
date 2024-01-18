@@ -122,29 +122,22 @@ export default function App() {
     useEffect(() => {
         const onFocusOut = () => {
             firstInput.current?.blur();
+            secondInput.current?.blur();
         };
 
         if (firstForm.current) {
             firstForm.current.addEventListener("focusout", onFocusOut);
         }
 
-        return () => {
-            if (firstForm.current) {
-                firstForm.current.removeEventListener("focusout", onFocusOut);
-            }
-        };
-    });
-
-    useEffect(() => {
-        const onFocusOut = () => {
-            secondForm.current?.blur();
-        };
-
         if (secondForm.current) {
             secondForm.current.addEventListener("focusout", onFocusOut);
         }
 
         return () => {
+            if (firstForm.current) {
+                firstForm.current.removeEventListener("focusout", onFocusOut);
+            }
+
             if (secondForm.current) {
                 secondForm.current.removeEventListener("focusout", onFocusOut);
             }
