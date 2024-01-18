@@ -12,23 +12,23 @@ auto Browser::web_message_received_handler(ICoreWebView2* sender,
                                            ICoreWebView2WebMessageReceivedEventArgs* args)
     -> HRESULT
 {
-    // wil::unique_cotaskmem_string source;
-    // if (FAILED(args->get_Source(&source))) return S_OK;
+    wil::unique_cotaskmem_string source;
+    if (FAILED(args->get_Source(&source))) return S_OK;
 
-    // auto testUrl = std::wstring_view(source.get()) != glow::text::widen(url("url"));
-    // auto testSettings = std::wstring_view(source.get()) != glow::text::widen(url("settings"));
+    if (std::wstring_view(source.get()) != glow::text::widen(url("url")))
+    {
+        OutputDebugStringA("URL Source mismatch!\n");
+        return S_OK;
+    }
 
-    // if (std::wstring_view(source.get()) != glow::text::widen(url("url")) ||
-    //     std::wstring_view(source.get()) != glow::text::widen(url("settings")))
-    // if (testUrl)
+    // if (std::wstring_view(source.get()) != glow::text::widen(url("settings")))
     // {
-    //     OutputDebugStringA("Source mismatch!");
+    //     OutputDebugStringA("Settings Source mismatch!\n");
     //     return S_OK;
     // }
 
     wil::unique_cotaskmem_string message;
-    // if (FAILED(args->get_WebMessageAsJson(&message))) return S_OK;
-    glow::console::hresult_check(args->get_WebMessageAsJson(&message));
+    if (FAILED(args->get_WebMessageAsJson(&message))) return S_OK;
 
     notify(m_parent, msg::web_message, glow::text::narrow(message.get()));
 
@@ -108,34 +108,10 @@ auto Browser::url(std::string page) -> std::string
     else { return {}; }
 }
 
-auto Browser::url_url() -> std::string
-{
-#if _DEBUG
-    return "https://localhost:8000/url/index.html";
-#else
-    return "file:///" + filesystem::known_folder().string() + "\\Airglow\\gui\\url\\index.html";
-#endif
-}
-
-auto Browser::url_settings() -> std::string
-{
-#if _DEBUG
-    return "https://localhost:8000/settings/index.html";
-#else
-    return "file:///" + filesystem::known_folder().string() +
-           "\\Airglow\\gui\\settings\\index.html";
-#endif
-}
-
 auto URLBrowser::initialized() -> void
 {
-    // m_webView.settings8->put_AreDefaultContextMenusEnabled(false);
-    // m_webView.settings8->put_IsZoomControlEnabled(false);
     m_webView.core20->OpenDevToolsWindow();
-    // navigate(url_url());
-    auto page{url("url")};
-    OutputDebugStringA(page.c_str());
-    navigate(page);
+    navigate(url("url"));
 }
 
 auto URLBrowser::navigation_completed_handler(ICoreWebView2* sender,
@@ -149,13 +125,8 @@ auto URLBrowser::navigation_completed_handler(ICoreWebView2* sender,
 
 auto SettingsBrowser::initialized() -> void
 {
-    // m_webView.settings8->put_AreDefaultContextMenusEnabled(false);
-    // m_webView.settings8->put_IsZoomControlEnabled(false);
     m_webView.core20->OpenDevToolsWindow();
-    // navigate(url_settings());
-    auto page{url("settings")};
-    OutputDebugStringA(page.c_str());
-    navigate(page);
+    navigate(url("settings"));
 }
 
 // auto URLBrowser::web_message_received_handler(ICoreWebView2* sender,

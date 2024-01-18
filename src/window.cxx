@@ -312,7 +312,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
     {
     case msg::web_message:
     {
-        OutputDebugStringA(notification->message.c_str());
+        // OutputDebugStringA(notification->message.c_str());
         auto json{nlohmann::json::parse(notification->message)};
 
         if (json.contains("height"))
