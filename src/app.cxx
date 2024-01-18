@@ -27,7 +27,7 @@ auto App::operator()() -> int
 
         m_windowSettings = std::make_unique<Settings>(hwnd());
     }
-    catch (std::exception& e)
+    catch (const std::exception& e)
     {
         glow::console::message_box(e.what());
     }
