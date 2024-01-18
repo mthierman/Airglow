@@ -1,12 +1,12 @@
 file(
     TO_CMAKE_PATH
-    ${PROJECT_BINARY_DIR}/Data/airglow.rc
+    ${PROJECT_BINARY_DIR}/data/airglow.rc
     AIRGLOW_RC
 )
 
 file(
     TO_CMAKE_PATH
-    ${PROJECT_BINARY_DIR}/Data/icon.ico
+    ${PROJECT_BINARY_DIR}/data/icon.ico
     AIRGLOW_ICON
 )
 
@@ -17,7 +17,7 @@ file(
 )
 
 set(GLOW_ICON_SOURCE
-    ${PROJECT_SOURCE_DIR}/Data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico
+    ${PROJECT_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico
 )
 
 add_custom_command(

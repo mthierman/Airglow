@@ -9,7 +9,7 @@ project(
 
 add_subdirectory(libs/Glow)
 
-include(${PROJECT_SOURCE_DIR}/CMake/Resources.cmake)
+include(${PROJECT_SOURCE_DIR}/cmake/resource.cmake)
 
 add_executable(
     Airglow
@@ -30,7 +30,7 @@ target_sources(
             ${PROJECT_SOURCE_DIR}/src/settings.cxx
             ${PROJECT_SOURCE_DIR}/src/window.cxx
             ${AIRGLOW_RC}
-            ${PROJECT_SOURCE_DIR}/Data/airglow.manifest
+            ${PROJECT_SOURCE_DIR}/data/airglow.manifest
     PRIVATE FILE_SET
             HEADERS
             BASE_DIRS
