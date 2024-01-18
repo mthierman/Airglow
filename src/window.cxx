@@ -310,17 +310,24 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
     switch (notification->nmhdr.code)
     {
-    case msg::web_message:
+    case msg::web_message_received:
     {
-        // OutputDebugStringA(notification->message.c_str());
         auto json{nlohmann::json::parse(notification->message)};
 
         if (json.contains("height"))
         {
-            // auto height{json["height"].get<int>()};
-            // notify(m_parent, msg::url_height, std::to_string(message));
             m_layout.bar = json["height"].get<int>();
             PostMessageA(hwnd(), WM_SIZE, 0, 0);
+        }
+
+        if (json.contains("first"))
+        {
+            if (m_browsers.first) m_browsers.first->navigate(json["first"].get<std::string>());
+        }
+
+        if (json.contains("second"))
+        {
+            if (m_browsers.second) m_browsers.second->navigate(json["second"].get<std::string>());
         }
 
         break;
@@ -343,27 +350,27 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
         break;
     }
 
-    case msg::url_height:
-    {
-        m_layout.bar = std::stoi(notification->message);
-        PostMessageA(hwnd(), WM_SIZE, 0, 0);
+        // case msg::url_height:
+        // {
+        //     m_layout.bar = std::stoi(notification->message);
+        //     PostMessageA(hwnd(), WM_SIZE, 0, 0);
 
-        break;
-    }
+        //     break;
+        // }
 
-    case msg::receive_first:
-    {
-        if (m_browsers.first) m_browsers.first->navigate(notification->message);
+        // case msg::receive_first:
+        // {
+        //     if (m_browsers.first) m_browsers.first->navigate(notification->message);
 
-        break;
-    }
+        //     break;
+        // }
 
-    case msg::receive_second:
-    {
-        if (m_browsers.second) m_browsers.second->navigate(notification->message);
+        // case msg::receive_second:
+        // {
+        //     if (m_browsers.second) m_browsers.second->navigate(notification->message);
 
-        break;
-    }
+        //     break;
+        // }
 
     case msg::post_first:
     {
