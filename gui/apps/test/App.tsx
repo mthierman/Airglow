@@ -87,6 +87,40 @@ export default function App() {
         };
     });
 
+    useEffect(() => {
+        const form = firstForm.current;
+        const onFocusOut = () => {
+            firstInput.current?.blur();
+        };
+
+        if (form) {
+            form.addEventListener("focusout", onFocusOut);
+        }
+
+        return () => {
+            if (form) {
+                form.removeEventListener("focusout", onFocusOut);
+            }
+        };
+    });
+
+    useEffect(() => {
+        const form = secondForm.current;
+        const onFocusOut = () => {
+            secondInput.current?.blur();
+        };
+
+        if (form) {
+            form.addEventListener("focusout", onFocusOut);
+        }
+
+        return () => {
+            if (form) {
+                form.removeEventListener("focusout", onFocusOut);
+            }
+        };
+    });
+
     const handleSubmit = (event: SyntheticEvent) => {
         event.preventDefault();
         let form = event.target as HTMLFormElement;
@@ -119,6 +153,24 @@ export default function App() {
             setSecond((prevState) => ({ ...prevState, current: input.value }));
         }
     };
+
+    useEffect(() => {
+        // const form = firstForm.current;
+        // if (firstForm.current) {
+        //     firstForm.current.addEventListener("focusout", () => {
+        //         firstInput.current?.blur();
+        //     });
+        // }
+    });
+
+    useEffect(() => {
+        // const form = secondForm.current;
+        // if (form) {
+        //     form.addEventListener("focusout", () => {
+        //         secondInput.current?.blur();
+        //     });
+        // }
+    });
 
     return (
         <div
