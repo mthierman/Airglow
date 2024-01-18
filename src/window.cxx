@@ -337,6 +337,11 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
             m_initialized = true;
             if (m_browsers.first) m_browsers.first->navigate(m_urls.first);
             if (m_browsers.second) m_browsers.second->navigate(m_urls.second);
+
+            if (m_browsers.url)
+            {
+                m_browsers.url->post_json(nlohmann::json{{"layout", nlohmann::json(m_layout)}});
+            }
         }
 
         break;

@@ -14,18 +14,8 @@ interface URL {
     loaded: string;
 }
 
-const getSessionStorage = (key: string, defaultValue: string) => {
+const getStorageURL = (key: string, defaultValue: any) => {
     const value = sessionStorage.getItem(key);
-
-    if (!value) {
-        return defaultValue;
-    } else {
-        return value;
-    }
-};
-
-const getLocalStorage = (key: string, defaultValue: string) => {
-    const value = localStorage.getItem(key);
 
     if (!value) {
         return defaultValue;
@@ -42,11 +32,11 @@ export default function App() {
     const secondInput = useRef<HTMLInputElement | null>(null);
     const [first, setFirst] = useState<URL>({
         current: "",
-        loaded: getSessionStorage("first", ""),
+        loaded: getStorageURL("first", ""),
     });
     const [second, setSecond] = useState<URL>({
         current: "",
-        loaded: getSessionStorage("second", ""),
+        loaded: getStorageURL("second", ""),
     });
 
     const [position, setPosition] = useState<Position>({
@@ -57,23 +47,10 @@ export default function App() {
         swapped: false,
     });
 
-    // const [position, setPosition] = useState<Position>({
-    //     bar: getSessionStorage("bar", "0"),
-    //     border: getSessionStorage("border", "0"),
-    //     horizontal: getSessionStorage("horizontal", "false"),
-    //     split: getSessionStorage("split", "false"),
-    //     swapped: getSessionStorage("swapped", "false"),
-    // });
-
     useEffect(() => {
         setPosition((prevState) => ({ ...prevState, bar: container.current!.offsetHeight }));
         window.chrome.webview.postMessage({ height: position.bar });
     }, [position.bar]);
-
-    // useEffect(() => {
-    //     sessionStorage.setItem("first", first.loaded);
-    //     sessionStorage.setItem("second", second.loaded);
-    // });
 
     useEffect(() => {
         const onMessage = (event: Event) => {
@@ -82,6 +59,7 @@ export default function App() {
 
             if (data.layout) {
                 setPosition(data.layout);
+                sessionStorage.setItem("position", JSON.stringify(data.layout));
                 // sessionStorage.setItem("bar", data.layout.bar);
                 // sessionStorage.setItem("border", data.layout.border);
                 // sessionStorage.setItem("horizontal", data.layout.horizontal);
@@ -92,13 +70,11 @@ export default function App() {
             if (data.first) {
                 setFirst({ loaded: data.first, current: data.first });
                 sessionStorage.setItem("first", data.first);
-                // localStorage.setItem("first", data.first);
             }
 
             if (data.second) {
                 setSecond({ loaded: data.second, current: data.second });
                 sessionStorage.setItem("second", data.second);
-                // localStorage.setItem("second", data.second);
             }
         };
 
@@ -112,7 +88,7 @@ export default function App() {
     useEffect(() => {
         const onEscape = (event: KeyboardEvent) => {
             const key = event.key;
-            // if (event.ctrlKey && key === "r") event.preventDefault();
+            if (event.ctrlKey && key === "r") event.preventDefault();
             switch (key) {
                 case "Escape":
                     if (document.activeElement === firstInput.current) {
