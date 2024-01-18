@@ -13,8 +13,8 @@ Settings::Settings(HWND app) : BaseWindow("Airglow - Settings")
     m_app = app;
 
     dwm_caption_color(false);
-    // dwm_dark_mode(true);
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_TRANSIENTWINDOW);
+    theme();
 
     m_main = std::make_unique<SettingsBrowser>(hwnd());
     m_main->reveal();
@@ -52,6 +52,7 @@ auto Settings::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     {
     case WM_CLOSE: return on_close(wParam, lParam);
     case WM_KEYDOWN: return on_key_down(wParam, lParam);
+    case WM_SETTINGCHANGE: return on_setting_change(wParam, lParam);
     case WM_SHOWWINDOW: return on_show_window(wParam, lParam);
     case WM_SIZE: return on_size(wParam, lParam);
     }
@@ -99,6 +100,13 @@ auto Settings::on_key_down(WPARAM wParam, LPARAM lParam) -> int
         }
         }
     }
+
+    return 0;
+}
+
+auto Settings::on_setting_change(WPARAM wParam, LPARAM lParam) -> int
+{
+    theme();
 
     return 0;
 }

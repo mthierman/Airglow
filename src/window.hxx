@@ -55,9 +55,10 @@ struct Window : public glow::window::BaseWindow<Window>
     auto default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     auto on_close(WPARAM wParam, LPARAM lParam) -> int;
     auto on_key_down(WPARAM wParam, LPARAM lParam) -> int;
-    auto on_sys_key_down(WPARAM wParam, LPARAM lParam) -> int;
     auto on_notify(WPARAM wParam, LPARAM lParam) -> int;
+    auto on_setting_change(WPARAM wParam, LPARAM lParam) -> int;
     auto on_size(WPARAM wParam, LPARAM lParam) -> int;
+    auto on_sys_key_down(WPARAM wParam, LPARAM lParam) -> int;
 
     HWND m_app{nullptr};
     std::pair<std::string, std::string> m_urls;

@@ -16,8 +16,8 @@ Window::Window(HWND app, std::pair<std::string, std::string> urls) : BaseWindow(
     notify(m_app, msg::window_create);
 
     dwm_caption_color(false);
-    // dwm_dark_mode(true);
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
+    theme();
 
     m_browsers.first = std::make_unique<MainBrowser>(hwnd());
     m_browsers.first->reveal();
@@ -171,9 +171,10 @@ auto Window::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
     {
     case WM_CLOSE: return on_close(wParam, lParam);
     case WM_KEYDOWN: return on_key_down(wParam, lParam);
-    case WM_SYSKEYDOWN: return on_sys_key_down(wParam, lParam);
     case WM_NOTIFY: return on_notify(wParam, lParam);
+    case WM_SETTINGCHANGE: return on_setting_change(wParam, lParam);
     case WM_SIZE: return on_size(wParam, lParam);
+    case WM_SYSKEYDOWN: return on_sys_key_down(wParam, lParam);
     }
 
     return DefWindowProcA(hWnd, uMsg, wParam, lParam);
@@ -303,27 +304,6 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
     return 0;
 }
 
-auto Window::on_sys_key_down(WPARAM wParam, LPARAM lParam) -> int
-{
-    auto key{static_cast<unsigned int>(wParam)};
-    Keys keys;
-
-    if ((HIWORD(lParam) & KF_REPEAT) == KF_REPEAT) return 0;
-
-    if (keys.set.contains(key))
-    {
-        switch (key)
-        {
-        case VK_F10:
-        {
-            break;
-        }
-        }
-    }
-
-    return 0;
-}
-
 auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 {
     auto notification{reinterpret_cast<glow::gui::Notification*>(lParam)};
@@ -389,11 +369,39 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
     return 0;
 }
 
+auto Window::on_setting_change(WPARAM wParam, LPARAM lParam) -> int
+{
+    theme();
+
+    return 0;
+}
+
 auto Window::on_size(WPARAM wParam, LPARAM lParam) -> int
 {
     client_rect();
     EnumChildWindows(hwnd(), EnumChildProc, reinterpret_cast<intptr_t>(this));
     Sleep(1);
+
+    return 0;
+}
+
+auto Window::on_sys_key_down(WPARAM wParam, LPARAM lParam) -> int
+{
+    auto key{static_cast<unsigned int>(wParam)};
+    Keys keys;
+
+    if ((HIWORD(lParam) & KF_REPEAT) == KF_REPEAT) return 0;
+
+    if (keys.set.contains(key))
+    {
+        switch (key)
+        {
+        case VK_F10:
+        {
+            break;
+        }
+        }
+    }
 
     return 0;
 }
