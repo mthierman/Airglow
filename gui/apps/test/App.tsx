@@ -46,12 +46,10 @@ export default function App() {
             }
 
             if (data.first) {
-                // setFirst((prevState) => ({ ...prevState, current: data.first }));
                 setFirst({ loaded: data.first, current: data.first });
             }
 
             if (data.second) {
-                // setSecond((prevState) => ({ ...prevState, current: data.second }));
                 setSecond({ loaded: data.second, current: data.second });
             }
         };
@@ -88,35 +86,33 @@ export default function App() {
     });
 
     useEffect(() => {
-        const form = firstForm.current;
         const onFocusOut = () => {
             firstInput.current?.blur();
         };
 
-        if (form) {
-            form.addEventListener("focusout", onFocusOut);
+        if (firstForm.current) {
+            firstForm.current.addEventListener("focusout", onFocusOut);
         }
 
         return () => {
-            if (form) {
-                form.removeEventListener("focusout", onFocusOut);
+            if (firstForm.current) {
+                firstForm.current.removeEventListener("focusout", onFocusOut);
             }
         };
     });
 
     useEffect(() => {
-        const form = secondForm.current;
         const onFocusOut = () => {
-            secondInput.current?.blur();
+            secondForm.current?.blur();
         };
 
-        if (form) {
-            form.addEventListener("focusout", onFocusOut);
+        if (secondForm.current) {
+            secondForm.current.addEventListener("focusout", onFocusOut);
         }
 
         return () => {
-            if (form) {
-                form.removeEventListener("focusout", onFocusOut);
+            if (secondForm.current) {
+                secondForm.current.removeEventListener("focusout", onFocusOut);
             }
         };
     });
@@ -154,23 +150,18 @@ export default function App() {
         }
     };
 
-    useEffect(() => {
-        // const form = firstForm.current;
-        // if (firstForm.current) {
-        //     firstForm.current.addEventListener("focusout", () => {
-        //         firstInput.current?.blur();
-        //     });
-        // }
-    });
+    const handleClick = async (event: SyntheticEvent) => {
+        let input = event.target as HTMLInputElement;
+        let nativeEvent = event.nativeEvent as MouseEvent;
 
-    useEffect(() => {
-        // const form = secondForm.current;
-        // if (form) {
-        //     form.addEventListener("focusout", () => {
-        //         secondInput.current?.blur();
-        //     });
-        // }
-    });
+        if (input.id === "firstInput") {
+            if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(first.loaded);
+        }
+
+        if (input.id === "secondInput") {
+            if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(second.loaded);
+        }
+    };
 
     return (
         <div
@@ -194,7 +185,8 @@ export default function App() {
                     placeholder={first.loaded}
                     title={first.loaded}
                     ref={firstInput}
-                    onChange={handleChange}></input>
+                    onChange={handleChange}
+                    onClick={handleClick}></input>
             </form>
 
             <form
@@ -214,7 +206,8 @@ export default function App() {
                     placeholder={second.loaded}
                     title={second.loaded}
                     ref={secondInput}
-                    onChange={handleChange}></input>
+                    onChange={handleChange}
+                    onClick={handleClick}></input>
             </form>
         </div>
     );
