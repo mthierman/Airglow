@@ -134,8 +134,6 @@ export default function App() {
                 window.chrome.webview.postMessage({ second: parsed });
             }
         }
-
-        form.reset();
     };
 
     const handleChange = (event: SyntheticEvent) => {
@@ -181,7 +179,7 @@ export default function App() {
                     type="text"
                     id="firstInput"
                     value={first.current}
-                    // defaultValue={first.loaded}
+                    defaultValue={first.loaded}
                     placeholder={first.loaded}
                     title={first.loaded}
                     ref={firstInput}
@@ -202,7 +200,7 @@ export default function App() {
                     type="text"
                     id="secondInput"
                     value={second.current}
-                    // defaultValue={second.loaded}
+                    defaultValue={second.loaded}
                     placeholder={second.loaded}
                     title={second.loaded}
                     ref={secondInput}
