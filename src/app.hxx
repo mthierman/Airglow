@@ -14,6 +14,8 @@
 
 #include <glow/glow.hxx>
 
+#include <airglow/config.hxx>
+
 #include "global.hxx"
 #include "settings.hxx"
 #include "window.hxx"

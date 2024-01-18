@@ -8,6 +8,9 @@
 
 #pragma once
 
-// clang-format off
-#define AIRGLOW_VERSION "@PROJECT_VERSION@"
-// clang-format on
+#include <string>
+
+namespace config
+{
+inline std::string version{"@PROJECT_VERSION@"};
+}
