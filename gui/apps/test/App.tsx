@@ -167,7 +167,7 @@ export default function App() {
             id="container"
             className={`flex bg-transparent ${position.swapped ? "flex-row-reverse" : "flex-row"}`}>
             <form
-                className="flex flex-grow"
+                className={`flex flex-grow ${!position.split && position.swapped ? "hidden" : ""}`}
                 id="firstForm"
                 method="post"
                 onSubmit={handleSubmit}
@@ -175,7 +175,7 @@ export default function App() {
                 autoComplete="off"
                 spellCheck="false">
                 <input
-                    className="flex-grow text-ellipsis bg-transparent p-2 text-center outline-none"
+                    className={`flex-grow text-ellipsis bg-transparent p-2 text-center outline-none`}
                     type="text"
                     id="firstInput"
                     value={first.current}
@@ -188,7 +188,7 @@ export default function App() {
             </form>
 
             <form
-                className="flex flex-grow"
+                className={`flex flex-grow ${!position.split && !position.swapped ? "hidden" : ""}`}
                 id="secondForm"
                 method="post"
                 onSubmit={handleSubmit}
@@ -196,7 +196,7 @@ export default function App() {
                 autoComplete="off"
                 spellCheck="false">
                 <input
-                    className="flex-grow text-ellipsis bg-transparent p-2 text-center outline-none"
+                    className={`flex-grow text-ellipsis bg-transparent p-2 text-center outline-none`}
                     type="text"
                     id="secondInput"
                     value={second.current}
