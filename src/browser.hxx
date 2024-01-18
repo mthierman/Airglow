@@ -25,10 +25,9 @@ struct Browser : public glow::window::WebView<Browser>
         -> HRESULT override;
     virtual auto zoom_factor_changed_handler(ICoreWebView2Controller* sender, IUnknown* args)
         -> HRESULT override;
-    virtual auto context_menu_requested_handler(ICoreWebView2* sender,
-                                                ICoreWebView2ContextMenuRequestedEventArgs* args)
-        -> HRESULT override;
 
+
+    auto url(std::string compare) -> std::string;
     auto url_url() -> std::string;
     auto url_settings() -> std::string;
 };

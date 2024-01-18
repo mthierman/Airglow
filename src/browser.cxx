@@ -12,19 +12,22 @@ auto Browser::web_message_received_handler(ICoreWebView2* sender,
                                            ICoreWebView2WebMessageReceivedEventArgs* args)
     -> HRESULT
 {
-    wil::unique_cotaskmem_string source;
-    if (FAILED(args->get_Source(&source))) return S_OK;
+    // wil::unique_cotaskmem_string source;
+    // if (FAILED(args->get_Source(&source))) return S_OK;
 
-    if (std::wstring_view(source.get()) != glow::text::widen(url_url()) ||
-        std::wstring_view(source.get()) != glow::text::widen(url_settings()))
-    {
-        OutputDebugStringA("Source mismatch!");
-        return S_OK;
-    }
+    // auto testUrl = std::wstring_view(source.get()) != glow::text::widen(url("url"));
+    // auto testSettings = std::wstring_view(source.get()) != glow::text::widen(url("settings"));
+
+    // if (std::wstring_view(source.get()) != glow::text::widen(url("url")) ||
+    //     std::wstring_view(source.get()) != glow::text::widen(url("settings")))
+    // if (testUrl)
+    // {
+    //     OutputDebugStringA("Source mismatch!");
+    //     return S_OK;
+    // }
 
     wil::unique_cotaskmem_string message;
     // if (FAILED(args->get_WebMessageAsJson(&message))) return S_OK;
-
     glow::console::hresult_check(args->get_WebMessageAsJson(&message));
 
     notify(m_parent, msg::web_message, glow::text::narrow(message.get()));
@@ -83,13 +86,26 @@ auto Browser::zoom_factor_changed_handler(ICoreWebView2Controller* sender, IUnkn
     return S_OK;
 }
 
-auto Browser::context_menu_requested_handler(ICoreWebView2* sender,
-                                             ICoreWebView2ContextMenuRequestedEventArgs* args)
-    -> HRESULT
+auto Browser::url(std::string page) -> std::string
 {
-    // https://learn.microsoft.com/en-us/microsoft-edge/webview2/how-to/context-menus?tabs=cpp#example-adding-a-custom-context-menu
+#if defined(_DEBUG)
+    if (page.contains("url")) { return "https://localhost:8000/url/index.html"; }
 
-    return S_OK;
+    else if (page.contains("settings")) { return "https://localhost:8000/settings/index.html"; }
+#else
+    if (page.contains("url"))
+    {
+        return "file:///" + filesystem::known_folder().string() + "\\Airglow\\gui\\url\\index.html";
+    }
+
+    else if (page.contains("settings"))
+    {
+        return "file:///" + filesystem::known_folder().string() +
+               "\\Airglow\\gui\\settings\\index.html";
+    }
+#endif
+
+    else { return {}; }
 }
 
 auto Browser::url_url() -> std::string
@@ -116,7 +132,10 @@ auto URLBrowser::initialized() -> void
     // m_webView.settings8->put_AreDefaultContextMenusEnabled(false);
     // m_webView.settings8->put_IsZoomControlEnabled(false);
     m_webView.core20->OpenDevToolsWindow();
-    navigate(url_url());
+    // navigate(url_url());
+    auto page{url("url")};
+    OutputDebugStringA(page.c_str());
+    navigate(page);
 }
 
 auto URLBrowser::navigation_completed_handler(ICoreWebView2* sender,
@@ -133,7 +152,10 @@ auto SettingsBrowser::initialized() -> void
     // m_webView.settings8->put_AreDefaultContextMenusEnabled(false);
     // m_webView.settings8->put_IsZoomControlEnabled(false);
     m_webView.core20->OpenDevToolsWindow();
-    navigate(url_settings());
+    // navigate(url_settings());
+    auto page{url("settings")};
+    OutputDebugStringA(page.c_str());
+    navigate(page);
 }
 
 // auto URLBrowser::web_message_received_handler(ICoreWebView2* sender,
