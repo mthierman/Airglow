@@ -313,6 +313,15 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
     case msg::web_message:
     {
         OutputDebugStringA(notification->message.c_str());
+        auto json{nlohmann::json::parse(notification->message)};
+
+        if (json.contains("height"))
+        {
+            // auto height{json["height"].get<int>()};
+            // notify(m_parent, msg::url_height, std::to_string(message));
+            m_layout.bar = json["height"].get<int>();
+            PostMessageA(hwnd(), WM_SIZE, 0, 0);
+        }
 
         break;
     }

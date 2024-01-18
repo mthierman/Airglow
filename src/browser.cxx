@@ -12,15 +12,15 @@ auto Browser::web_message_received_handler(ICoreWebView2* sender,
                                            ICoreWebView2WebMessageReceivedEventArgs* args)
     -> HRESULT
 {
-    // wil::unique_cotaskmem_string source;
-    // if (FAILED(args->get_Source(&source))) return S_OK;
+    wil::unique_cotaskmem_string source;
+    if (FAILED(args->get_Source(&source))) return S_OK;
 
-    // if (std::wstring_view(source.get()) != glow::text::widen(url("url")) ||
-    //     std::wstring_view(source.get()) != glow::text::widen(url("settings")))
-    // {
-    //     OutputDebugStringA("Source mismatch!");
-    //     return S_OK;
-    // }
+    if (std::wstring_view(source.get()) != glow::text::widen(url_url()) ||
+        std::wstring_view(source.get()) != glow::text::widen(url_settings()))
+    {
+        OutputDebugStringA("Source mismatch!");
+        return S_OK;
+    }
 
     wil::unique_cotaskmem_string message;
     // if (FAILED(args->get_WebMessageAsJson(&message))) return S_OK;
@@ -92,28 +92,23 @@ auto Browser::context_menu_requested_handler(ICoreWebView2* sender,
     return S_OK;
 }
 
-auto Browser::url(std::string url) -> std::string
+auto Browser::url_url() -> std::string
 {
-    if (url.compare("url"))
-    {
 #if _DEBUG
-        return "https://localhost:8000/url/index.html";
+    return "https://localhost:8000/url/index.html";
 #else
-        return "file:///" + filesystem::known_folder().string() + "\\Airglow\\gui\\url\\index.html";
+    return "file:///" + filesystem::known_folder().string() + "\\Airglow\\gui\\url\\index.html";
 #endif
-    }
+}
 
-    else if (url.compare("settings"))
-    {
+auto Browser::url_settings() -> std::string
+{
 #if _DEBUG
-        return "https://localhost:8000/settings/index.html";
+    return "https://localhost:8000/settings/index.html";
 #else
-        return "file:///" + filesystem::known_folder().string() +
-               "\\Airglow\\gui\\settings\\index.html";
+    return "file:///" + filesystem::known_folder().string() +
+           "\\Airglow\\gui\\settings\\index.html";
 #endif
-    }
-
-    else return {};
 }
 
 auto URLBrowser::initialized() -> void
@@ -121,8 +116,7 @@ auto URLBrowser::initialized() -> void
     // m_webView.settings8->put_AreDefaultContextMenusEnabled(false);
     // m_webView.settings8->put_IsZoomControlEnabled(false);
     m_webView.core20->OpenDevToolsWindow();
-    // navigate(url("url"));
-    navigate(test_url());
+    navigate(url_url());
 }
 
 auto URLBrowser::navigation_completed_handler(ICoreWebView2* sender,
@@ -132,6 +126,14 @@ auto URLBrowser::navigation_completed_handler(ICoreWebView2* sender,
     notify(m_parent, msg::url_created);
 
     return S_OK;
+}
+
+auto SettingsBrowser::initialized() -> void
+{
+    // m_webView.settings8->put_AreDefaultContextMenusEnabled(false);
+    // m_webView.settings8->put_IsZoomControlEnabled(false);
+    m_webView.core20->OpenDevToolsWindow();
+    navigate(url_settings());
 }
 
 // auto URLBrowser::web_message_received_handler(ICoreWebView2* sender,
@@ -171,17 +173,6 @@ auto URLBrowser::navigation_completed_handler(ICoreWebView2* sender,
 //     return S_OK;
 // }
 
-auto URLBrowser::test_url() -> std::string
-{
-#if _DEBUG
-    std::string path{"https://localhost:8000/url/index.html"};
-#else
-    auto path{"file:///" + filesystem::known_folder().string() + "\\Airglow\\gui\\url\\index.html"};
-#endif
-
-    return path;
-}
-
 auto MainBrowser::source_changed_handler(ICoreWebView2* sender,
                                          ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
 {
@@ -204,25 +195,4 @@ auto SideBrowser::source_changed_handler(ICoreWebView2* sender,
     notify(m_parent, msg::post_second, uri);
 
     return S_OK;
-}
-
-auto SettingsBrowser::initialized() -> void
-{
-    // m_webView.settings8->put_AreDefaultContextMenusEnabled(false);
-    // m_webView.settings8->put_IsZoomControlEnabled(false);
-    m_webView.core20->OpenDevToolsWindow();
-    // navigate(url("settings"));
-    // navigate(test_url());
-}
-
-auto SettingsBrowser::test_url() -> std::string
-{
-#if _DEBUG
-    std::string path{"https://localhost:8000/settings/index.html"};
-#else
-    auto path{"file:///" + filesystem::known_folder().string() +
-              "\\Airglow\\gui\\settings\\index.html"};
-#endif
-
-    return path;
 }

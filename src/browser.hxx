@@ -29,7 +29,8 @@ struct Browser : public glow::window::WebView<Browser>
                                                 ICoreWebView2ContextMenuRequestedEventArgs* args)
         -> HRESULT override;
 
-    auto url(std::string url) -> std::string;
+    auto url_url() -> std::string;
+    auto url_settings() -> std::string;
 };
 
 struct URLBrowser final : public Browser
@@ -38,14 +39,16 @@ struct URLBrowser final : public Browser
 
     virtual auto initialized() -> void override;
 
-    // virtual auto web_message_received_handler(ICoreWebView2* sender,
-    //                                           ICoreWebView2WebMessageReceivedEventArgs* args)
-    //     -> HRESULT override;
     virtual auto navigation_completed_handler(ICoreWebView2* sender,
                                               ICoreWebView2NavigationCompletedEventArgs* args)
         -> HRESULT override;
+};
 
-    auto test_url() -> std::string;
+struct SettingsBrowser final : public Browser
+{
+    using Browser::Browser;
+
+    virtual auto initialized() -> void override;
 };
 
 struct MainBrowser final : public Browser
@@ -64,13 +67,4 @@ struct SideBrowser final : public Browser
     virtual auto source_changed_handler(ICoreWebView2* sender,
                                         ICoreWebView2SourceChangedEventArgs* args)
         -> HRESULT override;
-};
-
-struct SettingsBrowser final : public Browser
-{
-    using Browser::Browser;
-
-    virtual auto initialized() -> void override;
-
-    auto test_url() -> std::string;
 };
