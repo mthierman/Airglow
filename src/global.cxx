@@ -28,6 +28,8 @@ Keys::Keys()
     set.emplace(VK_F12);
 }
 
+URL::URL() : current{"about:blank", "about:blank"}, home{"about:blank", "about:blank"} {}
+
 auto log(std::string string) -> void
 {
     OutputDebugStringA(string.c_str());

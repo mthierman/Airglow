@@ -14,12 +14,26 @@
 #include <set>
 #include <string>
 
+#include <nlohmann/json.hpp>
+
 struct Keys
 {
     Keys();
 
     std::set<unsigned int> set;
 };
+
+struct URL
+{
+    URL();
+
+    std::pair<std::string, std::string> current;
+    std::pair<std::string, std::string> home;
+
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(URL, current, home)
+};
+
+auto log(std::string string) -> void;
 
 namespace msg
 {
@@ -35,5 +49,3 @@ inline constexpr unsigned int source_changed{WM_APP + 5};
 inline constexpr unsigned int toggle_settings{WM_APP + 6};
 inline constexpr unsigned int save_settings{WM_APP + 7};
 } // namespace msg
-
-auto log(std::string string) -> void;

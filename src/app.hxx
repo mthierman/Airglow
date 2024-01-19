@@ -20,16 +20,6 @@
 
 struct App : public glow::window::MessageWindow<App>
 {
-    struct URL
-    {
-        URL();
-
-        std::pair<std::string, std::string> current;
-        std::pair<std::string, std::string> home;
-
-        NLOHMANN_DEFINE_TYPE_INTRUSIVE(URL, current, home)
-    };
-
     using glow::window::MessageWindow<App>::MessageWindow;
 
     App(int argc, char* argv[]);

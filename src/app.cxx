@@ -8,8 +8,6 @@
 
 #include "app.hxx"
 
-App::URL::URL() : current{"about:blank", "about:blank"}, home{"about:blank", "about:blank"} {}
-
 App::App(int argc, char* argv[]) : m_settingsFile{json()}, m_argv{glow::console::argv(argc, argv)}
 {
     SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
