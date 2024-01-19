@@ -8,9 +8,9 @@
 
 #include "app.hxx"
 
-auto main() -> int
+auto main(int argc, char* argv[]) -> int
 {
-    App app;
+    App app(argc, argv);
 
     return app();
 }

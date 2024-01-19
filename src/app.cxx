@@ -10,7 +10,7 @@
 
 App::URL::URL() : current{"about:blank", "about:blank"}, home{"about:blank", "about:blank"} {}
 
-App::App() : m_settingsFile{json()}
+App::App(int argc, char* argv[]) : m_settingsFile{json()}, m_argv{glow::console::argv(argc, argv)}
 {
     SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
     SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
@@ -82,21 +82,19 @@ auto App::load() -> void
 
 auto App::startup() -> void
 {
-    auto argv{glow::console::argv()};
-
     if (!std::filesystem::exists(m_settingsFile)) { save(); }
     else { load(); }
 
-    if (argv.size() == 2)
+    if (m_argv.size() == 2)
     {
-        m_url.current.first = argv.at(1);
+        m_url.current.first = m_argv.at(1);
         m_url.current.second = m_url.home.second;
     }
 
-    else if (argv.size() > 2)
+    else if (m_argv.size() > 2)
     {
-        m_url.current.first = argv.at(1);
-        m_url.current.second = argv.at(2);
+        m_url.current.first = m_argv.at(1);
+        m_url.current.second = m_argv.at(2);
     }
 
     else
