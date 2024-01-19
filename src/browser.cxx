@@ -15,22 +15,22 @@ auto Browser::web_message_received_handler(ICoreWebView2* sender,
     wil::unique_cotaskmem_string source;
     if (FAILED(args->get_Source(&source))) return S_OK;
 
-    if (std::wstring_view(source.get()) != glow::text::widen(url("url")))
-    {
-        OutputDebugStringA("URL Source mismatch!\n");
-        return S_OK;
-    }
-
-    // if (std::wstring_view(source.get()) != glow::text::widen(url("settings")))
-    // {
-    //     OutputDebugStringA("Settings Source mismatch!\n");
-    //     return S_OK;
-    // }
-
     wil::unique_cotaskmem_string message;
     if (FAILED(args->get_WebMessageAsJson(&message))) return S_OK;
 
-    notify(m_parent, msg::web_message_received, glow::text::narrow(message.get()));
+    if (std::wstring_view(source.get()) == glow::text::widen(url("url")))
+    {
+        notify(m_parent, msg::web_message_received, glow::text::narrow(message.get()));
+
+        return S_OK;
+    }
+
+    // else if (std::wstring_view(source.get()) == glow::text::widen(url("settings")))
+    // {
+    //     notify(m_parent, msg::web_message_received, glow::text::narrow(message.get()));
+
+    //     return S_OK;
+    // }
 
     return S_OK;
 }
