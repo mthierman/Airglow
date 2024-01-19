@@ -8,15 +8,15 @@ export default function App() {
     const firstInput = useRef<HTMLInputElement | null>(null);
     const secondInput = useRef<HTMLInputElement | null>(null);
 
-    const [first, setFirst] = useState<App.Home>({
+    const [first, setFirst] = useState<App.URL>({
         current: getSessionStorage("first", ""),
-    });
-    const [second, setSecond] = useState<App.Home>({
-        current: getSessionStorage("second", ""),
+        loaded: getSessionStorage("first", ""),
     });
 
-    // const [first, setFirst] = useState(getSessionStorage("first", ""));
-    // const [second, setSecond] = useState(getSessionStorage("second", ""));
+    const [second, setSecond] = useState<App.URL>({
+        current: getSessionStorage("second", ""),
+        loaded: getSessionStorage("second", ""),
+    });
 
     useEffect(() => {
         const onEscape = (event: KeyboardEvent) => {
@@ -25,11 +25,11 @@ export default function App() {
             switch (key) {
                 case "Escape":
                     if (document.activeElement === firstInput.current) {
-                        firstInput.current!.value = first.current;
+                        firstInput.current!.value = first.loaded;
                         break;
                     }
                     if (document.activeElement === secondInput.current) {
-                        secondInput.current!.value = second.current;
+                        secondInput.current!.value = second.loaded;
                         break;
                     }
             }
@@ -62,20 +62,22 @@ export default function App() {
     const handleSubmit = (event: SyntheticEvent) => {
         event.preventDefault();
         let form = event.target as HTMLFormElement;
+        let parsedFirst;
+        let parsedSecond;
 
         if (firstInput.current?.value !== "") {
-            let parsed = url.parseUrl(firstInput.current?.value!).href;
-            setFirst({ current: parsed });
-            sessionStorage.setItem("first", parsed);
+            parsedFirst = url.parseUrl(firstInput.current?.value!).href;
+            setFirst({ loaded: parsedFirst, current: parsedFirst });
+            sessionStorage.setItem("first", parsedFirst);
         }
 
         if (secondInput.current?.value !== "") {
-            let parsed = url.parseUrl(secondInput.current?.value!).href;
-            setSecond({ current: parsed });
-            sessionStorage.setItem("second", parsed);
+            parsedSecond = url.parseUrl(secondInput.current?.value!).href;
+            setSecond({ loaded: parsedSecond, current: parsedSecond });
+            sessionStorage.setItem("second", parsedSecond);
         }
 
-        window.chrome.webview.postMessage({ firstHome: first.current, secondHome: second.current });
+        window.chrome.webview.postMessage({ firstHome: parsedFirst, secondHome: parsedSecond });
 
         form.reset();
     };
@@ -112,8 +114,8 @@ export default function App() {
                     id="firstInput"
                     ref={firstInput}
                     value={first.current}
-                    placeholder={first.current}
-                    title={first.current}
+                    placeholder={first.loaded}
+                    title={first.loaded}
                     onChange={handleChange}></input>
                 <h1 className="setting">
                     <span>🌃</span>
@@ -125,8 +127,8 @@ export default function App() {
                     id="secondInput"
                     ref={secondInput}
                     value={second.current}
-                    placeholder={second.current}
-                    title={second.current}
+                    placeholder={second.loaded}
+                    title={second.loaded}
                     onChange={handleChange}></input>
                 <input type="submit" hidden />
             </form>
