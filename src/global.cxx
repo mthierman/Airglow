@@ -27,3 +27,9 @@ Keys::Keys()
     set.emplace(VK_F11);
     set.emplace(VK_F12);
 }
+
+auto log(std::string string) -> void
+{
+    OutputDebugStringA(string.c_str());
+    OutputDebugStringA("\n");
+}

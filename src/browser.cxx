@@ -18,6 +18,11 @@ auto Browser::web_message_received_handler(ICoreWebView2* sender,
     wil::unique_cotaskmem_string message;
     if (FAILED(args->get_WebMessageAsJson(&message))) { return S_OK; }
 
+    auto narrow{glow::text::narrow(source.get())};
+
+    log(narrow);
+    // log(url("url"));
+
     if (std::wstring_view(source.get()) == glow::text::widen(url("url")))
     {
         notify(m_parent, msg::web_message_received, glow::text::narrow(message.get()));
@@ -28,7 +33,6 @@ auto Browser::web_message_received_handler(ICoreWebView2* sender,
     else if (std::wstring_view(source.get()) == glow::text::widen(url("settings")))
     {
         // notify(m_parent, msg::web_message_received, glow::text::narrow(message.get()));
-        OutputDebugStringA(glow::text::narrow(message.get()).c_str());
 
         return S_OK;
     }
@@ -100,13 +104,12 @@ auto Browser::url(std::string page) -> std::string
 #else
     if (page.contains("url"))
     {
-        return "file:///" + filesystem::known_folder().string() + "\\Airglow\\gui\\url\\index.html";
+        return "file:///" + glow::filesystem::path_portable().string() + "\\gui\\url\\index.html";
     }
 
     else if (page.contains("settings"))
     {
-        return "file:///" + filesystem::known_folder().string() +
-               "\\Airglow\\gui\\settings\\index.html";
+        return "file:///" + glow::filesystem::path_portable().string() + "\\gui\\test\\index.html";
     }
 #endif
 
