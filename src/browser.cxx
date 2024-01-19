@@ -18,21 +18,10 @@ auto Browser::web_message_received_handler(ICoreWebView2* sender,
     wil::unique_cotaskmem_string message;
     if (FAILED(args->get_WebMessageAsJson(&message))) { return S_OK; }
 
-    auto narrow{glow::text::narrow(source.get())};
-
-    log(narrow);
-    // log(url("url"));
-
-    if (std::wstring_view(source.get()) == glow::text::widen(url("url")))
+    if ((std::wstring_view(source.get()) == glow::text::widen(url("url"))) ||
+        (std::wstring_view(source.get()) == glow::text::widen(url("settings"))))
     {
         notify(m_parent, msg::web_message_received, glow::text::narrow(message.get()));
-
-        return S_OK;
-    }
-
-    else if (std::wstring_view(source.get()) == glow::text::widen(url("settings")))
-    {
-        // notify(m_parent, msg::web_message_received, glow::text::narrow(message.get()));
 
         return S_OK;
     }
@@ -104,12 +93,14 @@ auto Browser::url(std::string page) -> std::string
 #else
     if (page.contains("url"))
     {
-        return "file:///" + glow::filesystem::path_portable().string() + "\\gui\\url\\index.html";
+        return "file:///" + glow::filesystem::path_portable().generic_string() +
+               "/gui/url/index.html";
     }
 
     else if (page.contains("settings"))
     {
-        return "file:///" + glow::filesystem::path_portable().string() + "\\gui\\test\\index.html";
+        return "file:///" + glow::filesystem::path_portable().generic_string() +
+               "/gui/test/index.html";
     }
 #endif
 
