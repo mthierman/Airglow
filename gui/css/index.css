@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+    font-family: "Noto Emoji";
+    src: url("/fonts/NotoEmoji-VariableFont_wght.ttf") format("woff");
+    font-style: normal;
+    font-weight: normal;
+}
+
 body {
     @apply bg-transparent;
 }
@@ -11,5 +18,13 @@ body {
 }
 
 .input {
-    @apply text-ellipsis rounded border-b-2 box-border border-transparent bg-[#00000040] p-2 text-center shadow-sm shadow-black outline-none duration-300 ease-in-out focus:border-red-400;
+    @apply box-border text-ellipsis rounded border-b-2 border-transparent bg-[#00000040] p-2 text-center shadow-sm shadow-black outline-none duration-300 ease-in-out focus:border-red-400;
+}
+
+.setting {
+    @apply grid grid-flow-col place-content-between text-4xl;
+}
+
+.settingTitle {
+    @apply self-end text-lg font-bold;
 }

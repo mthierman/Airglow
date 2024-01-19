@@ -1,6 +1,6 @@
 // https://learn.microsoft.com/en-us/microsoft-edge/webview2/reference/javascript/webview
 
-export interface WebView extends EventTarget {
+interface WebView extends EventTarget {
     hostObjects: HostObjectsAsyncRoot;
     addEventListener(
         type: string,
@@ -22,5 +22,20 @@ export declare global {
         chrome: {
             webview: WebView;
         };
+    }
+
+    namespace App {
+        interface URL {
+            current: string;
+            loaded: string;
+        }
+
+        interface Position {
+            bar: number;
+            border: number;
+            horizontal: boolean;
+            split: boolean;
+            swapped: boolean;
+        }
     }
 }

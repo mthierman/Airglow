@@ -1,5 +1,3 @@
-// https://medium.com/expedia-group-tech/what-happens-when-i-type-something-in-the-browsers-address-bar-89a1243f0fff
-
 export const tests = {
     error1: "https://asdasdasdasdasdfkjlwejjklsrghsjkghsjgnsegfnbsgk.com/",
     error2: "http://www.apple",

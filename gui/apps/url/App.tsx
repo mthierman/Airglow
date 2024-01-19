@@ -1,33 +1,11 @@
 import { SyntheticEvent, useState, useRef, useEffect } from "react";
 import * as url from "@libs/url";
-
-interface Position {
-    bar: number;
-    border: number;
-    horizontal: boolean;
-    split: boolean;
-    swapped: boolean;
-}
-
-interface URL {
-    current: string;
-    loaded: string;
-}
-
-const getSessionStorage = (key: string, defaultValue: any) => {
-    const value = sessionStorage.getItem(key);
-
-    if (!value) {
-        return defaultValue;
-    } else {
-        return value;
-    }
-};
+import { getSessionStorage } from "@libs/storage";
 
 const getPositionStorage = () => {
-    const value: Position = JSON.parse(sessionStorage.getItem("position")!);
+    const value: App.Position = JSON.parse(sessionStorage.getItem("position")!);
 
-    const defaultValue: Position = {
+    const defaultValue: App.Position = {
         bar: 0,
         border: 0,
         horizontal: false,
@@ -48,15 +26,15 @@ export default function App() {
     const secondForm = useRef<HTMLFormElement | null>(null);
     const firstInput = useRef<HTMLInputElement | null>(null);
     const secondInput = useRef<HTMLInputElement | null>(null);
-    const [first, setFirst] = useState<URL>({
+    const [first, setFirst] = useState<App.URL>({
         current: "",
         loaded: getSessionStorage("first", ""),
     });
-    const [second, setSecond] = useState<URL>({
+    const [second, setSecond] = useState<App.URL>({
         current: "",
         loaded: getSessionStorage("second", ""),
     });
-    const [position, setPosition] = useState<Position>(getPositionStorage());
+    const [position, setPosition] = useState<App.Position>(getPositionStorage());
 
     useEffect(() => {
         setPosition((prevState) => ({ ...prevState, bar: container.current!.offsetHeight }));

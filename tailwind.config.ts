@@ -5,7 +5,7 @@ export default {
     content: ["./gui/**/*.{html,js,jsx,ts,tsx}"],
     theme: {
         fontFamily: {
-            sans: ["Segoe UI Variable Text", "Segoe UI"],
+            sans: ["Segoe UI Variable Text", "Segoe UI", "Noto Emoji"],
             serif: ["Cambria", "Noto Emoji"],
             mono: ["Cascadia Code", "Noto Emoji"],
         },
