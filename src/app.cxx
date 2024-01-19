@@ -8,21 +8,22 @@
 
 #include "app.hxx"
 
+App::URL::URL() : current{"about:blank", "about:blank"}, home{"about:blank", "about:blank"} {}
+
+App::App() : m_settingsFile{json()}
+{
+    SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
+    SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
+                            "--allow-file-access-from-files");
+}
+
 auto App::operator()() -> int
 {
     try
     {
-        SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
-        SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
-                                "--allow-file-access-from-files");
+        startup();
 
-        m_settingsFile = json();
-        if (!std::filesystem::exists(m_settingsFile)) { save(); }
-        else { load(); }
-
-        m_urls = args();
-
-        m_windowMain = std::make_unique<Window>(hwnd(), m_urls);
+        m_windowMain = std::make_unique<Window>(hwnd(), m_url.current);
         m_windowMain->reveal();
 
         m_windowSettings = std::make_unique<Settings>(hwnd());
@@ -35,31 +36,74 @@ auto App::operator()() -> int
     return glow::gui::message_loop();
 }
 
-auto App::args() -> std::pair<std::string, std::string>
+auto App::data() -> std::filesystem::path
 {
-    std::pair<std::string, std::string> url;
+    auto path{glow::filesystem::known_folder() / "Airglow"};
 
+    if (!std::filesystem::exists(path)) { std::filesystem::create_directory(path); }
+
+    return path;
+}
+
+auto App::json() -> std::filesystem::path
+{
+    auto path{data() / "Airglow.json"};
+
+    return path;
+}
+
+auto App::save() -> void
+{
+    try
+    {
+        std::ofstream f(m_settingsFile);
+        f << std::setw(4) << nlohmann::json(m_url) << std::endl;
+        f.close();
+    }
+    catch (const std::exception& e)
+    {
+        return;
+    }
+}
+
+auto App::load() -> void
+{
+    try
+    {
+        std::ifstream f(m_settingsFile);
+        m_url = nlohmann::json::parse(f, nullptr, false, true);
+        f.close();
+    }
+    catch (const std::exception& e)
+    {
+        return;
+    }
+}
+
+auto App::startup() -> void
+{
     auto argv{glow::console::argv()};
+
+    if (!std::filesystem::exists(m_settingsFile)) { save(); }
+    else { load(); }
 
     if (argv.size() == 2)
     {
-        url.first = argv.at(1);
-        url.second = argv.at(1);
+        m_url.current.first = argv.at(1);
+        m_url.current.second = m_url.home.second;
     }
 
     else if (argv.size() > 2)
     {
-        url.first = argv.at(1);
-        url.second = argv.at(2);
+        m_url.current.first = argv.at(1);
+        m_url.current.second = argv.at(2);
     }
 
     else
     {
-        url.first = m_settings.firstHome;
-        url.second = m_settings.secondHome;
+        m_url.current.first = m_url.home.first;
+        m_url.current.second = m_url.home.second;
     }
-
-    return url;
 }
 
 auto App::wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
@@ -105,53 +149,27 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         break;
     }
+
+    case msg::source_changed:
+    {
+        auto json{nlohmann::json::parse(notification->message)};
+
+        if (json.contains("first")) { m_url.current.first = json["first"].get<std::string>(); }
+
+        else if (json.contains("second"))
+        {
+            m_url.current.second = json["second"].get<std::string>();
+        }
+
+        break;
+    }
     }
 
-    if (m_windows.empty()) { return close(); }
+    if (m_windows.empty())
+    {
+        save();
+        return close();
+    }
 
     else return 0;
-}
-
-auto App::data() -> std::filesystem::path
-{
-    auto path{glow::filesystem::known_folder() / "Airglow"};
-
-    if (!std::filesystem::exists(path)) { std::filesystem::create_directory(path); }
-
-    return path;
-}
-
-auto App::json() -> std::filesystem::path
-{
-    auto path{data() / "Airglow.json"};
-
-    return path;
-}
-
-auto App::save() -> void
-{
-    try
-    {
-        std::ofstream f(m_settingsFile);
-        f << std::setw(4) << nlohmann::json(m_settings) << std::endl;
-        f.close();
-    }
-    catch (const std::exception& e)
-    {
-        return;
-    }
-}
-
-auto App::load() -> void
-{
-    try
-    {
-        std::ifstream f(m_settingsFile);
-        m_settings = nlohmann::json::parse(f, nullptr, false, true);
-        f.close();
-    }
-    catch (const std::exception& e)
-    {
-        return;
-    }
 }

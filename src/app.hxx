@@ -20,39 +20,39 @@
 
 struct App : public glow::window::MessageWindow<App>
 {
-    struct BrowserSettings
+    struct URL
     {
-        BrowserSettings() : firstHome{"about:blank"}, secondHome{"about:blank"} {}
+        URL();
 
-        std::string firstHome;
-        std::string secondHome;
+        std::pair<std::string, std::string> current;
+        std::pair<std::string, std::string> home;
 
-        NLOHMANN_DEFINE_TYPE_INTRUSIVE(BrowserSettings, firstHome, secondHome)
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(URL, current, home)
     };
 
     using glow::window::MessageWindow<App>::MessageWindow;
 
+    App();
+
     auto operator()() -> int;
-
-    auto args() -> std::pair<std::string, std::string>;
-
-    auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
-    auto on_notify(WPARAM wParam, LPARAM lParam) -> int;
 
     auto data() -> std::filesystem::path;
     auto json() -> std::filesystem::path;
     auto save() -> void;
     auto load() -> void;
+    auto startup() -> void;
+
+    auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
+    auto on_notify(WPARAM wParam, LPARAM lParam) -> int;
+
+    std::filesystem::path m_settingsFile;
 
     glow::gui::GdiPlus m_gdiInit;
     glow::gui::CoInitialize m_coInit;
 
-    std::pair<std::string, std::string> m_urls;
-
     std::set<size_t> m_windows;
     std::unique_ptr<Window> m_windowMain;
-
     std::unique_ptr<Settings> m_windowSettings;
-    BrowserSettings m_settings;
-    std::filesystem::path m_settingsFile;
+
+    URL m_url;
 };

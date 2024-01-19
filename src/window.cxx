@@ -372,11 +372,13 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
         if (json.contains("first"))
         {
             if (m_browsers.url) { m_browsers.url->post_json(json); }
+            notify(m_app, msg::source_changed, notification->message);
         }
 
         else if (json.contains("second"))
         {
             if (m_browsers.url) { m_browsers.url->post_json(json); }
+            notify(m_app, msg::source_changed, notification->message);
         }
 
         break;
