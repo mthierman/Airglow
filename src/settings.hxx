@@ -28,6 +28,6 @@ struct Settings : public glow::window::BaseWindow<Settings>
     auto on_size(WPARAM wParam, LPARAM lParam) -> int;
 
     HWND m_app{nullptr};
-    std::unique_ptr<SettingsBrowser> m_main;
+    std::unique_ptr<SettingsBrowser> m_browser;
     bool m_visible{false};
 };

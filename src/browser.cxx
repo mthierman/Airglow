@@ -25,12 +25,13 @@ auto Browser::web_message_received_handler(ICoreWebView2* sender,
         return S_OK;
     }
 
-    // else if (std::wstring_view(source.get()) == glow::text::widen(url("settings")))
-    // {
-    //     notify(m_parent, msg::web_message_received, glow::text::narrow(message.get()));
+    else if (std::wstring_view(source.get()) == glow::text::widen(url("settings")))
+    {
+        // notify(m_parent, msg::web_message_received, glow::text::narrow(message.get()));
+        OutputDebugStringA(glow::text::narrow(message.get()).c_str());
 
-    //     return S_OK;
-    // }
+        return S_OK;
+    }
 
     return S_OK;
 }

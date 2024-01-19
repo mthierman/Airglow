@@ -16,8 +16,8 @@ Settings::Settings(HWND app) : BaseWindow("Airglow - Settings")
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_TRANSIENTWINDOW);
     theme();
 
-    m_main = std::make_unique<SettingsBrowser>(hwnd());
-    m_main->reveal();
+    m_browser = std::make_unique<SettingsBrowser>(hwnd());
+    m_browser->reveal();
 }
 
 auto CALLBACK Settings::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
@@ -34,9 +34,9 @@ auto CALLBACK Settings::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 
         auto hdwp{BeginDeferWindowPos(1)};
 
-        if (gwlId == self->m_main->id())
+        if (gwlId == self->m_browser->id())
         {
-            if (hdwp && self->m_main)
+            if (hdwp && self->m_browser)
             {
                 hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, 0, width, height,
                                       SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
@@ -117,14 +117,14 @@ auto Settings::on_setting_change(WPARAM wParam, LPARAM lParam) -> int
 
 auto Settings::on_show_window(WPARAM wParam, LPARAM lParam) -> int
 {
-    if (m_main->m_webView.controller4)
+    if (m_browser->m_webView.controller4)
     {
         switch (wParam)
         {
         case TRUE:
         {
             m_visible = true;
-            m_main->m_webView.controller4->put_IsVisible(TRUE);
+            m_browser->m_webView.controller4->put_IsVisible(TRUE);
 
             break;
         }
@@ -132,7 +132,7 @@ auto Settings::on_show_window(WPARAM wParam, LPARAM lParam) -> int
         case FALSE:
         {
             m_visible = false;
-            m_main->m_webView.controller4->put_IsVisible(FALSE);
+            m_browser->m_webView.controller4->put_IsVisible(FALSE);
 
             break;
         }
