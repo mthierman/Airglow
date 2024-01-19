@@ -179,18 +179,18 @@ export default function App() {
                 className={`flex flex-grow ${!position.split && position.swapped ? "hidden" : ""}`}
                 id="firstForm"
                 method="post"
-                onSubmit={handleSubmit}
-                ref={firstForm}
                 autoComplete="off"
-                spellCheck="false">
+                spellCheck="false"
+                ref={firstForm}
+                onSubmit={handleSubmit}>
                 <input
                     className="input flex-grow"
                     type="text"
                     id="firstInput"
+                    ref={firstInput}
                     value={first.current}
                     placeholder={first.loaded}
                     title={first.loaded}
-                    ref={firstInput}
                     onChange={handleChange}
                     onClick={handleClick}></input>
             </form>
@@ -207,10 +207,10 @@ export default function App() {
                     className="input flex-grow"
                     type="text"
                     id="secondInput"
+                    ref={secondInput}
                     value={second.current}
                     placeholder={second.loaded}
                     title={second.loaded}
-                    ref={secondInput}
                     onChange={handleChange}
                     onClick={handleClick}></input>
             </form>

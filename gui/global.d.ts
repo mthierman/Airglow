@@ -30,6 +30,10 @@ export declare global {
             loaded: string;
         }
 
+        interface Home {
+            current: string;
+        }
+
         interface Position {
             bar: number;
             border: number;
