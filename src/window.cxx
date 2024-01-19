@@ -140,26 +140,38 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
         auto hdwp{BeginDeferWindowPos(3)};
 
         if (gwlId == self->m_browsers.first->id())
+        {
             if (hdwp && self->m_browsers.first)
+            {
                 hdwp = DeferWindowPos(hdwp, hWnd, nullptr, first->x, first->y, first->width,
                                       first->height,
                                       SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
                                           SWP_NOREDRAW | SWP_NOCOPYBITS);
+            }
+        }
 
         if (gwlId == self->m_browsers.second->id())
+        {
             if (hdwp && self->m_browsers.second)
+            {
                 hdwp = DeferWindowPos(hdwp, hWnd, nullptr, second->x, second->y, second->width,
                                       second->height,
                                       SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
                                           SWP_NOREDRAW | SWP_NOCOPYBITS);
+            }
+        }
 
         if (gwlId == self->m_browsers.url->id())
+        {
             if (hdwp && self->m_browsers.url)
+            {
                 hdwp = DeferWindowPos(hdwp, hWnd, nullptr, url->x, url->y, url->width, url->height,
                                       SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
                                           SWP_NOREDRAW | SWP_NOCOPYBITS);
+            }
+        }
 
-        if (hdwp) EndDeferWindowPos(hdwp);
+        if (hdwp) { EndDeferWindowPos(hdwp); }
     }
 
     return TRUE;
@@ -192,7 +204,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
     auto key{static_cast<unsigned int>(wParam)};
     Keys keys;
 
-    if ((HIWORD(lParam) & KF_REPEAT) == KF_REPEAT) return 0;
+    if ((HIWORD(lParam) & KF_REPEAT) == KF_REPEAT) { return 0; }
 
     if (keys.set.contains(key))
     {
@@ -322,12 +334,15 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         else if (json.contains("first"))
         {
-            if (m_browsers.first) m_browsers.first->navigate(json["first"].get<std::string>());
+            if (m_browsers.first) { m_browsers.first->navigate(json["first"].get<std::string>()); }
         }
 
         else if (json.contains("second"))
         {
-            if (m_browsers.second) m_browsers.second->navigate(json["second"].get<std::string>());
+            if (m_browsers.second)
+            {
+                m_browsers.second->navigate(json["second"].get<std::string>());
+            }
         }
 
         break;
@@ -339,12 +354,12 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         if (json.contains("first"))
         {
-            if (m_browsers.url) m_browsers.url->post_json(json);
+            if (m_browsers.url) { m_browsers.url->post_json(json); }
         }
 
         else if (json.contains("second"))
         {
-            if (m_browsers.url) m_browsers.url->post_json(json);
+            if (m_browsers.url) { m_browsers.url->post_json(json); }
         }
 
         break;
@@ -355,8 +370,8 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
         if (!m_initialized)
         {
             m_initialized = true;
-            if (m_browsers.first) m_browsers.first->navigate(m_urls.first);
-            if (m_browsers.second) m_browsers.second->navigate(m_urls.second);
+            if (m_browsers.first) { m_browsers.first->navigate(m_urls.first); }
+            if (m_browsers.second) { m_browsers.second->navigate(m_urls.second); }
 
             if (m_browsers.url)
             {

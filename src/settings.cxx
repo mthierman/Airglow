@@ -35,12 +35,16 @@ auto CALLBACK Settings::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
         auto hdwp{BeginDeferWindowPos(1)};
 
         if (gwlId == self->m_main->id())
+        {
             if (hdwp && self->m_main)
+            {
                 hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, 0, width, height,
                                       SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
                                           SWP_NOREDRAW | SWP_NOCOPYBITS);
+            }
+        }
 
-        if (hdwp) EndDeferWindowPos(hdwp);
+        if (hdwp) { EndDeferWindowPos(hdwp); }
     }
 
     return TRUE;
@@ -72,7 +76,7 @@ auto Settings::on_key_down(WPARAM wParam, LPARAM lParam) -> int
     auto key{static_cast<unsigned int>(wParam)};
     Keys keys;
 
-    if ((HIWORD(lParam) & KF_REPEAT) == KF_REPEAT) return 0;
+    if ((HIWORD(lParam) & KF_REPEAT) == KF_REPEAT) { return 0; }
 
     if (keys.set.contains(key))
     {
@@ -87,14 +91,14 @@ auto Settings::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
         case 0x57:
         {
-            if (GetKeyState(VK_CONTROL) & 0x8000) notify(m_app, msg::toggle_settings);
+            if (GetKeyState(VK_CONTROL) & 0x8000) { notify(m_app, msg::toggle_settings); }
 
             break;
         }
 
         case VK_F4:
         {
-            if (GetKeyState(VK_MENU) & 0x8000) notify(m_app, msg::toggle_settings);
+            if (GetKeyState(VK_MENU) & 0x8000) { notify(m_app, msg::toggle_settings); }
 
             break;
         }

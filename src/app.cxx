@@ -116,7 +116,7 @@ auto App::data() -> std::filesystem::path
 {
     auto path{glow::filesystem::known_folder() / "Airglow"};
 
-    if (!std::filesystem::exists(path)) std::filesystem::create_directory(path);
+    if (!std::filesystem::exists(path)) { std::filesystem::create_directory(path); }
 
     return path;
 }
