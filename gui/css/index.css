@@ -1,7 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 body {
     @apply bg-transparent;
 }
 
 #root {
     @apply bg-transparent;
+}
+
+.input {
+    @apply text-ellipsis rounded border-b-2 box-border border-transparent bg-[#00000040] p-2 text-center shadow-sm shadow-black outline-none duration-300 ease-in-out focus:border-red-400;
 }

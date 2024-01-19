@@ -161,6 +161,8 @@ export default function App() {
                 window.chrome.webview.postMessage({ second: parsed });
             }
         }
+
+        form.reset();
     };
 
     const handleChange = (event: SyntheticEvent) => {
@@ -192,7 +194,9 @@ export default function App() {
         <div
             ref={container}
             id="container"
-            className={`flex bg-transparent ${position.swapped ? "flex-row-reverse" : "flex-row"}`}>
+            className={`flex gap-2 bg-transparent p-2 ${
+                position.swapped ? "flex-row-reverse" : "flex-row"
+            }`}>
             <form
                 className={`flex flex-grow ${!position.split && position.swapped ? "hidden" : ""}`}
                 id="firstForm"
@@ -202,7 +206,7 @@ export default function App() {
                 autoComplete="off"
                 spellCheck="false">
                 <input
-                    className={`flex-grow text-ellipsis bg-transparent p-2 text-center outline-none`}
+                    className="input flex-grow"
                     type="text"
                     id="firstInput"
                     value={first.current}
@@ -222,7 +226,7 @@ export default function App() {
                 autoComplete="off"
                 spellCheck="false">
                 <input
-                    className={`flex-grow text-ellipsis bg-transparent p-2 text-center outline-none`}
+                    className="input flex-grow"
                     type="text"
                     id="secondInput"
                     value={second.current}
