@@ -84,6 +84,18 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         break;
     }
+
+    case msg::web_message_received:
+    {
+        auto json{nlohmann::json::parse(notification->message)};
+
+        if (json.contains("first") || json.contains("second"))
+        {
+            notify(m_app, msg::home_changed, notification->message);
+        }
+
+        break;
+    }
     }
 
     return 0;

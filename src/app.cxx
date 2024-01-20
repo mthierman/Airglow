@@ -159,6 +159,17 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         break;
     }
+
+    case msg::home_changed:
+    {
+        auto json{nlohmann::json::parse(notification->message)};
+        log(json.dump());
+
+        if (json.contains("first")) { m_url.home.first = json["first"].get<std::string>(); }
+        else if (json.contains("second")) { m_url.home.second = json["second"].get<std::string>(); }
+
+        break;
+    }
     }
 
     if (m_windows.empty())

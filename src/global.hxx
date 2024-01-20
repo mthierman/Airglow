@@ -46,7 +46,8 @@ inline constexpr unsigned int settings_create{WM_APP + 4};
 
 inline constexpr unsigned int web_message_received{WM_APP + 5};
 inline constexpr unsigned int source_changed{WM_APP + 6};
+inline constexpr unsigned int home_changed{WM_APP + 7};
 
-inline constexpr unsigned int toggle_settings{WM_APP + 7};
-inline constexpr unsigned int save_settings{WM_APP + 8};
+inline constexpr unsigned int toggle_settings{WM_APP + 8};
+inline constexpr unsigned int save_settings{WM_APP + 9};
 } // namespace msg

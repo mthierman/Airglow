@@ -88,22 +88,20 @@ export default function App() {
     const handleSubmit = (event: SyntheticEvent) => {
         event.preventDefault();
         let form = event.target as HTMLFormElement;
-        let parsedFirst;
-        let parsedSecond;
 
-        if (firstInput.current?.value !== "") {
-            parsedFirst = url.parseUrl(firstInput.current?.value!).href;
-            setFirst({ loaded: parsedFirst, current: parsedFirst });
-            sessionStorage.setItem("first", parsedFirst);
+        if (firstInput.current == document.activeElement) {
+            const parsed = url.parseUrl(firstInput.current?.value!).href;
+            setFirst({ loaded: parsed, current: parsed });
+            sessionStorage.setItem("first", parsed);
+            window.chrome.webview.postMessage({ first: parsed });
         }
 
-        if (secondInput.current?.value !== "") {
-            parsedSecond = url.parseUrl(secondInput.current?.value!).href;
-            setSecond({ loaded: parsedSecond, current: parsedSecond });
-            sessionStorage.setItem("second", parsedSecond);
+        if (secondInput.current == document.activeElement) {
+            const parsed = url.parseUrl(secondInput.current?.value!).href;
+            setSecond({ loaded: parsed, current: parsed });
+            sessionStorage.setItem("second", parsed);
+            window.chrome.webview.postMessage({ second: parsed });
         }
-
-        window.chrome.webview.postMessage({ firstHome: parsedFirst, secondHome: parsedSecond });
 
         form.reset();
     };
