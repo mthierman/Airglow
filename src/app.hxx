@@ -30,7 +30,6 @@ struct App : public glow::window::MessageWindow<App>
     auto json() -> std::filesystem::path;
     auto save() -> void;
     auto load() -> void;
-    auto startup() -> void;
 
     auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     auto on_notify(WPARAM wParam, LPARAM lParam) -> int;

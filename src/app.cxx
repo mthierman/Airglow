@@ -19,7 +19,31 @@ auto App::operator()() -> int
 {
     try
     {
-        startup();
+        for (auto arg : m_argv)
+        {
+            log(arg);
+        }
+
+        if (!std::filesystem::exists(m_settingsFile)) { save(); }
+        else { load(); }
+
+        if (m_argv.size() == 2)
+        {
+            m_url.current.first = m_argv.at(1);
+            m_url.current.second = m_url.home.second;
+        }
+
+        else if (m_argv.size() > 2)
+        {
+            m_url.current.first = m_argv.at(1);
+            m_url.current.second = m_argv.at(2);
+        }
+
+        else
+        {
+            m_url.current.first = m_url.home.first;
+            m_url.current.second = m_url.home.second;
+        }
 
         m_windowMain = std::make_unique<Window>(hwnd(), m_url.current);
         m_windowMain->reveal();
@@ -75,30 +99,6 @@ auto App::load() -> void
     catch (const std::exception& e)
     {
         return;
-    }
-}
-
-auto App::startup() -> void
-{
-    if (!std::filesystem::exists(m_settingsFile)) { save(); }
-    else { load(); }
-
-    if (m_argv.size() == 2)
-    {
-        m_url.current.first = m_argv.at(1);
-        m_url.current.second = m_url.home.second;
-    }
-
-    else if (m_argv.size() > 2)
-    {
-        m_url.current.first = m_argv.at(1);
-        m_url.current.second = m_argv.at(2);
-    }
-
-    else
-    {
-        m_url.current.first = m_url.home.first;
-        m_url.current.second = m_url.home.second;
     }
 }
 
