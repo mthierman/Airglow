@@ -24,11 +24,6 @@ auto Browser::web_message_received_handler(ICoreWebView2* sender,
     wil::unique_cotaskmem_string message;
     if (FAILED(args->get_WebMessageAsJson(&message))) { return S_OK; }
 
-    if (std::wstring_view(source.get()) == glow::text::widen(url("settings")))
-    {
-        log(glow::text::narrow(message.get()));
-    }
-
     notify(m_parent, msg::web_message_received, glow::text::narrow(message.get()));
 
     return S_OK;
@@ -131,15 +126,6 @@ auto SettingsBrowser::initialized() -> void
 {
     m_webView.core20->OpenDevToolsWindow();
     navigate(url("settings"));
-}
-
-auto SettingsBrowser::navigation_completed_handler(ICoreWebView2* sender,
-                                                   ICoreWebView2NavigationCompletedEventArgs* args)
-    -> HRESULT
-{
-    notify(m_parent, msg::settings_create);
-
-    return S_OK;
 }
 
 auto MainBrowser::source_changed_handler(ICoreWebView2* sender,

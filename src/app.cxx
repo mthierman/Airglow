@@ -19,30 +19,25 @@ auto App::operator()() -> int
 {
     try
     {
-        for (auto arg : m_argv)
-        {
-            log(arg);
-        }
-
         if (!std::filesystem::exists(m_settingsFile)) { save(); }
         else { load(); }
 
         if (m_argv.size() == 2)
         {
-            m_url.current.first = m_argv.at(1);
-            m_url.current.second = m_url.home.second;
+            m_url.current["first"] = m_argv.at(1);
+            m_url.current["second"] = m_url.home["second"];
         }
 
         else if (m_argv.size() > 2)
         {
-            m_url.current.first = m_argv.at(1);
-            m_url.current.second = m_argv.at(2);
+            m_url.current["first"] = m_argv.at(1);
+            m_url.current["second"] = m_argv.at(2);
         }
 
         else
         {
-            m_url.current.first = m_url.home.first;
-            m_url.current.second = m_url.home.second;
+            m_url.current["first"] = m_url.home["first"];
+            m_url.current["second"] = m_url.home["second"];
         }
 
         m_windowMain = std::make_unique<Window>(hwnd(), m_url.current);
@@ -150,11 +145,11 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
     {
         auto json{nlohmann::json::parse(notification->message)};
 
-        if (json.contains("first")) { m_url.current.first = json["first"].get<std::string>(); }
+        if (json.contains("first")) { m_url.current["first"] = json["first"].get<std::string>(); }
 
         else if (json.contains("second"))
         {
-            m_url.current.second = json["second"].get<std::string>();
+            m_url.current["second"] = json["second"].get<std::string>();
         }
 
         break;
@@ -164,9 +159,12 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
     {
         auto json{nlohmann::json::parse(notification->message)};
 
-        if (json.contains("first")) { m_url.home.first = json["first"].get<std::string>(); }
+        if (json.contains("first")) { m_url.home["first"] = json["first"].get<std::string>(); }
 
-        else if (json.contains("second")) { m_url.home.second = json["second"].get<std::string>(); }
+        else if (json.contains("second"))
+        {
+            m_url.home["second"] = json["second"].get<std::string>();
+        }
 
         break;
     }

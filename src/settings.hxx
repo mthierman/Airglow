@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <map>
+
 #include <glow/glow.hxx>
 
 #include "global.hxx"
@@ -17,7 +19,7 @@ struct Settings : public glow::window::BaseWindow<Settings>
 {
     using glow::window::BaseWindow<Settings>::BaseWindow;
 
-    Settings(HWND app, std::pair<std::string, std::string> urls);
+    Settings(HWND app, std::map<std::string, std::string> home);
 
     static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
     auto default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
@@ -29,9 +31,13 @@ struct Settings : public glow::window::BaseWindow<Settings>
     auto on_size(WPARAM wParam, LPARAM lParam) -> int;
 
     HWND m_app{nullptr};
-    std::pair<std::string, std::string> m_urls;
+
+    std::map<std::string, std::string> m_home;
+
     std::unique_ptr<SettingsBrowser> m_browser;
+
     glow::gui::SystemColors m_systemColors;
+
     bool m_visible{false};
     int m_height{};
 };

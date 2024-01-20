@@ -28,7 +28,10 @@ Keys::Keys()
     set.emplace(VK_F12);
 }
 
-URL::URL() : current{"about:blank", "about:blank"}, home{"about:blank", "about:blank"} {}
+URL::URL()
+    : home{{"first", "about:blank"}, {"second", "about:blank"}},
+      current{{"first", "about:blank"}, {"second", "about:blank"}}
+{}
 
 auto log(std::string string) -> void
 {

@@ -39,9 +39,9 @@ struct App : public glow::window::MessageWindow<App>
     glow::gui::GdiPlus m_gdiInit;
     glow::gui::CoInitialize m_coInit;
 
-    std::set<size_t> m_windows;
     std::unique_ptr<Window> m_windowMain;
     std::unique_ptr<Settings> m_windowSettings;
+    std::set<size_t> m_windows;
 
     std::vector<std::string> m_argv;
     URL m_url;

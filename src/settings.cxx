@@ -8,11 +8,11 @@
 
 #include "settings.hxx"
 
-Settings::Settings(HWND app, std::pair<std::string, std::string> urls)
+Settings::Settings(HWND app, std::map<std::string, std::string> home)
     : BaseWindow("Airglow - Settings")
 {
     m_app = app;
-    m_urls = urls;
+    m_home = home;
 
     dwm_caption_color(false);
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_TRANSIENTWINDOW);
@@ -80,36 +80,36 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
     switch (notification->nmhdr.code)
     {
-    case msg::settings_create:
-    {
-        if (m_browser)
-        {
-            m_browser->post_json(nlohmann::json(m_systemColors));
-            m_browser->post_json(
-                nlohmann::json({{"first", m_urls.first}, {"second", m_urls.second}}));
-        }
-
-        break;
-    }
 
     case msg::web_message_received:
     {
         auto json{nlohmann::json::parse(notification->message)};
 
-        if (json.contains("first") || json.contains("second"))
+        log(json.dump());
+
+        if (json.contains("initialized"))
         {
-            notify(m_app, msg::home_changed, notification->message);
+            if (m_browser)
+            {
+                m_browser->post_json(nlohmann::json(m_systemColors));
+                m_browser->post_json(nlohmann::json(m_home));
+            }
         }
 
-        if (json.contains("height"))
-        {
-            m_height = json["height"].get<int>();
-            RECT rect{};
-            rect.bottom = m_height;
-            AdjustWindowRectExForDpi(&rect, WS_OVERLAPPEDWINDOW, 0, 0, dpi());
-            SetWindowPos(hwnd(), nullptr, 0, 0, 400,
-                         static_cast<int>((rect.bottom - rect.top) * m_scale), SWP_NOMOVE);
-        }
+        // if (json.contains("first") || json.contains("second"))
+        // {
+        //     notify(m_app, msg::home_changed, notification->message);
+        // }
+
+        // if (json.contains("height"))
+        // {
+        //     m_height = json["height"].get<int>();
+        //     RECT rect{};
+        //     rect.bottom = m_height;
+        //     AdjustWindowRectExForDpi(&rect, WS_OVERLAPPEDWINDOW, 0, 0, dpi());
+        //     SetWindowPos(hwnd(), nullptr, 0, 0, 400,
+        //                  static_cast<int>((rect.bottom - rect.top) * m_scale), SWP_NOMOVE);
+        // }
 
         break;
     }

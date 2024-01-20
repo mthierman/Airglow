@@ -27,10 +27,10 @@ struct URL
 {
     URL();
 
-    std::pair<std::string, std::string> current;
-    std::pair<std::string, std::string> home;
+    std::map<std::string, std::string> home;
+    std::map<std::string, std::string> current;
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(URL, current, home)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(URL, home, current)
 };
 
 auto log(std::string string) -> void;
@@ -42,7 +42,6 @@ inline constexpr unsigned int notify{WM_APP};
 inline constexpr unsigned int window_create{WM_APP + 1};
 inline constexpr unsigned int window_close{WM_APP + 2};
 inline constexpr unsigned int url_create{WM_APP + 3};
-inline constexpr unsigned int settings_create{WM_APP + 4};
 
 inline constexpr unsigned int web_message_received{WM_APP + 5};
 inline constexpr unsigned int source_changed{WM_APP + 6};
