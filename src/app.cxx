@@ -45,7 +45,7 @@ auto App::data() -> std::filesystem::path
 
 auto App::json() -> std::filesystem::path
 {
-    auto path{data() / "Airglow.json"};
+    auto path{glow::filesystem::path_portable() / "Airglow.json"};
 
     return path;
 }
