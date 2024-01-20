@@ -1,166 +1,176 @@
-import { useEffect, useState } from "react";
-// import { Button } from "@components/Button";
+import { SyntheticEvent, useState, useRef, useEffect } from "react";
+import * as url from "@libs/url";
+import { getSessionStorage, getSystemColorsStorage } from "@libs/storage";
 
 export default function App() {
-    const [colors, setColors] = useState({
-        accent: "",
-        accentDark1: "",
-        accentDark2: "",
-        accentDark3: "",
-        accentLight1: "",
-        accentLight2: "",
-        accentLight3: "",
-        foreground: "",
-        background: "",
+    const container = useRef<HTMLDivElement | null>(null);
+    const settingsForm = useRef<HTMLFormElement | null>(null);
+    const firstInput = useRef<HTMLInputElement | null>(null);
+    const secondInput = useRef<HTMLInputElement | null>(null);
+    const [first, setFirst] = useState<App.URL>({
+        current: "",
+        loaded: getSessionStorage("first", ""),
     });
-
-    const [settings, setSettings] = useState({
-        appTheme: "",
-        windowPosition: [0, 0, 0, 0],
-        windowMaximized: false,
-        windowFullscreen: false,
-        windowTopmost: false,
-        webviewGui: false,
-        webviewSplit: false,
-        webviewSwapped: false,
-        webviewHorizontal: false,
-        mainHomepage: "",
-        mainCurrentPage: "",
-        sideHomepage: "",
-        sideCurrentPage: "",
+    const [second, setSecond] = useState<App.URL>({
+        current: "",
+        loaded: getSessionStorage("second", ""),
     });
-
-    const [themeIcon, setThemeIcon] = useState("");
-
-    if (window.chrome.webview) {
-        window.chrome.webview.addEventListener("message", (arg: any) => {
-            if (arg.data.settings) setSettings(arg.data.settings);
-            if (arg.data.colors) setColors(arg.data.colors);
-        });
-    }
+    const [systemColors, setSystemColors] = useState<App.SystemColors>(getSystemColorsStorage());
 
     useEffect(() => {
-        if (settings.appTheme) {
-            settings.appTheme === "dark" ? setThemeIcon(`🌙`) : setThemeIcon(`☀️`);
-        }
-    }, [settings.appTheme]);
+        window.chrome.webview.postMessage({ height: container.current!.offsetHeight });
+    });
 
     useEffect(() => {
-        document.documentElement.style.setProperty("--accent", colors.accent);
-        document.documentElement.style.setProperty("--accentDark1", colors.accentDark1);
-        document.documentElement.style.setProperty("--accentDark2", colors.accentDark2);
-        document.documentElement.style.setProperty("--accentDark3", colors.accentDark3);
-        document.documentElement.style.setProperty("--accentLight1", colors.accentLight1);
-        document.documentElement.style.setProperty("--accentLight2", colors.accentLight2);
-        document.documentElement.style.setProperty("--accentLight3", colors.accentLight3);
-    }, [colors]);
+        document.documentElement.style.setProperty("--accent", systemColors.accent);
+        document.documentElement.style.setProperty("--accentDark1", systemColors.accentDark1);
+        document.documentElement.style.setProperty("--accentDark2", systemColors.accentDark2);
+        document.documentElement.style.setProperty("--accentDark3", systemColors.accentDark3);
+        document.documentElement.style.setProperty("--accentLight1", systemColors.accentLight1);
+        document.documentElement.style.setProperty("--accentLight2", systemColors.accentLight2);
+        document.documentElement.style.setProperty("--accentLight3", systemColors.accentLight3);
+    }, [systemColors]);
 
-    const handleForm = (e: any) => {
-        e.preventDefault();
+    useEffect(() => {
+        const onMessage = (event: Event) => {
+            const data = (event as MessageEvent).data;
+            console.log(data);
 
-        const form = document.getElementsByName("settings")[0] as HTMLFormElement;
+            if (data.systemColors) {
+                setSystemColors(data.systemColors);
+                sessionStorage.setItem("systemColors", JSON.stringify(data.systemColors));
+            }
 
-        const rawData = new FormData(e.target);
-        const data = Object.fromEntries(rawData.entries());
+            if (data.first) {
+                setFirst({ loaded: data.first, current: data.first });
+                sessionStorage.setItem("first", data.first);
+            }
 
-        if (data.mainHomepage.toString() != "") {
-            window.chrome.webview.postMessage({
-                mainHomepage: data.mainHomepage.toString().trim(),
-            });
+            if (data.second) {
+                setSecond({ loaded: data.second, current: data.second });
+                sessionStorage.setItem("second", data.second);
+            }
+        };
+
+        window.chrome.webview.addEventListener("message", onMessage);
+
+        return () => {
+            window.chrome.webview.removeEventListener("message", onMessage);
+        };
+    });
+
+    useEffect(() => {
+        const onEscape = (event: KeyboardEvent) => {
+            const key = event.key;
+            if (event.ctrlKey && key === "r") event.preventDefault();
+            switch (key) {
+                case "Escape":
+                    if (document.activeElement === firstInput.current) {
+                        firstInput.current!.value = first.loaded;
+                        break;
+                    }
+                    if (document.activeElement === secondInput.current) {
+                        secondInput.current!.value = second.loaded;
+                        break;
+                    }
+            }
+        };
+
+        document.addEventListener("keydown", onEscape);
+
+        return () => {
+            document.removeEventListener("keydown", onEscape);
+        };
+    });
+
+    useEffect(() => {
+        const onFocusOut = () => {
+            firstInput.current?.blur();
+            secondInput.current?.blur();
+        };
+
+        if (settingsForm.current) {
+            settingsForm.current.addEventListener("focusout", onFocusOut);
         }
 
-        if (data.sideHomepage.toString() != "") {
-            window.chrome.webview.postMessage({
-                sideHomepage: data.sideHomepage.toString().trim(),
-            });
+        return () => {
+            if (settingsForm.current) {
+                settingsForm.current.removeEventListener("focusout", onFocusOut);
+            }
+        };
+    });
+
+    const handleSubmit = (event: SyntheticEvent) => {
+        event.preventDefault();
+        let form = event.target as HTMLFormElement;
+
+        if (firstInput.current == document.activeElement) {
+            const parsed = url.parseUrl(firstInput.current?.value!).href;
+            setFirst({ loaded: parsed, current: parsed });
+            sessionStorage.setItem("first", parsed);
+            window.chrome.webview.postMessage({ first: parsed });
+        }
+
+        if (secondInput.current == document.activeElement) {
+            const parsed = url.parseUrl(secondInput.current?.value!).href;
+            setSecond({ loaded: parsed, current: parsed });
+            sessionStorage.setItem("second", parsed);
+            window.chrome.webview.postMessage({ second: parsed });
         }
 
         form.reset();
     };
 
-    const handleClipboard = async (page: string) => {
-        await navigator.clipboard.writeText(page);
-    };
+    const handleChange = (event: SyntheticEvent) => {
+        let input = event.target as HTMLInputElement;
 
-    const handleClear = () => {
-        window.chrome.webview.postMessage({
-            clear: true,
-        });
+        if (input.id === "firstInput") {
+            setFirst((prevState) => ({ ...prevState, current: input.value }));
+        }
+
+        if (input.id === "secondInput") {
+            setSecond((prevState) => ({ ...prevState, current: input.value }));
+        }
     };
 
     return (
-        <form
-            className="grid h-full content-between"
-            name="settings"
-            id="settings"
-            method="post"
-            onSubmit={handleForm}
-            autoComplete="off"
-            spellCheck="false">
-            <div className="grid grid-flow-col grid-cols-2">
-                <label className="flex flex-col">
-                    <div className="z-50 grid gap-2 bg-accent p-2 text-2xl font-semibold leading-none text-black shadow-lg shadow-neutral-400 outline-none dark:shadow-neutral-950">
-                        <span className="select-none hover:cursor-pointer">📡 Home</span>
-                        <span className="truncate text-sm">
-                            <a
-                                className="hover:cursor-pointer"
-                                onClick={() => {
-                                    handleClipboard(settings.mainHomepage);
-                                }}>
-                                {settings.mainHomepage === "" ? "unset" : settings.mainHomepage}
-                            </a>
-                        </span>
-                    </div>
-                    <input
-                        className="z-40 bg-accent p-2 text-black shadow-lg shadow-neutral-400 outline-none dark:shadow-neutral-950"
-                        type="text"
-                        name="mainHomepage"
-                        id="mainHomepage"></input>
-                </label>
-
-                <label className="flex flex-col">
-                    <div className="z-50 grid gap-2 truncate bg-neutral-200 p-2 text-2xl font-semibold leading-none shadow-lg shadow-neutral-400 outline-none dark:bg-neutral-800 dark:shadow-neutral-950">
-                        <span className="select-none hover:cursor-pointer">🛰️ Sidebar</span>
-                        <span className="truncate text-sm">
-                            <a
-                                className="hover:cursor-pointer"
-                                onClick={() => {
-                                    handleClipboard(settings.sideHomepage);
-                                }}>
-                                {settings.sideHomepage === "" ? "unset" : settings.sideHomepage}
-                            </a>
-                        </span>
-                    </div>
-                    <input
-                        className="z-40 bg-neutral-200 p-2 shadow-lg shadow-neutral-400 outline-none dark:bg-neutral-800 dark:shadow-neutral-950"
-                        type="text"
-                        name="sideHomepage"
-                        id="sideHomepage"></input>
-                </label>
-            </div>
-
-            <div className="flex items-center gap-4 p-4 text-lg leading-none">
-                <div className="flex flex-col items-center gap-4">
-                    <div className="select-none capitalize">
-                        {themeIcon + " " + settings.appTheme + " Mode"}
-                    </div>
-
-                    <button
-                        className="rounded-lg bg-red-800 p-2 text-white shadow-lg shadow-neutral-400 duration-100 hover:scale-95 active:scale-90 active:bg-green-600 dark:shadow-neutral-950"
-                        id="clear"
-                        type="button"
-                        onClick={handleClear}>
-                        Clear User Data
-                    </button>
-                </div>
-
-                <button
-                    className="ml-auto mt-auto rounded-lg p-2 shadow-lg shadow-neutral-400 duration-100 hover:scale-95 active:scale-90 active:bg-green-600 dark:shadow-neutral-950"
-                    id="submitUrl"
-                    type="submit">
-                    Save
-                </button>
-            </div>
-        </form>
+        <div ref={container} id="container" className="p-4">
+            <form
+                className="grid grid-flow-row gap-2 text-center"
+                id="settingsForm"
+                method="post"
+                autoComplete="off"
+                spellCheck="false"
+                ref={settingsForm}
+                onSubmit={handleSubmit}>
+                <h1 className="setting">
+                    <span>🌆</span>
+                    <span className="settingTitle">First Home</span>
+                </h1>
+                <input
+                    className="input"
+                    type="text"
+                    id="firstInput"
+                    ref={firstInput}
+                    value={first.current}
+                    placeholder={first.loaded}
+                    title={first.loaded}
+                    onChange={handleChange}></input>
+                <h1 className="setting">
+                    <span>🌃</span>
+                    <span className="settingTitle">Second Home</span>
+                </h1>
+                <input
+                    className="input"
+                    type="text"
+                    id="secondInput"
+                    ref={secondInput}
+                    value={second.current}
+                    placeholder={second.loaded}
+                    title={second.loaded}
+                    onChange={handleChange}></input>
+                <input type="submit" hidden />
+            </form>
+        </div>
     );
 }
