@@ -1,44 +1,6 @@
 import { SyntheticEvent, useState, useRef, useEffect } from "react";
 import * as url from "@libs/url";
-import { getSessionStorage } from "@libs/storage";
-
-const getPositionStorage = () => {
-    const value: App.Position = JSON.parse(sessionStorage.getItem("position")!);
-
-    const defaultValue: App.Position = {
-        bar: 0,
-        border: 0,
-        horizontal: false,
-        split: false,
-        swapped: false,
-    };
-
-    if (!value) {
-        return defaultValue;
-    } else {
-        return value;
-    }
-};
-
-const getSystemColorsStorage = () => {
-    const value: App.SystemColors = JSON.parse(sessionStorage.getItem("systemColors")!);
-
-    const defaultValue: App.SystemColors = {
-        accent: "",
-        accentDark1: "",
-        accentDark2: "",
-        accentDark3: "",
-        accentLight1: "",
-        accentLight2: "",
-        accentLight3: "",
-    };
-
-    if (!value) {
-        return defaultValue;
-    } else {
-        return value;
-    }
-};
+import { getSessionStorage, getPositionStorage, getSystemColorsStorage } from "@libs/storage";
 
 export default function App() {
     const container = useRef<HTMLDivElement | null>(null);
@@ -207,7 +169,9 @@ export default function App() {
     return (
         <div ref={container} id="container" className="grid grid-flow-col">
             <form
-                className={`${position.swapped ? "order-1" : "order-0"}`}
+                className={`${position.swapped ? "order-1" : "order-0"} ${
+                    !position.split && position.swapped ? "hidden" : ""
+                }`}
                 id="firstForm"
                 method="post"
                 autoComplete="off"
@@ -227,7 +191,9 @@ export default function App() {
             </form>
 
             <form
-                className={`${position.swapped ? "order-0" : "order-1"}`}
+                className={`${position.swapped ? "order-0" : "order-1"} ${
+                    !position.split && !position.swapped ? "hidden" : ""
+                }`}
                 id="secondForm"
                 method="post"
                 onSubmit={handleSubmit}

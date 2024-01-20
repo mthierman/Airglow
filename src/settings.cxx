@@ -56,6 +56,7 @@ auto Settings::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     {
     case WM_CLOSE: return on_close(wParam, lParam);
     case WM_KEYDOWN: return on_key_down(wParam, lParam);
+    case WM_NOTIFY: return on_notify(wParam, lParam);
     case WM_SETTINGCHANGE: return on_setting_change(wParam, lParam);
     case WM_SHOWWINDOW: return on_show_window(wParam, lParam);
     case WM_SIZE: return on_size(wParam, lParam);
@@ -67,6 +68,23 @@ auto Settings::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 auto Settings::on_close(WPARAM wParam, LPARAM lParam) -> int
 {
     hide();
+
+    return 0;
+}
+
+auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
+{
+    auto notification{reinterpret_cast<glow::gui::Notification*>(lParam)};
+
+    switch (notification->nmhdr.code)
+    {
+    case msg::settings_create:
+    {
+        if (m_browser) { m_browser->post_json(nlohmann::json(m_systemColors)); }
+
+        break;
+    }
+    }
 
     return 0;
 }
@@ -111,6 +129,9 @@ auto Settings::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 auto Settings::on_setting_change(WPARAM wParam, LPARAM lParam) -> int
 {
     theme();
+
+    m_systemColors.update();
+    if (m_browser) { m_browser->post_json(nlohmann::json(m_systemColors)); }
 
     return 0;
 }

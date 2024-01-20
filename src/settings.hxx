@@ -23,11 +23,13 @@ struct Settings : public glow::window::BaseWindow<Settings>
     auto default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     auto on_close(WPARAM wParam, LPARAM lParam) -> int;
     auto on_key_down(WPARAM wParam, LPARAM lParam) -> int;
+    auto on_notify(WPARAM wParam, LPARAM lParam) -> int;
     auto on_setting_change(WPARAM wParam, LPARAM lParam) -> int;
     auto on_show_window(WPARAM wParam, LPARAM lParam) -> int;
     auto on_size(WPARAM wParam, LPARAM lParam) -> int;
 
     HWND m_app{nullptr};
     std::unique_ptr<SettingsBrowser> m_browser;
+    glow::gui::SystemColors m_systemColors;
     bool m_visible{false};
 };

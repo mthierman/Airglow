@@ -128,6 +128,15 @@ auto SettingsBrowser::initialized() -> void
     navigate(url("settings"));
 }
 
+auto SettingsBrowser::navigation_completed_handler(ICoreWebView2* sender,
+                                                   ICoreWebView2NavigationCompletedEventArgs* args)
+    -> HRESULT
+{
+    notify(m_parent, msg::settings_create);
+
+    return S_OK;
+}
+
 auto MainBrowser::source_changed_handler(ICoreWebView2* sender,
                                          ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
 {

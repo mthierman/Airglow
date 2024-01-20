@@ -394,7 +394,6 @@ auto Window::on_setting_change(WPARAM wParam, LPARAM lParam) -> int
     theme();
 
     m_systemColors.update();
-    log(nlohmann::json(m_systemColors).dump());
     if (m_browsers.url) { m_browsers.url->post_json(nlohmann::json(m_systemColors)); }
 
     return 0;

@@ -1,21 +1,47 @@
 import { SyntheticEvent, useState, useRef, useEffect } from "react";
 import * as url from "@libs/url";
-import { getSessionStorage } from "@libs/storage";
+import { getSessionStorage, getPositionStorage, getSystemColorsStorage } from "@libs/storage";
 
 export default function App() {
     const container = useRef<HTMLDivElement | null>(null);
     const settingsForm = useRef<HTMLFormElement | null>(null);
     const firstInput = useRef<HTMLInputElement | null>(null);
     const secondInput = useRef<HTMLInputElement | null>(null);
-
     const [first, setFirst] = useState<App.URL>({
         current: getSessionStorage("first", ""),
         loaded: getSessionStorage("first", ""),
     });
-
     const [second, setSecond] = useState<App.URL>({
         current: getSessionStorage("second", ""),
         loaded: getSessionStorage("second", ""),
+    });
+    const [systemColors, setSystemColors] = useState<App.SystemColors>(getSystemColorsStorage());
+
+    useEffect(() => {
+        document.documentElement.style.setProperty("--accent", systemColors.accent);
+        document.documentElement.style.setProperty("--accentDark1", systemColors.accentDark1);
+        document.documentElement.style.setProperty("--accentDark2", systemColors.accentDark2);
+        document.documentElement.style.setProperty("--accentDark3", systemColors.accentDark3);
+        document.documentElement.style.setProperty("--accentLight1", systemColors.accentLight1);
+        document.documentElement.style.setProperty("--accentLight2", systemColors.accentLight2);
+        document.documentElement.style.setProperty("--accentLight3", systemColors.accentLight3);
+    }, [systemColors]);
+
+    useEffect(() => {
+        const onMessage = (event: Event) => {
+            const data = (event as MessageEvent).data;
+
+            if (data.systemColors) {
+                setSystemColors(data.systemColors);
+                sessionStorage.setItem("systemColors", JSON.stringify(data.systemColors));
+            }
+        };
+
+        window.chrome.webview.addEventListener("message", onMessage);
+
+        return () => {
+            window.chrome.webview.removeEventListener("message", onMessage);
+        };
     });
 
     useEffect(() => {
