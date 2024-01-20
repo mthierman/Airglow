@@ -71,12 +71,11 @@ export default function App() {
         document.documentElement.style.setProperty("--accentLight1", systemColors.accentLight1);
         document.documentElement.style.setProperty("--accentLight2", systemColors.accentLight2);
         document.documentElement.style.setProperty("--accentLight3", systemColors.accentLight3);
-    });
+    }, [systemColors]);
 
     useEffect(() => {
         const onMessage = (event: Event) => {
             const data = (event as MessageEvent).data;
-            // console.log(data);
 
             if (data.layout) {
                 setPosition(data.layout);
@@ -90,7 +89,6 @@ export default function App() {
             if (data.systemColors) {
                 setSystemColors(data.systemColors);
                 sessionStorage.setItem("systemColors", JSON.stringify(data.systemColors));
-                // console.log(data.systemColors);
             }
 
             if (data.first) {
