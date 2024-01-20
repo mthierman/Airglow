@@ -13,18 +13,18 @@ auto Browser::web_message_received_handler(ICoreWebView2* sender,
     -> HRESULT
 {
     wil::unique_cotaskmem_string source;
-    if (FAILED(args->get_Source(&source))) { return S_OK; }
+    args->get_Source(&source);
+
+    if ((std::wstring_view(source.get()) != glow::text::widen(url("url"))) ||
+        (std::wstring_view(source.get()) != glow::text::widen(url("settings"))))
+    {
+        return S_OK;
+    }
 
     wil::unique_cotaskmem_string message;
     if (FAILED(args->get_WebMessageAsJson(&message))) { return S_OK; }
 
-    if ((std::wstring_view(source.get()) == glow::text::widen(url("url"))) ||
-        (std::wstring_view(source.get()) == glow::text::widen(url("settings"))))
-    {
-        notify(m_parent, msg::web_message_received, glow::text::narrow(message.get()));
-
-        return S_OK;
-    }
+    notify(m_parent, msg::web_message_received, glow::text::narrow(message.get()));
 
     return S_OK;
 }
@@ -139,11 +139,11 @@ auto SettingsBrowser::navigation_completed_handler(ICoreWebView2* sender,
 auto MainBrowser::source_changed_handler(ICoreWebView2* sender,
                                          ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
 {
-    wil::unique_cotaskmem_string uriRaw;
-    if (FAILED(sender->get_Source(&uriRaw))) { return S_OK; }
+    wil::unique_cotaskmem_string source;
+    if (FAILED(sender->get_Source(&source))) { return S_OK; }
 
-    auto uri{glow::text::narrow(uriRaw.get())};
-    notify(m_parent, msg::source_changed, nlohmann::json{{"first", uri}}.dump());
+    notify(m_parent, msg::source_changed,
+           nlohmann::json{{"first", glow::text::narrow(source.get())}}.dump());
 
     return S_OK;
 }
@@ -151,11 +151,11 @@ auto MainBrowser::source_changed_handler(ICoreWebView2* sender,
 auto SideBrowser::source_changed_handler(ICoreWebView2* sender,
                                          ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
 {
-    wil::unique_cotaskmem_string uriRaw;
-    if (FAILED(sender->get_Source(&uriRaw))) { return S_OK; }
+    wil::unique_cotaskmem_string source;
+    if (FAILED(sender->get_Source(&source))) { return S_OK; }
 
-    auto uri{glow::text::narrow(uriRaw.get())};
-    notify(m_parent, msg::source_changed, nlohmann::json{{"second", uri}}.dump());
+    notify(m_parent, msg::source_changed,
+           nlohmann::json{{"first", glow::text::narrow(source.get())}}.dump());
 
     return S_OK;
 }
