@@ -33,4 +33,5 @@ struct Settings : public glow::window::BaseWindow<Settings>
     std::unique_ptr<SettingsBrowser> m_browser;
     glow::gui::SystemColors m_systemColors;
     bool m_visible{false};
+    int m_height{};
 };

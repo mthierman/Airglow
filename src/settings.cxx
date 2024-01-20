@@ -104,6 +104,15 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
             notify(m_app, msg::home_changed, notification->message);
         }
 
+        if (json.contains("height"))
+        {
+            m_height = json["height"].get<int>();
+            RECT rect{};
+            rect.bottom = m_height;
+            AdjustWindowRectExForDpi(&rect, WS_OVERLAPPEDWINDOW, 0, 0, dpi());
+            SetWindowPos(hwnd(), nullptr, 0, 0, 400, rect.bottom - rect.top, SWP_NOMOVE);
+        }
+
         break;
     }
     }

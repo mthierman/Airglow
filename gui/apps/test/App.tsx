@@ -1,6 +1,6 @@
 import { SyntheticEvent, useState, useRef, useEffect } from "react";
 import * as url from "@libs/url";
-import { getSessionStorage, getPositionStorage, getSystemColorsStorage } from "@libs/storage";
+import { getSessionStorage, getSystemColorsStorage } from "@libs/storage";
 
 export default function App() {
     const container = useRef<HTMLDivElement | null>(null);
@@ -16,6 +16,10 @@ export default function App() {
         loaded: getSessionStorage("second", ""),
     });
     const [systemColors, setSystemColors] = useState<App.SystemColors>(getSystemColorsStorage());
+
+    useEffect(() => {
+        window.chrome.webview.postMessage({ height: container.current!.offsetHeight });
+    });
 
     useEffect(() => {
         document.documentElement.style.setProperty("--accent", systemColors.accent);
