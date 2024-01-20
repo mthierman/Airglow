@@ -20,6 +20,26 @@ const getPositionStorage = () => {
     }
 };
 
+const getSystemColorsStorage = () => {
+    const value: App.SystemColors = JSON.parse(sessionStorage.getItem("systemColors")!);
+
+    const defaultValue: App.SystemColors = {
+        accent: "",
+        accentDark1: "",
+        accentDark2: "",
+        accentDark3: "",
+        accentLight1: "",
+        accentLight2: "",
+        accentLight3: "",
+    };
+
+    if (!value) {
+        return defaultValue;
+    } else {
+        return value;
+    }
+};
+
 export default function App() {
     const container = useRef<HTMLDivElement | null>(null);
     const firstForm = useRef<HTMLFormElement | null>(null);
@@ -35,6 +55,7 @@ export default function App() {
         loaded: getSessionStorage("second", ""),
     });
     const [position, setPosition] = useState<App.Position>(getPositionStorage());
+    const [systemColors, setSystemColors] = useState<App.SystemColors>(getSystemColorsStorage());
 
     useEffect(() => {
         setPosition((prevState) => ({ ...prevState, bar: container.current!.offsetHeight }));
@@ -43,8 +64,19 @@ export default function App() {
     }, [position.bar]);
 
     useEffect(() => {
+        document.documentElement.style.setProperty("--accent", systemColors.accent);
+        document.documentElement.style.setProperty("--accentDark1", systemColors.accentDark1);
+        document.documentElement.style.setProperty("--accentDark2", systemColors.accentDark2);
+        document.documentElement.style.setProperty("--accentDark3", systemColors.accentDark3);
+        document.documentElement.style.setProperty("--accentLight1", systemColors.accentLight1);
+        document.documentElement.style.setProperty("--accentLight2", systemColors.accentLight2);
+        document.documentElement.style.setProperty("--accentLight3", systemColors.accentLight3);
+    });
+
+    useEffect(() => {
         const onMessage = (event: Event) => {
             const data = (event as MessageEvent).data;
+            // console.log(data);
 
             if (data.layout) {
                 setPosition(data.layout);
@@ -53,6 +85,12 @@ export default function App() {
                     ...prevState,
                     bar: container.current!.offsetHeight,
                 }));
+            }
+
+            if (data.systemColors) {
+                setSystemColors(data.systemColors);
+                sessionStorage.setItem("systemColors", JSON.stringify(data.systemColors));
+                // console.log(data.systemColors);
             }
 
             if (data.first) {
@@ -172,7 +210,7 @@ export default function App() {
         <div
             ref={container}
             id="container"
-            className={`flex gap-2 bg-transparent p-2 ${
+            className={`flex gap-2 bg-transparent p-2 text-accent ${
                 position.swapped ? "flex-row-reverse" : "flex-row"
             }`}>
             <form

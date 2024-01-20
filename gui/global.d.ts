@@ -37,5 +37,15 @@ export declare global {
             split: boolean;
             swapped: boolean;
         }
+
+        interface SystemColors {
+            accent: string;
+            accentDark1: string;
+            accentDark2: string;
+            accentDark3: string;
+            accentLight1: string;
+            accentLight2: string;
+            accentLight3: string;
+        }
     }
 }

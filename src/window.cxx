@@ -333,6 +333,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
             if (m_browsers.url)
             {
                 m_browsers.url->post_json(nlohmann::json{{"layout", nlohmann::json(m_layout)}});
+                m_browsers.url->post_json(nlohmann::json(m_systemColors));
             }
         }
 
@@ -391,6 +392,10 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 auto Window::on_setting_change(WPARAM wParam, LPARAM lParam) -> int
 {
     theme();
+
+    m_systemColors.update();
+    log(nlohmann::json(m_systemColors).dump());
+    if (m_browsers.url) { m_browsers.url->post_json(nlohmann::json(m_systemColors)); }
 
     return 0;
 }

@@ -65,5 +65,6 @@ struct Window : public glow::window::BaseWindow<Window>
     Browsers m_browsers;
     Positions m_positions;
     Layout m_layout;
+    glow::gui::SystemColors m_systemColors;
     bool m_initialized{false};
 };
