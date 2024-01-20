@@ -205,14 +205,9 @@ export default function App() {
     };
 
     return (
-        <div
-            ref={container}
-            id="container"
-            className={`flex gap-2 bg-transparent p-2 text-accent ${
-                position.swapped ? "flex-row-reverse" : "flex-row"
-            }`}>
+        <div ref={container} id="container" className="grid grid-flow-col">
             <form
-                className={`flex flex-grow ${!position.split && position.swapped ? "hidden" : ""}`}
+                className={`${position.swapped ? "order-1" : "order-0"}`}
                 id="firstForm"
                 method="post"
                 autoComplete="off"
@@ -220,7 +215,7 @@ export default function App() {
                 ref={firstForm}
                 onSubmit={handleSubmit}>
                 <input
-                    className="input flex-grow"
+                    className="input"
                     type="text"
                     id="firstInput"
                     ref={firstInput}
@@ -232,7 +227,7 @@ export default function App() {
             </form>
 
             <form
-                className={`flex flex-grow ${!position.split && !position.swapped ? "hidden" : ""}`}
+                className={`${position.swapped ? "order-0" : "order-1"}`}
                 id="secondForm"
                 method="post"
                 onSubmit={handleSubmit}
@@ -240,7 +235,7 @@ export default function App() {
                 autoComplete="off"
                 spellCheck="false">
                 <input
-                    className="input flex-grow"
+                    className="input"
                     type="text"
                     id="secondInput"
                     ref={secondInput}
