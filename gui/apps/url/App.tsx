@@ -38,6 +38,7 @@ export default function App() {
     useEffect(() => {
         const onMessage = (event: Event) => {
             const data = (event as MessageEvent).data;
+            console.log(data);
 
             if (data.layout) {
                 setPosition(data.layout);

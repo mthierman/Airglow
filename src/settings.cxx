@@ -82,12 +82,9 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
     {
     case msg::settings_create:
     {
-        if (m_browser) { m_browser->post_json(nlohmann::json(m_systemColors)); }
         if (m_browser)
         {
-            // m_browser->post_json(
-            //     nlohmann::json({{{"home", {"first", m_urls.first}, {"second",
-            //     m_urls.second}}}}));
+            m_browser->post_json(nlohmann::json(m_systemColors));
             m_browser->post_json(
                 nlohmann::json({{"first", m_urls.first}, {"second", m_urls.second}}));
         }
@@ -110,7 +107,8 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
             RECT rect{};
             rect.bottom = m_height;
             AdjustWindowRectExForDpi(&rect, WS_OVERLAPPEDWINDOW, 0, 0, dpi());
-            SetWindowPos(hwnd(), nullptr, 0, 0, 400, rect.bottom - rect.top, SWP_NOMOVE);
+            SetWindowPos(hwnd(), nullptr, 0, 0, 400,
+                         static_cast<int>((rect.bottom - rect.top) * m_scale), SWP_NOMOVE);
         }
 
         break;
