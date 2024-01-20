@@ -15,14 +15,19 @@ auto Browser::web_message_received_handler(ICoreWebView2* sender,
     wil::unique_cotaskmem_string source;
     args->get_Source(&source);
 
-    if ((std::wstring_view(source.get()) != glow::text::widen(url("url"))) ||
-        (std::wstring_view(source.get()) != glow::text::widen(url("settings"))))
+    if (!(std::wstring_view(source.get()) == glow::text::widen(url("url")) ||
+          std::wstring_view(source.get()) == glow::text::widen(url("settings"))))
     {
-        return S_OK;
+        log(glow::text::narrow(source.get()));
     }
 
     wil::unique_cotaskmem_string message;
     if (FAILED(args->get_WebMessageAsJson(&message))) { return S_OK; }
+
+    if (std::wstring_view(source.get()) == glow::text::widen(url("settings")))
+    {
+        log(glow::text::narrow(message.get()));
+    }
 
     notify(m_parent, msg::web_message_received, glow::text::narrow(message.get()));
 
@@ -88,7 +93,8 @@ auto Browser::url(std::string page) -> std::string
 #if defined(_DEBUG)
     if (page.contains("url")) { return "https://localhost:8000/url/index.html"; }
 
-    else if (page.contains("settings")) { return "https://localhost:8000/settings/index.html"; }
+    // else if (page.contains("settings")) { return "https://localhost:8000/settings/index.html"; }
+    else if (page.contains("settings")) { return "https://localhost:8000/test/index.html"; }
 #else
     if (page.contains("url"))
     {
@@ -108,7 +114,7 @@ auto Browser::url(std::string page) -> std::string
 
 auto URLBrowser::initialized() -> void
 {
-    m_webView.core20->OpenDevToolsWindow();
+    // m_webView.core20->OpenDevToolsWindow();
     navigate(url("url"));
 }
 

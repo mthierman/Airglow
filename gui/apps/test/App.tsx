@@ -1,11 +1,10 @@
 import { SyntheticEvent, useState, useRef, useEffect } from "react";
 import * as url from "@libs/url";
-import { getSessionStorage, getPositionStorage, getSystemColorsStorage } from "@libs/storage";
+import { getSessionStorage, getSystemColorsStorage } from "@libs/storage";
 
 export default function App() {
     const container = useRef<HTMLDivElement | null>(null);
-    const firstForm = useRef<HTMLFormElement | null>(null);
-    const secondForm = useRef<HTMLFormElement | null>(null);
+    const settingsForm = useRef<HTMLFormElement | null>(null);
     const firstInput = useRef<HTMLInputElement | null>(null);
     const secondInput = useRef<HTMLInputElement | null>(null);
     const [first, setFirst] = useState<App.URL>({
@@ -16,18 +15,21 @@ export default function App() {
         current: "",
         loaded: getSessionStorage("second", ""),
     });
-    const [position, setPosition] = useState<App.Position>(getPositionStorage());
     const [systemColors, setSystemColors] = useState<App.SystemColors>(getSystemColorsStorage());
 
+    let initialized = false;
+
     useEffect(() => {
-        window.chrome.webview.postMessage({ initialized: true });
+        if (!initialized) {
+            window.chrome.webview.postMessage({ initialized: true });
+            window.chrome.webview.postMessage({ height: container.current!.offsetHeight });
+            initialized = true;
+        }
     }, []);
 
     useEffect(() => {
-        setPosition((prevState) => ({ ...prevState, bar: container.current!.offsetHeight }));
-        window.chrome.webview.postMessage({ height: position.bar });
-        sessionStorage.setItem("position", JSON.stringify(position));
-    }, [position.bar]);
+        window.chrome.webview.postMessage({ height: container.current!.offsetHeight });
+    });
 
     useEffect(() => {
         document.documentElement.style.setProperty("--accent", systemColors.accent);
@@ -43,15 +45,6 @@ export default function App() {
         const onMessage = (event: Event) => {
             const data = (event as MessageEvent).data;
             console.log(data);
-
-            if (data.layout) {
-                setPosition(data.layout);
-                sessionStorage.setItem("position", JSON.stringify(data.layout));
-                setPosition((prevState) => ({
-                    ...prevState,
-                    bar: container.current!.offsetHeight,
-                }));
-            }
 
             if (data.systemColors) {
                 setSystemColors(data.systemColors);
@@ -106,21 +99,13 @@ export default function App() {
             secondInput.current?.blur();
         };
 
-        if (firstForm.current) {
-            firstForm.current.addEventListener("focusout", onFocusOut);
-        }
-
-        if (secondForm.current) {
-            secondForm.current.addEventListener("focusout", onFocusOut);
+        if (settingsForm.current) {
+            settingsForm.current.addEventListener("focusout", onFocusOut);
         }
 
         return () => {
-            if (firstForm.current) {
-                firstForm.current.removeEventListener("focusout", onFocusOut);
-            }
-
-            if (secondForm.current) {
-                secondForm.current.removeEventListener("focusout", onFocusOut);
+            if (settingsForm.current) {
+                settingsForm.current.removeEventListener("focusout", onFocusOut);
             }
         };
     });
@@ -129,18 +114,18 @@ export default function App() {
         event.preventDefault();
         let form = event.target as HTMLFormElement;
 
-        if (form.id === "firstForm") {
-            if (firstInput.current?.value !== "") {
-                let parsed = url.parseUrl(firstInput.current?.value!).href;
-                window.chrome.webview.postMessage({ first: parsed });
-            }
+        if (firstInput.current == document.activeElement) {
+            const parsed = url.parseUrl(firstInput.current?.value!).href;
+            setFirst({ loaded: parsed, current: parsed });
+            sessionStorage.setItem("first", parsed);
+            window.chrome.webview.postMessage({ first: parsed });
         }
 
-        if (form.id === "secondForm") {
-            if (secondInput.current?.value !== "") {
-                let parsed = url.parseUrl(secondInput.current?.value!).href;
-                window.chrome.webview.postMessage({ second: parsed });
-            }
+        if (secondInput.current == document.activeElement) {
+            const parsed = url.parseUrl(secondInput.current?.value!).href;
+            setSecond({ loaded: parsed, current: parsed });
+            sessionStorage.setItem("second", parsed);
+            window.chrome.webview.postMessage({ second: parsed });
         }
 
         form.reset();
@@ -158,31 +143,20 @@ export default function App() {
         }
     };
 
-    const handleClick = async (event: SyntheticEvent) => {
-        let input = event.target as HTMLInputElement;
-        let nativeEvent = event.nativeEvent as MouseEvent;
-
-        if (input.id === "firstInput") {
-            if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(first.loaded);
-        }
-
-        if (input.id === "secondInput") {
-            if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(second.loaded);
-        }
-    };
-
     return (
-        <div ref={container} id="container" className="grid grid-flow-col">
+        <div ref={container} id="container" className="p-4 text-4xl">
             <form
-                className={`${position.swapped ? "order-1" : "order-0"} ${
-                    !position.split && position.swapped ? "hidden" : ""
-                }`}
-                id="firstForm"
+                className="grid grid-flow-row gap-2 text-center"
+                id="settingsForm"
                 method="post"
                 autoComplete="off"
                 spellCheck="false"
-                ref={firstForm}
+                ref={settingsForm}
                 onSubmit={handleSubmit}>
+                <h1 className="setting">
+                    <span>🌆</span>
+                    <span className="settingTitle">First Home</span>
+                </h1>
                 <input
                     className="input"
                     type="text"
@@ -191,20 +165,11 @@ export default function App() {
                     value={first.current}
                     placeholder={first.loaded}
                     title={first.loaded}
-                    onChange={handleChange}
-                    onClick={handleClick}></input>
-            </form>
-
-            <form
-                className={`${position.swapped ? "order-0" : "order-1"} ${
-                    !position.split && !position.swapped ? "hidden" : ""
-                }`}
-                id="secondForm"
-                method="post"
-                onSubmit={handleSubmit}
-                ref={secondForm}
-                autoComplete="off"
-                spellCheck="false">
+                    onChange={handleChange}></input>
+                <h1 className="setting">
+                    <span>🌃</span>
+                    <span className="settingTitle">Second Home</span>
+                </h1>
                 <input
                     className="input"
                     type="text"
@@ -213,8 +178,8 @@ export default function App() {
                     value={second.current}
                     placeholder={second.loaded}
                     title={second.loaded}
-                    onChange={handleChange}
-                    onClick={handleClick}></input>
+                    onChange={handleChange}></input>
+                <input type="submit" hidden />
             </form>
         </div>
     );

@@ -17,9 +17,19 @@ export default function App() {
     });
     const [systemColors, setSystemColors] = useState<App.SystemColors>(getSystemColorsStorage());
 
+    let initialized = false;
+
     useEffect(() => {
-        window.chrome.webview.postMessage({ height: container.current!.offsetHeight });
-    });
+        if (!initialized) {
+            window.chrome.webview.postMessage({ initialized: true });
+            window.chrome.webview.postMessage({ height: container.current!.offsetHeight });
+            initialized = true;
+        }
+    }, []);
+
+    // useEffect(() => {
+    //     window.chrome.webview.postMessage({ height: container.current!.offsetHeight });
+    // });
 
     useEffect(() => {
         document.documentElement.style.setProperty("--accent", systemColors.accent);
