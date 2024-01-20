@@ -8,11 +8,11 @@ export default function App() {
     const firstInput = useRef<HTMLInputElement | null>(null);
     const secondInput = useRef<HTMLInputElement | null>(null);
     const [first, setFirst] = useState<App.URL>({
-        current: getSessionStorage("first", ""),
+        current: "",
         loaded: getSessionStorage("first", ""),
     });
     const [second, setSecond] = useState<App.URL>({
-        current: getSessionStorage("second", ""),
+        current: "",
         loaded: getSessionStorage("second", ""),
     });
     const [systemColors, setSystemColors] = useState<App.SystemColors>(getSystemColorsStorage());
@@ -30,10 +30,21 @@ export default function App() {
     useEffect(() => {
         const onMessage = (event: Event) => {
             const data = (event as MessageEvent).data;
+            console.log(data);
 
             if (data.systemColors) {
                 setSystemColors(data.systemColors);
                 sessionStorage.setItem("systemColors", JSON.stringify(data.systemColors));
+            }
+
+            if (data.first) {
+                setFirst({ loaded: data.first, current: data.first });
+                sessionStorage.setItem("first", data.first);
+            }
+
+            if (data.second) {
+                setSecond({ loaded: data.second, current: data.second });
+                sessionStorage.setItem("second", data.second);
             }
         };
 

@@ -24,7 +24,7 @@ auto App::operator()() -> int
         m_windowMain = std::make_unique<Window>(hwnd(), m_url.current);
         m_windowMain->reveal();
 
-        m_windowSettings = std::make_unique<Settings>(hwnd());
+        m_windowSettings = std::make_unique<Settings>(hwnd(), m_url.home);
     }
     catch (const std::exception& e)
     {
