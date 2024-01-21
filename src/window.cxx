@@ -322,27 +322,27 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
     switch (notification->nmhdr.code)
     {
-    case msg::url_create:
-    {
-        if (!m_initialized)
-        {
-            m_initialized = true;
-            if (m_browsers.first) { m_browsers.first->navigate(m_current["first"]); }
-            if (m_browsers.second) { m_browsers.second->navigate(m_current["second"]); }
-        }
-
-        if (m_browsers.url)
-        {
-            m_browsers.url->post_json(nlohmann::json{{"layout", nlohmann::json(m_layout)}});
-            m_browsers.url->post_json(nlohmann::json(m_systemColors));
-        }
-
-        break;
-    }
-
     case msg::web_message_received:
     {
         auto json{nlohmann::json::parse(notification->message)};
+
+        // log(json.dump());
+
+        if (json.contains("initialized"))
+        {
+            if (!m_initialized)
+            {
+                m_initialized = true;
+                if (m_browsers.first) { m_browsers.first->navigate(m_current["first"]); }
+                if (m_browsers.second) { m_browsers.second->navigate(m_current["second"]); }
+            }
+
+            if (m_browsers.url)
+            {
+                m_browsers.url->post_json(nlohmann::json{{"layout", nlohmann::json(m_layout)}});
+                m_browsers.url->post_json(nlohmann::json(m_systemColors));
+            }
+        }
 
         if (json.contains("height"))
         {

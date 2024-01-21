@@ -33,10 +33,6 @@ struct URLBrowser final : public Browser
     using Browser::Browser;
 
     virtual auto initialized() -> void override;
-
-    virtual auto navigation_completed_handler(ICoreWebView2* sender,
-                                              ICoreWebView2NavigationCompletedEventArgs* args)
-        -> HRESULT override;
 };
 
 struct SettingsBrowser final : public Browser

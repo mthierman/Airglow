@@ -81,7 +81,6 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
     switch (notification->nmhdr.code)
     {
-
     case msg::web_message_received:
     {
         auto json{nlohmann::json::parse(notification->message)};

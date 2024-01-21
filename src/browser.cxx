@@ -108,17 +108,8 @@ auto Browser::url(std::string page) -> std::string
 
 auto URLBrowser::initialized() -> void
 {
-    // m_webView.core20->OpenDevToolsWindow();
+    m_webView.core20->OpenDevToolsWindow();
     navigate(url("url"));
-}
-
-auto URLBrowser::navigation_completed_handler(ICoreWebView2* sender,
-                                              ICoreWebView2NavigationCompletedEventArgs* args)
-    -> HRESULT
-{
-    notify(m_parent, msg::url_create);
-
-    return S_OK;
 }
 
 auto SettingsBrowser::initialized() -> void
