@@ -19,7 +19,7 @@ body {
 }
 
 #root {
-    @apply grid min-h-full min-w-full grid-flow-col content-center bg-amber-950;
+    /* @apply grid min-h-full min-w-full grid-flow-col content-center bg-amber-950; */
 }
 
 .button {
