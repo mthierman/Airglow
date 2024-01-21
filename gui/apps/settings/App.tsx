@@ -1,9 +1,11 @@
-import { SyntheticEvent, useState, useRef, useEffect } from "react";
+import { SyntheticEvent, useState, useLayoutEffect, useRef, useEffect } from "react";
 import * as url from "@libs/url";
 import { getSessionStorage, getSystemColorsStorage } from "@libs/storage";
 
 export default function App() {
-    const container = useRef<HTMLDivElement | null>(null);
+    const [devicePixelRatio, setDevicePixelRatio] = useState(window.devicePixelRatio);
+    const [offsetHeight, setOffsetHeight] = useState(0);
+    const [offsetWidth, setOffsetWidth] = useState(0);
     const settingsForm = useRef<HTMLFormElement | null>(null);
     const firstInput = useRef<HTMLInputElement | null>(null);
     const secondInput = useRef<HTMLInputElement | null>(null);
@@ -17,19 +19,9 @@ export default function App() {
     });
     const [systemColors, setSystemColors] = useState<App.SystemColors>(getSystemColorsStorage());
 
-    let initialized = false;
-
     useEffect(() => {
-        if (!initialized) {
-            window.chrome.webview.postMessage({ initialized: true });
-            window.chrome.webview.postMessage({ height: container.current!.offsetHeight });
-            initialized = true;
-        }
+        window.chrome.webview.postMessage({ initialized: true });
     }, []);
-
-    // useEffect(() => {
-    //     window.chrome.webview.postMessage({ height: container.current!.offsetHeight });
-    // });
 
     useEffect(() => {
         document.documentElement.style.setProperty("--accent", systemColors.accent);
@@ -40,6 +32,30 @@ export default function App() {
         document.documentElement.style.setProperty("--accentLight2", systemColors.accentLight2);
         document.documentElement.style.setProperty("--accentLight3", systemColors.accentLight3);
     }, [systemColors]);
+
+    useLayoutEffect(() => {
+        const onResize = () => {
+            setDevicePixelRatio(window.devicePixelRatio);
+        };
+
+        addEventListener("resize", onResize);
+
+        return () => {
+            removeEventListener("resize", onResize);
+        };
+    });
+
+    useEffect(() => {
+        // setOffsetHeight(document.body.offsetHeight);
+        // setOffsetWidth(document.body.offsetWidth);
+        setOffsetHeight(settingsForm.current?.offsetHeight!);
+        setOffsetWidth(settingsForm.current?.offsetWidth!);
+        window.chrome.webview.postMessage({
+            devicePixelRatio: devicePixelRatio,
+            offsetHeight: offsetHeight * devicePixelRatio,
+            offsetWidth: offsetWidth * devicePixelRatio,
+        });
+    });
 
     useEffect(() => {
         const onMessage = (event: Event) => {
@@ -144,43 +160,41 @@ export default function App() {
     };
 
     return (
-        <div ref={container} id="container" className="p-4">
-            <form
-                className="grid grid-flow-row gap-2 text-center"
-                id="settingsForm"
-                method="post"
-                autoComplete="off"
-                spellCheck="false"
-                ref={settingsForm}
-                onSubmit={handleSubmit}>
-                <h1 className="setting">
-                    <span>🌆</span>
-                    <span className="settingTitle">First Home</span>
-                </h1>
-                <input
-                    className="input"
-                    type="text"
-                    id="firstInput"
-                    ref={firstInput}
-                    value={first.current}
-                    placeholder={first.loaded}
-                    title={first.loaded}
-                    onChange={handleChange}></input>
-                <h1 className="setting">
-                    <span>🌃</span>
-                    <span className="settingTitle">Second Home</span>
-                </h1>
-                <input
-                    className="input"
-                    type="text"
-                    id="secondInput"
-                    ref={secondInput}
-                    value={second.current}
-                    placeholder={second.loaded}
-                    title={second.loaded}
-                    onChange={handleChange}></input>
-                <input type="submit" hidden />
-            </form>
-        </div>
+        <form
+            className="grid grid-flow-row gap-2 p-2 text-center"
+            id="settingsForm"
+            method="post"
+            autoComplete="off"
+            spellCheck="false"
+            ref={settingsForm}
+            onSubmit={handleSubmit}>
+            <h1 className="setting">
+                <span>🌆</span>
+                <span className="settingTitle">First Home</span>
+            </h1>
+            <input
+                className="input"
+                type="text"
+                id="firstInput"
+                ref={firstInput}
+                value={first.current}
+                placeholder={first.loaded}
+                title={first.loaded}
+                onChange={handleChange}></input>
+            <h1 className="setting">
+                <span>🌃</span>
+                <span className="settingTitle">Second Home</span>
+            </h1>
+            <input
+                className="input"
+                type="text"
+                id="secondInput"
+                ref={secondInput}
+                value={second.current}
+                placeholder={second.loaded}
+                title={second.loaded}
+                onChange={handleChange}></input>
+            <input type="submit" hidden />
+        </form>
     );
 }
