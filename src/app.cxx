@@ -155,6 +155,8 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
             m_url.current["second"] = json["second"].get<std::string>();
         }
 
+        save();
+
         break;
     }
 
@@ -168,6 +170,8 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
         {
             m_url.home["second"] = json["second"].get<std::string>();
         }
+
+        save();
 
         break;
     }
