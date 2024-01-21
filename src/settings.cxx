@@ -109,15 +109,7 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         if (json.contains("devicePixelRatio"))
         {
-            // log(json.dump());
-            m_dimensions.devicePixelRatio = json["devicePixelRatio"].get<float>();
-            m_dimensions.offsetHeight = json["offsetHeight"].get<int>();
-            m_dimensions.offsetWidth = json["offsetWidth"].get<int>();
-
-            log(std::to_string(m_dimensions.devicePixelRatio));
-            log(std::to_string(m_dimensions.offsetHeight));
-            log(std::to_string(m_dimensions.offsetWidth));
-
+            m_dimensions = json;
             RECT rect{};
             rect.bottom = m_dimensions.offsetHeight;
             rect.right = m_dimensions.offsetWidth;

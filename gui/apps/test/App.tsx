@@ -31,6 +31,13 @@ export default function App() {
             offsetHeight: offsetHeight * devicePixelRatio,
             offsetWidth: offsetWidth * devicePixelRatio,
         });
+        // window.chrome.webview.postMessage({
+        //     dimensions: {
+        //         devicePixelRatio: devicePixelRatio,
+        //         offsetHeight: offsetHeight * devicePixelRatio,
+        //         offsetWidth: offsetWidth * devicePixelRatio,
+        //     },
+        // });
     });
 
     useEffect(() => {
