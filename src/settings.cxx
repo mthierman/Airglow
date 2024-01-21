@@ -102,25 +102,44 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
         //     notify(m_app, msg::home_changed, notification->message);
         // }
 
+        // if (json.contains("devicePixelRatio"))
+        // {
+        //     m_devicePixelRatio = json["devicePixelRatio"].get<float>();
+        // }
+
         if (json.contains("devicePixelRatio"))
         {
-            m_devicePixelRatio = json["devicePixelRatio"].get<float>();
+            log(json.dump());
+            m_dimensions.devicePixelRatio = json["devicePixelRatio"].get<float>();
+            log(std::to_string(m_dimensions.devicePixelRatio));
+            // m_dimensions.offsetHeight = json["offsetHeight"].get<float>();
+            // auto height = json["offsetHeight"].get<float>();
+            // log(std::to_string(height));
+            // m_dimensions.offsetWidth = json["offsetWidth"].get<int>();
+
+            // RECT rect{};
+            // rect.bottom = m_dimensions.offsetHeight;
+            // rect.right = m_dimensions.offsetWidth;
+            // AdjustWindowRectExForDpi(&rect, WS_OVERLAPPEDWINDOW, 0, 0, dpi());
+            // SetWindowPos(hwnd(), nullptr, 0, 0, static_cast<int>(rect.right - rect.left),
+            //              static_cast<int>(rect.bottom - rect.top), SWP_NOMOVE);
         }
 
         if (json.contains("offsetHeight"))
         {
-            m_offsetHeight = json["offsetHeight"].get<int>();
-            RECT rect{};
-            rect.bottom = m_offsetHeight;
-            AdjustWindowRectExForDpi(&rect, WS_OVERLAPPEDWINDOW, 0, 0, dpi());
-            // m_offsetHeight = rect.bottom;
-            // log(std::to_string(m_offsetHeight));
-            log(std::to_string(rect.bottom));
-            log(std::to_string(rect.bottom - rect.top));
-
-            SetWindowPos(hwnd(), nullptr, 0, 0, 400, static_cast<int>(rect.bottom - rect.top),
-                         SWP_NOMOVE);
+            auto height = json["offsetHeight"].get<float>();
+            log(std::to_string(height));
         }
+
+        // if (json.contains("offsetHeight"))
+        // {
+        //     m_offsetHeight = json["offsetHeight"].get<int>();
+        //     RECT rect{};
+        //     rect.bottom = m_offsetHeight;
+        //     AdjustWindowRectExForDpi(&rect, WS_OVERLAPPEDWINDOW, 0, 0, dpi());
+        //     SetWindowPos(hwnd(), nullptr, 0, 0, 400, static_cast<int>(rect.bottom - rect.top),
+        //                  SWP_NOMOVE);
+        // }
 
         break;
     }

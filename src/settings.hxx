@@ -17,6 +17,17 @@
 
 struct Settings : public glow::window::BaseWindow<Settings>
 {
+    struct Dimensions
+    {
+        Dimensions() : devicePixelRatio{}, offsetHeight{}, offsetWidth{} {}
+
+        float devicePixelRatio{};
+        int offsetHeight{};
+        int offsetWidth{};
+
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(Dimensions, devicePixelRatio, offsetHeight, offsetWidth)
+    };
+
     using glow::window::BaseWindow<Settings>::BaseWindow;
 
     Settings(HWND app, std::map<std::string, std::string> home);
@@ -37,6 +48,5 @@ struct Settings : public glow::window::BaseWindow<Settings>
     glow::gui::SystemColors m_systemColors;
 
     bool m_visible{false};
-    int m_offsetHeight{};
-    float m_devicePixelRatio{};
+    Dimensions m_dimensions;
 };

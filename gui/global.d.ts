@@ -40,8 +40,8 @@ export declare global {
 
         interface Dimensions {
             devicePixelRatio: number;
-            height: number;
-            width: number;
+            offsetHeight: number;
+            offsetWidth: number;
         }
 
         interface SystemColors {
