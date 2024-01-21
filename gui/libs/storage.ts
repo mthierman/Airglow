@@ -8,7 +8,7 @@ export const getSessionStorage = (key: string, defaultValue: any) => {
     }
 };
 
-export const getPositionStorage = () => {
+export const getLayoutStorage = () => {
     const value: App.Layout = JSON.parse(sessionStorage.getItem("position")!);
 
     const defaultValue: App.Layout = {

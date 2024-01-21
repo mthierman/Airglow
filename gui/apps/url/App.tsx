@@ -1,6 +1,6 @@
 import { SyntheticEvent, useState, useRef, useEffect } from "react";
 import * as url from "@libs/url";
-import { getSessionStorage, getPositionStorage, getSystemColorsStorage } from "@libs/storage";
+import { getSessionStorage, getLayoutStorage, getSystemColorsStorage } from "@libs/storage";
 
 export default function App() {
     const container = useRef<HTMLDivElement | null>(null);
@@ -16,7 +16,7 @@ export default function App() {
         current: "",
         loaded: getSessionStorage("second", ""),
     });
-    const [position, setPosition] = useState<App.Layout>(getPositionStorage());
+    const [position, setPosition] = useState<App.Layout>(getLayoutStorage());
     const [systemColors, setSystemColors] = useState<App.SystemColors>(getSystemColorsStorage());
 
     useEffect(() => {

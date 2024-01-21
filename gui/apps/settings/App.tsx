@@ -6,6 +6,8 @@ export default function App() {
     const [devicePixelRatio, setDevicePixelRatio] = useState(window.devicePixelRatio);
     const [offsetHeight, setOffsetHeight] = useState(0);
     const [offsetWidth, setOffsetWidth] = useState(0);
+    const [systemColors, setSystemColors] = useState<App.SystemColors>(getSystemColorsStorage());
+
     const settingsForm = useRef<HTMLFormElement | null>(null);
     const firstInput = useRef<HTMLInputElement | null>(null);
     const secondInput = useRef<HTMLInputElement | null>(null);
@@ -17,23 +19,20 @@ export default function App() {
         current: "",
         loaded: getSessionStorage("second", ""),
     });
-    const [systemColors, setSystemColors] = useState<App.SystemColors>(getSystemColorsStorage());
 
     useEffect(() => {
         window.chrome.webview.postMessage({ initialized: true });
     }, []);
 
-    useEffect(() => {
-        document.documentElement.style.setProperty("--accent", systemColors.accent);
-        document.documentElement.style.setProperty("--accentDark1", systemColors.accentDark1);
-        document.documentElement.style.setProperty("--accentDark2", systemColors.accentDark2);
-        document.documentElement.style.setProperty("--accentDark3", systemColors.accentDark3);
-        document.documentElement.style.setProperty("--accentLight1", systemColors.accentLight1);
-        document.documentElement.style.setProperty("--accentLight2", systemColors.accentLight2);
-        document.documentElement.style.setProperty("--accentLight3", systemColors.accentLight3);
-    }, [systemColors]);
-
     useLayoutEffect(() => {
+        setOffsetHeight(settingsForm.current?.offsetHeight!);
+        setOffsetWidth(settingsForm.current?.offsetWidth!);
+        window.chrome.webview.postMessage({
+            devicePixelRatio: devicePixelRatio,
+            offsetHeight: offsetHeight * devicePixelRatio,
+            offsetWidth: offsetWidth * devicePixelRatio,
+        });
+
         const onResize = () => {
             setDevicePixelRatio(window.devicePixelRatio);
         };
@@ -45,15 +44,15 @@ export default function App() {
         };
     });
 
-    useLayoutEffect(() => {
-        setOffsetHeight(settingsForm.current?.offsetHeight!);
-        setOffsetWidth(settingsForm.current?.offsetWidth!);
-        window.chrome.webview.postMessage({
-            devicePixelRatio: devicePixelRatio,
-            offsetHeight: offsetHeight * devicePixelRatio,
-            offsetWidth: offsetWidth * devicePixelRatio,
-        });
-    });
+    useEffect(() => {
+        document.documentElement.style.setProperty("--accent", systemColors.accent);
+        document.documentElement.style.setProperty("--accentDark1", systemColors.accentDark1);
+        document.documentElement.style.setProperty("--accentDark2", systemColors.accentDark2);
+        document.documentElement.style.setProperty("--accentDark3", systemColors.accentDark3);
+        document.documentElement.style.setProperty("--accentLight1", systemColors.accentLight1);
+        document.documentElement.style.setProperty("--accentLight2", systemColors.accentLight2);
+        document.documentElement.style.setProperty("--accentLight3", systemColors.accentLight3);
+    }, [systemColors]);
 
     useEffect(() => {
         const onMessage = (event: Event) => {
@@ -157,9 +156,22 @@ export default function App() {
         }
     };
 
+    const handleClick = async (event: SyntheticEvent) => {
+        let input = event.target as HTMLInputElement;
+        let nativeEvent = event.nativeEvent as MouseEvent;
+
+        if (input.id === "firstInput") {
+            if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(first.loaded);
+        }
+
+        if (input.id === "secondInput") {
+            if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(second.loaded);
+        }
+    };
+
     return (
         <form
-            className="grid grid-flow-row gap-2 p-2 text-center min-w-max"
+            className="grid min-w-max grid-flow-row gap-2 p-2 text-center"
             id="settingsForm"
             method="post"
             autoComplete="off"
@@ -178,7 +190,8 @@ export default function App() {
                 value={first.current}
                 placeholder={first.loaded}
                 title={first.loaded}
-                onChange={handleChange}></input>
+                onChange={handleChange}
+                onClick={handleClick}></input>
             <h1 className="setting">
                 <span>🌃</span>
                 <span className="settingTitle">Second Home</span>
@@ -191,7 +204,8 @@ export default function App() {
                 value={second.current}
                 placeholder={second.loaded}
                 title={second.loaded}
-                onChange={handleChange}></input>
+                onChange={handleChange}
+                onClick={handleClick}></input>
             <input type="submit" hidden />
         </form>
     );
