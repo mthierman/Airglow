@@ -30,9 +30,10 @@ auto CALLBACK Settings::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     {
         auto gwlId{static_cast<intptr_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
 
-        auto r{&self->m_clientRect};
-        auto width{r->right - r->left};
-        auto height{r->bottom - r->top};
+        auto rect{&self->m_clientRect};
+
+        auto width{rect->right - rect->left};
+        auto height{rect->bottom - rect->top};
 
         auto hdwp{BeginDeferWindowPos(1)};
 
@@ -85,7 +86,7 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
     {
         auto json{nlohmann::json::parse(notification->message)};
 
-        log(json.dump());
+        // log(json.dump());
 
         if (json.contains("initialized"))
         {
@@ -101,14 +102,24 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
         //     notify(m_app, msg::home_changed, notification->message);
         // }
 
+        if (json.contains("devicePixelRatio"))
+        {
+            m_devicePixelRatio = json["devicePixelRatio"].get<float>();
+        }
+
         if (json.contains("offsetHeight"))
         {
-            // m_offsetHeight = json["offsetHeight"].get<int>();
-            // RECT rect{};
-            // rect.bottom = m_offsetHeight;
-            // AdjustWindowRectExForDpi(&rect, WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, 0, 0, dpi());
-            // SetWindowPos(hwnd(), nullptr, 0, 0, 400, static_cast<int>(rect.bottom - rect.top),
-            //              SWP_NOMOVE);
+            m_offsetHeight = json["offsetHeight"].get<int>();
+            RECT rect{};
+            rect.bottom = m_offsetHeight;
+            AdjustWindowRectExForDpi(&rect, WS_OVERLAPPEDWINDOW, 0, 0, dpi());
+            // m_offsetHeight = rect.bottom;
+            // log(std::to_string(m_offsetHeight));
+            log(std::to_string(rect.bottom));
+            log(std::to_string(rect.bottom - rect.top));
+
+            SetWindowPos(hwnd(), nullptr, 0, 0, 400, static_cast<int>(rect.bottom - rect.top),
+                         SWP_NOMOVE);
         }
 
         break;
@@ -196,7 +207,7 @@ auto Settings::on_size(WPARAM wParam, LPARAM lParam) -> int
 {
     client_rect();
     EnumChildWindows(hwnd(), EnumChildProc, reinterpret_cast<intptr_t>(this));
-    Sleep(1);
+    // Sleep(1);
 
     return 0;
 }

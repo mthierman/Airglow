@@ -1,48 +1,43 @@
-import { SyntheticEvent, useState, useRef, useEffect } from "react";
-// import * as url from "@libs/url";
-// import { getSessionStorage, getSystemColorsStorage } from "@libs/storage";
+import { useState, useRef, useEffect } from "react";
 
 export default function App() {
     const container = useRef<HTMLDivElement | null>(null);
-    let initialized = false;
-    useEffect(() => {
-        if (!initialized) {
-            window.chrome.webview.postMessage({ initialized: true });
-
-            window.chrome.webview.postMessage({
-                offsetHeight: Math.round(
-                    container.current!.offsetHeight *
-                        (Math.round(window.devicePixelRatio * 1e2) / 1e2),
-                ),
-            });
-
-            initialized = true;
-        }
-    }, []);
+    const [height, setHeight] = useState(null);
 
     useEffect(() => {
-        const onMessage = (event: Event) => {
-            const data = (event as MessageEvent).data;
-            console.log(data);
-        };
-
-        window.chrome.webview.addEventListener("message", onMessage);
-
-        return () => {
-            window.chrome.webview.removeEventListener("message", onMessage);
-        };
+        console.log(container.current?.offsetHeight);
+        window.chrome.webview.postMessage({ offsetHeight: container.current?.offsetHeight });
     });
 
     useEffect(() => {
-        const onResize = (event: Event) => {
-            // const data = (event as MessageEvent).data;
-            // console.log(data);
+        window.chrome.webview.postMessage({ initialized: true });
+    }, []);
 
+    // useEffect(() => {
+    //     const onMessage = (event: Event) => {
+    //         const data = (event as MessageEvent).data;
+    //         console.log(data);
+    //     };
+
+    //     window.chrome.webview.addEventListener("message", onMessage);
+
+    //     return () => {
+    //         window.chrome.webview.removeEventListener("message", onMessage);
+    //     };
+    // });
+
+    useEffect(() => {
+        const onResize = () => {
+            let height = container.current?.offsetHeight;
+            let width = container.current?.offsetWidth;
+            // let scale = Math.round(window.devicePixelRatio * 1e2) / 1e2;
+            let scale = Math.ceil(window.devicePixelRatio);
+            console.log(`${height} x ${scale}`);
+
+            window.chrome.webview.postMessage({ offsetHeight: height! * scale });
+            window.chrome.webview.postMessage({ offsetWidth: width! * scale });
             window.chrome.webview.postMessage({
-                offsetHeight: Math.round(
-                    container.current!.offsetHeight *
-                        (Math.round(window.devicePixelRatio * 1e2) / 1e2),
-                ),
+                devicePixelRatio: scale,
             });
         };
 
@@ -64,3 +59,7 @@ export default function App() {
         </div>
     );
 }
+
+// offsetHeight: Math.round(
+//     container.current!.offsetHeight *
+//         (Math.round(window.devicePixelRatio * 1e2) / 1e2),

@@ -403,7 +403,7 @@ auto Window::on_size(WPARAM wParam, LPARAM lParam) -> int
 {
     client_rect();
     EnumChildWindows(hwnd(), EnumChildProc, reinterpret_cast<intptr_t>(this));
-    Sleep(1);
+    // Sleep(1);
 
     return 0;
 }

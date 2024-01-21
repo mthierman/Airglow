@@ -38,4 +38,5 @@ struct Settings : public glow::window::BaseWindow<Settings>
 
     bool m_visible{false};
     int m_offsetHeight{};
+    float m_devicePixelRatio{};
 };
