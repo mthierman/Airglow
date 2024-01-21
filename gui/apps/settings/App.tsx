@@ -45,9 +45,7 @@ export default function App() {
         };
     });
 
-    useEffect(() => {
-        // setOffsetHeight(document.body.offsetHeight);
-        // setOffsetWidth(document.body.offsetWidth);
+    useLayoutEffect(() => {
         setOffsetHeight(settingsForm.current?.offsetHeight!);
         setOffsetWidth(settingsForm.current?.offsetWidth!);
         window.chrome.webview.postMessage({
@@ -161,7 +159,7 @@ export default function App() {
 
     return (
         <form
-            className="grid grid-flow-row gap-2 p-2 text-center"
+            className="grid grid-flow-row gap-2 p-2 text-center min-w-max"
             id="settingsForm"
             method="post"
             autoComplete="off"

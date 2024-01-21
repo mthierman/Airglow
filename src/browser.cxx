@@ -146,7 +146,7 @@ auto SideBrowser::source_changed_handler(ICoreWebView2* sender,
     if (FAILED(sender->get_Source(&source))) { return S_OK; }
 
     notify(m_parent, msg::source_changed,
-           nlohmann::json{{"first", glow::text::narrow(source.get())}}.dump());
+           nlohmann::json{{"second", glow::text::narrow(source.get())}}.dump());
 
     return S_OK;
 }
