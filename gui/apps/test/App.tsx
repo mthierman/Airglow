@@ -1,19 +1,19 @@
 import { useState, useRef, useEffect, useLayoutEffect } from "react";
 
 export default function App() {
-    const container = useRef<HTMLDivElement | null>(null);
-
     const [devicePixelRatio, setDevicePixelRatio] = useState(window.devicePixelRatio);
     const [offsetHeight, setOffsetHeight] = useState(0);
     const [offsetWidth, setOffsetWidth] = useState(0);
 
-    // useEffect(() => {
-    //     window.chrome.webview.postMessage({ initialized: true });
-    // }, []);
+    useEffect(() => {
+        window.chrome.webview.postMessage({ initialized: true });
+    }, []);
 
     useLayoutEffect(() => {
         const onResize = () => {
             setDevicePixelRatio(window.devicePixelRatio);
+            console.log(document.body.offsetHeight);
+            console.log(document.body.offsetWidth);
         };
 
         addEventListener("resize", onResize);
@@ -24,8 +24,8 @@ export default function App() {
     });
 
     useEffect(() => {
-        setOffsetHeight(container.current?.offsetHeight!);
-        setOffsetWidth(container.current?.offsetWidth!);
+        setOffsetHeight(document.body.offsetHeight);
+        setOffsetWidth(document.body.offsetWidth);
         window.chrome.webview.postMessage({
             devicePixelRatio: devicePixelRatio,
             offsetHeight: offsetHeight * devicePixelRatio,
@@ -47,13 +47,11 @@ export default function App() {
     });
 
     return (
-        <div ref={container} id="container" className="w-fit bg-red-400 p-4">
-            <div>
-                <button className="border-2 border-red-400 p-2">Test</button>
-                <button className="border-2 border-red-400 p-2">Test</button>
-                <button className="border-2 border-red-400 p-2">Test</button>
-                <button className="border-2 border-red-400 p-2">Test</button>
-            </div>
+        <div id="container" className="grid bg-red-400">
+            <button className="border-2 border-green-400 p-2">Test</button>
+            <button className="border-2 border-green-400 p-2">Test</button>
+            <button className="border-2 border-green-400 p-2">Test</button>
+            <button className="border-2 border-green-400 p-2">Test</button>
         </div>
     );
 }
