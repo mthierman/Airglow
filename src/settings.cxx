@@ -101,15 +101,15 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
         //     notify(m_app, msg::home_changed, notification->message);
         // }
 
-        // if (json.contains("height"))
-        // {
-        //     m_height = json["height"].get<int>();
-        //     RECT rect{};
-        //     rect.bottom = m_height;
-        //     AdjustWindowRectExForDpi(&rect, WS_OVERLAPPEDWINDOW, 0, 0, dpi());
-        //     SetWindowPos(hwnd(), nullptr, 0, 0, 400,
-        //                  static_cast<int>((rect.bottom - rect.top) * m_scale), SWP_NOMOVE);
-        // }
+        if (json.contains("offsetHeight"))
+        {
+            // m_offsetHeight = json["offsetHeight"].get<int>();
+            // RECT rect{};
+            // rect.bottom = m_offsetHeight;
+            // AdjustWindowRectExForDpi(&rect, WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, 0, 0, dpi());
+            // SetWindowPos(hwnd(), nullptr, 0, 0, 400, static_cast<int>(rect.bottom - rect.top),
+            //              SWP_NOMOVE);
+        }
 
         break;
     }

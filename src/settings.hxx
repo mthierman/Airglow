@@ -31,13 +31,11 @@ struct Settings : public glow::window::BaseWindow<Settings>
     auto on_size(WPARAM wParam, LPARAM lParam) -> int;
 
     HWND m_app{nullptr};
-
-    std::map<std::string, std::string> m_home;
-
     std::unique_ptr<SettingsBrowser> m_browser;
 
+    std::map<std::string, std::string> m_home;
     glow::gui::SystemColors m_systemColors;
 
     bool m_visible{false};
-    int m_height{};
+    int m_offsetHeight{};
 };
