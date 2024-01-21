@@ -109,37 +109,22 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         if (json.contains("devicePixelRatio"))
         {
-            log(json.dump());
+            // log(json.dump());
             m_dimensions.devicePixelRatio = json["devicePixelRatio"].get<float>();
+            m_dimensions.offsetHeight = json["offsetHeight"].get<int>();
+            m_dimensions.offsetWidth = json["offsetWidth"].get<int>();
+
             log(std::to_string(m_dimensions.devicePixelRatio));
-            // m_dimensions.offsetHeight = json["offsetHeight"].get<float>();
-            // auto height = json["offsetHeight"].get<float>();
-            // log(std::to_string(height));
-            // m_dimensions.offsetWidth = json["offsetWidth"].get<int>();
+            log(std::to_string(m_dimensions.offsetHeight));
+            log(std::to_string(m_dimensions.offsetWidth));
 
-            // RECT rect{};
-            // rect.bottom = m_dimensions.offsetHeight;
-            // rect.right = m_dimensions.offsetWidth;
-            // AdjustWindowRectExForDpi(&rect, WS_OVERLAPPEDWINDOW, 0, 0, dpi());
-            // SetWindowPos(hwnd(), nullptr, 0, 0, static_cast<int>(rect.right - rect.left),
-            //              static_cast<int>(rect.bottom - rect.top), SWP_NOMOVE);
+            RECT rect{};
+            rect.bottom = m_dimensions.offsetHeight;
+            rect.right = m_dimensions.offsetWidth;
+            AdjustWindowRectExForDpi(&rect, WS_OVERLAPPEDWINDOW, 0, 0, dpi());
+            SetWindowPos(hwnd(), nullptr, 0, 0, static_cast<int>(rect.right - rect.left),
+                         static_cast<int>(rect.bottom - rect.top), SWP_NOMOVE);
         }
-
-        if (json.contains("offsetHeight"))
-        {
-            auto height = json["offsetHeight"].get<float>();
-            log(std::to_string(height));
-        }
-
-        // if (json.contains("offsetHeight"))
-        // {
-        //     m_offsetHeight = json["offsetHeight"].get<int>();
-        //     RECT rect{};
-        //     rect.bottom = m_offsetHeight;
-        //     AdjustWindowRectExForDpi(&rect, WS_OVERLAPPEDWINDOW, 0, 0, dpi());
-        //     SetWindowPos(hwnd(), nullptr, 0, 0, 400, static_cast<int>(rect.bottom - rect.top),
-        //                  SWP_NOMOVE);
-        // }
 
         break;
     }

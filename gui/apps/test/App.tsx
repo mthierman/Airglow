@@ -2,8 +2,14 @@ import { useState, useRef, useEffect, useLayoutEffect } from "react";
 
 export default function App() {
     const container = useRef<HTMLDivElement | null>(null);
-    const [height, setHeight] = useState(0);
+
     const [devicePixelRatio, setDevicePixelRatio] = useState(window.devicePixelRatio);
+    const [offsetHeight, setOffsetHeight] = useState(0);
+    const [offsetWidth, setOffsetWidth] = useState(0);
+
+    // useEffect(() => {
+    //     window.chrome.webview.postMessage({ initialized: true });
+    // }, []);
 
     useLayoutEffect(() => {
         const onResize = () => {
@@ -18,13 +24,14 @@ export default function App() {
     });
 
     useEffect(() => {
-        setHeight(container.current?.offsetHeight!);
-        window.chrome.webview.postMessage({ offsetHeight: height * devicePixelRatio });
+        setOffsetHeight(container.current?.offsetHeight!);
+        setOffsetWidth(container.current?.offsetWidth!);
+        window.chrome.webview.postMessage({
+            devicePixelRatio: devicePixelRatio,
+            offsetHeight: offsetHeight * devicePixelRatio,
+            offsetWidth: offsetWidth * devicePixelRatio,
+        });
     });
-
-    useEffect(() => {
-        window.chrome.webview.postMessage({ initialized: true });
-    }, []);
 
     useEffect(() => {
         const onMessage = (event: Event) => {
@@ -40,7 +47,7 @@ export default function App() {
     });
 
     return (
-        <div ref={container} id="container" className="p-4">
+        <div ref={container} id="container" className="w-fit bg-red-400 p-4">
             <div>
                 <button className="border-2 border-red-400 p-2">Test</button>
                 <button className="border-2 border-red-400 p-2">Test</button>
