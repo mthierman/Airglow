@@ -36,8 +36,6 @@ export default function App() {
     useLayoutEffect(() => {
         const onResize = () => {
             setDevicePixelRatio(window.devicePixelRatio);
-            console.log(document.body.offsetHeight);
-            console.log(document.body.offsetWidth);
         };
 
         addEventListener("resize", onResize);
@@ -48,8 +46,10 @@ export default function App() {
     });
 
     useEffect(() => {
-        setOffsetHeight(document.body.offsetHeight);
-        setOffsetWidth(document.body.offsetWidth);
+        // setOffsetHeight(document.body.offsetHeight);
+        // setOffsetWidth(document.body.offsetWidth);
+        setOffsetHeight(settingsForm.current?.offsetHeight!);
+        setOffsetWidth(settingsForm.current?.offsetWidth!);
         window.chrome.webview.postMessage({
             devicePixelRatio: devicePixelRatio,
             offsetHeight: offsetHeight * devicePixelRatio,
@@ -160,43 +160,41 @@ export default function App() {
     };
 
     return (
-        <div id="container" className="p-4">
-            <form
-                className="grid grid-flow-row gap-2 text-center"
-                id="settingsForm"
-                method="post"
-                autoComplete="off"
-                spellCheck="false"
-                ref={settingsForm}
-                onSubmit={handleSubmit}>
-                <h1 className="setting">
-                    <span>🌆</span>
-                    <span className="settingTitle">First Home</span>
-                </h1>
-                <input
-                    className="input"
-                    type="text"
-                    id="firstInput"
-                    ref={firstInput}
-                    value={first.current}
-                    placeholder={first.loaded}
-                    title={first.loaded}
-                    onChange={handleChange}></input>
-                <h1 className="setting">
-                    <span>🌃</span>
-                    <span className="settingTitle">Second Home</span>
-                </h1>
-                <input
-                    className="input"
-                    type="text"
-                    id="secondInput"
-                    ref={secondInput}
-                    value={second.current}
-                    placeholder={second.loaded}
-                    title={second.loaded}
-                    onChange={handleChange}></input>
-                <input type="submit" hidden />
-            </form>
-        </div>
+        <form
+            className="grid grid-flow-row gap-2 p-2 text-center"
+            id="settingsForm"
+            method="post"
+            autoComplete="off"
+            spellCheck="false"
+            ref={settingsForm}
+            onSubmit={handleSubmit}>
+            <h1 className="setting">
+                <span>🌆</span>
+                <span className="settingTitle">First Home</span>
+            </h1>
+            <input
+                className="input"
+                type="text"
+                id="firstInput"
+                ref={firstInput}
+                value={first.current}
+                placeholder={first.loaded}
+                title={first.loaded}
+                onChange={handleChange}></input>
+            <h1 className="setting">
+                <span>🌃</span>
+                <span className="settingTitle">Second Home</span>
+            </h1>
+            <input
+                className="input"
+                type="text"
+                id="secondInput"
+                ref={secondInput}
+                value={second.current}
+                placeholder={second.loaded}
+                title={second.loaded}
+                onChange={handleChange}></input>
+            <input type="submit" hidden />
+        </form>
     );
 }
