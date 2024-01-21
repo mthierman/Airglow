@@ -97,16 +97,6 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
             }
         }
 
-        // if (json.contains("first") || json.contains("second"))
-        // {
-        //     notify(m_app, msg::home_changed, notification->message);
-        // }
-
-        // if (json.contains("devicePixelRatio"))
-        // {
-        //     m_devicePixelRatio = json["devicePixelRatio"].get<float>();
-        // }
-
         if (json.contains("devicePixelRatio"))
         {
             m_dimensions = json;
@@ -116,6 +106,11 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
             AdjustWindowRectExForDpi(&rect, WS_OVERLAPPEDWINDOW, 0, 0, dpi());
             SetWindowPos(hwnd(), nullptr, 0, 0, static_cast<int>(rect.right - rect.left),
                          static_cast<int>(rect.bottom - rect.top), SWP_NOMOVE);
+        }
+
+        if (json.contains("first") || json.contains("second"))
+        {
+            notify(m_app, msg::home_changed, notification->message);
         }
 
         break;

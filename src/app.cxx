@@ -45,6 +45,7 @@ auto App::operator()() -> int
 
         m_windowSettings = std::make_unique<Settings>(hwnd(), m_url.home);
         m_windowSettings->reveal();
+        m_windowSettings->m_visible = true;
     }
     catch (const std::exception& e)
     {
@@ -130,6 +131,7 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
     case msg::toggle_settings:
     {
+        if (m_windowSettings->m_visible) log("visible is true");
         m_windowSettings->m_visible ? m_windowSettings->hide() : m_windowSettings->show();
 
         break;
