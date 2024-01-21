@@ -9,22 +9,20 @@
     font-weight: normal;
 }
 
+html {
+    /* scrollbar-gutter: stable; */
+    @apply h-full w-full;
+}
+
 body {
-    @apply bg-blue-950;
+    @apply h-full w-full bg-blue-950;
 }
 
 #root {
-    @apply bg-amber-950 grid;
+    @apply grid min-h-full min-w-full grid-flow-col content-center bg-amber-950;
 }
 
-.input {
-    @apply w-full text-ellipsis rounded border-b-2 border-transparent bg-white p-2 text-center font-medium text-accentDark1 shadow-sm shadow-black outline-none duration-300 ease-in-out focus:border-accent dark:bg-black dark:text-accent dark:focus:border-accentLight1;
-}
-
-.setting {
-    @apply grid grid-flow-col place-content-between text-4xl;
-}
-
-.settingTitle {
-    @apply self-end text-lg font-bold;
+.button {
+    /* @apply rounded-md bg-black w-fit h-fit place-self-center px-4 py-2; */
+    @apply h-fit w-fit place-self-center rounded-md bg-black px-4 py-2;
 }
