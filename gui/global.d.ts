@@ -30,12 +30,18 @@ export declare global {
             loaded: string;
         }
 
-        interface Position {
+        interface Layout {
             bar: number;
             border: number;
             horizontal: boolean;
             split: boolean;
             swapped: boolean;
+        }
+
+        interface Dimensions {
+            devicePixelRatio: number;
+            height: number;
+            width: number;
         }
 
         interface SystemColors {

@@ -16,7 +16,7 @@ export default function App() {
         current: "",
         loaded: getSessionStorage("second", ""),
     });
-    const [position, setPosition] = useState<App.Position>(getPositionStorage());
+    const [position, setPosition] = useState<App.Layout>(getPositionStorage());
     const [systemColors, setSystemColors] = useState<App.SystemColors>(getSystemColorsStorage());
 
     useEffect(() => {

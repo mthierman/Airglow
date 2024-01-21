@@ -9,9 +9,9 @@ export const getSessionStorage = (key: string, defaultValue: any) => {
 };
 
 export const getPositionStorage = () => {
-    const value: App.Position = JSON.parse(sessionStorage.getItem("position")!);
+    const value: App.Layout = JSON.parse(sessionStorage.getItem("position")!);
 
-    const defaultValue: App.Position = {
+    const defaultValue: App.Layout = {
         bar: 0,
         border: 0,
         horizontal: false,
