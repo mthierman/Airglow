@@ -34,11 +34,23 @@
             </Component>
             <Component Directory="Assets">
                 <File Source="build/Release/gui/assets/home.js" />
+            </Component>
+            <Component Directory="Assets">
                 <File Source="build/Release/gui/assets/index.css" />
+            </Component>
+            <Component Directory="Assets">
                 <File Source="build/Release/gui/assets/index.js" />
+            </Component>
+            <Component Directory="Assets">
                 <File Source="build/Release/gui/assets/settings.js" />
+            </Component>
+            <Component Directory="Assets">
                 <File Source="build/Release/gui/assets/storage.js" />
+            </Component>
+            <Component Directory="Assets">
                 <File Source="build/Release/gui/assets/test.js" />
+            </Component>
+            <Component Directory="Assets">
                 <File Source="build/Release/gui/assets/url.js" />
             </Component>
             <Component Directory="Home">
