@@ -8,11 +8,8 @@
 
 #include "window.hxx"
 
-Window::Window(HWND app, std::map<std::string, std::string> current) : BaseWindow("Airglow")
+Window::Window(HWND app, URL& url) : BaseWindow("Airglow"), m_app{app}, m_url{url}
 {
-    m_app = app;
-    m_current = current;
-
     notify(m_app, msg::window_create);
 
     dwm_caption_color(false);
@@ -333,8 +330,8 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
             if (!m_initialized)
             {
                 m_initialized = true;
-                if (m_browsers.first) { m_browsers.first->navigate(m_current["first"]); }
-                if (m_browsers.second) { m_browsers.second->navigate(m_current["second"]); }
+                if (m_browsers.first) { m_browsers.first->navigate(m_url.home["first"]); }
+                if (m_browsers.second) { m_browsers.second->navigate(m_url.home["second"]); }
             }
 
             if (m_browsers.url)

@@ -8,12 +8,8 @@
 
 #include "settings.hxx"
 
-Settings::Settings(HWND app, std::map<std::string, std::string> home)
-    : BaseWindow("Airglow - Settings")
+Settings::Settings(HWND app, URL& url) : BaseWindow("Airglow - Settings"), m_app{app}, m_url{url}
 {
-    m_app = app;
-    m_home = home;
-
     dwm_caption_color(false);
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_TRANSIENTWINDOW);
     theme();
@@ -92,19 +88,17 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
             if (m_browser)
             {
                 m_browser->post_json(nlohmann::json(m_systemColors));
-                m_browser->post_json(nlohmann::json(m_home));
+                m_browser->post_json(nlohmann::json(m_url.home));
             }
         }
 
         else if (json.contains("first"))
         {
-            m_home["first"] = json["first"].get<std::string>();
             notify(m_app, msg::home_changed, notification->message);
         }
 
         else if (json.contains("second"))
         {
-            m_home["second"] = json["second"].get<std::string>();
             notify(m_app, msg::home_changed, notification->message);
         }
 

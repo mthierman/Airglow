@@ -40,10 +40,10 @@ auto App::operator()() -> int
             m_url.current["second"] = m_url.home["second"];
         }
 
-        m_windowMain = std::make_unique<Window>(hwnd(), m_url.current);
+        m_windowMain = std::make_unique<Window>(hwnd(), m_url);
         m_windowMain->reveal();
 
-        m_windowSettings = std::make_unique<Settings>(hwnd(), m_url.home);
+        m_windowSettings = std::make_unique<Settings>(hwnd(), m_url);
         m_windowSettings->reveal();
         m_windowSettings->m_visible = true;
     }

@@ -49,7 +49,7 @@ struct Window : public glow::window::BaseWindow<Window>
 
     using glow::window::BaseWindow<Window>::BaseWindow;
 
-    Window(HWND app, std::map<std::string, std::string> current);
+    Window(HWND app, URL& url);
 
     static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
     auto default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
@@ -61,7 +61,8 @@ struct Window : public glow::window::BaseWindow<Window>
     auto on_sys_key_down(WPARAM wParam, LPARAM lParam) -> int;
 
     HWND m_app{nullptr};
-    std::map<std::string, std::string> m_current;
+    URL& m_url;
+
     Browsers m_browsers;
     Positions m_positions;
     Layout m_layout;
