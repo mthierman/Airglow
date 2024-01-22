@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+    xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://wixtoolset.org/schemas/v4/wxs https://raw.githubusercontent.com/wixtoolset/web/master/src/xsd4/wix.xsd">
+    xsi:schemaLocation="http://wixtoolset.org/schemas/v4/wxs https://raw.githubusercontent.com/wixtoolset/web/master/src/xsd4/wix.xsd
+                        http://wixtoolset.org/schemas/v4/wxs/ui https://raw.githubusercontent.com/wixtoolset/web/master/src/xsd4/ui.xsd">
     <Package Name="Airglow" Manufacturer="Mike Thierman"
         UpgradeCode="B804DB35-0FC3-4E3E-8503-A5211287E156"
         Version="1.6.0" InstallerVersion="500">
@@ -23,6 +25,9 @@
         </StandardDirectory>
 
         <MediaTemplate EmbedCab="yes" />
+
+        <ui:WixUI Id="WixUI_InstallDir" InstallDirectory="LocalAppData" />
+        <WixVariable Id="WixUILicenseRtf" Value="LICENSE.rtf" />
 
         <Feature Id="Main">
             <Component Directory="LocalAppData">
