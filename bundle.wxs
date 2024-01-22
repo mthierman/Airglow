@@ -10,7 +10,8 @@
         </BootstrapperApplication>
         <Chain>
             <ExePackage SourceFile="D:/Microsoft/VC_redist.x64.exe"
-                DetectCondition="false" UninstallArguments="" />
+                DetectCondition="false" InstallArguments="/install /passive /quiet /norestart"
+                UninstallArguments="/uninstall" />
             <MsiPackage SourceFile="build/Airglow.msi" />
         </Chain>
     </Bundle>
