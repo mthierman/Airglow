@@ -44,6 +44,7 @@ auto App::operator()() -> int
         m_windowMain->reveal();
 
         m_windowSettings = std::make_unique<Settings>(hwnd(), m_url);
+        SetWindowPos(m_windowSettings->hwnd(), nullptr, 0, 0, 300, 400, SWP_NOMOVE);
         m_windowSettings->reveal();
         m_windowSettings->m_visible = true;
     }
