@@ -7,6 +7,7 @@ const defaults: UserConfig = {
     base: "./",
     root: "gui/apps",
     build: {
+        emptyOutDir: true,
         outDir: "../../build/Release/gui",
         rollupOptions: {
             input: {
