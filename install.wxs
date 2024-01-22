@@ -4,18 +4,67 @@
     xsi:schemaLocation="http://wixtoolset.org/schemas/v4/wxs https://raw.githubusercontent.com/wixtoolset/web/master/src/xsd4/wix.xsd">
     <Package Name="Airglow" Manufacturer="mthierman"
         UpgradeCode="67120610-9552-4248-B3AD-4C4C28E0350A"
-        Version="0.0.1" InstallerVersion="500">
+        Version="1.6.0" InstallerVersion="500">
 
-        <StandardDirectory Id="ProgramFiles6432Folder">
+        <StandardDirectory Id="ProgramFilesFolder">
             <Directory Id="ProgramFiles" Name="ProgramFiles" />
+        </StandardDirectory>
+
+        <StandardDirectory Id="LocalAppDataFolder">
+            <Directory Id="LocalAppData" Name="Airglow">
+                <Directory Id="GUI" Name="gui">
+                    <Directory Id="Assets" Name="assets"></Directory>
+                    <Directory Id="Home" Name="home"></Directory>
+                    <Directory Id="Settings" Name="settings"></Directory>
+                    <Directory Id="URL" Name="url"></Directory>
+                </Directory>
+            </Directory>
+        </StandardDirectory>
+
+        <StandardDirectory Id="StartMenuFolder">
+            <Directory Id="StartMenu" Name="Programs"></Directory>
         </StandardDirectory>
 
         <MediaTemplate EmbedCab="yes" />
 
         <Feature Id="Main">
-            <Component Directory="ProgramFiles">
-                <File Source="build/Airglow.exe" />
+            <Component Directory="LocalAppData">
+                <File Source="build/Release/Airglow.exe" />
+                <Shortcut Name="Airglow" Directory="StartMenu" Advertise="yes" Icon="Airglow.exe" />
+            </Component>
+            <Component Directory="Assets">
+                <File Source="build/Release/gui/assets/home.js" />
+            </Component>
+            <Component Directory="Assets">
+                <File Source="build/Release/gui/assets/index.css" />
+            </Component>
+            <Component Directory="Assets">
+                <File Source="build/Release/gui/assets/index.js" />
+            </Component>
+            <Component Directory="Assets">
+                <File Source="build/Release/gui/assets/settings.js" />
+            </Component>
+            <Component Directory="Assets">
+                <File Source="build/Release/gui/assets/storage.js" />
+            </Component>
+            <Component Directory="Assets">
+                <File Source="build/Release/gui/assets/test.js" />
+            </Component>
+            <Component Directory="Assets">
+                <File Source="build/Release/gui/assets/url.js" />
+            </Component>
+            <Component Directory="Home">
+                <File Source="build/Release/gui/home/index.html" />
+            </Component>
+            <Component Directory="Settings">
+                <File Source="build/Release/gui/settings/index.html" />
+            </Component>
+            <Component Directory="URL">
+                <File Source="build/Release/gui/url/index.html" />
             </Component>
         </Feature>
+
+        <Icon Id="Airglow.exe" SourceFile="data/release.ico" />
+        <Property Id="ARPPRODUCTICON" Value="Airglow.exe" />
     </Package>
 </Wix>
