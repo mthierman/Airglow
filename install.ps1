@@ -1,1 +1,1 @@
-wix build .\test.wxs -o build/Airglow.msi
+wix build .\install.wxs -o build/Airglow.msi

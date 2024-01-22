@@ -58,11 +58,6 @@
             <Component Directory="URL">
                 <File Source="build/Release/gui/url/index.html" />
             </Component>
-
-            <Component Id="DesktopShortcut" Directory="DesktopFolder" Condition="DESKTOPSHORTCUT"
-                Guid="13DD216A-754D-4FC0-A872-7D265EDAC881">
-                <Shortcut Name="Airglow" Directory="DesktopFolder" Target="[#Airglow]" />
-            </Component>
         </Feature>
 
         <Icon Id="Airglow.exe" SourceFile="data/release.ico" />
