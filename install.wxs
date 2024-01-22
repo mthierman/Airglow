@@ -6,10 +6,6 @@
         UpgradeCode="67120610-9552-4248-B3AD-4C4C28E0350A"
         Version="1.6.0" InstallerVersion="500">
 
-        <StandardDirectory Id="ProgramFilesFolder">
-            <Directory Id="ProgramFiles" Name="ProgramFiles" />
-        </StandardDirectory>
-
         <StandardDirectory Id="LocalAppDataFolder">
             <Directory Id="LocalAppData" Name="Airglow">
                 <Directory Id="GUI" Name="gui">
@@ -29,7 +25,7 @@
 
         <Feature Id="Main">
             <Component Directory="LocalAppData">
-                <File Source="build/Release/Airglow.exe" />
+                <File Id="Airglow" Source="build/Release/Airglow.exe" />
                 <Shortcut Name="Airglow" Directory="StartMenu" Advertise="yes" Icon="Airglow.exe" />
             </Component>
             <Component Directory="Assets">
@@ -61,6 +57,11 @@
             </Component>
             <Component Directory="URL">
                 <File Source="build/Release/gui/url/index.html" />
+            </Component>
+
+            <Component Id="DesktopShortcut" Directory="DesktopFolder" Condition="DESKTOPSHORTCUT"
+                Guid="13DD216A-754D-4FC0-A872-7D265EDAC881">
+                <Shortcut Name="Airglow" Directory="DesktopFolder" Target="[#Airglow]" />
             </Component>
         </Feature>
 
