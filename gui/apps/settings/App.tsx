@@ -19,7 +19,6 @@ export default function App() {
     });
 
     useEffect(() => {
-        console.log("startup...");
         window.chrome.webview.postMessage({ initialized: true });
         document.documentElement.style.setProperty("--accent", systemColors.accent);
         document.documentElement.style.setProperty("--accentDark1", systemColors.accentDark1);
@@ -51,51 +50,33 @@ export default function App() {
             }
         };
 
-        window.chrome.webview.addEventListener("message", onMessage);
-
-        return () => {
-            window.chrome.webview.removeEventListener("message", onMessage);
-        };
-    });
-
-    useEffect(() => {
-        const onEscape = (event: KeyboardEvent) => {
-            const key = event.key;
-            if (event.ctrlKey && key === "r") event.preventDefault();
-            switch (key) {
-                case "Escape":
-                    if (document.activeElement === firstInput.current) {
-                        firstInput.current!.value = first.loaded;
-                        break;
-                    }
-                    if (document.activeElement === secondInput.current) {
-                        secondInput.current!.value = second.loaded;
-                        break;
-                    }
+        const onFocusOut = () => {
+            if (document.activeElement === firstInput.current) {
+                firstInput.current!.blur();
+            } else if (document.activeElement === secondInput.current) {
+                secondInput.current!.blur();
             }
         };
 
+        const onEscape = (event: KeyboardEvent) => {
+            const key = event.key;
+            if (key === "Escape") {
+                if (document.activeElement === firstInput.current) {
+                    firstInput.current!.value = first.loaded;
+                } else if (document.activeElement === secondInput.current) {
+                    secondInput.current!.value = second.loaded;
+                }
+            }
+        };
+
+        window.chrome.webview.addEventListener("message", onMessage);
+        form.current!.addEventListener("focusout", onFocusOut);
         document.addEventListener("keydown", onEscape);
 
         return () => {
+            window.chrome.webview.removeEventListener("message", onMessage);
+            form.current!.removeEventListener("focusout", onFocusOut);
             document.removeEventListener("keydown", onEscape);
-        };
-    });
-
-    useEffect(() => {
-        const onFocusOut = () => {
-            firstInput.current?.blur();
-            secondInput.current?.blur();
-        };
-
-        if (form.current) {
-            form.current.addEventListener("focusout", onFocusOut);
-        }
-
-        return () => {
-            if (form.current) {
-                form.current.removeEventListener("focusout", onFocusOut);
-            }
         };
     });
 
@@ -103,14 +84,14 @@ export default function App() {
         event.preventDefault();
         let form = event.target as HTMLFormElement;
 
-        if (firstInput.current == document.activeElement) {
+        if (document.activeElement === firstInput.current) {
             const parsed = url.parseUrl(firstInput.current?.value!).href;
             setFirst({ loaded: parsed, current: parsed });
             sessionStorage.setItem("first", parsed);
             window.chrome.webview.postMessage({ first: parsed });
         }
 
-        if (secondInput.current == document.activeElement) {
+        if (document.activeElement === secondInput.current) {
             const parsed = url.parseUrl(secondInput.current?.value!).href;
             setSecond({ loaded: parsed, current: parsed });
             sessionStorage.setItem("second", parsed);
@@ -125,9 +106,7 @@ export default function App() {
 
         if (input.id === "firstInput") {
             setFirst((prevState) => ({ ...prevState, current: input.value }));
-        }
-
-        if (input.id === "secondInput") {
+        } else if (input.id === "secondInput") {
             setSecond((prevState) => ({ ...prevState, current: input.value }));
         }
     };
@@ -138,9 +117,7 @@ export default function App() {
 
         if (input.id === "firstInput") {
             if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(first.loaded);
-        }
-
-        if (input.id === "secondInput") {
+        } else if (input.id === "secondInput") {
             if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(second.loaded);
         }
     };
