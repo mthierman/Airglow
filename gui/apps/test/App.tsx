@@ -56,12 +56,11 @@ export default function App() {
         };
 
         const onEscape = (event: KeyboardEvent) => {
-            const key = event.key;
-            if (key === "Escape") {
+            if (event.key === "Escape") {
                 if (document.activeElement === first.current) {
-                    first.current!.value = sessionStorage.getItem("first")!;
+                    setFirstCurrent(sessionStorage.getItem("first")!);
                 } else if (document.activeElement === second.current) {
-                    second.current!.value = sessionStorage.getItem("second")!;
+                    setSecondCurrent(sessionStorage.getItem("second")!);
                 }
             }
         };
@@ -79,29 +78,17 @@ export default function App() {
 
     const handleSubmit = (event: SyntheticEvent) => {
         event.preventDefault();
-
         if (document.activeElement === first.current) {
             const parsed = url.parseUrl(first.current?.value!).href;
             setFirstCurrent(parsed);
             sessionStorage.setItem("first", parsed);
             window.chrome.webview.postMessage({ first: parsed });
         }
-
         if (document.activeElement === second.current) {
             const parsed = url.parseUrl(second.current?.value!).href;
             setSecondCurrent(parsed);
             sessionStorage.setItem("second", parsed);
             window.chrome.webview.postMessage({ second: parsed });
-        }
-    };
-
-    const handleChange = (event: SyntheticEvent) => {
-        let input = event.target as HTMLInputElement;
-
-        if (document.activeElement === first.current) {
-            setFirstCurrent(input.value);
-        } else if (document.activeElement === second.current) {
-            setSecondCurrent(input.value);
         }
     };
 
@@ -116,36 +103,38 @@ export default function App() {
     };
 
     return (
-        <form
-            ref={form}
-            id="form"
-            method="post"
-            autoComplete="off"
-            spellCheck="false"
-            onSubmit={handleSubmit}>
-            <h1>🌆First Home</h1>
-            <input
-                ref={first}
-                id="first"
-                className="input"
-                type="text"
-                value={firstCurrent}
-                placeholder={sessionStorage.getItem("first")!}
-                title={sessionStorage.getItem("first")!}
-                onChange={handleChange}
-                onClick={handleClick}></input>
-            <h1>🌃Second Home</h1>
-            <input
-                ref={second}
-                id="second"
-                className="input"
-                type="text"
-                value={secondCurrent}
-                placeholder={sessionStorage.getItem("second")!}
-                title={sessionStorage.getItem("second")!}
-                onChange={handleChange}
-                onClick={handleClick}></input>
-            <input type="submit" hidden />
-        </form>
+        <>
+            <form
+                ref={form}
+                id="form"
+                method="post"
+                autoComplete="off"
+                spellCheck="false"
+                onSubmit={handleSubmit}>
+                <h1>🌆First Home</h1>
+                <input
+                    ref={first}
+                    id="first"
+                    className="input"
+                    type="text"
+                    value={firstCurrent}
+                    placeholder={sessionStorage.getItem("first")!}
+                    title={sessionStorage.getItem("first")!}
+                    onChange={(e) => setFirstCurrent(e.target.value)}
+                    onClick={handleClick}></input>
+                <h1>🌃Second Home</h1>
+                <input
+                    ref={second}
+                    id="second"
+                    className="input"
+                    type="text"
+                    value={secondCurrent}
+                    placeholder={sessionStorage.getItem("second")!}
+                    title={sessionStorage.getItem("second")!}
+                    onChange={(e) => setSecondCurrent(e.target.value)}
+                    onClick={handleClick}></input>
+                <input type="submit" hidden />
+            </form>
+        </>
     );
 }

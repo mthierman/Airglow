@@ -1,22 +1,16 @@
 import { SyntheticEvent, useState, useRef, useEffect } from "react";
 import * as url from "@libs/url";
-import { getSessionStorage, getSystemColorsStorage } from "@libs/storage";
+import { getSystemColorsStorage } from "@libs/storage";
 
 export default function App() {
-    const form = useRef<HTMLFormElement | null>(null);
-    const firstInput = useRef<HTMLInputElement | null>(null);
-    const secondInput = useRef<HTMLInputElement | null>(null);
-
     const [systemColors, setSystemColors] = useState<App.SystemColors>(getSystemColorsStorage());
 
-    const [first, setFirst] = useState<App.URL>({
-        current: "",
-        loaded: getSessionStorage("first", ""),
-    });
-    const [second, setSecond] = useState<App.URL>({
-        current: "",
-        loaded: getSessionStorage("second", ""),
-    });
+    const form = useRef<HTMLFormElement | null>(null);
+    const first = useRef<HTMLInputElement | null>(null);
+    const second = useRef<HTMLInputElement | null>(null);
+
+    const [firstCurrent, setFirstCurrent] = useState("");
+    const [secondCurrent, setSecondCurrent] = useState("");
 
     useEffect(() => {
         window.chrome.webview.postMessage({ initialized: true });
@@ -43,31 +37,30 @@ export default function App() {
             }
 
             if (data.first) {
-                setFirst({ loaded: data.first, current: data.first });
+                setFirstCurrent(data.first);
                 sessionStorage.setItem("first", data.first);
             }
 
             if (data.second) {
-                setSecond({ loaded: data.second, current: data.second });
+                setSecondCurrent(data.second);
                 sessionStorage.setItem("second", data.second);
             }
         };
 
         const onFocusOut = () => {
-            if (document.activeElement === firstInput.current) {
-                firstInput.current!.blur();
-            } else if (document.activeElement === secondInput.current) {
-                secondInput.current!.blur();
+            if (document.activeElement === first.current) {
+                first.current!.blur();
+            } else if (document.activeElement === second.current) {
+                second.current!.blur();
             }
         };
 
         const onEscape = (event: KeyboardEvent) => {
-            const key = event.key;
-            if (key === "Escape") {
-                if (document.activeElement === firstInput.current) {
-                    firstInput.current!.value = first.loaded;
-                } else if (document.activeElement === secondInput.current) {
-                    secondInput.current!.value = second.loaded;
+            if (event.key === "Escape") {
+                if (document.activeElement === first.current) {
+                    setFirstCurrent(sessionStorage.getItem("first")!);
+                } else if (document.activeElement === second.current) {
+                    setSecondCurrent(sessionStorage.getItem("second")!);
                 }
             }
         };
@@ -85,77 +78,63 @@ export default function App() {
 
     const handleSubmit = (event: SyntheticEvent) => {
         event.preventDefault();
-        let form = event.target as HTMLFormElement;
-
-        if (document.activeElement === firstInput.current) {
-            const parsed = url.parseUrl(firstInput.current?.value!).href;
-            setFirst({ loaded: parsed, current: parsed });
+        if (document.activeElement === first.current) {
+            const parsed = url.parseUrl(first.current?.value!).href;
+            setFirstCurrent(parsed);
             sessionStorage.setItem("first", parsed);
             window.chrome.webview.postMessage({ first: parsed });
         }
-
-        if (document.activeElement === secondInput.current) {
-            const parsed = url.parseUrl(secondInput.current?.value!).href;
-            setSecond({ loaded: parsed, current: parsed });
+        if (document.activeElement === second.current) {
+            const parsed = url.parseUrl(second.current?.value!).href;
+            setSecondCurrent(parsed);
             sessionStorage.setItem("second", parsed);
             window.chrome.webview.postMessage({ second: parsed });
-        }
-
-        form.reset();
-    };
-
-    const handleChange = (event: SyntheticEvent) => {
-        let input = event.target as HTMLInputElement;
-
-        if (input.id === "firstInput") {
-            setFirst((prevState) => ({ ...prevState, current: input.value }));
-        } else if (input.id === "secondInput") {
-            setSecond((prevState) => ({ ...prevState, current: input.value }));
         }
     };
 
     const handleClick = async (event: SyntheticEvent) => {
-        let input = event.target as HTMLInputElement;
         let nativeEvent = event.nativeEvent as MouseEvent;
 
-        if (input.id === "firstInput") {
-            if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(first.loaded);
-        } else if (input.id === "secondInput") {
-            if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(second.loaded);
+        if (document.activeElement === first.current) {
+            if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(firstCurrent);
+        } else if (document.activeElement === second.current) {
+            if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(secondCurrent);
         }
     };
 
     return (
-        <form
-            ref={form}
-            id="form"
-            method="post"
-            autoComplete="off"
-            spellCheck="false"
-            onSubmit={handleSubmit}>
-            <h1>🌆First Home</h1>
-            <input
-                className="input"
-                type="text"
-                id="firstInput"
-                ref={firstInput}
-                value={first.current}
-                placeholder={first.loaded}
-                title={first.loaded}
-                onChange={handleChange}
-                onClick={handleClick}></input>
-            <h1>🌃Second Home</h1>
-            <input
-                className="input"
-                type="text"
-                id="secondInput"
-                ref={secondInput}
-                value={second.current}
-                placeholder={second.loaded}
-                title={second.loaded}
-                onChange={handleChange}
-                onClick={handleClick}></input>
-            <input type="submit" hidden />
-        </form>
+        <>
+            <form
+                ref={form}
+                id="form"
+                method="post"
+                autoComplete="off"
+                spellCheck="false"
+                onSubmit={handleSubmit}>
+                <h1>🌆First Home</h1>
+                <input
+                    ref={first}
+                    id="first"
+                    className="input"
+                    type="text"
+                    value={firstCurrent}
+                    placeholder={sessionStorage.getItem("first")!}
+                    title={sessionStorage.getItem("first")!}
+                    onChange={(e) => setFirstCurrent(e.target.value)}
+                    onClick={handleClick}></input>
+                <h1>🌃Second Home</h1>
+                <input
+                    ref={second}
+                    id="second"
+                    className="input"
+                    type="text"
+                    value={secondCurrent}
+                    placeholder={sessionStorage.getItem("second")!}
+                    title={sessionStorage.getItem("second")!}
+                    onChange={(e) => setSecondCurrent(e.target.value)}
+                    onClick={handleClick}></input>
+                <input type="submit" hidden />
+            </form>
+        </>
     );
 }

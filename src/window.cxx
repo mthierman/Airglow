@@ -341,7 +341,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
             }
         }
 
-        if (json.contains("height"))
+        else if (json.contains("height"))
         {
             m_layout.bar = json["height"].get<int>();
             PostMessageA(hwnd(), WM_SIZE, 0, 0);

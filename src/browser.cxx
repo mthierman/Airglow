@@ -88,7 +88,7 @@ auto Browser::url(std::string page) -> std::string
 #if defined(_DEBUG)
     if (page.contains("url")) { return "https://localhost:8000/url/index.html"; }
 
-    else if (page.contains("settings")) { return "https://localhost:8000/test/index.html"; }
+    else if (page.contains("settings")) { return "https://localhost:8000/settings/index.html"; }
 #else
     if (page.contains("url"))
     {
