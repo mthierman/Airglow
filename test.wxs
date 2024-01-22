@@ -13,10 +13,10 @@
         <StandardDirectory Id="LocalAppDataFolder">
             <Directory Id="LocalAppData" Name="Airglow">
                 <Directory Id="GUI" Name="gui">
-                    <Directory Id="GuiAssets" Name="assets"></Directory>
-                    <Directory Id="GuiHome" Name="home"></Directory>
-                    <Directory Id="GuiSettings" Name="settings"></Directory>
-                    <Directory Id="GuiURL" Name="url"></Directory>
+                    <Directory Id="Assets" Name="assets"></Directory>
+                    <Directory Id="Home" Name="home"></Directory>
+                    <Directory Id="Settings" Name="settings"></Directory>
+                    <Directory Id="URL" Name="url"></Directory>
                 </Directory>
             </Directory>
         </StandardDirectory>
@@ -32,7 +32,7 @@
                 <File Source="build/Release/Airglow.exe" />
                 <Shortcut Name="Airglow" Directory="StartMenu" Advertise="yes" Icon="Airglow.exe" />
             </Component>
-            <Component Directory="GuiAssets">
+            <Component Directory="Assets">
                 <File Source="build/Release/gui/assets/home.js" />
                 <File Source="build/Release/gui/assets/index.css" />
                 <File Source="build/Release/gui/assets/index.js" />
@@ -41,13 +41,13 @@
                 <File Source="build/Release/gui/assets/test.js" />
                 <File Source="build/Release/gui/assets/url.js" />
             </Component>
-            <Component Directory="GuiHome">
+            <Component Directory="Home">
                 <File Source="build/Release/gui/home/index.html" />
             </Component>
-            <Component Directory="GuiSettings">
+            <Component Directory="Settings">
                 <File Source="build/Release/gui/settings/index.html" />
             </Component>
-            <Component Directory="GuiURL">
+            <Component Directory="URL">
                 <File Source="build/Release/gui/url/index.html" />
             </Component>
         </Feature>
