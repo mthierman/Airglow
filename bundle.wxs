@@ -5,16 +5,18 @@
     xsi:schemaLocation="http://wixtoolset.org/schemas/v4/wxs https://raw.githubusercontent.com/wixtoolset/web/master/src/xsd4/wix.xsd
                         http://wixtoolset.org/schemas/v4/wxs/bal https://raw.githubusercontent.com/wixtoolset/web/master/src/xsd4/bal.xsd">
     <Bundle Name="Airglow" Version="1.6.0" UpgradeCode="254DC0BB-0BD7-44E8-A448-BB0872899BC2"
-        IconSourceFile="data/release.ico">
+        IconSourceFile="data/release.ico" AboutUrl="https://github.com/mthierman/Airglow"
+        Copyright="© 2023 Mike Thierman" Manufacturer="Mike Thierman">
         <BootstrapperApplication>
             <bal:WixStandardBootstrapperApplication Theme="rtfLicense" LicenseFile="LICENSE.rtf"
+                ShowVersion="yes" LogoSideFile="data/release.png"
                 LogoFile="data/release.png" SuppressOptionsUI="true" />
         </BootstrapperApplication>
         <Chain>
             <ExePackage SourceFile="build/VC_redist.x64.exe"
                 DetectCondition="false" InstallArguments="/install /passive /quiet /norestart"
                 UninstallArguments="/uninstall" />
-            <MsiPackage SourceFile="build/Airglow.msi" />
+            <MsiPackage SourceFile="build/Airglow.msi" bal:DisplayInternalUICondition="0" />
         </Chain>
     </Bundle>
 </Wix>
