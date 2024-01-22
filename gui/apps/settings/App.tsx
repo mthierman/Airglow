@@ -24,7 +24,7 @@ export default function App() {
         document.documentElement.style.setProperty("--accentLight1", systemColors.accentLight1);
         document.documentElement.style.setProperty("--accentLight2", systemColors.accentLight2);
         document.documentElement.style.setProperty("--accentLight3", systemColors.accentLight3);
-    });
+    }, [systemColors]);
 
     useEffect(() => {
         const onMessage = (event: Event) => {
@@ -47,14 +47,6 @@ export default function App() {
             }
         };
 
-        const onFocusOut = () => {
-            if (document.activeElement === first.current) {
-                first.current!.blur();
-            } else if (document.activeElement === second.current) {
-                second.current!.blur();
-            }
-        };
-
         const onEscape = (event: KeyboardEvent) => {
             if (event.key === "Escape") {
                 if (document.activeElement === first.current) {
@@ -66,12 +58,10 @@ export default function App() {
         };
 
         window.chrome.webview.addEventListener("message", onMessage);
-        form.current!.addEventListener("focusout", onFocusOut);
         document.addEventListener("keydown", onEscape);
 
         return () => {
             window.chrome.webview.removeEventListener("message", onMessage);
-            form.current!.removeEventListener("focusout", onFocusOut);
             document.removeEventListener("keydown", onEscape);
         };
     });
