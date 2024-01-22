@@ -20,6 +20,9 @@ export default function App() {
 
     useEffect(() => {
         window.chrome.webview.postMessage({ initialized: true });
+    }, []);
+
+    useEffect(() => {
         document.documentElement.style.setProperty("--accent", systemColors.accent);
         document.documentElement.style.setProperty("--accentDark1", systemColors.accentDark1);
         document.documentElement.style.setProperty("--accentDark2", systemColors.accentDark2);
@@ -27,7 +30,7 @@ export default function App() {
         document.documentElement.style.setProperty("--accentLight1", systemColors.accentLight1);
         document.documentElement.style.setProperty("--accentLight2", systemColors.accentLight2);
         document.documentElement.style.setProperty("--accentLight3", systemColors.accentLight3);
-    }, []);
+    });
 
     useEffect(() => {
         const onMessage = (event: Event) => {
