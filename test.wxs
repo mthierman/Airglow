@@ -22,11 +22,11 @@
 
         <Feature Id="Main">
             <Component Directory="LocalAppData">
-                <File Source="build/Release/Airglow.exe">
-                    <Shortcut Name="Airglow" Directory="StartMenu" />
-                </File>
-                <CreateFolder Directory="gui"></CreateFolder>
+                <File Source="build/Release/Airglow.exe" />
+                <Shortcut Name="Airglow" Directory="StartMenu" Advertise="yes" Icon="Airglow.exe" />
             </Component>
         </Feature>
+
+        <Icon Id="Airglow.exe" SourceFile="data/release.ico" />
     </Package>
 </Wix>
