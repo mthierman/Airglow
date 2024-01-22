@@ -11,7 +11,6 @@
 #include <Windows.h>
 
 #include <cstdint>
-#include <memory>
 #include <set>
 #include <string>
 

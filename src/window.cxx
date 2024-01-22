@@ -8,7 +8,7 @@
 
 #include "window.hxx"
 
-Window::Window(HWND app, URL& url) : BaseWindow("Airglow"), m_app{app}, m_url{url}
+Window::Window(HWND app, URL& url) : BaseWindow("Airglow"), m_app{app}, m_url{url}, m_initialized{}
 {
     notify(m_app, msg::window_create);
 

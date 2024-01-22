@@ -37,12 +37,12 @@ struct Window : public glow::window::BaseWindow<Window>
     auto on_size(WPARAM wParam, LPARAM lParam) -> int;
     auto on_sys_key_down(WPARAM wParam, LPARAM lParam) -> int;
 
-    HWND m_app{nullptr};
+    HWND m_app;
     URL& m_url;
 
     Browsers m_browsers;
     Positions m_positions;
     Layout m_layout;
     glow::gui::SystemColors m_systemColors;
-    bool m_initialized{false};
+    bool m_initialized;
 };
