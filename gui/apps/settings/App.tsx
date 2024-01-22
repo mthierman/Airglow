@@ -78,6 +78,7 @@ export default function App() {
 
     const handleSubmit = (event: SyntheticEvent) => {
         event.preventDefault();
+
         if (document.activeElement === first.current) {
             const parsed = url.parseUrl(first.current?.value!).href;
             setFirstCurrent(parsed);
@@ -103,38 +104,37 @@ export default function App() {
     };
 
     return (
-        <>
-            <form
-                ref={form}
-                id="form"
-                method="post"
-                autoComplete="off"
-                spellCheck="false"
-                onSubmit={handleSubmit}>
-                <h1>🌆First Home</h1>
-                <input
-                    ref={first}
-                    id="first"
-                    className="input"
-                    type="text"
-                    value={firstCurrent}
-                    placeholder={sessionStorage.getItem("first")!}
-                    title={sessionStorage.getItem("first")!}
-                    onChange={(e) => setFirstCurrent(e.target.value)}
-                    onClick={handleClick}></input>
-                <h1>🌃Second Home</h1>
-                <input
-                    ref={second}
-                    id="second"
-                    className="input"
-                    type="text"
-                    value={secondCurrent}
-                    placeholder={sessionStorage.getItem("second")!}
-                    title={sessionStorage.getItem("second")!}
-                    onChange={(e) => setSecondCurrent(e.target.value)}
-                    onClick={handleClick}></input>
-                <input type="submit" hidden />
-            </form>
-        </>
+        <form
+            ref={form}
+            id="form"
+            className="grid gap-4 p-4"
+            method="post"
+            autoComplete="off"
+            spellCheck="false"
+            onSubmit={handleSubmit}>
+            <h1>🌆First Home</h1>
+            <input
+                ref={first}
+                id="first"
+                className="input"
+                type="text"
+                value={firstCurrent}
+                placeholder={sessionStorage.getItem("first")!}
+                title={sessionStorage.getItem("first")!}
+                onChange={(e) => setFirstCurrent(e.target.value)}
+                onClick={handleClick}></input>
+            <h1>🌃Second Home</h1>
+            <input
+                ref={second}
+                id="second"
+                className="input"
+                type="text"
+                value={secondCurrent}
+                placeholder={sessionStorage.getItem("second")!}
+                title={sessionStorage.getItem("second")!}
+                onChange={(e) => setSecondCurrent(e.target.value)}
+                onClick={handleClick}></input>
+            <input type="submit" hidden />
+        </form>
     );
 }

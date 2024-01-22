@@ -338,6 +338,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
             {
                 m_browsers.url->post_json(nlohmann::json{{"layout", nlohmann::json(m_layout)}});
                 m_browsers.url->post_json(nlohmann::json(m_systemColors));
+                m_browsers.url->post_json(nlohmann::json(m_url.current));
             }
         }
 
