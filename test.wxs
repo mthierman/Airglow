@@ -28,5 +28,6 @@
         </Feature>
 
         <Icon Id="Airglow.exe" SourceFile="data/release.ico" />
+        <Property Id="ARPPRODUCTICON" Value="Airglow.exe" />
     </Package>
 </Wix>
