@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://wixtoolset.org/schemas/v4/wxs https://raw.githubusercontent.com/wixtoolset/web/master/src/xsd4/wix.xsd">
     <Package Name="Airglow" Manufacturer="mthierman"
         UpgradeCode="67120610-9552-4248-B3AD-4C4C28E0350A"
-        Version="0.0.1" InstallerVersion="500">
+        Version="1.6.0" InstallerVersion="500">
 
         <StandardDirectory Id="ProgramFilesFolder">
             <Directory Id="ProgramFiles" Name="ProgramFiles" />
