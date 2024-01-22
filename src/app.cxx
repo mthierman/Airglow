@@ -46,7 +46,7 @@ auto App::operator()() -> int
         m_windowSettings = std::make_unique<Settings>(hwnd(), m_url);
         SetWindowPos(m_windowSettings->hwnd(), nullptr, 0, 0, 300, 400, SWP_NOMOVE);
         m_windowSettings->reveal();
-        m_windowSettings->m_visible = true;
+        // m_windowSettings->m_visible = true;
     }
     catch (const std::exception& e)
     {
@@ -132,7 +132,8 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
     case msg::toggle_settings:
     {
-        m_windowSettings->m_visible ? m_windowSettings->hide() : m_windowSettings->show();
+        // m_windowSettings->m_visible ? m_windowSettings->hide() : m_windowSettings->show();
+        m_windowSettings->visible() ? m_windowSettings->hide() : m_windowSettings->show();
 
         break;
     }

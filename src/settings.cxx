@@ -164,7 +164,7 @@ auto Settings::on_show_window(WPARAM wParam, LPARAM lParam) -> int
         {
         case TRUE:
         {
-            m_visible = true;
+            // m_visible = true;
             m_browser->m_webView.controller4->put_IsVisible(TRUE);
 
             break;
@@ -172,7 +172,7 @@ auto Settings::on_show_window(WPARAM wParam, LPARAM lParam) -> int
 
         case FALSE:
         {
-            m_visible = false;
+            // m_visible = false;
             m_browser->m_webView.controller4->put_IsVisible(FALSE);
 
             break;

@@ -45,7 +45,7 @@ struct Settings : public glow::window::BaseWindow<Settings>
     URL& m_url;
 
     std::unique_ptr<SettingsBrowser> m_browser;
-    bool m_visible{false};
+    // bool m_visible{false};
     Dimensions m_dimensions;
     glow::gui::SystemColors m_systemColors;
 };
