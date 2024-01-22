@@ -96,8 +96,15 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
             }
         }
 
-        if (json.contains("first") || json.contains("second"))
+        else if (json.contains("first"))
         {
+            m_home["first"] = json["first"].get<std::string>();
+            notify(m_app, msg::home_changed, notification->message);
+        }
+
+        else if (json.contains("second"))
+        {
+            m_home["second"] = json["second"].get<std::string>();
             notify(m_app, msg::home_changed, notification->message);
         }
 
