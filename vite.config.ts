@@ -10,6 +10,11 @@ const defaults: UserConfig = {
         emptyOutDir: true,
         outDir: "../../build/Release/gui",
         rollupOptions: {
+            output: {
+                entryFileNames: `assets/[name].js`,
+                chunkFileNames: `assets/[name].js`,
+                assetFileNames: `assets/[name].[ext]`,
+            },
             input: {
                 home: path.resolve("gui/apps/home/index.html"),
                 settings: path.resolve("gui/apps/settings/index.html"),

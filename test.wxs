@@ -11,7 +11,9 @@
         </StandardDirectory>
 
         <StandardDirectory Id="LocalAppDataFolder">
-            <Directory Id="LocalAppData" Name="Airglow"></Directory>
+            <Directory Id="LocalAppData" Name="Airglow">
+                <Directory Id="GUI" Name="GUI"></Directory>
+            </Directory>
         </StandardDirectory>
 
         <StandardDirectory Id="StartMenuFolder">
@@ -24,6 +26,9 @@
             <Component Directory="LocalAppData">
                 <File Source="build/Release/Airglow.exe" />
                 <Shortcut Name="Airglow" Directory="StartMenu" Advertise="yes" Icon="Airglow.exe" />
+            </Component>
+            <Component Directory="GUI">
+                <File Source="build/Release/gui/url/index.html" />
             </Component>
         </Feature>
 
