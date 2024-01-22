@@ -28,6 +28,15 @@
 
         <ui:WixUI Id="WixUI_InstallDir" InstallDirectory="LocalAppData" />
         <WixVariable Id="WixUILicenseRtf" Value="LICENSE.rtf" />
+        <WixVariable Id="WixUIBannerBmp" Value="data/WixUIBannerBmp.png" />
+        <WixVariable Id="WixUIDialogBmp" Value="data/WixUIDialogBmp.png" />
+        <!-- <WixVariable Id="WixUIExclamationIco" Value="data/WixUIExclamationIco.png" /> -->
+        <!-- <WixVariable Id="WixUIInfoIco" Value="data/WixUIInfoIco.png" /> -->
+        <!-- <WixVariable Id="WixUINewIco" Value="data/WixUINewIco.png" /> -->
+        <!-- <WixVariable Id="WixUIUpIco" Value="data/WixUIUpIco.png" /> -->
+
+        <WixVariable Id="WixUINewIco" Value="data/WixUINewIco.ico" />
+        <WixVariable Id="WixUIUpIco" Value="data/WixUIUpIco.ico" />
 
         <Feature Id="Main">
             <Component Directory="LocalAppData">
