@@ -14,7 +14,6 @@ const defaults: UserConfig = {
                 home: path.resolve("gui/apps/home/index.html"),
                 settings: path.resolve("gui/apps/settings/index.html"),
                 url: path.resolve("gui/apps/url/index.html"),
-                test: path.resolve("gui/apps/test/index.html"),
             },
         },
     },

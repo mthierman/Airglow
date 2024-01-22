@@ -127,17 +127,13 @@ export default function App() {
 
     return (
         <form
-            className="grid min-w-max grid-flow-row gap-2 p-2 text-center"
+            ref={form}
             id="form"
             method="post"
             autoComplete="off"
             spellCheck="false"
-            ref={form}
             onSubmit={handleSubmit}>
-            <h1 className="setting">
-                <span>🌆</span>
-                <span className="settingTitle">First Home</span>
-            </h1>
+            <h1>🌆First Home</h1>
             <input
                 className="input"
                 type="text"
@@ -148,10 +144,7 @@ export default function App() {
                 title={first.loaded}
                 onChange={handleChange}
                 onClick={handleClick}></input>
-            <h1 className="setting">
-                <span>🌃</span>
-                <span className="settingTitle">Second Home</span>
-            </h1>
+            <h1>🌃Second Home</h1>
             <input
                 className="input"
                 type="text"
