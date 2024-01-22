@@ -55,3 +55,8 @@ add_dependencies(
     Airglow
     CopyIcon
 )
+
+add_dependencies(
+    Airglow
+    Vite
+)

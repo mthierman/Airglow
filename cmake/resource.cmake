@@ -31,3 +31,9 @@ add_custom_target(
     ALL
     DEPENDS ${AIRGLOW_ICON}
 )
+
+add_custom_target(
+    Vite
+    COMMAND pnpm build
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+)
