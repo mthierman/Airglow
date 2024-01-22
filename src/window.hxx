@@ -15,38 +15,15 @@
 #include "global.hxx"
 #include "browser.hxx"
 
+struct Browsers
+{
+    std::unique_ptr<MainBrowser> first;
+    std::unique_ptr<SideBrowser> second;
+    std::unique_ptr<URLBrowser> url;
+};
+
 struct Window : public glow::window::BaseWindow<Window>
 {
-    struct Browsers
-    {
-        std::unique_ptr<MainBrowser> first;
-        std::unique_ptr<SideBrowser> second;
-        std::unique_ptr<URLBrowser> url;
-    };
-
-    struct Positions
-    {
-        glow::gui::Position full;
-        glow::gui::Position empty;
-        glow::gui::Position left;
-        glow::gui::Position right;
-        glow::gui::Position top;
-        glow::gui::Position bottom;
-    };
-
-    struct Layout
-    {
-        Layout() : bar{}, border{2}, horizontal{}, split{}, swapped{} {}
-
-        int bar;
-        int border;
-        bool horizontal;
-        bool split;
-        bool swapped;
-
-        NLOHMANN_DEFINE_TYPE_INTRUSIVE(Layout, bar, horizontal, split, swapped)
-    };
-
     using glow::window::BaseWindow<Window>::BaseWindow;
 
     Window(HWND app, URL& url);

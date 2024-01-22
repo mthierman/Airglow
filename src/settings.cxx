@@ -14,6 +14,8 @@ Settings::Settings(HWND app, URL& url) : BaseWindow("Airglow - Settings"), m_app
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_TRANSIENTWINDOW);
     theme();
 
+    SetWindowPos(hwnd(), nullptr, 0, 0, 300, 400, SWP_NOMOVE);
+
     m_browser = std::make_unique<SettingsBrowser>(hwnd());
     m_browser->reveal();
 }
@@ -164,7 +166,6 @@ auto Settings::on_show_window(WPARAM wParam, LPARAM lParam) -> int
         {
         case TRUE:
         {
-            // m_visible = true;
             m_browser->m_webView.controller4->put_IsVisible(TRUE);
 
             break;
@@ -172,7 +173,6 @@ auto Settings::on_show_window(WPARAM wParam, LPARAM lParam) -> int
 
         case FALSE:
         {
-            // m_visible = false;
             m_browser->m_webView.controller4->put_IsVisible(FALSE);
 
             break;

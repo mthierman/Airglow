@@ -41,6 +41,7 @@ struct App : public glow::window::MessageWindow<App>
 
     std::unique_ptr<Window> m_windowMain;
     std::unique_ptr<Settings> m_windowSettings;
+    
     std::set<size_t> m_windows;
 
     std::vector<std::string> m_argv;

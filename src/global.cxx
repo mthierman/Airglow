@@ -25,13 +25,17 @@ Keys::Keys()
     set.emplace(VK_F9);
     set.emplace(VK_F10);
     set.emplace(VK_F11);
-    set.emplace(VK_F12);
+    // set.emplace(VK_F12);
 }
 
 URL::URL()
     : home{{"first", "about:blank"}, {"second", "about:blank"}},
       current{{"first", "about:blank"}, {"second", "about:blank"}}
 {}
+
+Layout::Layout() : bar{}, border{2}, horizontal{}, split{}, swapped{} {}
+
+Dimensions::Dimensions() : devicePixelRatio{}, offsetHeight{}, offsetWidth{} {}
 
 auto log(std::string string) -> void
 {

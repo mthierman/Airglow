@@ -11,10 +11,13 @@
 #include <Windows.h>
 
 #include <cstdint>
+#include <memory>
 #include <set>
 #include <string>
 
 #include <nlohmann/json.hpp>
+
+#include <glow/glow.hxx>
 
 struct Keys
 {
@@ -31,6 +34,40 @@ struct URL
     std::map<std::string, std::string> current;
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(URL, home, current)
+};
+
+struct Positions
+{
+    glow::gui::Position full;
+    glow::gui::Position empty;
+    glow::gui::Position left;
+    glow::gui::Position right;
+    glow::gui::Position top;
+    glow::gui::Position bottom;
+};
+
+struct Layout
+{
+    Layout();
+
+    int bar;
+    int border;
+    bool horizontal;
+    bool split;
+    bool swapped;
+
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Layout, bar, horizontal, split, swapped)
+};
+
+struct Dimensions
+{
+    Dimensions();
+
+    float devicePixelRatio;
+    int offsetHeight;
+    int offsetWidth;
+
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Dimensions, devicePixelRatio, offsetHeight, offsetWidth)
 };
 
 auto log(std::string string) -> void;
