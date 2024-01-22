@@ -148,7 +148,9 @@ export default function App() {
                 <input
                     ref={second}
                     id="second"
-                    className="input"
+                    className={`input ${position.swapped ? "order-0" : "order-1"} ${
+                        !position.split && !position.swapped ? "hidden" : ""
+                    }`}
                     type="text"
                     value={secondCurrent}
                     placeholder={sessionStorage.getItem("second")!}
