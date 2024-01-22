@@ -233,14 +233,14 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
         case VK_F1:
         {
-            m_layout.split = !m_layout.split;
+            m_layout.swapped = !m_layout.swapped;
 
             break;
         }
 
         case VK_F2:
         {
-            m_layout.swapped = !m_layout.swapped;
+            m_layout.split = !m_layout.split;
 
             break;
         }
