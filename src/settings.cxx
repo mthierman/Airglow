@@ -96,17 +96,6 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
             }
         }
 
-        if (json.contains("devicePixelRatio"))
-        {
-            m_dimensions = json;
-            RECT rect{};
-            rect.bottom = m_dimensions.offsetHeight;
-            rect.right = m_dimensions.offsetWidth;
-            AdjustWindowRectExForDpi(&rect, WS_OVERLAPPEDWINDOW, 0, 0, dpi());
-            SetWindowPos(hwnd(), nullptr, 0, 0, static_cast<int>(rect.right - rect.left),
-                         static_cast<int>(rect.bottom - rect.top), SWP_NOMOVE);
-        }
-
         if (json.contains("first") || json.contains("second"))
         {
             notify(m_app, msg::home_changed, notification->message);

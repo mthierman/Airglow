@@ -1,16 +1,14 @@
-import { SyntheticEvent, useState, useLayoutEffect, useRef, useEffect } from "react";
+import { SyntheticEvent, useState, useRef, useEffect } from "react";
 import * as url from "@libs/url";
 import { getSessionStorage, getSystemColorsStorage } from "@libs/storage";
 
 export default function App() {
-    const [devicePixelRatio, setDevicePixelRatio] = useState(window.devicePixelRatio);
-    const [offsetHeight, setOffsetHeight] = useState(0);
-    const [offsetWidth, setOffsetWidth] = useState(0);
-    const [systemColors, setSystemColors] = useState<App.SystemColors>(getSystemColorsStorage());
-
-    const settingsForm = useRef<HTMLFormElement | null>(null);
+    const form = useRef<HTMLFormElement | null>(null);
     const firstInput = useRef<HTMLInputElement | null>(null);
     const secondInput = useRef<HTMLInputElement | null>(null);
+
+    const [systemColors, setSystemColors] = useState<App.SystemColors>(getSystemColorsStorage());
+
     const [first, setFirst] = useState<App.URL>({
         current: "",
         loaded: getSessionStorage("first", ""),
@@ -21,30 +19,8 @@ export default function App() {
     });
 
     useEffect(() => {
+        console.log("startup...");
         window.chrome.webview.postMessage({ initialized: true });
-    }, []);
-
-    useLayoutEffect(() => {
-        setOffsetHeight(settingsForm.current?.offsetHeight!);
-        setOffsetWidth(settingsForm.current?.offsetWidth!);
-        window.chrome.webview.postMessage({
-            devicePixelRatio: devicePixelRatio,
-            offsetHeight: offsetHeight * devicePixelRatio,
-            offsetWidth: offsetWidth * devicePixelRatio,
-        });
-
-        const onResize = () => {
-            setDevicePixelRatio(window.devicePixelRatio);
-        };
-
-        addEventListener("resize", onResize);
-
-        return () => {
-            removeEventListener("resize", onResize);
-        };
-    });
-
-    useEffect(() => {
         document.documentElement.style.setProperty("--accent", systemColors.accent);
         document.documentElement.style.setProperty("--accentDark1", systemColors.accentDark1);
         document.documentElement.style.setProperty("--accentDark2", systemColors.accentDark2);
@@ -52,7 +28,7 @@ export default function App() {
         document.documentElement.style.setProperty("--accentLight1", systemColors.accentLight1);
         document.documentElement.style.setProperty("--accentLight2", systemColors.accentLight2);
         document.documentElement.style.setProperty("--accentLight3", systemColors.accentLight3);
-    }, [systemColors]);
+    }, []);
 
     useEffect(() => {
         const onMessage = (event: Event) => {
@@ -112,13 +88,13 @@ export default function App() {
             secondInput.current?.blur();
         };
 
-        if (settingsForm.current) {
-            settingsForm.current.addEventListener("focusout", onFocusOut);
+        if (form.current) {
+            form.current.addEventListener("focusout", onFocusOut);
         }
 
         return () => {
-            if (settingsForm.current) {
-                settingsForm.current.removeEventListener("focusout", onFocusOut);
+            if (form.current) {
+                form.current.removeEventListener("focusout", onFocusOut);
             }
         };
     });
@@ -172,11 +148,11 @@ export default function App() {
     return (
         <form
             className="grid min-w-max grid-flow-row gap-2 p-2 text-center"
-            id="settingsForm"
+            id="form"
             method="post"
             autoComplete="off"
             spellCheck="false"
-            ref={settingsForm}
+            ref={form}
             onSubmit={handleSubmit}>
             <h1 className="setting">
                 <span>🌆</span>
