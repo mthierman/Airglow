@@ -14,7 +14,7 @@ Settings::Settings(HWND app, URL& url) : BaseWindow("Airglow - Settings"), m_app
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_TRANSIENTWINDOW);
     theme();
 
-    SetWindowPos(hwnd(), nullptr, 0, 0, 300, 400, SWP_NOMOVE);
+    SetWindowPos(hwnd(), nullptr, 0, 0, 500, 500, SWP_NOMOVE);
 
     m_browser = std::make_unique<SettingsBrowser>(hwnd());
     m_browser->reveal();
@@ -57,6 +57,7 @@ auto Settings::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     {
     case WM_CLOSE: return on_close(wParam, lParam);
     case WM_KEYDOWN: return on_key_down(wParam, lParam);
+    case WM_GETMINMAXINFO: return on_get_min_max_info(wParam, lParam);
     case WM_NOTIFY: return on_notify(wParam, lParam);
     case WM_SETTINGCHANGE: return on_setting_change(wParam, lParam);
     case WM_SHOWWINDOW: return on_show_window(wParam, lParam);
@@ -107,6 +108,16 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
         break;
     }
     }
+
+    return 0;
+}
+
+auto Settings::on_get_min_max_info(WPARAM wParam, LPARAM lParam) -> int
+{
+    LPMINMAXINFO minmax{reinterpret_cast<LPMINMAXINFO>(lParam)};
+
+    minmax->ptMinTrackSize.x = 500;
+    minmax->ptMinTrackSize.y = 500;
 
     return 0;
 }

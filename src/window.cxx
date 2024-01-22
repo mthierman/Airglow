@@ -179,6 +179,7 @@ auto Window::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
     switch (uMsg)
     {
     case WM_CLOSE: return on_close(wParam, lParam);
+    case WM_GETMINMAXINFO: return on_get_min_max_info(wParam, lParam);
     case WM_KEYDOWN: return on_key_down(wParam, lParam);
     case WM_NOTIFY: return on_notify(wParam, lParam);
     case WM_SETTINGCHANGE: return on_setting_change(wParam, lParam);
@@ -194,6 +195,16 @@ auto Window::on_close(WPARAM wParam, LPARAM lParam) -> int
     notify(m_app, msg::window_close);
 
     return close();
+}
+
+auto Window::on_get_min_max_info(WPARAM wParam, LPARAM lParam) -> int
+{
+    LPMINMAXINFO minmax{reinterpret_cast<LPMINMAXINFO>(lParam)};
+
+    minmax->ptMinTrackSize.x = 500;
+    minmax->ptMinTrackSize.y = 500;
+
+    return 0;
 }
 
 auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
