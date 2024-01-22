@@ -10,7 +10,8 @@
         <MajorUpgrade DowngradeErrorMessage="A newer version was detected." />
 
         <StandardDirectory Id="LocalAppDataFolder">
-            <Directory Id="LocalAppData" Name="Airglow">
+            <Directory Id="APPINSTALLDIR" Name="Airglow">
+                <Directory Id="Application"></Directory>
                 <Directory Id="GUI" Name="gui">
                     <Directory Id="Assets" Name="assets"></Directory>
                     <Directory Id="Home" Name="home"></Directory>
@@ -26,7 +27,7 @@
 
         <MediaTemplate EmbedCab="yes" />
 
-        <ui:WixUI Id="WixUI_InstallDir" InstallDirectory="LocalAppData" />
+        <ui:WixUI Id="WixUI_InstallDir" InstallDirectory="APPINSTALLDIR" />
         <WixVariable Id="WixUILicenseRtf" Value="LICENSE.rtf" />
         <WixVariable Id="WixUIBannerBmp" Value="data/WixUIBannerBmp.png" />
         <WixVariable Id="WixUIDialogBmp" Value="data/WixUIDialogBmp.png" />
@@ -39,7 +40,7 @@
         <WixVariable Id="WixUIUpIco" Value="data/WixUIUpIco.ico" />
 
         <Feature Id="Main">
-            <Component Directory="LocalAppData">
+            <Component Directory="Application">
                 <File Id="Airglow" Source="build/Release/Airglow.exe" />
                 <Shortcut Name="Airglow" Directory="StartMenu" Advertise="yes" Icon="Airglow.exe" />
             </Component>
