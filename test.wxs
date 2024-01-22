@@ -12,7 +12,12 @@
 
         <StandardDirectory Id="LocalAppDataFolder">
             <Directory Id="LocalAppData" Name="Airglow">
-                <Directory Id="GUI" Name="GUI"></Directory>
+                <Directory Id="GUI" Name="gui">
+                    <Directory Id="GuiAssets" Name="assets"></Directory>
+                    <Directory Id="GuiHome" Name="home"></Directory>
+                    <Directory Id="GuiSettings" Name="settings"></Directory>
+                    <Directory Id="GuiURL" Name="url"></Directory>
+                </Directory>
             </Directory>
         </StandardDirectory>
 
@@ -27,7 +32,22 @@
                 <File Source="build/Release/Airglow.exe" />
                 <Shortcut Name="Airglow" Directory="StartMenu" Advertise="yes" Icon="Airglow.exe" />
             </Component>
-            <Component Directory="GUI">
+            <Component Directory="GuiAssets">
+                <File Source="build/Release/gui/assets/home.js" />
+                <File Source="build/Release/gui/assets/index.css" />
+                <File Source="build/Release/gui/assets/index.js" />
+                <File Source="build/Release/gui/assets/settings.js" />
+                <File Source="build/Release/gui/assets/storage.js" />
+                <File Source="build/Release/gui/assets/test.js" />
+                <File Source="build/Release/gui/assets/url.js" />
+            </Component>
+            <Component Directory="GuiHome">
+                <File Source="build/Release/gui/home/index.html" />
+            </Component>
+            <Component Directory="GuiSettings">
+                <File Source="build/Release/gui/settings/index.html" />
+            </Component>
+            <Component Directory="GuiURL">
                 <File Source="build/Release/gui/url/index.html" />
             </Component>
         </Feature>
