@@ -393,6 +393,23 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         break;
     }
+
+    case msg::favicon_changed:
+    {
+        auto json{nlohmann::json::parse(notification->message)};
+
+        if (json.contains("firstFavicon"))
+        {
+            if (m_browsers.url) { m_browsers.url->post_json(json); }
+        }
+
+        else if (json.contains("secondFavicon"))
+        {
+            if (m_browsers.url) { m_browsers.url->post_json(json); }
+        }
+
+        break;
+    }
     }
 
     return 0;

@@ -58,13 +58,21 @@ export default function App() {
             if (data.first) {
                 setFirstCurrent(data.first);
                 sessionStorage.setItem("first", data.first);
-                setFirstFavicon(url.getFavicon(data.first));
+                // setFirstFavicon(url.getFavicon(data.first));
+            }
+
+            if (data.firstFavicon) {
+                setFirstFavicon(data.firstFavicon);
             }
 
             if (data.second) {
                 setSecondCurrent(data.second);
                 sessionStorage.setItem("second", data.second);
-                setSecondFavicon(url.getFavicon(data.second));
+                // setSecondFavicon(url.getFavicon(data.second));
+            }
+
+            if (data.secondFavicon) {
+                setSecondFavicon(data.secondFavicon);
             }
         };
 

@@ -49,6 +49,7 @@ struct MainBrowser final : public Browser
     virtual auto source_changed_handler(ICoreWebView2* sender,
                                         ICoreWebView2SourceChangedEventArgs* args)
         -> HRESULT override;
+    virtual auto favicon_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT override;
 };
 
 struct SideBrowser final : public Browser
@@ -58,4 +59,5 @@ struct SideBrowser final : public Browser
     virtual auto source_changed_handler(ICoreWebView2* sender,
                                         ICoreWebView2SourceChangedEventArgs* args)
         -> HRESULT override;
+    virtual auto favicon_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT override;
 };

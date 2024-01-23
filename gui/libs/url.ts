@@ -57,7 +57,7 @@ export const parseUrl = (input: string) => {
 export const getFavicon = (input: string) => {
     if (URL.canParse(input)) {
         let url = new URL(input);
-        console.log(url);
+        // console.log(url);
         let favicon = `${url.origin}/favicon.ico`;
         // let favicon = `https://www.google.com/s2/favicons?domain=${url.origin}&sz=128`;
         // let favicon = `https://icons.duckduckgo.com/ip3/${url.hostname}.ico`;
