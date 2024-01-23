@@ -43,6 +43,24 @@ function Invoke-WixBuild
     wix build tools\installer\bundle.wxs -o build/Airglow.exe -ext WixToolset.Bal.wixext
 }
 
+function ConvertTo-WixIco
+{
+    param (
+        $size,
+        $in,
+        $out
+    )
+    magick convert -background none $in -define icon:auto-resize="$size" $out
+}
+
+function Convert-Icons
+{
+    ConvertTo-WixIco 16 data/ic_fluent_folder_add_16_regular.svg data/WixUINewIco.ico
+    ConvertTo-WixIco 16 data/ic_fluent_folder_arrow_up_16_regular.svg data/WixUIUpIco.ico
+    ConvertTo-WixIco 32 data/ic_fluent_error_circle_48_regular.svg data/WixUIExclamationIco.ico
+    ConvertTo-WixIco 32 data/ic_fluent_info_48_regular.svg data/WixUIInfoIco.ico
+}
+
 function Export-Notes
 {
     git --no-pager log -5 --oneline --no-decorate | Out-File "..\notes.txt"
