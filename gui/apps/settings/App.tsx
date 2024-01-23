@@ -97,7 +97,7 @@ export default function App() {
         <form
             ref={form}
             id="form"
-            className="grid gap-4 p-4"
+            className="settings"
             method="post"
             autoComplete="off"
             spellCheck="false"
@@ -106,7 +106,7 @@ export default function App() {
             <input
                 ref={first}
                 id="first"
-                className="input"
+                className="input url"
                 type="text"
                 value={firstCurrent}
                 placeholder={sessionStorage.getItem("first")!}
@@ -117,7 +117,7 @@ export default function App() {
             <input
                 ref={second}
                 id="second"
-                className="input"
+                className="input url"
                 type="text"
                 value={secondCurrent}
                 placeholder={sessionStorage.getItem("second")!}
