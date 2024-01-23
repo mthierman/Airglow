@@ -53,3 +53,18 @@ export const getResponse = async (input: string) => {
 export const parseUrl = (input: string) => {
     return parseInput(trimInput(input));
 };
+
+export const getFavicon = (input: string) => {
+    if (URL.canParse(input)) {
+        let url = new URL(input);
+        console.log(url);
+        let favicon = `${url.origin}/favicon.ico`;
+        // let favicon = `https://www.google.com/s2/favicons?domain=${url.origin}&sz=128`;
+        // let favicon = `https://icons.duckduckgo.com/ip3/${url.hostname}.ico`;
+        // let favicon = `https://api.faviconkit.com/${url.hostname}/144`;
+
+        return favicon;
+    } else {
+        return "";
+    }
+};

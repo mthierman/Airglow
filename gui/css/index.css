@@ -21,8 +21,16 @@ body {
     @apply bg-transparent;
 }
 
+.url {
+    @apply flex select-none place-content-center items-center bg-black;
+}
+
+.favicon {
+    @apply pointer-events-none m-1 aspect-square;
+}
+
 .input {
-    @apply w-full text-ellipsis rounded border-b-2 border-transparent bg-white p-2 text-center font-medium text-accentDark1 shadow-sm shadow-black outline-none duration-300 ease-in-out focus:border-accent dark:bg-black dark:text-accent dark:focus:border-accentLight1;
+    @apply w-full text-ellipsis rounded border-b-2 border-transparent bg-white p-2 font-medium text-accentDark1 shadow-sm shadow-black outline-none duration-300 ease-in-out focus:border-accent dark:bg-black dark:text-accent dark:focus:border-accentLight1;
 }
 
 .settingTitle {

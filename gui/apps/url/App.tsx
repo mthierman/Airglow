@@ -13,6 +13,9 @@ export default function App() {
     const [firstCurrent, setFirstCurrent] = useState("");
     const [secondCurrent, setSecondCurrent] = useState("");
 
+    const [firstFavicon, setFirstFavicon] = useState("");
+    const [secondFavicon, setSecondFavicon] = useState("");
+
     useEffect(() => {
         window.chrome.webview.postMessage({ initialized: true });
     }, []);
@@ -36,7 +39,7 @@ export default function App() {
     useEffect(() => {
         const onMessage = (event: Event) => {
             const data = (event as MessageEvent).data;
-            console.log(data);
+            // console.log(data);
 
             if (data.layout) {
                 setPosition(data.layout);
@@ -55,11 +58,13 @@ export default function App() {
             if (data.first) {
                 setFirstCurrent(data.first);
                 sessionStorage.setItem("first", data.first);
+                setFirstFavicon(url.getFavicon(data.first));
             }
 
             if (data.second) {
                 setSecondCurrent(data.second);
                 sessionStorage.setItem("second", data.second);
+                setSecondFavicon(url.getFavicon(data.second));
             }
         };
 
@@ -120,30 +125,39 @@ export default function App() {
                 autoComplete="off"
                 spellCheck="false"
                 onSubmit={handleSubmit}>
-                <input
-                    ref={first}
-                    id="first"
-                    className={`input ${position.swapped ? "order-1" : "order-0"} ${
+                <label
+                    className={`url ${position.swapped ? "order-1" : "order-0"} ${
                         !position.split && position.swapped ? "hidden" : ""
-                    }`}
-                    type="text"
-                    value={firstCurrent}
-                    placeholder={sessionStorage.getItem("first")!}
-                    title={sessionStorage.getItem("first")!}
-                    onChange={(e) => setFirstCurrent(e.target.value)}
-                    onClick={handleClick}></input>
-                <input
-                    ref={second}
-                    id="second"
-                    className={`input ${position.swapped ? "order-0" : "order-1"} ${
+                    }`}>
+                    <img width="16" height="16" src={firstFavicon} className="favicon" />
+                    <input
+                        ref={first}
+                        id="first"
+                        className="input "
+                        type="text"
+                        value={firstCurrent}
+                        placeholder={sessionStorage.getItem("first")!}
+                        title={sessionStorage.getItem("first")!}
+                        onChange={(e) => setFirstCurrent(e.target.value)}
+                        onClick={handleClick}
+                    />
+                </label>
+                <label
+                    className={`url ${position.swapped ? "order-0" : "order-1"} ${
                         !position.split && !position.swapped ? "hidden" : ""
-                    }`}
-                    type="text"
-                    value={secondCurrent}
-                    placeholder={sessionStorage.getItem("second")!}
-                    title={sessionStorage.getItem("second")!}
-                    onChange={(e) => setSecondCurrent(e.target.value)}
-                    onClick={handleClick}></input>
+                    }`}>
+                    <img width={16} height={16} src={secondFavicon} className="favicon" />
+                    <input
+                        ref={second}
+                        id="second"
+                        className="input"
+                        type="text"
+                        value={secondCurrent}
+                        placeholder={sessionStorage.getItem("second")!}
+                        title={sessionStorage.getItem("second")!}
+                        onChange={(e) => setSecondCurrent(e.target.value)}
+                        onClick={handleClick}></input>
+                </label>
                 <input type="submit" hidden />
             </form>
         </>
