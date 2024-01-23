@@ -237,7 +237,12 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
         case 0x57:
         {
-            if (GetKeyState(VK_CONTROL) & 0x8000) { SendMessageA(hwnd(), WM_CLOSE, 0, 0); }
+            if (GetKeyState(VK_CONTROL) & 0x8000)
+            {
+                SendMessageA(hwnd(), WM_CLOSE, 0, 0);
+
+                return 0;
+            }
 
             break;
         }
@@ -265,7 +270,12 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
         case VK_F4:
         {
-            if (GetKeyState(VK_MENU) & 0x8000) { SendMessageA(hwnd(), WM_CLOSE, 0, 0); }
+            if (GetKeyState(VK_MENU) & 0x8000)
+            {
+                SendMessageA(hwnd(), WM_CLOSE, 0, 0);
+
+                return 0;
+            }
 
             else
             {
