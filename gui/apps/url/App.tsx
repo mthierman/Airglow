@@ -131,7 +131,7 @@ export default function App() {
             <form
                 ref={form}
                 id="form"
-                className="grid grid-flow-col"
+                className="addressBar"
                 method="post"
                 autoComplete="off"
                 spellCheck="false"
