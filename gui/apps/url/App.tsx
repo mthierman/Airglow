@@ -42,6 +42,7 @@ export default function App() {
             // console.log(data);
 
             if (data.layout) {
+                console.log(data);
                 setPosition(data.layout);
                 sessionStorage.setItem("position", JSON.stringify(data.layout));
                 setPosition((prevState) => ({
@@ -134,14 +135,14 @@ export default function App() {
                 spellCheck="false"
                 onSubmit={handleSubmit}>
                 <label
-                    className={`url ${position.swapped ? "order-1" : "order-0"} ${
-                        !position.split && position.swapped ? "hidden" : ""
+                    className={`${position.swapped ? "order-1" : "order-0"} ${
+                        !position.split && position.swapped ? "hidden" : "url"
                     }`}>
                     <img width="16" height="16" src={firstFavicon} className="favicon" />
                     <input
                         ref={first}
                         id="first"
-                        className="input "
+                        className="input"
                         type="text"
                         value={firstCurrent}
                         placeholder={sessionStorage.getItem("first")!}
@@ -151,8 +152,8 @@ export default function App() {
                     />
                 </label>
                 <label
-                    className={`url ${position.swapped ? "order-0" : "order-1"} ${
-                        !position.split && !position.swapped ? "hidden" : ""
+                    className={`${position.swapped ? "order-0" : "order-1"} ${
+                        !position.split && !position.swapped ? "hidden" : "url"
                     }`}>
                     <img width={16} height={16} src={secondFavicon} className="favicon" />
                     <input
