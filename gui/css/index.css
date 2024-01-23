@@ -38,7 +38,7 @@ body {
 }
 
 .input {
-    @apply w-full text-ellipsis bg-white p-2 font-medium text-accentDark1 outline-none dark:bg-black dark:text-accent;
+    @apply w-full leading-none text-ellipsis bg-white p-2 font-medium text-accentDark1 outline-none dark:bg-black dark:text-accent;
 }
 
 .settingTitle {
