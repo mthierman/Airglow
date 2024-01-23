@@ -1,5 +1,3 @@
-// https://learn.microsoft.com/en-us/microsoft-edge/webview2/concepts/working-with-local-content?tabs=dotnetcsharp
-
 package main
 
 import (
