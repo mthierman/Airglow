@@ -1,6 +1,6 @@
 import { SyntheticEvent, useState, useRef, useEffect } from "react";
 import * as url from "@libs/url";
-import { getLayoutStorage, getSystemColorsStorage } from "@libs/storage";
+import { getLayoutStorage, getSessionStorage, getSystemColorsStorage } from "@libs/storage";
 
 export default function App() {
     const [position, setPosition] = useState<App.Layout>(getLayoutStorage());
@@ -13,8 +13,8 @@ export default function App() {
     const [firstCurrent, setFirstCurrent] = useState("");
     const [secondCurrent, setSecondCurrent] = useState("");
 
-    const [firstFavicon, setFirstFavicon] = useState("");
-    const [secondFavicon, setSecondFavicon] = useState("");
+    const [firstFavicon, setFirstFavicon] = useState(getSessionStorage("firstFavicon", ""));
+    const [secondFavicon, setSecondFavicon] = useState(getSessionStorage("secondFavicon", ""));
 
     useEffect(() => {
         window.chrome.webview.postMessage({ initialized: true });
@@ -62,18 +62,20 @@ export default function App() {
                 // setFirstFavicon(url.getFavicon(data.first));
             }
 
-            if (data.firstFavicon) {
-                setFirstFavicon(data.firstFavicon);
-            }
-
             if (data.second) {
                 setSecondCurrent(data.second);
                 sessionStorage.setItem("second", data.second);
                 // setSecondFavicon(url.getFavicon(data.second));
             }
 
+            if (data.firstFavicon) {
+                setFirstFavicon(data.firstFavicon);
+                sessionStorage.setItem("firstFavicon", data.firstFavicon);
+            }
+
             if (data.secondFavicon) {
                 setSecondFavicon(data.secondFavicon);
+                sessionStorage.setItem("secondFavicon", data.secondFavicon);
             }
         };
 
