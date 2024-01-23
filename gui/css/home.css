@@ -1,0 +1,8 @@
+html,
+body {
+    @apply h-full w-full;
+}
+
+#root {
+    @apply grid h-full w-full place-content-center;
+}

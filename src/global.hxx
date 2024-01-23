@@ -29,6 +29,8 @@ struct URL
 {
     URL();
 
+    auto page() -> std::string;
+
     std::map<std::string, std::string> home;
     std::map<std::string, std::string> current;
 

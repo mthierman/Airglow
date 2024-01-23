@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+    font-family: "Noto Emoji";
+    src: url("/fonts/NotoEmoji-VariableFont_wght.ttf") format("woff");
+    font-style: normal;
+    font-weight: normal;
+}
+
 /* html {
     scrollbar-gutter: stable both-edges;
 } */
