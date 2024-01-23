@@ -331,6 +331,10 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
     PostMessageA(hwnd(), WM_SIZE, 0, 0);
 
+    if (!m_layout.swapped) { title(m_firstTitle); }
+
+    else { title(m_secondTitle); }
+
     return 0;
 }
 
@@ -417,6 +421,31 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
         {
             if (m_browsers.url) { m_browsers.url->post_json(json); }
         }
+
+        break;
+    }
+
+    case msg::title_changed:
+    {
+        auto json{nlohmann::json::parse(notification->message)};
+
+        if (json.contains("firstTitle"))
+        {
+            if (m_browsers.url) { m_browsers.url->post_json(json); }
+            m_firstTitle = json["firstTitle"].get<std::string>();
+            // title(json["firstTitle"].get<std::string>());
+        }
+
+        else if (json.contains("secondTitle"))
+        {
+            if (m_browsers.url) { m_browsers.url->post_json(json); }
+            m_secondTitle = json["secondTitle"].get<std::string>();
+            // title(json["secondTitle"].get<std::string>());
+        }
+
+        if (!m_layout.swapped) { title(m_firstTitle); }
+
+        else { title(m_secondTitle); }
 
         break;
     }

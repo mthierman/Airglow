@@ -141,6 +141,17 @@ auto MainBrowser::favicon_changed_handler(ICoreWebView2* sender, IUnknown* args)
     return S_OK;
 }
 
+auto MainBrowser::document_title_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT
+{
+    wil::unique_cotaskmem_string title;
+    if (FAILED(m_webView.core20->get_DocumentTitle(&title))) { return S_OK; }
+
+    notify(m_parent, msg::title_changed,
+           nlohmann::json{{"firstTitle", glow::text::narrow(title.get())}}.dump());
+
+    return S_OK;
+}
+
 auto SideBrowser::source_changed_handler(ICoreWebView2* sender,
                                          ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
 {
@@ -160,6 +171,17 @@ auto SideBrowser::favicon_changed_handler(ICoreWebView2* sender, IUnknown* args)
 
     notify(m_parent, msg::favicon_changed,
            nlohmann::json{{"secondFavicon", glow::text::narrow(favicon.get())}}.dump());
+
+    return S_OK;
+}
+
+auto SideBrowser::document_title_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT
+{
+    wil::unique_cotaskmem_string title;
+    if (FAILED(m_webView.core20->get_DocumentTitle(&title))) { return S_OK; }
+
+    notify(m_parent, msg::title_changed,
+           nlohmann::json{{"secondTitle", glow::text::narrow(title.get())}}.dump());
 
     return S_OK;
 }

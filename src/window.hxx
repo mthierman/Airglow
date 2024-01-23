@@ -41,6 +41,9 @@ struct Window : public glow::window::BaseWindow<Window>
     HWND m_app;
     URL& m_url;
 
+    std::string m_firstTitle;
+    std::string m_secondTitle;
+
     Browsers m_browsers;
     Positions m_positions;
     Layout m_layout;
