@@ -44,6 +44,9 @@
                 <File Source="build/Release/gui/assets/home.js" />
             </Component>
             <Component Directory="Assets">
+                <File Source="build/Release/gui/assets/home.css" />
+            </Component>
+            <Component Directory="Assets">
                 <File Source="build/Release/gui/assets/index.css" />
             </Component>
             <Component Directory="Assets">

@@ -6,9 +6,12 @@
                         http://wixtoolset.org/schemas/v4/wxs/bal https://raw.githubusercontent.com/wixtoolset/web/master/src/xsd4/bal.xsd">
     <Bundle Name="Airglow" Version="1.6.0" UpgradeCode="254DC0BB-0BD7-44E8-A448-BB0872899BC2"
         IconSourceFile="data/release.ico" AboutUrl="https://github.com/mthierman/Airglow"
-        Copyright="© 2023 Mike Thierman" Manufacturer="Mike Thierman">
+        Copyright="© 2023 Mike Thierman" Manufacturer="Mike Thierman"
+        SplashScreenSourceFile="data/banner.png">
         <BootstrapperApplication>
-            <bal:WixInternalUIBootstrapperApplication LogoFile="data/release.png" />
+            <bal:WixStandardBootstrapperApplication Theme="rtfLicense" LicenseFile="LICENSE.rtf"
+                ShowVersion="yes" LogoSideFile="data/release.png"
+                LogoFile="data/release.png" SuppressOptionsUI="true" />
         </BootstrapperApplication>
         <Chain>
             <BundlePackage SourceFile="data/VC_redist.x64.exe"
