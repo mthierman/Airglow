@@ -26,7 +26,7 @@ body {
 }
 
 .url {
-    @apply flex select-none place-content-center items-center bg-black;
+    @apply flex select-none place-content-center items-center rounded border-b-2 border-transparent bg-black duration-300 ease-in-out focus-within:border-accent dark:focus-within:border-accentLight1;
 }
 
 .favicon {
@@ -34,7 +34,7 @@ body {
 }
 
 .input {
-    @apply w-full text-ellipsis rounded border-b-2 border-transparent bg-white p-2 font-medium text-accentDark1 shadow-sm shadow-black outline-none duration-300 ease-in-out focus:border-accent dark:bg-black dark:text-accent dark:focus:border-accentLight1;
+    @apply w-full text-ellipsis bg-white p-2 font-medium text-accentDark1 outline-none dark:bg-black dark:text-accent;
 }
 
 .settingTitle {
