@@ -1,4 +1,4 @@
-name: Release
+name: Airglow
 
 on:
   workflow_dispatch:
@@ -14,59 +14,38 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           fetch-depth: 5
           submodules: true
-      - uses: pnpm/action-setup@v2
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
         with:
           version: latest
-      - uses: actions/setup-node@v4
+
+      - name: Setup node
+        uses: actions/setup-node@v4
         with:
           node-version: "*"
           check-latest: true
           cache: "pnpm"
-          cache-dependency-path: gui/pnpm-lock.yaml
-      - run: |
-          Push-Location
-          Set-Location gui
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install node_modules
+        run: |
           pnpm install --frozen-lockfile
-          Pop-Location
-      - uses: actions/cache@v3
-        id: library-cache
+
+      - name: Cache
+        uses: actions/cache@v4
+        id: deps
         with:
           path: |
             build/_deps
-            build/libs/Nuget
-          key: library-cache-${{ hashFiles('**/CMakeLists.txt') }}
-      - run: |
-          $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
-          $vspath = & $vswhere -products * -latest -property installationPath
-          & "$vspath\Common7\Tools\Launch-VsDevShell.ps1" -HostArch amd64 -Arch amd64 -SkipAutomaticLocation
+          key: deps-${{ hashFiles('**/CMakeLists.txt') }}
 
-          cmake -B build -S . -G "Ninja" -DCMAKE_BUILD_TYPE=Release
-          cmake --build build
-
-
-
-          Push-Location
-          Set-Location build/Airglow_artifacts
-          7z a Airglow.zip Airglow.exe Microsoft.Web.WebView2.Core.dll gui
-          Pop-Location
-
-          git --no-pager log -5 --oneline --no-decorate | Out-File "release_notes.txt"
-
-          $zip = Get-Item "build/Airglow_artifacts/Airglow.zip"
-          $version = (Get-Content .\Airglow.json | ConvertFrom-Json).version
-          $notes = Get-Item "release_notes.txt"
-          $commit = git rev-parse --short HEAD
-
-          if ("${{ github.ref_name }}" -eq "main") {
-            gh release delete $version -y
-            gh release create $version $zip -F $notes -t "Airglow $version"
-          }
-
-          if ("${{ github.ref_name }}" -eq "dev") {
-            gh release delete $version -y
-            gh release create $version $zip -F $notes -t "Airglow Nightly ($commit)" -p
-          }
+      - name: CMake
+        run: |
+          Import-Module ${{ github.workspace }}\tools\PowerShell
+          Invoke-UnityBuild
