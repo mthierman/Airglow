@@ -40,31 +40,14 @@
                 <File Id="Airglow" Source="build/Release/Airglow.exe" />
                 <Shortcut Name="Airglow" Directory="StartMenu" Advertise="yes" Icon="Airglow.exe" />
             </Component>
-            <Component Directory="Assets">
-                <File Source="build/Release/gui/assets/home.js" />
-            </Component>
-            <Component Directory="Assets">
+            <Component Directory="Assets" Guid="1FC6B8D3-D063-433E-863D-B42680CFA2C5">
                 <File Source="build/Release/gui/assets/home.css" />
-            </Component>
-            <Component Directory="Assets">
+                <File Source="build/Release/gui/assets/home.js" />
                 <File Source="build/Release/gui/assets/index.css" />
-            </Component>
-            <Component Directory="Assets">
                 <File Source="build/Release/gui/assets/index.js" />
-            </Component>
-            <Component Directory="Assets">
                 <File Source="build/Release/gui/assets/NotoEmoji-VariableFont_wght.ttf" />
-            </Component>
-            <Component Directory="Assets">
                 <File Source="build/Release/gui/assets/settings.js" />
-            </Component>
-            <Component Directory="Assets">
                 <File Source="build/Release/gui/assets/storage.js" />
-            </Component>
-            <Component Directory="Assets">
-                <File Source="build/Release/gui/assets/test.js" />
-            </Component>
-            <Component Directory="Assets">
                 <File Source="build/Release/gui/assets/url.js" />
             </Component>
             <Component Directory="Home">
