@@ -36,9 +36,11 @@ URL::URL()
 auto URL::page() -> std::string
 {
 #if defined(_DEBUG)
-    return "https://localhost:8000/home/index.html";
+    // return "https://localhost:8000/home/index.html";
+    return "about:blank";
 #else
-    return "file:///" + glow::filesystem::app_path().generic_string() + "/gui/home/index.html";
+    // return "file:///" + glow::filesystem::app_path().generic_string() + "/gui/home/index.html";
+    return "about:blank";
 #endif
 }
 
