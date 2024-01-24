@@ -51,4 +51,5 @@ jobs:
           Import-Module ${{ github.workspace }}\tools\PowerShell
           Invoke-CMake
           Invoke-Archive
+          Invoke-Wix
           Invoke-StableRelease

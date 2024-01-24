@@ -16,6 +16,9 @@
                     <Directory Id="Home" Name="home"></Directory>
                     <Directory Id="Settings" Name="settings"></Directory>
                     <Directory Id="URL" Name="url"></Directory>
+                    <Directory Id="Public" Name="public">
+                        <Directory Id="Fonts" Name="fonts"></Directory>
+                    </Directory>
                 </Directory>
             </Directory>
         </StandardDirectory>
@@ -72,6 +75,9 @@
             </Component>
             <Component Directory="URL">
                 <File Source="build/Release/gui/url/index.html" />
+            </Component>
+            <Component Directory="Fonts">
+                <File Source="build/Release/gui/public/fonts/NotoEmoji-VariableFont_wght.ttf" />
             </Component>
         </Feature>
 
