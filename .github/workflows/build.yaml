@@ -49,6 +49,7 @@ jobs:
         run: |
           Import-Module ${{ github.workspace }}\tools\PowerShell
           Invoke-UnityBuild
+          Invoke-Archive
 
       - name: Stable Release
         if: github.ref == 'refs/heads/main'
