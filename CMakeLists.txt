@@ -9,7 +9,36 @@ project(
 
 add_subdirectory(libs/Glow)
 
-include(${PROJECT_SOURCE_DIR}/cmake/resource.cmake)
+file(
+    WRITE
+    ${PROJECT_BINARY_DIR}/notes/version
+    v${PROJECT_VERSION}
+)
+
+execute_process(
+    COMMAND git rev-parse --short HEAD
+    OUTPUT_FILE ${PROJECT_BINARY_DIR}/notes/short_hash
+)
+
+execute_process(
+    COMMAND git --no-pager log -5 --oneline --no-decorate
+    OUTPUT_FILE ${PROJECT_BINARY_DIR}/notes/release_notes
+)
+
+file(
+    GENERATE
+    OUTPUT ${PROJECT_BINARY_DIR}/data/airglow.rc
+    CONTENT "101 ICON \"icon.ico\""
+)
+
+add_custom_command(
+    OUTPUT ${PROJECT_BINARY_DIR}/data/icon.ico
+    COMMAND
+        ${CMAKE_COMMAND} -E copy
+        ${PROJECT_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico
+        ${PROJECT_BINARY_DIR}/data/icon.ico
+    COMMENT "Copying icon..."
+)
 
 add_executable(
     Airglow
@@ -18,7 +47,7 @@ add_executable(
 
 configure_file(
     ${PROJECT_SOURCE_DIR}/src/config.hxx
-    ${CMAKE_CURRENT_BINARY_DIR}/include/airglow/config.hxx
+    ${PROJECT_BINARY_DIR}/include/airglow/config.hxx
 )
 
 target_sources(
@@ -29,20 +58,20 @@ target_sources(
             ${PROJECT_SOURCE_DIR}/src/main.cxx
             ${PROJECT_SOURCE_DIR}/src/settings.cxx
             ${PROJECT_SOURCE_DIR}/src/window.cxx
-            ${AIRGLOW_RC}
             ${PROJECT_SOURCE_DIR}/data/airglow.manifest
+            ${PROJECT_BINARY_DIR}/data/airglow.rc
     PRIVATE FILE_SET
             HEADERS
             BASE_DIRS
             ${PROJECT_SOURCE_DIR}/src
-            ${CMAKE_CURRENT_BINARY_DIR}/include
+            ${PROJECT_BINARY_DIR}/include
             FILES
             ${PROJECT_SOURCE_DIR}/src/app.hxx
             ${PROJECT_SOURCE_DIR}/src/browser.hxx
             ${PROJECT_SOURCE_DIR}/src/global.hxx
             ${PROJECT_SOURCE_DIR}/src/settings.hxx
             ${PROJECT_SOURCE_DIR}/src/window.hxx
-            ${CMAKE_CURRENT_BINARY_DIR}/include/airglow/config.hxx
+            ${PROJECT_BINARY_DIR}/include/airglow/config.hxx
 )
 
 target_link_libraries(
@@ -51,9 +80,21 @@ target_link_libraries(
             glow::flags
 )
 
+add_custom_target(
+    CopyIcon
+    ALL
+    DEPENDS ${PROJECT_BINARY_DIR}/data/icon.ico
+)
+
 add_dependencies(
     Airglow
     CopyIcon
+)
+
+add_custom_target(
+    Vite
+    COMMAND pnpm build
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
 
 add_dependencies(

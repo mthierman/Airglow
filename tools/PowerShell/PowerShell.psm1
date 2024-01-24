@@ -28,7 +28,15 @@ function Invoke-UnityBuild
 
 function Invoke-ServerBuild
 {
-    go build -o ".\build\server.exe" ".\tools\server"
+    go build -o "./build/Release/AirglowServer.exe" "./tools/server"
+}
+
+function Invoke-Archive
+{
+    Push-Location
+    Set-Location build/Release
+    7z a Airglow.zip Airglow.exe gui
+    Pop-Location
 }
 
 function Add-WixExtensions
@@ -61,61 +69,42 @@ function Convert-Icons
     ConvertTo-WixIco 32 data/ic_fluent_info_48_regular.svg data/WixUIInfoIco.ico
 }
 
-function Export-Notes
-{
-    git --no-pager log -5 --oneline --no-decorate | Out-File "..\notes.txt"
-}
-
-function Compress-Repo
-{
-    Push-Location
-    Set-Location ..\
-    C:\msys64\usr\bin\bsdtar.exe --exclude-vcs --exclude Glow/build --exclude Glow/.vscode -cJf Glow.tar.xz Glow
-    Pop-Location
-}
-
-function Get-Commit
-{
-    git rev-parse --short HEAD
-}
-
-function Get-Name
-{
-    (Get-Content .\Glow.json | ConvertFrom-Json).name
-}
-
 function Get-Version
 {
-    (Get-Content .\Glow.json | ConvertFrom-Json).version
+    Get-Content build/Release/notes/version
+}
+
+function Get-ShortHash
+{
+    Get-Content build/Release/notes/short_hash
+}
+
+function Get-ReleaseNotes
+{
+    Get-Content build/Release/notes/release_notes
 }
 
 function Get-Archive
 {
-    Get-Item "..\Glow.tar.xz"
-}
-
-function Get-Notes
-{
-    Get-Item "..\notes.txt"
+    Get-Item build/Release/Airglow.zip
 }
 
 function Invoke-StableRelease
 {
-    Export-Notes
-    Compress-Repo
-    $version = "v$(Get-Version)"
+    $version = Get-Version
+    $notes = Get-ReleaseNotes
     $archive = Get-Archive
-    $notes = Get-Notes
+
     gh release delete $version -y
-    gh release create $version $archive -F $notes -t "$version"
+    gh release create $version $archive -n $notes -t $version
 }
 
-function Invoke-NextRelease
+function Invoke-DevRelease
 {
-    Export-Notes
-    Compress-Repo
+    $hash = Get-ShortHash
+    $notes = Get-ReleaseNotes
     $archive = Get-Archive
-    $notes = Get-Notes
-    gh release delete Next -y
-    gh release create Next $archive -F $notes -t "Next" -p
+    
+    gh release delete prerelease -y
+    gh release create prerelease $archive -n $notes -t $hash -p
 }
