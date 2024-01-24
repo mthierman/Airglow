@@ -52,8 +52,9 @@ function Add-WixExtensions
     $Repo = $PSScriptRoot | Split-Path | Split-Path
     Push-Location
     Set-Location $Repo
-    wix extension add WixToolset.UI.wixext
-    wix extension add WixToolset.Bal.wixext
+    dotnet tool restore
+    dotnet wix extension add WixToolset.UI.wixext
+    dotnet wix extension add WixToolset.Bal.wixext
     Pop-Location
 }
 
@@ -62,8 +63,9 @@ function Invoke-Wix
     $Repo = $PSScriptRoot | Split-Path | Split-Path
     Push-Location
     Set-Location $Repo
-    wix build tools\installer\msi.wxs -o build/Airglow.msi -ext WixToolset.UI.wixext
-    wix build tools\installer\bundle.wxs -o build/Airglow.exe -ext WixToolset.Bal.wixext
+    dotnet tool restore
+    dotnet wix build tools\installer\msi.wxs -o build/Airglow.msi -ext WixToolset.UI.wixext
+    dotnet wix build tools\installer\bundle.wxs -o build/Airglow.exe -ext WixToolset.Bal.wixext
     Pop-Location
 }
 
