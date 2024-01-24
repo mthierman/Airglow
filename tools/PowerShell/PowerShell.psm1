@@ -81,7 +81,7 @@ function Get-ShortHash
 
 function Get-ReleaseNotes
 {
-    Get-Content build/Release/notes/release_notes
+    Get-Item build/Release/notes/release_notes
 }
 
 function Get-Archive
@@ -96,7 +96,7 @@ function Invoke-StableRelease
     $archive = Get-Archive
 
     gh release delete $version -y
-    gh release create $version $archive -n $notes -t $version
+    gh release create $version $archive --notes-file $notes -t $version
 }
 
 function Invoke-DevRelease
@@ -105,6 +105,6 @@ function Invoke-DevRelease
     $notes = Get-ReleaseNotes
     $archive = Get-Archive
     
-    gh release delete prerelease -y
-    gh release create prerelease $archive -n $notes -t $hash -p
+    gh release delete $hash -y
+    gh release create $hash $archive --notes-file $notes -t $hash -p
 }
