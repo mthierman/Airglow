@@ -10,12 +10,18 @@
         {
             "name": "Release",
             "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build/Release"
+            "binaryDir": "${sourceDir}/build/Release",
+            "environment": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
         },
         {
             "name": "Unity",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/build/Release",
+            "environment": {
+                "CMAKE_BUILD_TYPE": "Release"
+            },
             "cacheVariables": {
                 "CMAKE_UNITY_BUILD": {
                     "type": "BOOL",
