@@ -1,54 +1,70 @@
-function Enter-DevShell64
+function Enter-DevShell
 {
+    [CmdletBinding()]
+    param (
+        [ValidateNotNullOrEmpty()]
+        [string]$Arch = 'amd64'
+    )
+
     $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
     $vspath = & $vswhere -products * -latest -property installationPath
-    & "$vspath\Common7\Tools\Launch-VsDevShell.ps1" -HostArch amd64 -Arch amd64 -SkipAutomaticLocation
+    & "$vspath\Common7\Tools\Launch-VsDevShell.ps1" -HostArch $Arch -Arch $Arch -SkipAutomaticLocation
 }
 
-function Enter-DevShell32
+function Invoke-CMake
 {
-    $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
-    $vspath = & $vswhere -products * -latest -property installationPath
-    & "$vspath\Common7\Tools\Launch-VsDevShell.ps1" -HostArch x86 -Arch x86 -SkipAutomaticLocation
-}
+    [CmdletBinding()]
+    param (
+        [ValidateNotNullOrEmpty()]
+        [string]$Preset = 'Unity'
+    )
 
-function Invoke-ReleaseBuild
-{
+    $Repo = $PSScriptRoot | Split-Path | Split-Path
+    Push-Location
+    Set-Location $Repo
     Enter-DevShell64
-    cmake --preset Release
-    cmake --build --preset Release
+    cmake --preset $Preset
+    cmake --build --preset $Preset
+    Pop-Location
 }
 
-function Invoke-UnityBuild
+function Invoke-Go
 {
-    Enter-DevShell64
-    cmake --preset Unity
-    cmake --build --preset Unity
-}
-
-function Invoke-ServerBuild
-{
+    $Repo = $PSScriptRoot | Split-Path | Split-Path
+    Push-Location
+    Set-Location $Repo
     go build -o "./build/Release/AirglowServer.exe" "./tools/server"
+    Pop-Location
 }
 
 function Invoke-Archive
 {
+    $Repo = $PSScriptRoot | Split-Path | Split-Path
     Push-Location
-    Set-Location build/Release
+    Set-Location $Repo/build/Release
+    if (Test-Path Airglow.zip) { Remove-Item Airglow.zip -Force }
     7z a Airglow.zip Airglow.exe gui
     Pop-Location
 }
 
 function Add-WixExtensions
 {
+    $Repo = $PSScriptRoot | Split-Path | Split-Path
+    Push-Location
+    Set-Location $Repo
     wix extension add WixToolset.UI.wixext
     wix extension add WixToolset.Bal.wixext
+    Pop-Location
 }
 
 function Invoke-WixBuild
 {
+    $Repo = $PSScriptRoot | Split-Path | Split-Path
+    Push-Location
+    Set-Location $Repo
     wix build tools\installer\msi.wxs -o build/Airglow.msi -ext WixToolset.UI.wixext
     wix build tools\installer\bundle.wxs -o build/Airglow.exe -ext WixToolset.Bal.wixext
+    Pop-Location
 }
 
 function ConvertTo-WixIco

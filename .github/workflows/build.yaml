@@ -49,6 +49,6 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: |
           Import-Module ${{ github.workspace }}\tools\PowerShell
-          Invoke-UnityBuild
+          Invoke-CMake
           Invoke-Archive
           Invoke-StableRelease
