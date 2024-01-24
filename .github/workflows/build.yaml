@@ -45,14 +45,10 @@ jobs:
             build/_deps
           key: deps-${{ hashFiles('**/CMakeLists.txt') }}
 
-      - name: CMake
+      - name: Stable release
+        if: github.ref == 'refs/heads/main'
         run: |
           Import-Module ${{ github.workspace }}\tools\PowerShell
           Invoke-UnityBuild
           Invoke-Archive
-
-      - name: Stable Release
-        if: github.ref == 'refs/heads/main'
-        run: |
-          Import-Module ${{ github.workspace }}\tools\PowerShell
           Invoke-StableRelease
