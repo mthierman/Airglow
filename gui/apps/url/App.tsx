@@ -1,6 +1,7 @@
 import { SyntheticEvent, useState, useRef, useEffect } from "react";
 import * as url from "@libs/url";
 import { getLayoutStorage, getSessionStorage, getSystemColorsStorage } from "@libs/storage";
+import iconRaw from "../../../data/release.svg?raw";
 
 export default function App() {
     const [position, setPosition] = useState<App.Layout>(getLayoutStorage());
@@ -39,7 +40,7 @@ export default function App() {
     useEffect(() => {
         const onMessage = (event: Event) => {
             const data = (event as MessageEvent).data;
-            console.log(data);
+            // console.log(data);
 
             if (data.layout) {
                 setPosition(data.layout);
@@ -56,12 +57,18 @@ export default function App() {
             }
 
             if (data.first) {
+                if (data.first === "about:blank") {
+                    setFirstFavicon(`data:image/svg+xml,${encodeURIComponent(iconRaw)}`);
+                }
                 setFirstCurrent(data.first);
                 sessionStorage.setItem("first", data.first);
                 // setFirstFavicon(url.getFavicon(data.first));
             }
 
             if (data.second) {
+                if (data.second === "about:blank") {
+                    setSecondFavicon(`data:image/svg+xml,${encodeURIComponent(iconRaw)}`);
+                }
                 setSecondCurrent(data.second);
                 sessionStorage.setItem("second", data.second);
                 // setSecondFavicon(url.getFavicon(data.second));
@@ -100,14 +107,14 @@ export default function App() {
     const handleSubmit = (event: SyntheticEvent) => {
         event.preventDefault();
 
-        if (document.activeElement === first.current) {
+        if (document.activeElement === first.current && first.current!.value !== "") {
             const parsed = url.parseUrl(first.current?.value!).href;
             setFirstCurrent(parsed);
             sessionStorage.setItem("first", parsed);
             window.chrome.webview.postMessage({ first: parsed });
         }
 
-        if (document.activeElement === second.current) {
+        if (document.activeElement === second.current && second.current!.value !== "") {
             const parsed = url.parseUrl(second.current?.value!).href;
             setSecondCurrent(parsed);
             sessionStorage.setItem("second", parsed);
