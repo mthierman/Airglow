@@ -141,9 +141,10 @@ function Invoke-StableRelease
     $version = Get-Version
     $notes = Get-ReleaseNotes
     $archive = Get-Archive
+    $installer = Get-Installer
 
     gh release delete $version -y
-    gh release create $version $archive --notes-file $notes -t $version
+    gh release create $version $archive $installer --notes-file $notes -t $version
 
     Pop-Location
 }
