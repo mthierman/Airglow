@@ -4,7 +4,7 @@
 
 @font-face {
     font-family: "Noto Emoji";
-    src: url("/fonts/NotoEmoji-VariableFont_wght.ttf") format("woff");
+    src: url("NotoEmoji-VariableFont_wght.ttf") format("woff");
     font-style: normal;
     font-weight: normal;
 }
@@ -38,7 +38,7 @@ body {
 }
 
 .input {
-    @apply w-full leading-none text-ellipsis bg-white p-2 font-medium text-accentDark1 outline-none dark:bg-black dark:text-accent;
+    @apply w-full text-ellipsis bg-white p-2 font-medium leading-none text-accentDark1 outline-none dark:bg-black dark:text-accent;
 }
 
 .settingTitle {
