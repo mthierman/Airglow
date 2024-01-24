@@ -42,7 +42,6 @@ export default function App() {
             console.log(data);
 
             if (data.layout) {
-                console.log(data);
                 setPosition(data.layout);
                 sessionStorage.setItem("position", JSON.stringify(data.layout));
                 setPosition((prevState) => ({
