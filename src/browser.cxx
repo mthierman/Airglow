@@ -15,16 +15,16 @@ auto Browser::web_message_received_handler(ICoreWebView2* sender,
     wil::unique_cotaskmem_string source;
     args->get_Source(&source);
 
-    if (!(std::wstring_view(source.get()) == glow::text::widen(url("url")) ||
-          std::wstring_view(source.get()) == glow::text::widen(url("settings"))))
+    if (!(std::wstring_view(source.get()) == glow::text::to_utf16(url("url")) ||
+          std::wstring_view(source.get()) == glow::text::to_utf16(url("settings"))))
     {
-        log(glow::text::narrow(source.get()));
+        log(glow::text::to_utf8(source.get()));
     }
 
     wil::unique_cotaskmem_string message;
     if (FAILED(args->get_WebMessageAsJson(&message))) { return S_OK; }
 
-    notify(m_parent, msg::web_message_received, glow::text::narrow(message.get()));
+    notify(m_parent, msg::web_message_received, glow::text::to_utf8(message.get()));
 
     return S_OK;
 }
@@ -125,7 +125,7 @@ auto MainBrowser::source_changed_handler(ICoreWebView2* sender,
     if (FAILED(sender->get_Source(&source))) { return S_OK; }
 
     notify(m_parent, msg::source_changed,
-           nlohmann::json{{"first", glow::text::narrow(source.get())}}.dump());
+           nlohmann::json{{"first", glow::text::to_utf8(source.get())}}.dump());
 
     return S_OK;
 }
@@ -136,7 +136,7 @@ auto MainBrowser::favicon_changed_handler(ICoreWebView2* sender, IUnknown* args)
     if (FAILED(m_webView.core20->get_FaviconUri(&favicon))) { return S_OK; }
 
     notify(m_parent, msg::favicon_changed,
-           nlohmann::json{{"firstFavicon", glow::text::narrow(favicon.get())}}.dump());
+           nlohmann::json{{"firstFavicon", glow::text::to_utf8(favicon.get())}}.dump());
 
     return S_OK;
 }
@@ -147,7 +147,7 @@ auto MainBrowser::document_title_changed_handler(ICoreWebView2* sender, IUnknown
     if (FAILED(m_webView.core20->get_DocumentTitle(&title))) { return S_OK; }
 
     notify(m_parent, msg::title_changed,
-           nlohmann::json{{"firstTitle", glow::text::narrow(title.get())}}.dump());
+           nlohmann::json{{"firstTitle", glow::text::to_utf8(title.get())}}.dump());
 
     return S_OK;
 }
@@ -159,7 +159,7 @@ auto SideBrowser::source_changed_handler(ICoreWebView2* sender,
     if (FAILED(sender->get_Source(&source))) { return S_OK; }
 
     notify(m_parent, msg::source_changed,
-           nlohmann::json{{"second", glow::text::narrow(source.get())}}.dump());
+           nlohmann::json{{"second", glow::text::to_utf8(source.get())}}.dump());
 
     return S_OK;
 }
@@ -170,7 +170,7 @@ auto SideBrowser::favicon_changed_handler(ICoreWebView2* sender, IUnknown* args)
     if (FAILED(m_webView.core20->get_FaviconUri(&favicon))) { return S_OK; }
 
     notify(m_parent, msg::favicon_changed,
-           nlohmann::json{{"secondFavicon", glow::text::narrow(favicon.get())}}.dump());
+           nlohmann::json{{"secondFavicon", glow::text::to_utf8(favicon.get())}}.dump());
 
     return S_OK;
 }
@@ -181,7 +181,7 @@ auto SideBrowser::document_title_changed_handler(ICoreWebView2* sender, IUnknown
     if (FAILED(m_webView.core20->get_DocumentTitle(&title))) { return S_OK; }
 
     notify(m_parent, msg::title_changed,
-           nlohmann::json{{"secondTitle", glow::text::narrow(title.get())}}.dump());
+           nlohmann::json{{"secondTitle", glow::text::to_utf8(title.get())}}.dump());
 
     return S_OK;
 }
