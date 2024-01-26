@@ -48,8 +48,10 @@ jobs:
       - name: Stable release
         if: github.ref == 'refs/heads/main'
         run: |
+          Import-Module ${{ github.workspace }}\libs\Glow\tools\PowerShell
           Import-Module ${{ github.workspace }}\tools\PowerShell
+          Invoke-DevShell
           Invoke-CMake
           Invoke-Archive
           Invoke-Wix
-          Invoke-StableRelease
+          Publish-Airglow
