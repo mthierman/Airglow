@@ -56,6 +56,7 @@ auto Settings::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     switch (uMsg)
     {
     case WM_CLOSE: return on_close(wParam, lParam);
+    case WM_DPICHANGED: return on_dpi_changed(wParam, lParam);
     case WM_KEYDOWN: return on_key_down(wParam, lParam);
     case WM_GETMINMAXINFO: return on_get_min_max_info(wParam, lParam);
     case WM_NOTIFY: return on_notify(wParam, lParam);
@@ -70,6 +71,14 @@ auto Settings::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 auto Settings::on_close(WPARAM wParam, LPARAM lParam) -> int
 {
     hide();
+
+    return 0;
+}
+
+auto Settings::on_dpi_changed(WPARAM wParam, LPARAM lParam) -> int
+{
+    m_dpi = dpi();
+    m_scale = scale();
 
     return 0;
 }

@@ -31,6 +31,7 @@ struct Window : public glow::window::BaseWindow<Window>
     static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
     auto default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     auto on_close(WPARAM wParam, LPARAM lParam) -> int;
+    auto on_dpi_changed(WPARAM wParam, LPARAM lParam) -> int;
     auto on_get_min_max_info(WPARAM wParam, LPARAM lParam) -> int;
     auto on_key_down(WPARAM wParam, LPARAM lParam) -> int;
     auto on_notify(WPARAM wParam, LPARAM lParam) -> int;
