@@ -52,6 +52,7 @@ struct MainBrowser final : public Browser
     virtual auto favicon_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT override;
     virtual auto document_title_changed_handler(ICoreWebView2* sender, IUnknown* args)
         -> HRESULT override;
+    wil::unique_hicon m_favicon;
 };
 
 struct SideBrowser final : public Browser
