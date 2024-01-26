@@ -1,5 +1,6 @@
 {
-    "version": 7,
+    "$schema": "https://raw.githubusercontent.com/Kitware/CMake/master/Help/manual/presets/schema.json",
+    "version": 8,
     "cmakeMinimumRequired": {
         "major": 3,
         "minor": 27,
@@ -8,36 +9,79 @@
     "include": [],
     "configurePresets": [
         {
-            "name": "Release",
-            "generator": "Ninja Multi-Config",
-            "binaryDir": "${sourceDir}/build/Release",
-            "environment": {
-                "CMAKE_BUILD_TYPE": "Release"
+            "name": "Ninja",
+            "hidden": true,
+            "generator": "Ninja"
+        },
+        {
+            "name": "Ninja Multi-Config",
+            "hidden": true,
+            "generator": "Ninja Multi-Config"
+        },
+        {
+            "name": "Visual Studio",
+            "hidden": true,
+            "architecture": {
+                "strategy": "external",
+                "value": "x64"
+            },
+            "toolset": {
+                "strategy": "external",
+                "value": "v143,host=x64"
+            }
+        },
+        {
+            "name": "MSVC",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "cl",
+                "CMAKE_CXX_COMPILER": "cl"
+            }
+        },
+        {
+            "name": "LLVM",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++"
             }
         },
         {
             "name": "Unity",
-            "generator": "Ninja Multi-Config",
-            "binaryDir": "${sourceDir}/build/Release",
-            "environment": {
-                "CMAKE_BUILD_TYPE": "Release"
-            },
+            "hidden": true,
             "cacheVariables": {
                 "CMAKE_UNITY_BUILD": {
                     "type": "BOOL",
                     "value": "ON"
                 }
             }
+        },
+        {
+            "name": "Examples",
+            "hidden": true,
+            "cacheVariables": {
+                "GLOW_EXTRAS": {
+                    "type": "BOOL",
+                    "value": "ON"
+                }
+            }
+        },
+        {
+            "name": "Default",
+            "inherits": ["Ninja Multi-Config", "Visual Studio", "MSVC"],
+            "binaryDir": "${sourceDir}/build"
         }
     ],
     "buildPresets": [
         {
             "name": "Release",
-            "configurePreset": "Release"
+            "configurePreset": "Default",
+            "configuration": "Release"
         },
         {
-            "name": "Unity",
-            "configurePreset": "Unity"
+            "name": "Debug",
+            "configurePreset": "Default",
+            "configuration": "Debug"
         }
     ]
 }
