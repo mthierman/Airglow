@@ -441,14 +441,16 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
         if (json.contains("firstTitle"))
         {
             if (m_browsers.url) { m_browsers.url->post_json(json); }
-            m_firstTitle = json["firstTitle"].get<std::string>();
+            auto title{json["firstTitle"].get<std::string>()};
+            if (!title.empty()) m_firstTitle = title;
             // title(json["firstTitle"].get<std::string>());
         }
 
         else if (json.contains("secondTitle"))
         {
             if (m_browsers.url) { m_browsers.url->post_json(json); }
-            m_secondTitle = json["secondTitle"].get<std::string>();
+            auto title{json["secondTitle"].get<std::string>()};
+            if (!title.empty()) m_secondTitle = title;
             // title(json["secondTitle"].get<std::string>());
         }
 
