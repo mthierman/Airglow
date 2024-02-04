@@ -183,6 +183,7 @@ auto Window::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
     case WM_GETMINMAXINFO: return on_get_min_max_info(wParam, lParam);
     case WM_KEYDOWN: return on_key_down(wParam, lParam);
     case WM_NOTIFY: return on_notify(wParam, lParam);
+    case WM_SETICON: return on_set_icon(wParam, lParam);
     case WM_SETTINGCHANGE: return on_setting_change(wParam, lParam);
     case WM_SIZE: return on_size(wParam, lParam);
     case WM_SYSKEYDOWN: return on_sys_key_down(wParam, lParam);
@@ -339,6 +340,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
     }
 
     PostMessageA(hwnd(), WM_SIZE, 0, 0);
+    PostMessageA(hwnd(), WM_SETICON, 0, 0);
 
     if (!m_layout.swapped) { title(m_firstTitle); }
 
@@ -431,6 +433,8 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
             if (m_browsers.url) { m_browsers.url->post_json(json); }
         }
 
+        PostMessageA(hwnd(), WM_SETICON, 0, 0);
+
         break;
     }
 
@@ -460,6 +464,37 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         break;
     }
+    }
+
+    return 0;
+}
+
+auto Window::on_set_icon(WPARAM wParam, LPARAM lParam) -> int
+{
+    // auto id{static_cast<intptr_t>(wParam)};
+    // auto favicon{reinterpret_cast<HICON>(lParam)};
+
+    // if (id == m_browsers.first->id())
+    // {
+    //     //
+    //     //
+    // }
+
+    // else
+
+    //     SetClassLongPtrA(hwnd(), GCLP_HICONSM,
+    //                      reinterpret_cast<intptr_t>(reinterpret_cast<HICON>(lParam)));
+
+    if (!m_layout.swapped)
+    {
+        SetClassLongPtrA(hwnd(), GCLP_HICONSM,
+                         reinterpret_cast<intptr_t>(m_browsers.first->m_favicon.get()));
+    }
+
+    else
+    {
+        SetClassLongPtrA(hwnd(), GCLP_HICONSM,
+                         reinterpret_cast<intptr_t>(m_browsers.second->m_favicon.get()));
     }
 
     return 0;

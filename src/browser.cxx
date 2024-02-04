@@ -137,26 +137,22 @@ auto MainBrowser::favicon_changed_handler(ICoreWebView2* sender, IUnknown* args)
     notify(m_parent, msg::favicon_changed,
            nlohmann::json{{"firstFavicon", glow::text::to_utf8(favicon.get())}}.dump());
 
-    // https://learn.microsoft.com/en-us/microsoft-edge/webview2/reference/win32/icorewebview2_15?view=webview2-1.0.2210.55
+    m_webView.core20->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
+                                 Microsoft::WRL::Callback<ICoreWebView2GetFaviconCompletedHandler>(
+                                     [=, this](HRESULT errorCode, IStream* iconStream) -> HRESULT
+                                     {
+                                         if (FAILED(errorCode)) { return S_OK; }
 
-    // m_webView.core20->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
-    //                              Microsoft::WRL::Callback<ICoreWebView2GetFaviconCompletedHandler>(
-    //                                  [=, this](HRESULT errorCode, IStream* iconStream) -> HRESULT
-    //                                  {
-    //                                      if (FAILED(errorCode)) { return S_OK; }
+                                         Gdiplus::Bitmap iconBitmap(iconStream);
 
-    //                                      Gdiplus::Bitmap iconBitmap(iconStream);
+                                         if (iconBitmap.GetHICON(&m_favicon) == Gdiplus::Status::Ok)
+                                         {
+                                             SendMessageA(m_parent, WM_SETICON, 0, 0);
+                                         }
 
-    //                                      if (iconBitmap.GetHICON(&m_favicon) ==
-    //                                      Gdiplus::Status::Ok)
-    //                                      {
-    //                                          SendMessage(m_parent, WM_SETICON, ICON_SMALL,
-    //                                                      reinterpret_cast<LPARAM>(m_favicon.get()));
-    //                                      }
-
-    //                                      return S_OK;
-    //                                  })
-    //                                  .Get());
+                                         return S_OK;
+                                     })
+                                     .Get());
 
     return S_OK;
 }
@@ -191,6 +187,23 @@ auto SideBrowser::favicon_changed_handler(ICoreWebView2* sender, IUnknown* args)
 
     notify(m_parent, msg::favicon_changed,
            nlohmann::json{{"secondFavicon", glow::text::to_utf8(favicon.get())}}.dump());
+
+    m_webView.core20->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
+                                 Microsoft::WRL::Callback<ICoreWebView2GetFaviconCompletedHandler>(
+                                     [=, this](HRESULT errorCode, IStream* iconStream) -> HRESULT
+                                     {
+                                         if (FAILED(errorCode)) { return S_OK; }
+
+                                         Gdiplus::Bitmap iconBitmap(iconStream);
+
+                                         if (iconBitmap.GetHICON(&m_favicon) == Gdiplus::Status::Ok)
+                                         {
+                                             SendMessageA(m_parent, WM_SETICON, 0, 0);
+                                         }
+
+                                         return S_OK;
+                                     })
+                                     .Get());
 
     return S_OK;
 }
