@@ -162,6 +162,8 @@ auto MainBrowser::document_title_changed_handler(ICoreWebView2* sender, IUnknown
     wil::unique_cotaskmem_string title;
     if (FAILED(m_webView.core20->get_DocumentTitle(&title))) { return S_OK; }
 
+    m_title = glow::text::to_utf8(title.get());
+
     notify(m_parent, msg::title_changed,
            nlohmann::json{{"firstTitle", glow::text::to_utf8(title.get())}}.dump());
 
@@ -212,6 +214,8 @@ auto SideBrowser::document_title_changed_handler(ICoreWebView2* sender, IUnknown
 {
     wil::unique_cotaskmem_string title;
     if (FAILED(m_webView.core20->get_DocumentTitle(&title))) { return S_OK; }
+
+    m_title = glow::text::to_utf8(title.get());
 
     notify(m_parent, msg::title_changed,
            nlohmann::json{{"secondTitle", glow::text::to_utf8(title.get())}}.dump());

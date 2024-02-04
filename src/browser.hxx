@@ -28,6 +28,7 @@ struct Browser : public glow::window::WebView<Browser>
     auto url(std::string compare) -> std::string;
 
     wil::unique_hicon m_favicon;
+    std::string m_title;
 };
 
 struct URLBrowser final : public Browser

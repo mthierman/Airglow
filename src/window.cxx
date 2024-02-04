@@ -458,9 +458,13 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
             // title(json["secondTitle"].get<std::string>());
         }
 
-        if (!m_layout.swapped) { title(m_firstTitle); }
+        // if (!m_layout.swapped) { title(m_firstTitle); }
 
-        else { title(m_secondTitle); }
+        // else { title(m_secondTitle); }
+
+        if (!m_layout.swapped) { title(m_browsers.first->m_title); }
+
+        else { title(m_browsers.second->m_title); }
 
         break;
     }
@@ -471,20 +475,6 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
 auto Window::on_set_icon(WPARAM wParam, LPARAM lParam) -> int
 {
-    // auto id{static_cast<intptr_t>(wParam)};
-    // auto favicon{reinterpret_cast<HICON>(lParam)};
-
-    // if (id == m_browsers.first->id())
-    // {
-    //     //
-    //     //
-    // }
-
-    // else
-
-    //     SetClassLongPtrA(hwnd(), GCLP_HICONSM,
-    //                      reinterpret_cast<intptr_t>(reinterpret_cast<HICON>(lParam)));
-
     if (!m_layout.swapped)
     {
         SetClassLongPtrA(hwnd(), GCLP_HICONSM,
