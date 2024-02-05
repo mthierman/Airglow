@@ -499,23 +499,6 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
     return 0;
 }
 
-// auto Window::on_set_icon(WPARAM wParam, LPARAM lParam) -> int
-// {
-//     if (!m_layout.swapped)
-//     {
-//         SetClassLongPtrA(hwnd(), GCLP_HICONSM,
-//                          reinterpret_cast<intptr_t>(m_browsers.first->m_favicon.get()));
-//     }
-
-//     else
-//     {
-//         SetClassLongPtrA(hwnd(), GCLP_HICONSM,
-//                          reinterpret_cast<intptr_t>(m_browsers.second->m_favicon.get()));
-//     }
-
-//     return 0;
-// }
-
 auto Window::on_setting_change(WPARAM wParam, LPARAM lParam) -> int
 {
     theme();
