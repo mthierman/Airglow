@@ -17,38 +17,32 @@ App::App(int argc, char* argv[]) : m_settingsFile{json()}, m_argv{glow::console:
 
 auto App::operator()() -> int
 {
-    try
+    if (!std::filesystem::exists(m_settingsFile)) { save(); }
+
+    else { load(); }
+
+    if (m_argv.size() == 2)
     {
-        if (!std::filesystem::exists(m_settingsFile)) { save(); }
-        else { load(); }
-
-        if (m_argv.size() == 2)
-        {
-            m_url.current["first"] = m_argv.at(1);
-            m_url.current["second"] = m_url.home["second"];
-        }
-
-        else if (m_argv.size() > 2)
-        {
-            m_url.current["first"] = m_argv.at(1);
-            m_url.current["second"] = m_argv.at(2);
-        }
-
-        else
-        {
-            m_url.current["first"] = m_url.home["first"];
-            m_url.current["second"] = m_url.home["second"];
-        }
-
-        m_windowMain = std::make_unique<Window>(hwnd(), m_url);
-        m_windowMain->reveal();
-
-        m_windowSettings = std::make_unique<Settings>(hwnd(), m_url);
+        m_url.current["first"] = m_argv.at(1);
+        m_url.current["second"] = m_url.home["second"];
     }
-    catch (const std::exception& e)
+
+    else if (m_argv.size() > 2)
     {
-        glow::console::message_box(e.what());
+        m_url.current["first"] = m_argv.at(1);
+        m_url.current["second"] = m_argv.at(2);
     }
+
+    else
+    {
+        m_url.current["first"] = m_url.home["first"];
+        m_url.current["second"] = m_url.home["second"];
+    }
+
+    m_windowMain = std::make_unique<Window>(hwnd(), m_url);
+    m_windowMain->reveal();
+
+    m_windowSettings = std::make_unique<Settings>(hwnd(), m_url);
 
     return glow::gui::message_loop();
 }
@@ -177,6 +171,7 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
     if (m_windows.empty())
     {
         save();
+
         return close();
     }
 
