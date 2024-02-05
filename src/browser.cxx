@@ -83,12 +83,25 @@ auto Browser::zoom_factor_changed_handler(ICoreWebView2Controller* sender, IUnkn
     return S_OK;
 }
 
+auto Browser::source_changed_handler(ICoreWebView2* sender,
+                                     ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
+{
+    wil::unique_cotaskmem_string source;
+    if (FAILED(sender->get_Source(&source))) { return S_OK; }
+
+    m_source.assign(glow::text::to_utf8(source.get()));
+
+    notify(m_parent, msg::source_changed);
+
+    return S_OK;
+}
+
 auto Browser::document_title_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT
 {
     wil::unique_cotaskmem_string documentTitle;
     if (FAILED(m_webView.core20->get_DocumentTitle(&documentTitle))) { return S_OK; }
 
-    m_documentTitle = glow::text::to_utf8(documentTitle.get());
+    m_documentTitle.assign(glow::text::to_utf8(documentTitle.get()));
 
     notify(m_parent, msg::title_changed);
 
@@ -157,28 +170,4 @@ auto SettingsBrowser::initialized() -> void
 {
     // m_webView.core20->OpenDevToolsWindow();
     navigate(url("settings"));
-}
-
-auto MainBrowser::source_changed_handler(ICoreWebView2* sender,
-                                         ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
-{
-    wil::unique_cotaskmem_string source;
-    if (FAILED(sender->get_Source(&source))) { return S_OK; }
-
-    notify(m_parent, msg::source_changed,
-           nlohmann::json{{"first", glow::text::to_utf8(source.get())}}.dump());
-
-    return S_OK;
-}
-
-auto SideBrowser::source_changed_handler(ICoreWebView2* sender,
-                                         ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
-{
-    wil::unique_cotaskmem_string source;
-    if (FAILED(sender->get_Source(&source))) { return S_OK; }
-
-    notify(m_parent, msg::source_changed,
-           nlohmann::json{{"second", glow::text::to_utf8(source.get())}}.dump());
-
-    return S_OK;
 }

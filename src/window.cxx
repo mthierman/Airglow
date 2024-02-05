@@ -399,18 +399,20 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
     case msg::source_changed:
     {
-        auto json{nlohmann::json::parse(notification->message)};
-
-        if (json.contains("first"))
+        if (notification->nmhdr.hwndFrom == m_browsers.first->hwnd())
         {
-            if (m_browsers.url) { m_browsers.url->post_json(json); }
-            notify(m_app, msg::source_changed, notification->message);
+            if (m_browsers.url)
+            {
+                m_browsers.url->post_json(nlohmann::json{{"first", m_browsers.first->m_source}});
+            }
         }
 
-        else if (json.contains("second"))
+        else if (notification->nmhdr.hwndFrom == m_browsers.second->hwnd())
         {
-            if (m_browsers.url) { m_browsers.url->post_json(json); }
-            notify(m_app, msg::source_changed, notification->message);
+            if (m_browsers.url)
+            {
+                m_browsers.url->post_json(nlohmann::json{{"second", m_browsers.second->m_source}});
+            }
         }
 
         break;
