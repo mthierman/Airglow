@@ -356,8 +356,6 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
     {
         auto json{nlohmann::json::parse(notification->message)};
 
-        // log(json.dump());
-
         if (json.contains("initialized"))
         {
             if (!m_initialized)
