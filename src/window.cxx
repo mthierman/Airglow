@@ -183,7 +183,6 @@ auto Window::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
     case WM_GETMINMAXINFO: return on_get_min_max_info(wParam, lParam);
     case WM_KEYDOWN: return on_key_down(wParam, lParam);
     case WM_NOTIFY: return on_notify(wParam, lParam);
-    case WM_SETICON: return on_set_icon(wParam, lParam);
     case WM_SETTINGCHANGE: return on_setting_change(wParam, lParam);
     case WM_SIZE: return on_size(wParam, lParam);
     case WM_SYSKEYDOWN: return on_sys_key_down(wParam, lParam);
@@ -340,8 +339,8 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
     }
 
     PostMessageA(hwnd(), WM_SIZE, 0, 0);
-    PostMessageA(hwnd(), WM_SETICON, 0, 0);
     notify(hwnd(), msg::title_changed);
+    notify(hwnd(), msg::favicon_changed);
 
     return 0;
 }
@@ -424,6 +423,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
     {
         if (notification->nmhdr.hwndFrom == m_browsers.first->hwnd())
         {
+            m_firstFavicon.reset(m_browsers.first->m_favicon.get());
             if (m_browsers.url)
             {
                 m_browsers.url->post_json(
@@ -433,6 +433,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         else if (notification->nmhdr.hwndFrom == m_browsers.second->hwnd())
         {
+            m_secondFavicon.reset(m_browsers.second->m_favicon.get());
             if (m_browsers.url)
             {
                 m_browsers.url->post_json(
@@ -440,7 +441,17 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
             }
         }
 
-        PostMessageA(hwnd(), WM_SETICON, 0, 0);
+        if (!m_layout.swapped && !m_position.fullscreen)
+        {
+            PostMessageA(hwnd(), WM_SETICON, ICON_SMALL,
+                         reinterpret_cast<LPARAM>(m_firstFavicon.get()));
+        }
+
+        else if (!m_position.fullscreen)
+        {
+            PostMessageA(hwnd(), WM_SETICON, ICON_SMALL,
+                         reinterpret_cast<LPARAM>(m_secondFavicon.get()));
+        }
 
         break;
     }
@@ -488,22 +499,22 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
     return 0;
 }
 
-auto Window::on_set_icon(WPARAM wParam, LPARAM lParam) -> int
-{
-    if (!m_layout.swapped)
-    {
-        SetClassLongPtrA(hwnd(), GCLP_HICONSM,
-                         reinterpret_cast<intptr_t>(m_browsers.first->m_favicon.get()));
-    }
+// auto Window::on_set_icon(WPARAM wParam, LPARAM lParam) -> int
+// {
+//     if (!m_layout.swapped)
+//     {
+//         SetClassLongPtrA(hwnd(), GCLP_HICONSM,
+//                          reinterpret_cast<intptr_t>(m_browsers.first->m_favicon.get()));
+//     }
 
-    else
-    {
-        SetClassLongPtrA(hwnd(), GCLP_HICONSM,
-                         reinterpret_cast<intptr_t>(m_browsers.second->m_favicon.get()));
-    }
+//     else
+//     {
+//         SetClassLongPtrA(hwnd(), GCLP_HICONSM,
+//                          reinterpret_cast<intptr_t>(m_browsers.second->m_favicon.get()));
+//     }
 
-    return 0;
-}
+//     return 0;
+// }
 
 auto Window::on_setting_change(WPARAM wParam, LPARAM lParam) -> int
 {

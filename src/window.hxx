@@ -35,7 +35,6 @@ struct Window : public glow::window::BaseWindow<Window>
     auto on_get_min_max_info(WPARAM wParam, LPARAM lParam) -> int;
     auto on_key_down(WPARAM wParam, LPARAM lParam) -> int;
     auto on_notify(WPARAM wParam, LPARAM lParam) -> int;
-    auto on_set_icon(WPARAM wParam, LPARAM lParam) -> int;
     auto on_setting_change(WPARAM wParam, LPARAM lParam) -> int;
     auto on_size(WPARAM wParam, LPARAM lParam) -> int;
     auto on_sys_key_down(WPARAM wParam, LPARAM lParam) -> int;
@@ -51,4 +50,7 @@ struct Window : public glow::window::BaseWindow<Window>
     Layout m_layout;
     glow::gui::SystemColors m_systemColors;
     bool m_initialized;
+
+    wil::unique_hicon m_firstFavicon;
+    wil::unique_hicon m_secondFavicon;
 };
