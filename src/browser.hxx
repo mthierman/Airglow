@@ -24,11 +24,11 @@ struct Browser : public glow::window::WebView<Browser>
         -> HRESULT override;
     virtual auto zoom_factor_changed_handler(ICoreWebView2Controller* sender, IUnknown* args)
         -> HRESULT override;
+    virtual auto document_title_changed_handler(ICoreWebView2* sender, IUnknown* args)
+        -> HRESULT override;
     virtual auto favicon_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT override;
 
     auto url(std::string compare) -> std::string;
-
-    std::string m_title;
 };
 
 struct URLBrowser final : public Browser
@@ -52,8 +52,8 @@ struct MainBrowser final : public Browser
     virtual auto source_changed_handler(ICoreWebView2* sender,
                                         ICoreWebView2SourceChangedEventArgs* args)
         -> HRESULT override;
-    virtual auto document_title_changed_handler(ICoreWebView2* sender, IUnknown* args)
-        -> HRESULT override;
+    // virtual auto document_title_changed_handler(ICoreWebView2* sender, IUnknown* args)
+    //     -> HRESULT override;
 };
 
 struct SideBrowser final : public Browser
@@ -63,6 +63,6 @@ struct SideBrowser final : public Browser
     virtual auto source_changed_handler(ICoreWebView2* sender,
                                         ICoreWebView2SourceChangedEventArgs* args)
         -> HRESULT override;
-    virtual auto document_title_changed_handler(ICoreWebView2* sender, IUnknown* args)
-        -> HRESULT override;
+    // virtual auto document_title_changed_handler(ICoreWebView2* sender, IUnknown* args)
+    //     -> HRESULT override;
 };

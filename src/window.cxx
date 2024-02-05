@@ -341,10 +341,11 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
     PostMessageA(hwnd(), WM_SIZE, 0, 0);
     PostMessageA(hwnd(), WM_SETICON, 0, 0);
+    notify(hwnd(), msg::title_changed);
 
-    if (!m_layout.swapped) { title(m_firstTitle); }
+    // if (!m_layout.swapped) { title(m_firstTitle); }
 
-    else { title(m_secondTitle); }
+    // else { title(m_secondTitle); }
 
     return 0;
 }
@@ -446,31 +447,39 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
     case msg::title_changed:
     {
-        auto json{nlohmann::json::parse(notification->message)};
-
-        if (json.contains("firstTitle"))
+        if (notification->nmhdr.hwndFrom == m_browsers.first->hwnd())
         {
-            if (m_browsers.url) { m_browsers.url->post_json(json); }
-            auto title{json["firstTitle"].get<std::string>()};
-            if (!title.empty()) m_firstTitle = title;
-            // title(json["firstTitle"].get<std::string>());
+            if (m_browsers.url)
+            {
+                m_browsers.url->post_json(
+                    nlohmann::json{{"firstTitle", m_browsers.first->m_documentTitle}});
+            }
         }
 
-        else if (json.contains("secondTitle"))
+        else if (notification->nmhdr.hwndFrom == m_browsers.second->hwnd())
         {
-            if (m_browsers.url) { m_browsers.url->post_json(json); }
-            auto title{json["secondTitle"].get<std::string>()};
-            if (!title.empty()) m_secondTitle = title;
-            // title(json["secondTitle"].get<std::string>());
+            if (m_browsers.url)
+            {
+                m_browsers.url->post_json(
+                    nlohmann::json{{"secondTitle", m_browsers.second->m_documentTitle}});
+            }
         }
 
-        // if (!m_layout.swapped) { title(m_firstTitle); }
+        if (!m_layout.swapped)
+        {
+            if (!m_browsers.first->m_documentTitle.empty())
+            {
+                title(m_browsers.first->m_documentTitle);
+            }
+        }
 
-        // else { title(m_secondTitle); }
-
-        if (!m_layout.swapped) { title(m_browsers.first->m_title); }
-
-        else { title(m_browsers.second->m_title); }
+        else
+        {
+            if (!m_browsers.second->m_documentTitle.empty())
+            {
+                title(m_browsers.second->m_documentTitle);
+            }
+        }
 
         break;
     }

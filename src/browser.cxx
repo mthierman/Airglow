@@ -83,6 +83,18 @@ auto Browser::zoom_factor_changed_handler(ICoreWebView2Controller* sender, IUnkn
     return S_OK;
 }
 
+auto Browser::document_title_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT
+{
+    wil::unique_cotaskmem_string documentTitle;
+    if (FAILED(m_webView.core20->get_DocumentTitle(&documentTitle))) { return S_OK; }
+
+    m_documentTitle = glow::text::to_utf8(documentTitle.get());
+
+    notify(m_parent, msg::title_changed);
+
+    return S_OK;
+}
+
 auto Browser::favicon_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT
 {
     wil::unique_cotaskmem_string favicon;
@@ -159,18 +171,19 @@ auto MainBrowser::source_changed_handler(ICoreWebView2* sender,
     return S_OK;
 }
 
-auto MainBrowser::document_title_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT
-{
-    wil::unique_cotaskmem_string title;
-    if (FAILED(m_webView.core20->get_DocumentTitle(&title))) { return S_OK; }
+// auto MainBrowser::document_title_changed_handler(ICoreWebView2* sender, IUnknown* args) ->
+// HRESULT
+// {
+//     wil::unique_cotaskmem_string title;
+//     if (FAILED(m_webView.core20->get_DocumentTitle(&title))) { return S_OK; }
 
-    m_title = glow::text::to_utf8(title.get());
+//     m_title = glow::text::to_utf8(title.get());
 
-    notify(m_parent, msg::title_changed,
-           nlohmann::json{{"firstTitle", glow::text::to_utf8(title.get())}}.dump());
+//     notify(m_parent, msg::title_changed,
+//            nlohmann::json{{"firstTitle", glow::text::to_utf8(title.get())}}.dump());
 
-    return S_OK;
-}
+//     return S_OK;
+// }
 
 auto SideBrowser::source_changed_handler(ICoreWebView2* sender,
                                          ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
@@ -184,15 +197,16 @@ auto SideBrowser::source_changed_handler(ICoreWebView2* sender,
     return S_OK;
 }
 
-auto SideBrowser::document_title_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT
-{
-    wil::unique_cotaskmem_string title;
-    if (FAILED(m_webView.core20->get_DocumentTitle(&title))) { return S_OK; }
+// auto SideBrowser::document_title_changed_handler(ICoreWebView2* sender, IUnknown* args) ->
+// HRESULT
+// {
+//     wil::unique_cotaskmem_string title;
+//     if (FAILED(m_webView.core20->get_DocumentTitle(&title))) { return S_OK; }
 
-    m_title = glow::text::to_utf8(title.get());
+//     m_title = glow::text::to_utf8(title.get());
 
-    notify(m_parent, msg::title_changed,
-           nlohmann::json{{"secondTitle", glow::text::to_utf8(title.get())}}.dump());
+//     notify(m_parent, msg::title_changed,
+//            nlohmann::json{{"secondTitle", glow::text::to_utf8(title.get())}}.dump());
 
-    return S_OK;
-}
+//     return S_OK;
+// }
