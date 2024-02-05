@@ -83,6 +83,36 @@ auto Browser::zoom_factor_changed_handler(ICoreWebView2Controller* sender, IUnkn
     return S_OK;
 }
 
+auto Browser::favicon_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT
+{
+    wil::unique_cotaskmem_string favicon;
+    if (FAILED(m_webView.core20->get_FaviconUri(&favicon))) { return S_OK; }
+
+    m_faviconUrl.assign(glow::text::to_utf8(favicon.get()));
+
+    if (FAILED(m_webView.core20->GetFavicon(
+            COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
+            Microsoft::WRL::Callback<ICoreWebView2GetFaviconCompletedHandler>(
+                [=, this](HRESULT errorCode, IStream* iconStream) -> HRESULT
+                {
+                    if (FAILED(errorCode)) { return S_OK; }
+
+                    Gdiplus::Bitmap iconBitmap(iconStream);
+
+                    iconBitmap.GetHICON(&m_favicon);
+
+                    notify(m_parent, msg::favicon_changed);
+
+                    return S_OK;
+                })
+                .Get())))
+    {
+        return S_OK;
+    }
+
+    return S_OK;
+}
+
 auto Browser::url(std::string page) -> std::string
 {
 #if defined(_DEBUG)
@@ -129,34 +159,6 @@ auto MainBrowser::source_changed_handler(ICoreWebView2* sender,
     return S_OK;
 }
 
-auto MainBrowser::favicon_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT
-{
-    wil::unique_cotaskmem_string favicon;
-    if (FAILED(m_webView.core20->get_FaviconUri(&favicon))) { return S_OK; }
-
-    notify(m_parent, msg::favicon_changed,
-           nlohmann::json{{"firstFavicon", glow::text::to_utf8(favicon.get())}}.dump());
-
-    m_webView.core20->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
-                                 Microsoft::WRL::Callback<ICoreWebView2GetFaviconCompletedHandler>(
-                                     [=, this](HRESULT errorCode, IStream* iconStream) -> HRESULT
-                                     {
-                                         if (FAILED(errorCode)) { return S_OK; }
-
-                                         Gdiplus::Bitmap iconBitmap(iconStream);
-
-                                         if (iconBitmap.GetHICON(&m_favicon) == Gdiplus::Status::Ok)
-                                         {
-                                             SendMessageA(m_parent, WM_SETICON, 0, 0);
-                                         }
-
-                                         return S_OK;
-                                     })
-                                     .Get());
-
-    return S_OK;
-}
-
 auto MainBrowser::document_title_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT
 {
     wil::unique_cotaskmem_string title;
@@ -178,34 +180,6 @@ auto SideBrowser::source_changed_handler(ICoreWebView2* sender,
 
     notify(m_parent, msg::source_changed,
            nlohmann::json{{"second", glow::text::to_utf8(source.get())}}.dump());
-
-    return S_OK;
-}
-
-auto SideBrowser::favicon_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT
-{
-    wil::unique_cotaskmem_string favicon;
-    if (FAILED(m_webView.core20->get_FaviconUri(&favicon))) { return S_OK; }
-
-    notify(m_parent, msg::favicon_changed,
-           nlohmann::json{{"secondFavicon", glow::text::to_utf8(favicon.get())}}.dump());
-
-    m_webView.core20->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
-                                 Microsoft::WRL::Callback<ICoreWebView2GetFaviconCompletedHandler>(
-                                     [=, this](HRESULT errorCode, IStream* iconStream) -> HRESULT
-                                     {
-                                         if (FAILED(errorCode)) { return S_OK; }
-
-                                         Gdiplus::Bitmap iconBitmap(iconStream);
-
-                                         if (iconBitmap.GetHICON(&m_favicon) == Gdiplus::Status::Ok)
-                                         {
-                                             SendMessageA(m_parent, WM_SETICON, 0, 0);
-                                         }
-
-                                         return S_OK;
-                                     })
-                                     .Get());
 
     return S_OK;
 }

@@ -421,16 +421,22 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
     case msg::favicon_changed:
     {
-        auto json{nlohmann::json::parse(notification->message)};
-
-        if (json.contains("firstFavicon"))
+        if (notification->nmhdr.hwndFrom == m_browsers.first->hwnd())
         {
-            if (m_browsers.url) { m_browsers.url->post_json(json); }
+            if (m_browsers.url)
+            {
+                m_browsers.url->post_json(
+                    nlohmann::json{{"firstFavicon", m_browsers.first->m_faviconUrl}});
+            }
         }
 
-        else if (json.contains("secondFavicon"))
+        else if (notification->nmhdr.hwndFrom == m_browsers.second->hwnd())
         {
-            if (m_browsers.url) { m_browsers.url->post_json(json); }
+            if (m_browsers.url)
+            {
+                m_browsers.url->post_json(
+                    nlohmann::json{{"secondFavicon", m_browsers.second->m_faviconUrl}});
+            }
         }
 
         PostMessageA(hwnd(), WM_SETICON, 0, 0);
