@@ -403,7 +403,9 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
         {
             if (m_browsers.url)
             {
-                m_browsers.url->post_json(nlohmann::json{{"first", m_browsers.first->m_source}});
+                auto message{nlohmann::json{{"first", m_browsers.first->m_source}}};
+                m_browsers.url->post_json(message);
+                notify(m_app, msg::source_changed, message.dump());
             }
         }
 
@@ -411,7 +413,9 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
         {
             if (m_browsers.url)
             {
-                m_browsers.url->post_json(nlohmann::json{{"second", m_browsers.second->m_source}});
+                auto message{nlohmann::json{{"second", m_browsers.second->m_source}}};
+                m_browsers.url->post_json(message);
+                notify(m_app, msg::source_changed, message.dump());
             }
         }
 
