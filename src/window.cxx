@@ -343,10 +343,6 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
     PostMessageA(hwnd(), WM_SETICON, 0, 0);
     notify(hwnd(), msg::title_changed);
 
-    // if (!m_layout.swapped) { title(m_firstTitle); }
-
-    // else { title(m_secondTitle); }
-
     return 0;
 }
 
