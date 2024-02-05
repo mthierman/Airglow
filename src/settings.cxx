@@ -77,8 +77,8 @@ auto Settings::on_close(WPARAM wParam, LPARAM lParam) -> int
 
 auto Settings::on_dpi_changed(WPARAM wParam, LPARAM lParam) -> int
 {
-    m_dpi = dpi();
-    m_scale = scale();
+    dpi();
+    scale();
 
     return 0;
 }
