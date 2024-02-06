@@ -39,12 +39,12 @@ struct URL
 
 struct Positions
 {
-    glow::gui::Position full;
-    glow::gui::Position empty;
-    glow::gui::Position left;
-    glow::gui::Position right;
-    glow::gui::Position top;
-    glow::gui::Position bottom;
+    glow::Position full;
+    glow::Position empty;
+    glow::Position left;
+    glow::Position right;
+    glow::Position top;
+    glow::Position bottom;
 };
 
 struct Layout

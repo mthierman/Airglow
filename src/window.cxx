@@ -347,7 +347,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
 auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 {
-    auto notification{reinterpret_cast<glow::gui::Notification*>(lParam)};
+    auto notification{reinterpret_cast<glow::Notification*>(lParam)};
 
     switch (notification->nmhdr.code)
     {

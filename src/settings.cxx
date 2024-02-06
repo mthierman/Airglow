@@ -85,7 +85,7 @@ auto Settings::on_dpi_changed(WPARAM wParam, LPARAM lParam) -> int
 
 auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
 {
-    auto notification{reinterpret_cast<glow::gui::Notification*>(lParam)};
+    auto notification{reinterpret_cast<glow::Notification*>(lParam)};
 
     switch (notification->nmhdr.code)
     {

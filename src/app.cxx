@@ -103,7 +103,7 @@ auto App::wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESUL
 
 auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
 {
-    auto notification{reinterpret_cast<glow::gui::Notification*>(lParam)};
+    auto notification{reinterpret_cast<glow::Notification*>(lParam)};
 
     switch (notification->nmhdr.code)
     {
