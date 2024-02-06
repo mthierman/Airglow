@@ -101,3 +101,7 @@ add_dependencies(
     Airglow
     Vite
 )
+
+if(GLOW_EXTRAS)
+    enable_testing()
+endif()
