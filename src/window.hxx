@@ -22,9 +22,9 @@ struct Browsers
     std::unique_ptr<URLBrowser> url;
 };
 
-struct Window : public glow::window::BaseWindow<Window>
+struct Window : public glow::Window<Window>
 {
-    using glow::window::BaseWindow<Window>::BaseWindow;
+    using glow::Window<Window>::Window;
 
     Window(HWND app, URL& url);
 

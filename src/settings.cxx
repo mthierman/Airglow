@@ -8,7 +8,8 @@
 
 #include "settings.hxx"
 
-Settings::Settings(HWND app, URL& url) : BaseWindow("Airglow - Settings"), m_app{app}, m_url{url}
+Settings::Settings(HWND app, URL& url)
+    : glow::Window<Settings>("Airglow - Settings"), m_app{app}, m_url{url}
 {
     dwm_caption_color(false);
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_TRANSIENTWINDOW);

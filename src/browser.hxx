@@ -12,9 +12,9 @@
 
 #include "global.hxx"
 
-struct Browser : public glow::window::WebView<Browser>
+struct Browser : public glow::WebView<Browser>
 {
-    using glow::window::WebView<Browser>::WebView;
+    using glow::WebView<Browser>::WebView;
 
     virtual auto web_message_received_handler(ICoreWebView2* sender,
                                               ICoreWebView2WebMessageReceivedEventArgs* args)

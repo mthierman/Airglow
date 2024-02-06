@@ -15,16 +15,16 @@ auto Browser::web_message_received_handler(ICoreWebView2* sender,
     wil::unique_cotaskmem_string source;
     args->get_Source(&source);
 
-    if (!(std::wstring_view(source.get()) == glow::text::to_utf16(url("url")) ||
-          std::wstring_view(source.get()) == glow::text::to_utf16(url("settings"))))
+    if (!(std::wstring_view(source.get()) == glow::wstring(url("url")) ||
+          std::wstring_view(source.get()) == glow::wstring(url("settings"))))
     {
-        log(glow::text::to_utf8(source.get()));
+        log(glow::string(source.get()));
     }
 
     wil::unique_cotaskmem_string message;
     if (FAILED(args->get_WebMessageAsJson(&message))) { return S_OK; }
 
-    notify(m_parent, msg::web_message_received, glow::text::to_utf8(message.get()));
+    notify(m_parent, msg::web_message_received, glow::string(message.get()));
 
     return S_OK;
 }
@@ -89,7 +89,7 @@ auto Browser::source_changed_handler(ICoreWebView2* sender,
     wil::unique_cotaskmem_string source;
     if (FAILED(sender->get_Source(&source))) { return S_OK; }
 
-    m_source.assign(glow::text::to_utf8(source.get()));
+    m_source.assign(glow::string(source.get()));
 
     notify(m_parent, msg::source_changed);
 
@@ -101,7 +101,7 @@ auto Browser::document_title_changed_handler(ICoreWebView2* sender, IUnknown* ar
     wil::unique_cotaskmem_string documentTitle;
     if (FAILED(m_webView.core20->get_DocumentTitle(&documentTitle))) { return S_OK; }
 
-    m_documentTitle.assign(glow::text::to_utf8(documentTitle.get()));
+    m_documentTitle.assign(glow::string(documentTitle.get()));
 
     notify(m_parent, msg::title_changed);
 
@@ -113,7 +113,7 @@ auto Browser::favicon_changed_handler(ICoreWebView2* sender, IUnknown* args) -> 
     wil::unique_cotaskmem_string favicon;
     if (FAILED(m_webView.core20->get_FaviconUri(&favicon))) { return S_OK; }
 
-    m_faviconUrl.assign(glow::text::to_utf8(favicon.get()));
+    m_faviconUrl.assign(glow::string(favicon.get()));
 
     if (FAILED(m_webView.core20->GetFavicon(
             COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,

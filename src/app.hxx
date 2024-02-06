@@ -18,9 +18,9 @@
 #include "settings.hxx"
 #include "window.hxx"
 
-struct App : public glow::window::MessageWindow<App>
+struct App : public glow::App<App>
 {
-    using glow::window::MessageWindow<App>::MessageWindow;
+    using glow::App<App>::App;
 
     App(int argc, char* argv[]);
 

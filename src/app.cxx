@@ -8,7 +8,7 @@
 
 #include "app.hxx"
 
-App::App(int argc, char* argv[]) : m_settingsFile{json()}, m_argv{glow::console::argv(argc, argv)}
+App::App(int argc, char* argv[]) : m_settingsFile{json()}, m_argv{glow::argv(argc, argv)}
 {
     SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
     SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
@@ -44,12 +44,12 @@ auto App::operator()() -> int
 
     m_windowSettings = std::make_unique<Settings>(hwnd(), m_url);
 
-    return glow::gui::message_loop();
+    return glow::message_loop();
 }
 
 auto App::data() -> std::filesystem::path
 {
-    auto path{glow::filesystem::known_folder() / "Airglow"};
+    auto path{glow::known_folder() / "Airglow"};
 
     if (!std::filesystem::exists(path)) { std::filesystem::create_directory(path); }
 
@@ -58,7 +58,7 @@ auto App::data() -> std::filesystem::path
 
 auto App::json() -> std::filesystem::path
 {
-    auto path{glow::filesystem::app_path() / "Airglow.json"};
+    auto path{glow::app_path() / "Airglow.json"};
 
     return path;
 }

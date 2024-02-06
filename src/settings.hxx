@@ -15,9 +15,9 @@
 #include "global.hxx"
 #include "browser.hxx"
 
-struct Settings : public glow::window::BaseWindow<Settings>
+struct Settings : public glow::Window<Settings>
 {
-    using glow::window::BaseWindow<Settings>::BaseWindow;
+    using glow::Window<Settings>::Window;
 
     Settings(HWND app, URL& url);
 
