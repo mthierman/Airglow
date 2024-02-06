@@ -19,7 +19,6 @@ export default function App() {
 
     useEffect(() => {
         window.chrome.webview.postMessage({ initialized: true });
-        first.current!.focus();
     }, []);
 
     useEffect(() => {
@@ -41,9 +40,9 @@ export default function App() {
     useEffect(() => {
         const onMessage = (event: Event) => {
             const data = (event as MessageEvent).data;
-            // console.log(data);
 
-            if (data.layout) {
+            if (Object.hasOwn(data, "layout")) {
+                console.log(data);
                 setPosition(data.layout);
                 sessionStorage.setItem("position", JSON.stringify(data.layout));
                 setPosition((prevState) => ({
@@ -61,12 +60,12 @@ export default function App() {
                 }
             }
 
-            if (data.systemColors) {
+            if (Object.hasOwn(data, "systemColors")) {
                 setSystemColors(data.systemColors);
                 sessionStorage.setItem("systemColors", JSON.stringify(data.systemColors));
             }
 
-            if (data.first) {
+            if (Object.hasOwn(data, "first")) {
                 if (data.first === "about:blank") {
                     setFirstFavicon(`data:image/svg+xml,${encodeURIComponent(iconRaw)}`);
                 }
@@ -75,7 +74,7 @@ export default function App() {
                 // setFirstFavicon(url.getFavicon(data.first));
             }
 
-            if (data.second) {
+            if (Object.hasOwn(data, "second")) {
                 if (data.second === "about:blank") {
                     setSecondFavicon(`data:image/svg+xml,${encodeURIComponent(iconRaw)}`);
                 }
@@ -84,12 +83,12 @@ export default function App() {
                 // setSecondFavicon(url.getFavicon(data.second));
             }
 
-            if (data.firstFavicon) {
+            if (Object.hasOwn(data, "firstFavicon")) {
                 setFirstFavicon(data.firstFavicon);
                 sessionStorage.setItem("firstFavicon", data.firstFavicon);
             }
 
-            if (data.secondFavicon) {
+            if (Object.hasOwn(data, "secondFavicon")) {
                 setSecondFavicon(data.secondFavicon);
                 sessionStorage.setItem("secondFavicon", data.secondFavicon);
             }
