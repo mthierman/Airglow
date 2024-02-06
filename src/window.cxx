@@ -32,7 +32,7 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 
     if (self)
     {
-        auto gwlId{static_cast<intptr_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
+        auto gwlId{static_cast<uintptr_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
 
         auto rect{&self->m_clientRect};
 
@@ -396,7 +396,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
     case msg::source_changed:
     {
-        if (notification->nmhdr.hwndFrom == m_browsers.first->hwnd())
+        if (notification->nmhdr.idFrom == m_browsers.first->id())
         {
             if (m_browsers.url)
             {
@@ -406,7 +406,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
             }
         }
 
-        else if (notification->nmhdr.hwndFrom == m_browsers.second->hwnd())
+        else if (notification->nmhdr.idFrom == m_browsers.second->id())
         {
             if (m_browsers.url)
             {
@@ -421,7 +421,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
     case msg::favicon_changed:
     {
-        if (notification->nmhdr.hwndFrom == m_browsers.first->hwnd())
+        if (notification->nmhdr.idFrom == m_browsers.first->id())
         {
             m_firstFavicon.reset(m_browsers.first->m_favicon.get());
             if (m_browsers.url)
@@ -431,7 +431,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
             }
         }
 
-        else if (notification->nmhdr.hwndFrom == m_browsers.second->hwnd())
+        else if (notification->nmhdr.idFrom == m_browsers.second->id())
         {
             m_secondFavicon.reset(m_browsers.second->m_favicon.get());
             if (m_browsers.url)
@@ -458,7 +458,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
     case msg::title_changed:
     {
-        if (notification->nmhdr.hwndFrom == m_browsers.first->hwnd())
+        if (notification->nmhdr.idFrom == m_browsers.first->id())
         {
             if (m_browsers.url)
             {
@@ -467,7 +467,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
             }
         }
 
-        else if (notification->nmhdr.hwndFrom == m_browsers.second->hwnd())
+        else if (notification->nmhdr.idFrom == m_browsers.second->id())
         {
             if (m_browsers.url)
             {
