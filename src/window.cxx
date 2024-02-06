@@ -241,7 +241,16 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
             {
                 if (m_browsers.url)
                 {
-                    m_browsers.url->post_json(nlohmann::json{{"focus", m_browsers.first->m_focus}});
+                    if (m_browsers.first->m_focus || m_browsers.second->m_focus)
+                    {
+                        if (m_browsers.first->m_focus)
+                        {
+                            m_browsers.url->post_json(nlohmann::json{{"focus", "first"}});
+                        }
+                        else { m_browsers.url->post_json(nlohmann::json{{"focus", "second"}}); }
+                    }
+
+                    else { m_browsers.url->post_json(nlohmann::json{{"focus", "url"}}); }
 
                     m_browsers.url->focus();
                 }

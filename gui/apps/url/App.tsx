@@ -42,7 +42,6 @@ export default function App() {
             const data = (event as MessageEvent).data;
 
             if (Object.hasOwn(data, "layout")) {
-                console.log(data);
                 setPosition(data.layout);
                 sessionStorage.setItem("position", JSON.stringify(data.layout));
                 setPosition((prevState) => ({
@@ -52,10 +51,12 @@ export default function App() {
             }
 
             if (Object.hasOwn(data, "focus")) {
-                console.log(data);
-                if (data.focus) {
+                console.log(data.focus);
+                if (data.focus === "first") {
                     first.current!.focus();
-                } else {
+                } else if (data.focus === "second") {
+                    second.current!.focus();
+                } else if (data.focus === "url") {
                     second.current!.focus();
                 }
             }
