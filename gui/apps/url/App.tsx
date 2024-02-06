@@ -19,6 +19,7 @@ export default function App() {
 
     useEffect(() => {
         window.chrome.webview.postMessage({ initialized: true });
+        first.current!.focus();
     }, []);
 
     useEffect(() => {
@@ -49,6 +50,15 @@ export default function App() {
                     ...prevState,
                     bar: form.current!.offsetHeight,
                 }));
+            }
+
+            if (Object.hasOwn(data, "focus")) {
+                console.log(data);
+                if (data.focus) {
+                    first.current!.focus();
+                } else {
+                    second.current!.focus();
+                }
             }
 
             if (data.systemColors) {

@@ -138,6 +138,20 @@ auto Browser::favicon_changed_handler(ICoreWebView2* sender, IUnknown* args) -> 
     return S_OK;
 }
 
+auto Browser::got_focus_handler(ICoreWebView2Controller* sender, IUnknown* args) -> HRESULT
+{
+    m_focus = true;
+
+    return S_OK;
+}
+
+auto Browser::lost_focus_handler(ICoreWebView2Controller* sender, IUnknown* args) -> HRESULT
+{
+    m_focus = false;
+
+    return S_OK;
+}
+
 auto Browser::url(std::string page) -> std::string
 {
 #if defined(_DEBUG)
@@ -162,7 +176,7 @@ auto Browser::url(std::string page) -> std::string
 
 auto URLBrowser::initialized() -> void
 {
-    // m_webView.core20->OpenDevToolsWindow();
+    m_webView.core20->OpenDevToolsWindow();
     navigate(url("url"));
 }
 

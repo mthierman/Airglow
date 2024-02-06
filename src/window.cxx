@@ -239,7 +239,12 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
         {
             if (GetKeyState(VK_CONTROL) & 0x8000)
             {
-                if (m_browsers.url) { m_browsers.url->focus(); }
+                if (m_browsers.url)
+                {
+                    m_browsers.url->post_json(nlohmann::json{{"focus", m_browsers.first->m_focus}});
+
+                    m_browsers.url->focus();
+                }
             }
 
             break;

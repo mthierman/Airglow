@@ -31,6 +31,10 @@ struct Browser : public glow::WebView<Browser>
     virtual auto document_title_changed_handler(ICoreWebView2* sender, IUnknown* args)
         -> HRESULT override;
     virtual auto favicon_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT override;
+    virtual auto got_focus_handler(ICoreWebView2Controller* sender, IUnknown* args)
+        -> HRESULT override;
+    virtual auto lost_focus_handler(ICoreWebView2Controller* sender, IUnknown* args)
+        -> HRESULT override;
 
     auto url(std::string compare) -> std::string;
 };
