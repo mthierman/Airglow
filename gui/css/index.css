@@ -2,21 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-    font-family: "Noto Emoji";
-    src: url("NotoEmoji-VariableFont_wght.ttf") format("woff");
-    font-style: normal;
-    font-weight: normal;
-}
-
-/* html {
-    scrollbar-gutter: stable both-edges;
-} */
-
-body {
-    @apply bg-transparent;
-}
-
+body,
 #root {
     @apply bg-transparent;
 }
@@ -26,19 +12,19 @@ body {
 }
 
 .addressBar {
-    @apply grid grid-flow-col bg-black pl-0;
+    @apply grid grid-flow-col;
 }
 
 .url {
-    @apply flex select-none place-content-center items-center rounded-md border-b-2 border-transparent bg-black duration-300 ease-in-out focus-within:border-accent dark:focus-within:border-accentLight1;
+    @apply flex select-none place-content-center items-center rounded-b-sm border-b-2 border-transparent duration-300 ease-in-out focus-within:border-accent focus-within:bg-accentLight3 dark:focus-within:bg-accentDark3;
 }
 
 .favicon {
-    @apply pointer-events-none ml-4 mr-1 aspect-square;
+    @apply pointer-events-none ml-4 mr-1 aspect-square bg-transparent;
 }
 
 .input {
-    @apply w-full text-ellipsis bg-white p-2 font-medium leading-none text-accentDark1 outline-none dark:bg-black dark:text-accent;
+    @apply w-full text-ellipsis bg-transparent p-2 font-medium leading-none outline-none;
 }
 
 .settingTitle {

@@ -5,10 +5,10 @@ export default {
     content: ["./gui/**/*.{html,js,jsx,ts,tsx}"],
     theme: {
         fontFamily: {
-            small: ["Segoe UI Variable Small", "Segoe UI", "Noto Emoji"],
-            text: ["Segoe UI Variable Text", "Segoe UI", "Noto Emoji"],
-            sans: ["Segoe UI Variable Text", "Segoe UI", "Noto Emoji"],
-            display: ["Segoe UI Variable Display", "Segoe UI", "Noto Emoji"],
+            small: ["Segoe UI Variable Small", "Segoe UI"],
+            text: ["Segoe UI Variable Text", "Segoe UI"],
+            sans: ["Segoe UI Variable Text", "Segoe UI"],
+            display: ["Segoe UI Variable Display", "Segoe UI"],
             serif: ["Cambria", "Noto Emoji"],
             mono: ["Cascadia Code", "Noto Emoji"],
         },
