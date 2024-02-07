@@ -13,6 +13,7 @@ Keys::Keys()
     set.emplace(VK_PAUSE);
     set.emplace(0x30);
     set.emplace(0x4C);
+    set.emplace(0x4E);
     set.emplace(0x57);
     set.emplace(VK_F1);
     set.emplace(VK_F2);

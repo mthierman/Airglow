@@ -60,6 +60,13 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
             break;
         }
 
+        case msg::new_window:
+        {
+            window();
+
+            break;
+        }
+
         case msg::close_window:
         {
             m_windows.erase(id);
@@ -70,6 +77,8 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
                 return close();
             }
+
+            break;
         }
     }
 

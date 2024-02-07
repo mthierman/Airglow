@@ -217,6 +217,8 @@ auto Window::on_get_min_max_info(WPARAM wParam, LPARAM lParam) -> int
 
 auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 {
+    if (!m_browsers.url) { return 0; }
+
     auto key{static_cast<unsigned int>(wParam)};
     Keys keys;
 
@@ -244,6 +246,13 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
                                                   COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
                     }
                 }
+
+                break;
+            }
+
+            case 0x4E:
+            {
+                if (GetKeyState(VK_CONTROL) & 0x8000) { notify(m_app, msg::new_window); }
 
                 break;
             }
