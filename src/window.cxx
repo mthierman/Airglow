@@ -273,6 +273,10 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
         case VK_F1:
         {
+            if (!m_layout.split && m_layout.swapped) { m_browsers.first->focus(); }
+
+            else if (!m_layout.split && !m_layout.swapped) { m_browsers.second->focus(); }
+
             m_layout.swapped = !m_layout.swapped;
 
             break;
