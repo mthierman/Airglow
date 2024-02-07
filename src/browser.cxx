@@ -181,13 +181,12 @@ auto Browser::url(std::string page) -> std::string
 #else
     if (page.contains("url"))
     {
-        return "file:///" + glow::filesystem::app_path().generic_string() + "/gui/url/index.html";
+        return "file:///" + glow::app_path().generic_string() + "/gui/url/index.html";
     }
 
     else if (page.contains("settings"))
     {
-        return "file:///" + glow::filesystem::app_path().generic_string() +
-               "/gui/settings/index.html";
+        return "file:///" + glow::app_path().generic_string() + "/gui/settings/index.html";
     }
 #endif
 
