@@ -11,9 +11,29 @@
 Settings::Settings(HWND app, URL& url)
     : glow::Window<Settings>("Airglow - Settings"), m_app{app}, m_url{url}, m_file{json()}
 {
-    // if (!std::filesystem::exists(m_file)) { save(); }
+    if (!std::filesystem::exists(m_file)) { save(); }
 
-    // else { load(); }
+    else { load(); }
+
+    auto args{glow::cmd_to_argv()};
+
+    if (args.size() == 2)
+    {
+        m_url.current.first = args.at(1);
+        m_url.current.second = m_url.home.second;
+    }
+
+    else if (args.size() > 2)
+    {
+        m_url.current.first = args.at(1);
+        m_url.current.second = args.at(2);
+    }
+
+    else
+    {
+        m_url.current.first = m_url.home.first;
+        m_url.current.second = m_url.home.second;
+    }
 
     dwm_caption_color(false);
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_TRANSIENTWINDOW);
