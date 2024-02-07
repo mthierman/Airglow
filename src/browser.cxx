@@ -161,14 +161,12 @@ auto Browser::move_focus_requested_handler(ICoreWebView2Controller* sender,
 
     if (reason == COREWEBVIEW2_MOVE_FOCUS_REASON_NEXT)
     {
-        OutputDebugStringA("COREWEBVIEW2_MOVE_FOCUS_REASON_NEXT");
         m_webView.controller4->MoveFocus(
             COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_NEXT);
     }
 
     else if (reason == COREWEBVIEW2_MOVE_FOCUS_REASON_PREVIOUS)
     {
-        OutputDebugStringA("COREWEBVIEW2_MOVE_FOCUS_REASON_PREVIOUS");
         m_webView.controller4->MoveFocus(
             COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PREVIOUS);
     }
