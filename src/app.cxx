@@ -8,27 +8,26 @@
 
 #include "app.hxx"
 
-App::App(int argc, char* argv[])
+auto App::operator()(int argc, char* argv[]) -> int
 {
     SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
     SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
                             "--allow-file-access-from-files");
-}
 
-auto App::operator()() -> int
-{
-    auto argv{glow::cmd_to_argv()};
+    m_settings = std::make_unique<Settings>(hwnd(), m_url);
 
-    if (argv.size() == 2)
+    auto args{glow::argv(argc, argv)};
+
+    if (args.size() == 2)
     {
-        m_url.current["first"] = argv.at(1);
+        m_url.current["first"] = args.at(1);
         m_url.current["second"] = m_url.home["second"];
     }
 
-    else if (argv.size() > 2)
+    else if (args.size() > 2)
     {
-        m_url.current["first"] = argv.at(1);
-        m_url.current["second"] = argv.at(2);
+        m_url.current["first"] = args.at(1);
+        m_url.current["second"] = args.at(2);
     }
 
     else
@@ -36,12 +35,6 @@ auto App::operator()() -> int
         m_url.current["first"] = m_url.home["first"];
         m_url.current["second"] = m_url.home["second"];
     }
-
-    m_settings = std::make_unique<Settings>(hwnd(), m_url);
-
-    if (!std::filesystem::exists(m_settings->m_file)) { m_settings->save(); }
-
-    else { m_settings->load(); }
 
     window();
 

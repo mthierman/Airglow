@@ -24,9 +24,7 @@ struct App : public glow::App<App>
 {
     using glow::App<App>::App;
 
-    App(int argc, char* argv[]);
-
-    auto operator()() -> int;
+    auto operator()(int argc, char* argv[]) -> int;
 
     auto window() -> void;
 

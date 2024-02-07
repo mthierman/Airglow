@@ -10,7 +10,7 @@
 
 auto main(int argc, char* argv[]) -> int
 {
-    App app(argc, argv);
+    App app;
 
-    return app();
+    return app(argc, argv);
 }
