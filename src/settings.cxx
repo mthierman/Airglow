@@ -110,12 +110,9 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
                 }
             }
 
-            else if (parsed.contains("first")) { m_url.home["first"] = parsed.get<std::string>(); }
+            else if (parsed.contains("first")) { m_url.home.first = parsed.get<std::string>(); }
 
-            else if (parsed.contains("second"))
-            {
-                m_url.home["second"] = parsed.get<std::string>();
-            }
+            else if (parsed.contains("second")) { m_url.home.second = parsed.get<std::string>(); }
 
             notify(m_app, msg::save_settings);
 

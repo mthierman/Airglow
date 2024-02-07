@@ -16,26 +16,6 @@ auto App::operator()(int argc, char* argv[]) -> int
 
     m_settings = std::make_unique<Settings>(hwnd(), m_url);
 
-    auto args{glow::argv(argc, argv)};
-
-    if (args.size() == 2)
-    {
-        m_url.current["first"] = args.at(1);
-        m_url.current["second"] = m_url.home["second"];
-    }
-
-    else if (args.size() > 2)
-    {
-        m_url.current["first"] = args.at(1);
-        m_url.current["second"] = args.at(2);
-    }
-
-    else
-    {
-        m_url.current["first"] = m_url.home["first"];
-        m_url.current["second"] = m_url.home["second"];
-    }
-
     window();
 
     return glow::message_loop();

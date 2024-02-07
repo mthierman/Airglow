@@ -10,9 +10,9 @@
 
 #include <Windows.h>
 
-#include <cstdint>
 #include <set>
 #include <string>
+#include <utility>
 
 #include <nlohmann/json.hpp>
 
@@ -31,8 +31,8 @@ struct URL
 
     auto homepage() -> std::string;
 
-    std::map<std::string, std::string> home;
-    std::map<std::string, std::string> current;
+    std::pair<std::string, std::string> home;
+    std::pair<std::string, std::string> current;
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(URL, home, current)
 };

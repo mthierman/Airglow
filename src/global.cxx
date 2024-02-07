@@ -28,10 +28,28 @@ Keys::Keys()
     // set.emplace(VK_F12);
 }
 
-URL::URL()
-    : home{{"first", homepage()}, {"second", homepage()}},
-      current{{"first", "about:blank"}, {"second", "about:blank"}}
-{}
+URL::URL() : home{homepage(), homepage()}, current{"about:blank", "about:blank"}
+{
+    auto args{glow::cmd_to_argv()};
+
+    if (args.size() == 2)
+    {
+        current.first = args.at(1);
+        current.second = home.second;
+    }
+
+    else if (args.size() > 2)
+    {
+        current.first = args.at(1);
+        current.second = args.at(2);
+    }
+
+    else
+    {
+        current.first = home.first;
+        current.second = home.second;
+    }
+}
 
 auto URL::homepage() -> std::string
 {

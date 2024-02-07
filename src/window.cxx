@@ -377,8 +377,8 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
                 if (!m_initialized)
                 {
                     m_initialized = true;
-                    if (m_browsers.first) { m_browsers.first->navigate(m_url.current["first"]); }
-                    if (m_browsers.second) { m_browsers.second->navigate(m_url.current["second"]); }
+                    if (m_browsers.first) { m_browsers.first->navigate(m_url.current.first); }
+                    if (m_browsers.second) { m_browsers.second->navigate(m_url.current.second); }
                 }
 
                 if (m_browsers.url)
@@ -421,13 +421,13 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
             if (id == m_browsers.first->id())
             {
                 m_browsers.url->post_json(json{{"first", m_browsers.first->m_source}});
-                m_url.current["first"] = m_browsers.first->m_source;
+                m_url.current.first = m_browsers.first->m_source;
             }
 
             else if (id == m_browsers.second->id())
             {
                 m_browsers.url->post_json(json{{"second", m_browsers.second->m_source}});
-                m_url.current["second"] = m_browsers.second->m_source;
+                m_url.current.second = m_browsers.second->m_source;
             }
 
             notify(m_app, msg::save_settings);
