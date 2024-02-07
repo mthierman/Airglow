@@ -31,6 +31,8 @@ struct App : public glow::App<App>
     auto save() -> void;
     auto load() -> void;
 
+    auto window() -> void;
+
     auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     auto on_notify(WPARAM wParam, LPARAM lParam) -> int;
 
@@ -38,12 +40,8 @@ struct App : public glow::App<App>
 
     glow::GdiPlus m_gdiInit;
     glow::CoInitialize m_coInit;
-
-    std::unique_ptr<Window> m_windowMain;
-    std::unique_ptr<Settings> m_windowSettings;
-
-    std::set<size_t> m_windows;
-
     std::vector<std::string> m_argv;
     URL m_url;
+    std::unique_ptr<Settings> m_windowSettings;
+    std::unordered_map<uintptr_t, std::unique_ptr<Window>> m_windows;
 };

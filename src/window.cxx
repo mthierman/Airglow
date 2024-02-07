@@ -8,8 +8,8 @@
 
 #include "window.hxx"
 
-Window::Window(HWND app, URL& url)
-    : glow::Window<Window>("Airglow"), m_app{app}, m_url{url}, m_initialized{}
+Window::Window(HWND app, URL& url, uintptr_t id)
+    : glow::Window<Window>("Airglow", id), m_app{app}, m_url{url}, m_initialized{}
 {
     notify(m_app, msg::window_create);
 

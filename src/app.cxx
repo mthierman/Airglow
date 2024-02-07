@@ -39,10 +39,9 @@ auto App::operator()() -> int
         m_url.current["second"] = m_url.home["second"];
     }
 
-    m_windowMain = std::make_unique<Window>(hwnd(), m_url);
-    m_windowMain->reveal();
-
     m_windowSettings = std::make_unique<Settings>(hwnd(), m_url);
+
+    window();
 
     return glow::message_loop();
 }
@@ -91,6 +90,13 @@ auto App::load() -> void
     }
 }
 
+auto App::window() -> void
+{
+    auto id{glow::random<uintptr_t>()};
+    m_windows[id] = std::make_unique<Window>(hwnd(), m_url, id);
+    m_windows[id]->reveal();
+}
+
 auto App::wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     switch (uMsg)
@@ -110,20 +116,6 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
     switch (code)
     {
-        case msg::window_create:
-        {
-            m_windows.insert(id);
-
-            break;
-        }
-
-        case msg::window_close:
-        {
-            m_windows.erase(id);
-
-            break;
-        }
-
         case msg::toggle_settings:
         {
             m_windowSettings->visible() ? m_windowSettings->hide() : m_windowSettings->show();
@@ -137,14 +129,19 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
             break;
         }
+
+        case msg::window_close:
+        {
+            m_windows.erase(id);
+
+            if (m_windows.empty())
+            {
+                save();
+
+                return close();
+            }
+        }
     }
 
-    if (m_windows.empty())
-    {
-        save();
-
-        return close();
-    }
-
-    else { return 0; }
+    return 0;
 }
