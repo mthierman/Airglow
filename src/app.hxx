@@ -24,9 +24,8 @@ struct App : public glow::App<App>
 {
     using glow::App<App>::App;
 
-    auto operator()(int argc, char* argv[]) -> int;
-
-    auto window() -> void;
+    auto operator()() -> int;
+    auto window(uintptr_t id = glow::random<uintptr_t>()) -> void;
 
     auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     auto on_notify(WPARAM wParam, LPARAM lParam) -> int;
@@ -38,4 +37,7 @@ struct App : public glow::App<App>
 
     std::unique_ptr<Settings> m_settings;
     std::unordered_map<uintptr_t, std::unique_ptr<Window>> m_windows;
+
+  private:
+    auto settings() -> void;
 };

@@ -8,22 +8,21 @@
 
 #include "app.hxx"
 
-auto App::operator()(int argc, char* argv[]) -> int
+auto App::operator()() -> int
 {
     SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
     SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
                             "--allow-file-access-from-files");
-
-    m_settings = std::make_unique<Settings>(hwnd(), m_url);
-
+    settings();
     window();
 
     return glow::message_loop();
 }
 
-auto App::window() -> void
+auto App::settings() -> void { m_settings = std::make_unique<Settings>(hwnd(), m_url); }
+
+auto App::window(uintptr_t id) -> void
 {
-    auto id{glow::random<uintptr_t>()};
     m_windows[id] = std::make_unique<Window>(hwnd(), m_url, id);
     m_windows[id]->reveal();
 }

@@ -11,9 +11,9 @@
 Settings::Settings(HWND app, URL& url)
     : glow::Window<Settings>("Airglow - Settings"), m_app{app}, m_url{url}, m_file{json()}
 {
-    if (!std::filesystem::exists(m_file)) { save(); }
+    // if (!std::filesystem::exists(m_file)) { save(); }
 
-    else { load(); }
+    // else { load(); }
 
     dwm_caption_color(false);
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_TRANSIENTWINDOW);
