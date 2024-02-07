@@ -13,12 +13,12 @@ auto Browser::web_message_received_handler(ICoreWebView2* sender,
     -> HRESULT
 {
     wil::unique_cotaskmem_string source;
-    args->get_Source(&source);
+    if (FAILED(args->get_Source(&source))) { return S_OK; }
 
     if (!(std::wstring_view(source.get()) == glow::wstring(url("url")) ||
           std::wstring_view(source.get()) == glow::wstring(url("settings"))))
     {
-        log(glow::string(source.get()));
+        return S_OK;
     }
 
     wil::unique_cotaskmem_string message;
@@ -34,11 +34,11 @@ auto Browser::accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
     -> HRESULT
 {
     wil::com_ptr<ICoreWebView2AcceleratorKeyPressedEventArgs2> args2;
-    args->QueryInterface(IID_PPV_ARGS(&args2));
+    if (FAILED(args->QueryInterface(IID_PPV_ARGS(&args2)))) { return S_OK; }
     if (!args2) { return S_OK; }
 
     COREWEBVIEW2_KEY_EVENT_KIND kind;
-    args2->get_KeyEventKind(&kind);
+    if (FAILED(args2->get_KeyEventKind(&kind))) { return S_OK; }
 
     if (kind == COREWEBVIEW2_KEY_EVENT_KIND_KEY_DOWN ||
         kind == COREWEBVIEW2_KEY_EVENT_KIND_SYSTEM_KEY_DOWN)
@@ -46,24 +46,21 @@ auto Browser::accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
         Keys keys;
 
         unsigned int key{};
-        args2->get_VirtualKey(&key);
+        if (FAILED(args2->get_VirtualKey(&key))) { return S_OK; }
 
         int lParam{};
-        args2->get_KeyEventLParam(&lParam);
+        if (FAILED(args2->get_KeyEventLParam(&lParam))) { return S_OK; }
 
         if (keys.set.contains(key))
         {
-            args2->put_Handled(TRUE);
-            args2->put_IsBrowserAcceleratorKeyEnabled(FALSE);
+            if (FAILED(args2->put_Handled(TRUE))) { return S_OK; }
+            if (FAILED(args2->put_IsBrowserAcceleratorKeyEnabled(FALSE))) { return S_OK; }
 
             if (key == VK_F10) { PostMessageA(m_parent, WM_SYSKEYDOWN, key, lParam); }
 
             else if (key == 0x30)
             {
-                if (GetKeyState(VK_CONTROL) & 0x8000)
-                {
-                    m_webView.controller4->put_ZoomFactor(1.0);
-                }
+                if (GetKeyState(VK_CONTROL) & 0x8000) { zoom(1.0); }
             }
 
             else { PostMessageA(m_parent, WM_KEYDOWN, key, lParam); }
@@ -77,8 +74,9 @@ auto Browser::zoom_factor_changed_handler(ICoreWebView2Controller* sender, IUnkn
     -> HRESULT
 {
     double zoomFactor;
-    sender->get_ZoomFactor(&zoomFactor);
-    m_webView.controller4->put_ZoomFactor(zoomFactor);
+    if (FAILED(sender->get_ZoomFactor(&zoomFactor))) { return S_OK; }
+
+    zoom(zoomFactor);
 
     return S_OK;
 }
@@ -161,14 +159,12 @@ auto Browser::move_focus_requested_handler(ICoreWebView2Controller* sender,
 
     if (reason == COREWEBVIEW2_MOVE_FOCUS_REASON_NEXT)
     {
-        m_webView.controller4->MoveFocus(
-            COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_NEXT);
+        focus(COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_NEXT);
     }
 
     else if (reason == COREWEBVIEW2_MOVE_FOCUS_REASON_PREVIOUS)
     {
-        m_webView.controller4->MoveFocus(
-            COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PREVIOUS);
+        focus(COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PREVIOUS);
     }
 
     args->put_Handled(TRUE);
