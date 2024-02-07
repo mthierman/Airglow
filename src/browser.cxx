@@ -202,7 +202,7 @@ auto Browser::url(std::string page) -> std::string
 
 auto URLBrowser::initialized() -> void
 {
-    m_webView.core20->OpenDevToolsWindow();
+    // m_webView.core20->OpenDevToolsWindow();
     navigate(url("url"));
 }
 
