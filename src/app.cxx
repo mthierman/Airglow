@@ -95,7 +95,7 @@ auto App::wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESUL
 {
     switch (uMsg)
     {
-    case WM_NOTIFY: return on_notify(wParam, lParam);
+        case WM_NOTIFY: return on_notify(wParam, lParam);
     }
 
     return DefWindowProcA(hWnd, uMsg, wParam, lParam);
@@ -105,67 +105,38 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
 {
     auto notification{reinterpret_cast<glow::Notification*>(lParam)};
 
-    switch (notification->nmhdr.code)
+    auto& id = notification->nmhdr.idFrom;
+    auto& code = notification->nmhdr.code;
+
+    switch (code)
     {
-    case msg::window_create:
-    {
-        m_windows.insert(notification->nmhdr.idFrom);
-
-        break;
-    }
-
-    case msg::window_close:
-    {
-        m_windows.erase(notification->nmhdr.idFrom);
-
-        break;
-    }
-
-    case msg::toggle_settings:
-    {
-        m_windowSettings->visible() ? m_windowSettings->hide() : m_windowSettings->show();
-
-        break;
-    }
-
-    case msg::save_settings:
-    {
-        save();
-
-        break;
-    }
-
-    case msg::source_changed:
-    {
-        auto json{nlohmann::json::parse(notification->message)};
-
-        if (json.contains("first")) { m_url.current["first"] = json["first"].get<std::string>(); }
-
-        else if (json.contains("second"))
+        case msg::window_create:
         {
-            m_url.current["second"] = json["second"].get<std::string>();
+            m_windows.insert(id);
+
+            break;
         }
 
-        save();
-
-        break;
-    }
-
-    case msg::home_changed:
-    {
-        auto json{nlohmann::json::parse(notification->message)};
-
-        if (json.contains("first")) { m_url.home["first"] = json["first"].get<std::string>(); }
-
-        else if (json.contains("second"))
+        case msg::window_close:
         {
-            m_url.home["second"] = json["second"].get<std::string>();
+            m_windows.erase(id);
+
+            break;
         }
 
-        save();
+        case msg::toggle_settings:
+        {
+            m_windowSettings->visible() ? m_windowSettings->hide() : m_windowSettings->show();
 
-        break;
-    }
+            break;
+        }
+
+        case msg::save_settings:
+        {
+            save();
+
+            break;
+        }
     }
 
     if (m_windows.empty())

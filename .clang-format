@@ -30,3 +30,4 @@ BreakBeforeBraces: Custom
 BreakInheritanceList: AfterComma
 PointerAlignment: Left
 KeepEmptyLinesAtTheStartOfBlocks: true
+IndentCaseLabels: true

@@ -15,6 +15,8 @@
 #include "global.hxx"
 #include "browser.hxx"
 
+using json = nlohmann::json;
+
 struct Browsers
 {
     std::unique_ptr<MainBrowser> first;

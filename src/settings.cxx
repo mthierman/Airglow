@@ -56,14 +56,14 @@ auto Settings::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 {
     switch (uMsg)
     {
-    case WM_CLOSE: return on_close(wParam, lParam);
-    case WM_DPICHANGED: return on_dpi_changed(wParam, lParam);
-    case WM_KEYDOWN: return on_key_down(wParam, lParam);
-    case WM_GETMINMAXINFO: return on_get_min_max_info(wParam, lParam);
-    case WM_NOTIFY: return on_notify(wParam, lParam);
-    case WM_SETTINGCHANGE: return on_setting_change(wParam, lParam);
-    case WM_SHOWWINDOW: return on_show_window(wParam, lParam);
-    case WM_SIZE: return on_size(wParam, lParam);
+        case WM_CLOSE: return on_close(wParam, lParam);
+        case WM_DPICHANGED: return on_dpi_changed(wParam, lParam);
+        case WM_KEYDOWN: return on_key_down(wParam, lParam);
+        case WM_GETMINMAXINFO: return on_get_min_max_info(wParam, lParam);
+        case WM_NOTIFY: return on_notify(wParam, lParam);
+        case WM_SETTINGCHANGE: return on_setting_change(wParam, lParam);
+        case WM_SHOWWINDOW: return on_show_window(wParam, lParam);
+        case WM_SIZE: return on_size(wParam, lParam);
     }
 
     return DefWindowProcA(hWnd, uMsg, wParam, lParam);
@@ -88,35 +88,35 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
 {
     auto notification{reinterpret_cast<glow::Notification*>(lParam)};
 
-    switch (notification->nmhdr.code)
-    {
-    case msg::web_message_received:
-    {
-        auto json{nlohmann::json::parse(notification->message)};
+    auto& code{notification->nmhdr.code};
+    auto& message{notification->message};
 
-        // log(json.dump());
-
-        if (json.contains("initialized"))
+    switch (code)
+    {
+        case msg::web_message_received:
         {
-            if (m_browser)
+            auto parsed{json::parse(message)};
+
+            if (parsed.contains("initialized"))
             {
-                m_browser->post_json(nlohmann::json(m_systemColors));
-                m_browser->post_json(nlohmann::json(m_url.home));
+                if (m_browser)
+                {
+                    m_browser->post_json(nlohmann::json(m_systemColors));
+                    m_browser->post_json(nlohmann::json(m_url.home));
+                }
             }
-        }
 
-        else if (json.contains("first"))
-        {
-            notify(m_app, msg::home_changed, notification->message);
-        }
+            else if (parsed.contains("first")) { m_url.home["first"] = parsed.get<std::string>(); }
 
-        else if (json.contains("second"))
-        {
-            notify(m_app, msg::home_changed, notification->message);
-        }
+            else if (parsed.contains("second"))
+            {
+                m_url.home["second"] = parsed.get<std::string>();
+            }
 
-        break;
-    }
+            notify(m_app, msg::save_settings);
+
+            break;
+        }
     }
 
     return 0;
@@ -143,26 +143,26 @@ auto Settings::on_key_down(WPARAM wParam, LPARAM lParam) -> int
     {
         switch (key)
         {
-        case VK_PAUSE:
-        {
-            notify(m_app, msg::toggle_settings);
+            case VK_PAUSE:
+            {
+                notify(m_app, msg::toggle_settings);
 
-            break;
-        }
+                break;
+            }
 
-        case 0x57:
-        {
-            if (GetKeyState(VK_CONTROL) & 0x8000) { notify(m_app, msg::toggle_settings); }
+            case 0x57:
+            {
+                if (GetKeyState(VK_CONTROL) & 0x8000) { notify(m_app, msg::toggle_settings); }
 
-            break;
-        }
+                break;
+            }
 
-        case VK_F4:
-        {
-            if (GetKeyState(VK_MENU) & 0x8000) { notify(m_app, msg::toggle_settings); }
+            case VK_F4:
+            {
+                if (GetKeyState(VK_MENU) & 0x8000) { notify(m_app, msg::toggle_settings); }
 
-            break;
-        }
+                break;
+            }
         }
     }
 
@@ -185,19 +185,19 @@ auto Settings::on_show_window(WPARAM wParam, LPARAM lParam) -> int
     {
         switch (wParam)
         {
-        case TRUE:
-        {
-            m_browser->m_webView.controller4->put_IsVisible(TRUE);
+            case TRUE:
+            {
+                m_browser->m_webView.controller4->put_IsVisible(TRUE);
 
-            break;
-        }
+                break;
+            }
 
-        case FALSE:
-        {
-            m_browser->m_webView.controller4->put_IsVisible(FALSE);
+            case FALSE:
+            {
+                m_browser->m_webView.controller4->put_IsVisible(FALSE);
 
-            break;
-        }
+                break;
+            }
         }
     }
 

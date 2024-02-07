@@ -15,6 +15,8 @@
 #include "global.hxx"
 #include "browser.hxx"
 
+using json = nlohmann::json;
+
 struct Settings : public glow::Window<Settings>
 {
     using glow::Window<Settings>::Window;

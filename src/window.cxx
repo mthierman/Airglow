@@ -179,14 +179,14 @@ auto Window::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 {
     switch (uMsg)
     {
-    case WM_CLOSE: return on_close(wParam, lParam);
-    case WM_DPICHANGED: return on_dpi_changed(wParam, lParam);
-    case WM_GETMINMAXINFO: return on_get_min_max_info(wParam, lParam);
-    case WM_KEYDOWN: return on_key_down(wParam, lParam);
-    case WM_NOTIFY: return on_notify(wParam, lParam);
-    case WM_SETTINGCHANGE: return on_setting_change(wParam, lParam);
-    case WM_SIZE: return on_size(wParam, lParam);
-    case WM_SYSKEYDOWN: return on_sys_key_down(wParam, lParam);
+        case WM_CLOSE: return on_close(wParam, lParam);
+        case WM_DPICHANGED: return on_dpi_changed(wParam, lParam);
+        case WM_GETMINMAXINFO: return on_get_min_max_info(wParam, lParam);
+        case WM_KEYDOWN: return on_key_down(wParam, lParam);
+        case WM_NOTIFY: return on_notify(wParam, lParam);
+        case WM_SETTINGCHANGE: return on_setting_change(wParam, lParam);
+        case WM_SIZE: return on_size(wParam, lParam);
+        case WM_SYSKEYDOWN: return on_sys_key_down(wParam, lParam);
     }
 
     return DefWindowProcA(hWnd, uMsg, wParam, lParam);
@@ -209,7 +209,7 @@ auto Window::on_dpi_changed(WPARAM wParam, LPARAM lParam) -> int
 
 auto Window::on_get_min_max_info(WPARAM wParam, LPARAM lParam) -> int
 {
-    LPMINMAXINFO minmax{reinterpret_cast<LPMINMAXINFO>(lParam)};
+    auto minmax{reinterpret_cast<LPMINMAXINFO>(lParam)};
 
     minmax->ptMinTrackSize.x = 500;
     minmax->ptMinTrackSize.y = 500;
@@ -228,133 +228,130 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
     {
         switch (key)
         {
-        case VK_PAUSE:
-        {
-            notify(m_app, msg::toggle_settings);
-
-            break;
-        }
-
-        case 0x4C:
-        {
-            if (GetKeyState(VK_CONTROL) & 0x8000)
+            case VK_PAUSE:
             {
-                if (m_browsers.url)
+                notify(m_app, msg::toggle_settings);
+
+                break;
+            }
+
+            case 0x4C:
+            {
+                if (GetKeyState(VK_CONTROL) & 0x8000)
                 {
-                    m_browsers.url->post_json(nlohmann::json{{"focus", m_focused}});
-                    m_browsers.url->focus(COREWEBVIEW2_MOVE_FOCUS_REASON::
-                                              COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+                    if (m_browsers.url)
+                    {
+                        m_browsers.url->post_json(json{{"focus", m_focused}});
+                        m_browsers.url->focus(COREWEBVIEW2_MOVE_FOCUS_REASON::
+                                                  COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+                    }
                 }
+
+                break;
             }
 
-            break;
-        }
-
-        case 0x57:
-        {
-            if (GetKeyState(VK_CONTROL) & 0x8000)
+            case 0x57:
             {
-                SendMessageA(hwnd(), WM_CLOSE, 0, 0);
+                if (GetKeyState(VK_CONTROL) & 0x8000)
+                {
+                    SendMessageA(hwnd(), WM_CLOSE, 0, 0);
 
-                return 0;
+                    return 0;
+                }
+
+                break;
             }
 
-            break;
-        }
-
-        case VK_F1:
-        {
-            if (!m_layout.split && m_layout.swapped)
+            case VK_F1:
             {
-                m_browsers.first->focus(
-                    COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+                if (!m_layout.split && m_layout.swapped)
+                {
+                    m_browsers.first->focus(COREWEBVIEW2_MOVE_FOCUS_REASON::
+                                                COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+                }
+
+                else if (!m_layout.split && !m_layout.swapped)
+                {
+                    m_browsers.second->focus(COREWEBVIEW2_MOVE_FOCUS_REASON::
+                                                 COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+                }
+
+                m_layout.swapped = !m_layout.swapped;
+
+                break;
             }
 
-            else if (!m_layout.split && !m_layout.swapped)
+            case VK_F2:
             {
-                m_browsers.second->focus(
-                    COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+                m_layout.split = !m_layout.split;
+
+                break;
             }
 
-            m_layout.swapped = !m_layout.swapped;
-
-            break;
-        }
-
-        case VK_F2:
-        {
-            m_layout.split = !m_layout.split;
-
-            break;
-        }
-
-        case VK_F3:
-        {
-            if (m_layout.split) { m_layout.horizontal = !m_layout.horizontal; }
-
-            break;
-        }
-
-        case VK_F4:
-        {
-            if (GetKeyState(VK_MENU) & 0x8000)
+            case VK_F3:
             {
-                SendMessageA(hwnd(), WM_CLOSE, 0, 0);
+                if (m_layout.split) { m_layout.horizontal = !m_layout.horizontal; }
 
-                return 0;
+                break;
             }
 
-            else
+            case VK_F4:
             {
-                m_position.maximize = !m_position.maximize;
-                maximize();
+                if (GetKeyState(VK_MENU) & 0x8000)
+                {
+                    SendMessageA(hwnd(), WM_CLOSE, 0, 0);
+
+                    return 0;
+                }
+
+                else
+                {
+                    m_position.maximize = !m_position.maximize;
+                    maximize();
+                }
+
+                break;
             }
 
-            break;
-        }
+            case VK_F6:
+            {
+                break;
+            }
 
-        case VK_F6:
-        {
-            break;
-        }
+            case VK_F7:
+            {
+                break;
+            }
 
-        case VK_F7:
-        {
-            break;
-        }
+            case VK_F8:
+            {
+                break;
+            }
 
-        case VK_F8:
-        {
-            break;
-        }
+            case VK_F9:
+            {
+                m_position.topmost = !m_position.topmost;
+                topmost();
 
-        case VK_F9:
-        {
-            m_position.topmost = !m_position.topmost;
-            topmost();
+                break;
+            }
 
-            break;
-        }
+            case VK_F11:
+            {
+                m_position.fullscreen = !m_position.fullscreen;
+                fullscreen();
 
-        case VK_F11:
-        {
-            m_position.fullscreen = !m_position.fullscreen;
-            fullscreen();
+                break;
+            }
 
-            break;
-        }
-
-        case VK_F12:
-        {
-            break;
-        }
+            case VK_F12:
+            {
+                break;
+            }
         }
     }
 
-    if (m_browsers.url)
-    {
-        m_browsers.url->post_json(nlohmann::json{{"layout", nlohmann::json(m_layout)}});
-    }
+    if (m_browsers.url) { m_browsers.url->post_json(json{{"layout", json(m_layout)}}); }
 
     PostMessageA(hwnd(), WM_SIZE, 0, 0);
     notify(hwnd(), msg::title_changed);
@@ -367,164 +364,167 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 {
     auto notification{reinterpret_cast<glow::Notification*>(lParam)};
 
-    switch (notification->nmhdr.code)
+    auto& id{notification->nmhdr.idFrom};
+    auto& code{notification->nmhdr.code};
+    auto& message{notification->message};
+
+    switch (code)
     {
-    case msg::web_message_received:
-    {
-        auto json{nlohmann::json::parse(notification->message)};
-
-        if (json.contains("initialized"))
+        case msg::web_message_received:
         {
-            if (!m_initialized)
+            auto parsed{json::parse(message)};
+
+            if (parsed.contains("initialized"))
             {
-                m_initialized = true;
-                if (m_browsers.first) { m_browsers.first->navigate(m_url.home["first"]); }
-                if (m_browsers.second) { m_browsers.second->navigate(m_url.home["second"]); }
+                if (!m_initialized)
+                {
+                    m_initialized = true;
+                    if (m_browsers.first) { m_browsers.first->navigate(m_url.home["first"]); }
+                    if (m_browsers.second) { m_browsers.second->navigate(m_url.home["second"]); }
+                }
+
+                if (m_browsers.url)
+                {
+                    m_browsers.url->post_json(json{{"layout", json(m_layout)}});
+                    m_browsers.url->post_json(json(m_systemColors));
+                    m_browsers.url->post_json(json(m_url.current));
+                }
             }
 
-            if (m_browsers.url)
+            else if (parsed.contains("height"))
             {
-                m_browsers.url->post_json(nlohmann::json{{"layout", nlohmann::json(m_layout)}});
-                m_browsers.url->post_json(nlohmann::json(m_systemColors));
-                m_browsers.url->post_json(nlohmann::json(m_url.current));
+                m_layout.bar = parsed["height"].get<int>();
+                PostMessageA(hwnd(), WM_SIZE, 0, 0);
             }
-        }
 
-        else if (json.contains("height"))
-        {
-            m_layout.bar = json["height"].get<int>();
-            PostMessageA(hwnd(), WM_SIZE, 0, 0);
-        }
-
-        else if (json.contains("first"))
-        {
-            if (m_browsers.first) { m_browsers.first->navigate(json["first"].get<std::string>()); }
-        }
-
-        else if (json.contains("second"))
-        {
-            if (m_browsers.second)
+            else if (parsed.contains("first"))
             {
-                m_browsers.second->navigate(json["second"].get<std::string>());
+                if (m_browsers.first)
+                {
+                    m_browsers.first->navigate(parsed["first"].get<std::string>());
+                }
             }
-        }
 
-        break;
-    }
-
-    case msg::source_changed:
-    {
-        if (notification->nmhdr.idFrom == m_browsers.first->id())
-        {
-            if (m_browsers.url)
+            else if (parsed.contains("second"))
             {
-                auto message{nlohmann::json{{"first", m_browsers.first->m_source}}};
-                m_browsers.url->post_json(message);
-                notify(m_app, msg::source_changed, message.dump());
+                if (m_browsers.second)
+                {
+                    m_browsers.second->navigate(parsed["second"].get<std::string>());
+                }
             }
+
+            break;
         }
 
-        else if (notification->nmhdr.idFrom == m_browsers.second->id())
+        case msg::source_changed:
         {
-            if (m_browsers.url)
+            if (!m_browsers.url) { break; }
+
+            if (id == m_browsers.first->id())
             {
-                auto message{nlohmann::json{{"second", m_browsers.second->m_source}}};
-                m_browsers.url->post_json(message);
-                notify(m_app, msg::source_changed, message.dump());
+                m_browsers.url->post_json(json{{"first", m_browsers.first->m_source}});
+                m_url.current["first"] = m_browsers.first->m_source;
             }
-        }
 
-        break;
-    }
-
-    case msg::favicon_changed:
-    {
-        if (notification->nmhdr.idFrom == m_browsers.first->id())
-        {
-            m_firstFavicon.reset(m_browsers.first->m_favicon.get());
-            if (m_browsers.url)
+            else if (id == m_browsers.second->id())
             {
-                m_browsers.url->post_json(
-                    nlohmann::json{{"firstFavicon", m_browsers.first->m_faviconUrl}});
+                m_browsers.url->post_json(json{{"second", m_browsers.second->m_source}});
+                m_url.current["second"] = m_browsers.second->m_source;
             }
+
+            notify(m_app, msg::save_settings);
+
+            break;
         }
 
-        else if (notification->nmhdr.idFrom == m_browsers.second->id())
+        case msg::favicon_changed:
         {
-            m_secondFavicon.reset(m_browsers.second->m_favicon.get());
-            if (m_browsers.url)
+            if (id == m_browsers.first->id())
             {
-                m_browsers.url->post_json(
-                    nlohmann::json{{"secondFavicon", m_browsers.second->m_faviconUrl}});
+                m_firstFavicon.reset(m_browsers.first->m_favicon.get());
+                if (m_browsers.url)
+                {
+                    m_browsers.url->post_json(
+                        nlohmann::json{{"firstFavicon", m_browsers.first->m_faviconUrl}});
+                }
             }
-        }
 
-        if (!m_layout.swapped && !m_position.fullscreen)
-        {
-            PostMessageA(hwnd(), WM_SETICON, ICON_SMALL,
-                         reinterpret_cast<LPARAM>(m_firstFavicon.get()));
-            PostMessageA(hwnd(), WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(m_hicon.get()));
-        }
-
-        else if (!m_position.fullscreen)
-        {
-            PostMessageA(hwnd(), WM_SETICON, ICON_SMALL,
-                         reinterpret_cast<LPARAM>(m_secondFavicon.get()));
-            PostMessageA(hwnd(), WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(m_hicon.get()));
-        }
-
-        break;
-    }
-
-    case msg::title_changed:
-    {
-        if (notification->nmhdr.idFrom == m_browsers.first->id())
-        {
-            if (m_browsers.url)
+            else if (id == m_browsers.second->id())
             {
-                m_browsers.url->post_json(
-                    nlohmann::json{{"firstTitle", m_browsers.first->m_documentTitle}});
+                m_secondFavicon.reset(m_browsers.second->m_favicon.get());
+                if (m_browsers.url)
+                {
+                    m_browsers.url->post_json(
+                        nlohmann::json{{"secondFavicon", m_browsers.second->m_faviconUrl}});
+                }
             }
-        }
 
-        else if (notification->nmhdr.idFrom == m_browsers.second->id())
-        {
-            if (m_browsers.url)
+            if (!m_layout.swapped && !m_position.fullscreen)
             {
-                m_browsers.url->post_json(
-                    nlohmann::json{{"secondTitle", m_browsers.second->m_documentTitle}});
+                PostMessageA(hwnd(), WM_SETICON, ICON_SMALL,
+                             reinterpret_cast<LPARAM>(m_firstFavicon.get()));
+                PostMessageA(hwnd(), WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(m_hicon.get()));
             }
-        }
 
-        if (!m_layout.swapped)
-        {
-            if (!m_browsers.first->m_documentTitle.empty())
+            else if (!m_position.fullscreen)
             {
-                title(m_browsers.first->m_documentTitle);
+                PostMessageA(hwnd(), WM_SETICON, ICON_SMALL,
+                             reinterpret_cast<LPARAM>(m_secondFavicon.get()));
+                PostMessageA(hwnd(), WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(m_hicon.get()));
             }
+
+            break;
         }
 
-        else
+        case msg::title_changed:
         {
-            if (!m_browsers.second->m_documentTitle.empty())
+            if (id == m_browsers.first->id())
             {
-                title(m_browsers.second->m_documentTitle);
+                if (m_browsers.url)
+                {
+                    m_browsers.url->post_json(
+                        nlohmann::json{{"firstTitle", m_browsers.first->m_documentTitle}});
+                }
             }
+
+            else if (id == m_browsers.second->id())
+            {
+                if (m_browsers.url)
+                {
+                    m_browsers.url->post_json(
+                        nlohmann::json{{"secondTitle", m_browsers.second->m_documentTitle}});
+                }
+            }
+
+            if (!m_layout.swapped)
+            {
+                if (!m_browsers.first->m_documentTitle.empty())
+                {
+                    title(m_browsers.first->m_documentTitle);
+                }
+            }
+
+            else
+            {
+                if (!m_browsers.second->m_documentTitle.empty())
+                {
+                    title(m_browsers.second->m_documentTitle);
+                }
+            }
+
+            break;
         }
 
-        break;
-    }
+        case msg::focus_changed:
+        {
+            if (id == m_browsers.first->id()) { m_focused = "first"; }
 
-    case msg::focus_changed:
-    {
-        if (notification->nmhdr.idFrom == m_browsers.first->id()) { m_focused = "first"; }
+            else if (id == m_browsers.second->id()) { m_focused = "second"; }
 
-        else if (notification->nmhdr.idFrom == m_browsers.second->id()) { m_focused = "second"; }
+            else if (id == m_browsers.url->id()) { m_focused = "url"; }
 
-        else if (notification->nmhdr.idFrom == m_browsers.url->id()) { m_focused = "url"; }
-
-        break;
-    }
+            break;
+        }
     }
 
     return 0;
@@ -560,10 +560,10 @@ auto Window::on_sys_key_down(WPARAM wParam, LPARAM lParam) -> int
     {
         switch (key)
         {
-        case VK_F10:
-        {
-            break;
-        }
+            case VK_F10:
+            {
+                break;
+            }
         }
     }
 
