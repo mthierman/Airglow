@@ -464,12 +464,14 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
         {
             PostMessageA(hwnd(), WM_SETICON, ICON_SMALL,
                          reinterpret_cast<LPARAM>(m_firstFavicon.get()));
+            PostMessageA(hwnd(), WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(m_hicon.get()));
         }
 
         else if (!m_position.fullscreen)
         {
             PostMessageA(hwnd(), WM_SETICON, ICON_SMALL,
                          reinterpret_cast<LPARAM>(m_secondFavicon.get()));
+            PostMessageA(hwnd(), WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(m_hicon.get()));
         }
 
         break;
