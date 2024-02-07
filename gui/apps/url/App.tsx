@@ -11,6 +11,8 @@ export default function App() {
     const first = useRef<HTMLInputElement | null>(null);
     const second = useRef<HTMLInputElement | null>(null);
 
+    const [selectedCurrent, setSelectedCurrent] = useState("");
+
     const [firstCurrent, setFirstCurrent] = useState("");
     const [secondCurrent, setSecondCurrent] = useState("");
 
@@ -51,13 +53,22 @@ export default function App() {
             }
 
             if (Object.hasOwn(data, "focus")) {
-                console.log(data.focus);
                 if (data.focus === "first") {
+                    setSelectedCurrent("first");
                     first.current!.focus();
+                    first.current!.select();
                 } else if (data.focus === "second") {
+                    setSelectedCurrent("second");
                     second.current!.focus();
+                    second.current!.select();
                 } else if (data.focus === "url") {
-                    second.current!.focus();
+                    if (selectedCurrent === "first") {
+                        first.current!.focus();
+                        first.current!.select();
+                    } else {
+                        second.current!.focus();
+                        second.current!.select();
+                    }
                 }
             }
 
@@ -105,12 +116,24 @@ export default function App() {
             }
         };
 
+        const onFocus = () => {
+            if (document.activeElement === first.current) {
+                setSelectedCurrent("first");
+            } else if (document.activeElement === second.current) {
+                setSelectedCurrent("second");
+            }
+        };
+
         window.chrome.webview.addEventListener("message", onMessage);
         document.addEventListener("keydown", onEscape);
+        first.current!.addEventListener("focus", onFocus);
+        second.current!.addEventListener("focus", onFocus);
 
         return () => {
             window.chrome.webview.removeEventListener("message", onMessage);
             document.removeEventListener("keydown", onEscape);
+            first.current!.removeEventListener("focus", onFocus);
+            second.current!.removeEventListener("focus", onFocus);
         };
     });
 
