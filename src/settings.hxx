@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <filesystem>
 #include <map>
 
 #include <glow/glow.hxx>

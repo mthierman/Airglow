@@ -377,8 +377,8 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
                 if (!m_initialized)
                 {
                     m_initialized = true;
-                    if (m_browsers.first) { m_browsers.first->navigate(m_url.home["first"]); }
-                    if (m_browsers.second) { m_browsers.second->navigate(m_url.home["second"]); }
+                    if (m_browsers.first) { m_browsers.first->navigate(m_url.current["first"]); }
+                    if (m_browsers.second) { m_browsers.second->navigate(m_url.current["second"]); }
                 }
 
                 if (m_browsers.url)
