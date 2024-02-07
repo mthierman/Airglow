@@ -138,6 +138,8 @@ auto Browser::favicon_changed_handler(ICoreWebView2* sender, IUnknown* args) -> 
 
 auto Browser::got_focus_handler(ICoreWebView2Controller* sender, IUnknown* args) -> HRESULT
 {
+    notify(m_parent, msg::focus_changed);
+
     m_focus = true;
 
     return S_OK;

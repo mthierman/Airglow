@@ -53,4 +53,5 @@ struct Window : public glow::Window<Window>
 
     wil::unique_hicon m_firstFavicon;
     wil::unique_hicon m_secondFavicon;
+    std::string m_focused;
 };

@@ -241,17 +241,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
             {
                 if (m_browsers.url)
                 {
-                    if (m_browsers.first->m_focus || m_browsers.second->m_focus)
-                    {
-                        if (m_browsers.first->m_focus)
-                        {
-                            m_browsers.url->post_json(nlohmann::json{{"focus", "first"}});
-                        }
-                        else { m_browsers.url->post_json(nlohmann::json{{"focus", "second"}}); }
-                    }
-
-                    else { m_browsers.url->post_json(nlohmann::json{{"focus", "url"}}); }
-
+                    m_browsers.url->post_json(nlohmann::json{{"focus", m_focused}});
                     m_browsers.url->focus(COREWEBVIEW2_MOVE_FOCUS_REASON::
                                               COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
                 }
@@ -521,6 +511,17 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
                 title(m_browsers.second->m_documentTitle);
             }
         }
+
+        break;
+    }
+
+    case msg::focus_changed:
+    {
+        if (notification->nmhdr.idFrom == m_browsers.first->id()) { m_focused = "first"; }
+
+        else if (notification->nmhdr.idFrom == m_browsers.second->id()) { m_focused = "second"; }
+
+        else if (notification->nmhdr.idFrom == m_browsers.url->id()) { m_focused = "url"; }
 
         break;
     }
