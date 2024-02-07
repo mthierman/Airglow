@@ -196,7 +196,7 @@ export default function App() {
                     className={`${position.swapped ? "order-0" : "order-1"} ${
                         !position.split && !position.swapped ? "hidden" : "url"
                     }`}>
-                    <img width={16} height={16} src={secondFavicon} className="favicon" />
+                    <img width="16" height="16" src={secondFavicon} className="favicon" />
                     <input
                         ref={second}
                         id="second"

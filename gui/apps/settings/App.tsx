@@ -102,22 +102,22 @@ export default function App() {
             autoComplete="off"
             spellCheck="false"
             onSubmit={handleSubmit}>
-            <h1>🌆First Home</h1>
+            <h1 className="select-none text-xl">🌆First Home</h1>
             <input
                 ref={first}
                 id="first"
-                className="input url"
+                className="setting-input"
                 type="text"
                 value={firstCurrent}
                 placeholder={sessionStorage.getItem("first")!}
                 title={sessionStorage.getItem("first")!}
                 onChange={(e) => setFirstCurrent(e.target.value)}
                 onClick={handleClick}></input>
-            <h1>🌃Second Home</h1>
+            <h1 className="select-none text-xl">🌃Second Home</h1>
             <input
                 ref={second}
                 id="second"
-                className="input url"
+                className="setting-input"
                 type="text"
                 value={secondCurrent}
                 placeholder={sessionStorage.getItem("second")!}
