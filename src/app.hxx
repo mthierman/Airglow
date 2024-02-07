@@ -34,7 +34,6 @@ struct App : public glow::App<App>
     glow::CoInitialize m_coInit;
 
     URL m_url;
-
     std::unique_ptr<Settings> m_settings;
     std::unordered_map<uintptr_t, std::unique_ptr<Window>> m_windows;
 

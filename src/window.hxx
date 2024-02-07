@@ -8,7 +8,11 @@
 
 #pragma once
 
+#include <memory>
 #include <utility>
+#include <string>
+
+#include <wil/resource.h>
 
 #include <glow/glow.hxx>
 

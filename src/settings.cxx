@@ -145,7 +145,7 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
 auto Settings::on_get_min_max_info(WPARAM wParam, LPARAM lParam) -> int
 {
-    LPMINMAXINFO minmax{reinterpret_cast<LPMINMAXINFO>(lParam)};
+    auto minmax{reinterpret_cast<LPMINMAXINFO>(lParam)};
 
     minmax->ptMinTrackSize.x = 500;
     minmax->ptMinTrackSize.y = 500;
