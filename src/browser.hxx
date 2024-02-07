@@ -35,6 +35,9 @@ struct Browser : public glow::WebView<Browser>
         -> HRESULT override;
     virtual auto lost_focus_handler(ICoreWebView2Controller* sender, IUnknown* args)
         -> HRESULT override;
+    virtual auto move_focus_requested_handler(ICoreWebView2Controller* sender,
+                                              ICoreWebView2MoveFocusRequestedEventArgs* args)
+        -> ::HRESULT override;
 
     auto url(std::string compare) -> std::string;
 };

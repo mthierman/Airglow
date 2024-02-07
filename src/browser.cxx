@@ -152,6 +152,32 @@ auto Browser::lost_focus_handler(ICoreWebView2Controller* sender, IUnknown* args
     return S_OK;
 }
 
+auto Browser::move_focus_requested_handler(ICoreWebView2Controller* sender,
+                                           ICoreWebView2MoveFocusRequestedEventArgs* args)
+    -> HRESULT
+{
+    COREWEBVIEW2_MOVE_FOCUS_REASON reason;
+    if (FAILED(args->get_Reason(&reason))) { return S_OK; }
+
+    if (reason == COREWEBVIEW2_MOVE_FOCUS_REASON_NEXT)
+    {
+        OutputDebugStringA("COREWEBVIEW2_MOVE_FOCUS_REASON_NEXT");
+        m_webView.controller4->MoveFocus(
+            COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_NEXT);
+    }
+
+    else if (reason == COREWEBVIEW2_MOVE_FOCUS_REASON_PREVIOUS)
+    {
+        OutputDebugStringA("COREWEBVIEW2_MOVE_FOCUS_REASON_PREVIOUS");
+        m_webView.controller4->MoveFocus(
+            COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PREVIOUS);
+    }
+
+    args->put_Handled(TRUE);
+
+    return S_OK;
+}
+
 auto Browser::url(std::string page) -> std::string
 {
 #if defined(_DEBUG)
