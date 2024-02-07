@@ -11,8 +11,6 @@
 Window::Window(HWND app, URL& url, uintptr_t id)
     : glow::Window<Window>("Airglow", id), m_app{app}, m_url{url}, m_initialized{}
 {
-    notify(m_app, msg::window_create);
-
     dwm_caption_color(false);
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
     theme();
@@ -194,7 +192,7 @@ auto Window::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 
 auto Window::on_close(WPARAM wParam, LPARAM lParam) -> int
 {
-    notify(m_app, msg::window_close);
+    notify(m_app, msg::close_window);
 
     return close();
 }

@@ -130,7 +130,7 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
             break;
         }
 
-        case msg::window_close:
+        case msg::close_window:
         {
             m_windows.erase(id);
 

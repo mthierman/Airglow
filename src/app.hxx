@@ -8,9 +8,13 @@
 
 #pragma once
 
+#include <Windows.h>
+
+#include <filesystem>
 #include <fstream>
-#include <set>
-#include <utility>
+#include <map>
+#include <memory>
+#include <vector>
 
 #include <glow/glow.hxx>
 
