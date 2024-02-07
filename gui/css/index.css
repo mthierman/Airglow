@@ -7,30 +7,22 @@ body,
     @apply bg-transparent;
 }
 
-.settings {
-    @apply grid gap-4 p-4;
-}
-
-.addressBar {
-    @apply grid grid-flow-col;
-}
-
 .url {
     @apply flex select-none place-content-center items-center rounded-b-sm border-b-2 border-transparent duration-300 ease-in-out focus-within:border-accent focus-within:bg-accentLight3 dark:focus-within:bg-accentDark3;
 }
 
-.favicon {
+.url-favicon {
     @apply pointer-events-none ml-4 mr-1 aspect-square bg-transparent;
 }
 
-.input {
+.url-input {
     @apply w-full text-ellipsis bg-transparent p-2 font-medium leading-none outline-none;
 }
 
-.setting-input {
+.settings-input {
     @apply flex w-full select-none place-content-center items-center text-ellipsis rounded-md border-b-2 border-transparent bg-accentLight2 p-2 font-medium leading-none outline-none duration-300 ease-in-out focus-within:border-accent focus-within:bg-accentLight3 dark:bg-accentDark2 dark:focus-within:bg-accentDark3;
 }
 
-.settingTitle {
-    @apply self-end text-lg font-bold;
+.settings-title {
+    @apply select-none text-xl font-medium;
 }

@@ -168,9 +168,9 @@ export default function App() {
     return (
         <>
             <form
+                className="grid grid-flow-col"
                 ref={form}
                 id="form"
-                className="addressBar"
                 method="post"
                 autoComplete="off"
                 spellCheck="false"
@@ -179,11 +179,11 @@ export default function App() {
                     className={`${position.swapped ? "order-1" : "order-0"} ${
                         !position.split && position.swapped ? "hidden" : "url"
                     }`}>
-                    <img width="16" height="16" src={firstFavicon} className="favicon" />
+                    <img className="url-favicon" width="16" height="16" src={firstFavicon} />
                     <input
+                        className="url-input"
                         ref={first}
                         id="first"
-                        className="input"
                         type="text"
                         value={firstCurrent}
                         placeholder={sessionStorage.getItem("first")!}
@@ -196,11 +196,11 @@ export default function App() {
                     className={`${position.swapped ? "order-0" : "order-1"} ${
                         !position.split && !position.swapped ? "hidden" : "url"
                     }`}>
-                    <img width="16" height="16" src={secondFavicon} className="favicon" />
+                    <img className="url-favicon" width="16" height="16" src={secondFavicon} />
                     <input
+                        className="url-input"
                         ref={second}
                         id="second"
-                        className="input"
                         type="text"
                         value={secondCurrent}
                         placeholder={sessionStorage.getItem("second")!}

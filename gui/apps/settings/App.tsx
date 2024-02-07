@@ -95,29 +95,29 @@ export default function App() {
 
     return (
         <form
+            className="grid gap-4 p-4"
             ref={form}
             id="form"
-            className="settings"
             method="post"
             autoComplete="off"
             spellCheck="false"
             onSubmit={handleSubmit}>
-            <h1 className="select-none text-xl">🌆First Home</h1>
+            <h1 className="settings-title">🌆First Home</h1>
             <input
+                className="settings-input"
                 ref={first}
                 id="first"
-                className="setting-input"
                 type="text"
                 value={firstCurrent}
                 placeholder={sessionStorage.getItem("first")!}
                 title={sessionStorage.getItem("first")!}
                 onChange={(e) => setFirstCurrent(e.target.value)}
                 onClick={handleClick}></input>
-            <h1 className="select-none text-xl">🌃Second Home</h1>
+            <h1 className="settings-title">🌃Second Home</h1>
             <input
+                className="settings-input"
                 ref={second}
                 id="second"
-                className="setting-input"
                 type="text"
                 value={secondCurrent}
                 placeholder={sessionStorage.getItem("second")!}
