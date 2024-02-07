@@ -9,7 +9,8 @@
 #pragma once
 
 #include <filesystem>
-#include <map>
+#include <fstream>
+#include <memory>
 
 #include <glow/glow.hxx>
 
@@ -35,8 +36,15 @@ struct Settings : public glow::Window<Settings>
     auto on_show_window(WPARAM wParam, LPARAM lParam) -> int;
     auto on_size(WPARAM wParam, LPARAM lParam) -> int;
 
+    auto data() -> std::filesystem::path;
+    auto json() -> std::filesystem::path;
+    auto save() -> void;
+    auto load() -> void;
+
     HWND m_app;
     URL& m_url;
+
+    std::filesystem::path m_file;
 
     std::unique_ptr<SettingsBrowser> m_browser;
     Dimensions m_dimensions;

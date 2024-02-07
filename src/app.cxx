@@ -8,7 +8,7 @@
 
 #include "app.hxx"
 
-App::App(int argc, char* argv[]) : m_settingsFile{json()}, m_argv{glow::argv(argc, argv)}
+App::App(int argc, char* argv[])
 {
     SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
     SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
@@ -17,20 +17,18 @@ App::App(int argc, char* argv[]) : m_settingsFile{json()}, m_argv{glow::argv(arg
 
 auto App::operator()() -> int
 {
-    if (!std::filesystem::exists(m_settingsFile)) { save(); }
+    auto argv{glow::cmd_to_argv()};
 
-    else { load(); }
-
-    if (m_argv.size() == 2)
+    if (argv.size() == 2)
     {
-        m_url.current["first"] = m_argv.at(1);
+        m_url.current["first"] = argv.at(1);
         m_url.current["second"] = m_url.home["second"];
     }
 
-    else if (m_argv.size() > 2)
+    else if (argv.size() > 2)
     {
-        m_url.current["first"] = m_argv.at(1);
-        m_url.current["second"] = m_argv.at(2);
+        m_url.current["first"] = argv.at(1);
+        m_url.current["second"] = argv.at(2);
     }
 
     else
@@ -39,55 +37,15 @@ auto App::operator()() -> int
         m_url.current["second"] = m_url.home["second"];
     }
 
-    m_windowSettings = std::make_unique<Settings>(hwnd(), m_url);
+    m_settings = std::make_unique<Settings>(hwnd(), m_url);
+
+    if (!std::filesystem::exists(m_settings->m_file)) { m_settings->save(); }
+
+    else { m_settings->load(); }
 
     window();
 
     return glow::message_loop();
-}
-
-auto App::data() -> std::filesystem::path
-{
-    auto path{glow::known_folder() / "Airglow"};
-
-    if (!std::filesystem::exists(path)) { std::filesystem::create_directory(path); }
-
-    return path;
-}
-
-auto App::json() -> std::filesystem::path
-{
-    auto path{glow::app_path() / "Airglow.json"};
-
-    return path;
-}
-
-auto App::save() -> void
-{
-    try
-    {
-        std::ofstream f(m_settingsFile);
-        f << std::setw(4) << nlohmann::json(m_url) << std::endl;
-        f.close();
-    }
-    catch (const std::exception& e)
-    {
-        return;
-    }
-}
-
-auto App::load() -> void
-{
-    try
-    {
-        std::ifstream f(m_settingsFile);
-        m_url = nlohmann::json::parse(f, nullptr, false, true);
-        f.close();
-    }
-    catch (const std::exception& e)
-    {
-        return;
-    }
 }
 
 auto App::window() -> void
@@ -118,14 +76,14 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
     {
         case msg::toggle_settings:
         {
-            m_windowSettings->visible() ? m_windowSettings->hide() : m_windowSettings->show();
+            m_settings->visible() ? m_settings->hide() : m_settings->show();
 
             break;
         }
 
         case msg::save_settings:
         {
-            save();
+            m_settings->save();
 
             break;
         }
@@ -136,7 +94,7 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
             if (m_windows.empty())
             {
-                save();
+                m_settings->save();
 
                 return close();
             }

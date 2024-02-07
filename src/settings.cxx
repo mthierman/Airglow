@@ -9,7 +9,7 @@
 #include "settings.hxx"
 
 Settings::Settings(HWND app, URL& url)
-    : glow::Window<Settings>("Airglow - Settings"), m_app{app}, m_url{url}
+    : glow::Window<Settings>("Airglow - Settings"), m_app{app}, m_url{url}, m_file{json()}
 {
     dwm_caption_color(false);
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_TRANSIENTWINDOW);
@@ -211,4 +211,46 @@ auto Settings::on_size(WPARAM wParam, LPARAM lParam) -> int
     // Sleep(1);
 
     return 0;
+}
+
+auto Settings::data() -> std::filesystem::path
+{
+    auto path{glow::known_folder() / "Airglow"};
+
+    if (!std::filesystem::exists(path)) { std::filesystem::create_directory(path); }
+
+    return path;
+}
+
+auto Settings::json() -> std::filesystem::path
+{
+    return std::filesystem::path{{glow::app_path() / "Airglow.json"}};
+}
+
+auto Settings::save() -> void
+{
+    try
+    {
+        std::ofstream f(m_file);
+        f << std::setw(4) << nlohmann::json(m_url) << std::endl;
+        f.close();
+    }
+    catch (const std::exception& e)
+    {
+        return;
+    }
+}
+
+auto Settings::load() -> void
+{
+    try
+    {
+        std::ifstream f(m_file);
+        m_url = nlohmann::json::parse(f, nullptr, false, true);
+        f.close();
+    }
+    catch (const std::exception& e)
+    {
+        return;
+    }
 }
