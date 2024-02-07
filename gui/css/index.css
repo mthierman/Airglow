@@ -26,3 +26,7 @@ body,
 .settings-title {
     @apply select-none text-xl font-medium;
 }
+
+.settings-submit {
+    @apply w-fit place-self-center rounded-md bg-accentLight2 p-2 shadow-lg duration-100 ease-in-out hover:cursor-pointer hover:bg-accentLight3 dark:bg-accentDark2 dark:hover:bg-accentDark3;
+}

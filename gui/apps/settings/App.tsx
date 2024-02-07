@@ -74,12 +74,21 @@ export default function App() {
             setFirstCurrent(parsed);
             sessionStorage.setItem("first", parsed);
             window.chrome.webview.postMessage({ first: parsed });
-        }
-        if (document.activeElement === second.current) {
+        } else if (document.activeElement === second.current) {
             const parsed = url.parseUrl(second.current?.value!).href;
             setSecondCurrent(parsed);
             sessionStorage.setItem("second", parsed);
             window.chrome.webview.postMessage({ second: parsed });
+        } else {
+            const parsedFirst = url.parseUrl(first.current?.value!).href;
+            setFirstCurrent(parsedFirst);
+            sessionStorage.setItem("first", parsedFirst);
+            window.chrome.webview.postMessage({ first: parsedFirst });
+
+            const parsedSecond = url.parseUrl(second.current?.value!).href;
+            setSecondCurrent(parsedSecond);
+            sessionStorage.setItem("second", parsedSecond);
+            window.chrome.webview.postMessage({ second: parsedSecond });
         }
     };
 
@@ -124,7 +133,7 @@ export default function App() {
                 title={sessionStorage.getItem("second")!}
                 onChange={(e) => setSecondCurrent(e.target.value)}
                 onClick={handleClick}></input>
-            <input type="submit" hidden />
+            <input className="settings-submit" type="submit" />
         </form>
     );
 }
