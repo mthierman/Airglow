@@ -10,7 +10,10 @@
 
 #include <string>
 
-namespace config
+namespace ag
 {
-inline std::string version{"@PROJECT_VERSION@"};
-}
+struct Config
+{
+    static inline const std::string version{"@PROJECT_VERSION@"};
+};
+} // namespace ag

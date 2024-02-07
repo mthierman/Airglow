@@ -29,18 +29,16 @@ Keys::Keys()
 }
 
 URL::URL()
-    : home{{"first", page()}, {"second", page()}},
+    : home{{"first", homepage()}, {"second", homepage()}},
       current{{"first", "about:blank"}, {"second", "about:blank"}}
 {}
 
-auto URL::page() -> std::string
+auto URL::homepage() -> std::string
 {
 #if defined(_DEBUG)
-    // return "https://localhost:8000/home/index.html";
-    return "about:blank";
+    return "https://localhost:8000/home/index.html";
 #else
-    // return "file:///" + glow::filesystem::app_path().generic_string() + "/gui/home/index.html";
-    return "about:blank";
+    return "file:///" + glow::app_path().generic_string() + "/gui/home/index.html";
 #endif
 }
 
