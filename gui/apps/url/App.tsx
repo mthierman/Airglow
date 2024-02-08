@@ -1,5 +1,5 @@
 import { SyntheticEvent, useState, useRef, useEffect } from "react";
-import * as url from "@libs/url";
+import { parseUrl } from "@libs/url";
 import { initialize, applyColors, defaultFavicon } from "@libs/storage";
 
 export default function App() {
@@ -70,8 +70,8 @@ export default function App() {
 
             if (Object.hasOwn(data, "navigate")) {
                 const [first, second] = data.navigate;
-                window.chrome.webview.postMessage({ first: url.parseUrl(first).href });
-                window.chrome.webview.postMessage({ second: url.parseUrl(second).href });
+                window.chrome.webview.postMessage({ first: parseUrl(first).href });
+                window.chrome.webview.postMessage({ second: parseUrl(second).href });
             }
 
             if (Object.hasOwn(data, "m_focus")) {
@@ -145,14 +145,14 @@ export default function App() {
     });
 
     const submitFirst = () => {
-        const parsed = url.parseUrl(inputFirst.current?.value!).href;
+        const parsed = parseUrl(inputFirst.current?.value!).href;
         setFirstCurrent(parsed);
         sessionStorage.setItem("first", parsed);
         window.chrome.webview.postMessage({ first: parsed });
     };
 
     const submitSecond = () => {
-        const parsed = url.parseUrl(inputSecond.current?.value!).href;
+        const parsed = parseUrl(inputSecond.current?.value!).href;
         setSecondCurrent(parsed);
         sessionStorage.setItem("second", parsed);
         window.chrome.webview.postMessage({ second: parsed });
