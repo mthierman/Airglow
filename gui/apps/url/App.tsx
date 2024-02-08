@@ -1,7 +1,6 @@
 import { SyntheticEvent, useState, useRef, useEffect } from "react";
 import * as url from "@libs/url";
-import { getColorStorage, applyColors, initialize } from "@libs/storage";
-
+import { initialize, applyColors } from "@libs/storage";
 import blankLight from "./blankLight.svg?raw";
 import blankDark from "./blankDark.svg?raw";
 
