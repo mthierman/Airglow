@@ -32,7 +32,6 @@ auto App::wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESUL
     switch (uMsg)
     {
         case WM_NOTIFY: return on_notify(wParam, lParam);
-        case WM_SETTINGCHANGE: return on_setting_change(wParam, lParam);
     }
 
     return DefWindowProcA(hWnd, uMsg, wParam, lParam);
@@ -47,6 +46,14 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
     switch (code)
     {
+        case msg::settings_change:
+        {
+            m_colors.update();
+            OutputDebugStringA(m_colors.string.accent.c_str());
+
+            break;
+        }
+
         case msg::toggle_settings:
         {
             m_settings->visible() ? m_settings->hide() : m_settings->show();
@@ -82,13 +89,6 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
             break;
         }
     }
-
-    return 0;
-}
-
-auto App::on_setting_change(WPARAM wParam, LPARAM lParam) -> int
-{
-    m_colors.update();
 
     return 0;
 }
