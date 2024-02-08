@@ -13,7 +13,6 @@ export default function App() {
     const [layout, setLayout] = useState<App.Layout>(getLayoutStorage());
     const [colors, setColors] = useState<App.Colors>(getColorStorage());
     const [focus, setFocus] = useState("");
-    // const [focusCurrent, setFocusCurrent] = useState("");
     const form = useRef<HTMLFormElement | null>(null);
     const inputFirst = useRef<HTMLInputElement | null>(null);
     const inputSecond = useRef<HTMLInputElement | null>(null);
