@@ -114,16 +114,23 @@ export default function App() {
             }
         };
 
+        const onWindowBlur = () => {
+            inputFirst.current?.blur();
+            inputSecond.current?.blur();
+        };
+
         window.chrome.webview.addEventListener("message", onMessage);
         document.addEventListener("keydown", onEscape);
         inputFirst.current?.addEventListener("focus", onFocus);
         inputSecond.current?.addEventListener("focus", onFocus);
+        window.addEventListener("blur", onWindowBlur);
 
         return () => {
             window.chrome.webview.removeEventListener("message", onMessage);
             document.removeEventListener("keydown", onEscape);
             inputFirst.current?.removeEventListener("focus", onFocus);
             inputSecond.current?.removeEventListener("focus", onFocus);
+            window.removeEventListener("blur", onWindowBlur);
         };
     });
 
