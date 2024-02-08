@@ -49,5 +49,5 @@ struct Settings : public glow::Window<Settings>
     glow::Colors m_colors;
     std::unique_ptr<SettingsBrowser> m_browser;
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Settings, m_url, m_colors)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Settings, m_colors, m_url)
 };

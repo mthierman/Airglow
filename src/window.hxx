@@ -57,9 +57,12 @@ struct Window : public glow::Window<Window>
     Layout m_layout;
     glow::Colors m_colors;
 
-    wil::unique_hicon m_firstFavicon;
-    wil::unique_hicon m_secondFavicon;
-    std::string m_focused;
+    std::pair<wil::unique_hicon, wil::unique_hicon> m_favicon;
+    std::pair<std::string, std::string> m_faviconUrl;
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Window, m_url, m_layout, m_colors)
+    // wil::unique_hicon m_firstFavicon;
+    // wil::unique_hicon m_secondFavicon;
+    std::string m_focus;
+
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Window, m_colors, m_faviconUrl, m_focus, m_layout, m_url)
 };

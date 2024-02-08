@@ -47,26 +47,23 @@ export default function App() {
 
     useEffect(() => {
         const onMessage = (event: Event) => {
-            const data = (event as MessageEvent).data;
+            const data: App.Window = (event as MessageEvent).data;
             // console.log(data);
 
             if (Object.hasOwn(data, "m_colors")) {
-                const window: App.Window = data;
-                const colors = window.m_colors.colors;
+                const colors = data.m_colors.colors;
                 setColors(colors);
                 sessionStorage.setItem("colors", JSON.stringify(colors));
             }
 
             if (Object.hasOwn(data, "m_layout")) {
-                const window: App.Window = data;
-                const layout = window.m_layout;
+                const layout = data.m_layout;
                 setLayout(layout);
                 sessionStorage.setItem("layout", JSON.stringify(layout));
             }
 
             if (Object.hasOwn(data, "m_url")) {
-                const window: App.Window = data;
-                const [first, second] = window.m_url.current;
+                const [first, second] = data.m_url.current;
                 if (first === "about:blank") {
                     setFirstFavicon(`data:image/svg+xml,${encodeURIComponent(iconRaw)}`);
                 }
@@ -81,26 +78,26 @@ export default function App() {
                 // window.chrome.webview.postMessage({ second: secondCurrent });
             }
 
-            if (Object.hasOwn(data, "firstFavicon")) {
-                setFirstFavicon(data.firstFavicon);
-                sessionStorage.setItem("firstFavicon", data.firstFavicon);
+            if (Object.hasOwn(data, "m_faviconUrl")) {
+                const [first, second] = data.m_faviconUrl;
+                setFirstFavicon(first);
+                sessionStorage.setItem("firstFavicon", first);
+                setSecondFavicon(second);
+                sessionStorage.setItem("secondFavicon", second);
             }
 
-            if (Object.hasOwn(data, "secondFavicon")) {
-                setSecondFavicon(data.secondFavicon);
-                sessionStorage.setItem("secondFavicon", data.secondFavicon);
-            }
-
-            if (Object.hasOwn(data, "focus")) {
-                if (data.focus === "first") {
+            if (Object.hasOwn(data, "m_focus")) {
+                const focus = data.m_focus;
+                console.log(focus);
+                if (focus === "first") {
                     setSelectedCurrent("first");
                     inputFirst.current!.focus();
                     inputFirst.current!.select();
-                } else if (data.focus === "second") {
+                } else if (focus === "second") {
                     setSelectedCurrent("second");
                     inputSecond.current!.focus();
                     inputSecond.current!.select();
-                } else if (data.focus === "url") {
+                } else if (focus === "url") {
                     if (selectedCurrent === "first") {
                         inputFirst.current!.focus();
                         inputFirst.current!.select();

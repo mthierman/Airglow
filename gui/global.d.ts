@@ -63,8 +63,10 @@ export declare global {
             m_colors: {
                 colors: Colors;
             };
-            m_url: URL;
+            m_faviconUrl: [string, string];
+            m_focus: string;
             m_layout: Layout;
+            m_url: URL;
         }
 
         interface Settings {
