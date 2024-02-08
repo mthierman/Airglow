@@ -13,7 +13,7 @@ export default function App() {
     const [layout, setLayout] = useState<App.Layout>(getLayoutStorage());
     const [colors, setColors] = useState<App.Colors>(getColorStorage());
     const [focus, setFocus] = useState("");
-    const [focusCurrent, setFocusCurrent] = useState("");
+    // const [focusCurrent, setFocusCurrent] = useState("");
     const form = useRef<HTMLFormElement | null>(null);
     const inputFirst = useRef<HTMLInputElement | null>(null);
     const inputSecond = useRef<HTMLInputElement | null>(null);
@@ -45,17 +45,17 @@ export default function App() {
             if (Object.hasOwn(data, "m_focus")) {
                 const dataFocus = data.m_focus;
                 if (dataFocus === "first") {
-                    setFocusCurrent(dataFocus);
+                    setFocus(dataFocus);
                 } else if (dataFocus === "second") {
-                    setFocusCurrent(dataFocus);
+                    setFocus(dataFocus);
                 }
             }
 
             if (Object.hasOwn(data, "focus")) {
-                if (focusCurrent === "first") {
+                if (focus === "first") {
                     inputFirst.current!.focus();
                     inputFirst.current!.select();
-                } else if (focusCurrent === "second") {
+                } else if (focus === "second") {
                     inputSecond.current!.focus();
                     inputSecond.current!.select();
                 }
@@ -108,9 +108,9 @@ export default function App() {
 
         const onFocus = () => {
             if (document.activeElement === inputFirst.current) {
-                setFocusCurrent("first");
+                setFocus("first");
             } else if (document.activeElement === inputSecond.current) {
-                setFocusCurrent("second");
+                setFocus("second");
             }
         };
 
@@ -176,7 +176,7 @@ export default function App() {
                 <label
                     className={`${layout.swapped ? "order-1" : "order-0"} ${
                         !layout.split && layout.swapped ? "hidden" : "url"
-                    } ${focusCurrent === "first" ? "focus" : ""}
+                    } ${focus === "first" ? "focus" : ""}
                     }`}>
                     <img className="url-favicon" width="16" height="16" src={firstFavicon} />
                     <input
@@ -194,7 +194,7 @@ export default function App() {
                 <label
                     className={`${layout.swapped ? "order-0" : "order-1"} ${
                         !layout.split && !layout.swapped ? "hidden" : "url"
-                    } ${focusCurrent === "second" ? "focus" : ""}
+                    } ${focus === "second" ? "focus" : ""}
                     }`}>
                     <img className="url-favicon" width="16" height="16" src={secondFavicon} />
                     <input
