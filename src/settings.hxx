@@ -23,7 +23,7 @@ struct Settings : public glow::Window<Settings>
 {
     using glow::Window<Settings>::Window;
 
-    Settings(HWND app, URL& url);
+    Settings(HWND app, URL& url, glow::Colors& colors);
 
     static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
     auto default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
@@ -43,10 +43,10 @@ struct Settings : public glow::Window<Settings>
 
     HWND m_app;
     URL& m_url;
-    // glow::Colors& m_colors;
+    glow::Colors& m_colors;
 
     std::filesystem::path m_file;
-    glow::Colors m_colors;
+    // glow::Colors m_colors;
     std::unique_ptr<SettingsBrowser> m_browser;
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(Settings, m_colors, m_url)

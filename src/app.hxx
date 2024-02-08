@@ -29,9 +29,11 @@ struct App : public glow::App<App>
 
     auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     auto on_notify(WPARAM wParam, LPARAM lParam) -> int;
+    auto on_setting_change(WPARAM wParam, LPARAM lParam) -> int;
 
     glow::GdiPlus m_gdiInit;
     glow::CoInitialize m_coInit;
+    glow::Colors m_colors;
 
     URL m_url;
     std::unique_ptr<Settings> m_settings;

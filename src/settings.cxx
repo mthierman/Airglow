@@ -8,8 +8,9 @@
 
 #include "settings.hxx"
 
-Settings::Settings(HWND app, URL& url)
-    : glow::Window<Settings>("Airglow - Settings"), m_app{app}, m_url{url}, m_file{file()}
+Settings::Settings(HWND app, URL& url, glow::Colors& colors)
+    : glow::Window<Settings>("Airglow - Settings"), m_app{app}, m_url{url}, m_colors{colors},
+      m_file{file()}
 {
     auto& current{m_url.current};
     auto& home{m_url.home};
@@ -198,8 +199,6 @@ auto Settings::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 auto Settings::on_setting_change(WPARAM wParam, LPARAM lParam) -> int
 {
     theme();
-    m_colors.update();
-    if (m_browser) { m_browser->post_json(json(*this)); }
 
     return 0;
 }

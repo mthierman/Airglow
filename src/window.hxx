@@ -32,7 +32,7 @@ struct Window : public glow::Window<Window>
 {
     using glow::Window<Window>::Window;
 
-    Window(HWND app, URL& url, uintptr_t id);
+    Window(HWND app, URL& url, glow::Colors& colors, uintptr_t id);
 
     static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
     auto default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
@@ -47,15 +47,12 @@ struct Window : public glow::Window<Window>
 
     HWND m_app;
     URL& m_url;
-    // glow::Colors& m_colors;
-
-    // std::string m_firstTitle{"Airglow"};
-    // std::string m_secondTitle{"Airglow"};
+    glow::Colors& m_colors;
 
     Browsers m_browsers;
     Positions m_positions;
     Layout m_layout;
-    glow::Colors m_colors;
+    // glow::Colors m_colors;
 
     std::pair<std::string, std::string> m_title{"Airglow", "Airglow"};
     std::pair<wil::unique_hicon, wil::unique_hicon> m_favicon;

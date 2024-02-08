@@ -14,7 +14,7 @@ auto App::operator()() -> int
     SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
                             "--allow-file-access-from-files");
 
-    m_settings = std::make_unique<Settings>(hwnd(), m_url);
+    m_settings = std::make_unique<Settings>(hwnd(), m_url, m_colors);
 
     window();
 
@@ -23,7 +23,7 @@ auto App::operator()() -> int
 
 auto App::window(uintptr_t id) -> void
 {
-    m_windows[id] = std::make_unique<Window>(hwnd(), m_url, id);
+    m_windows[id] = std::make_unique<Window>(hwnd(), m_url, m_colors, id);
     m_windows[id]->reveal();
 }
 
@@ -32,6 +32,7 @@ auto App::wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESUL
     switch (uMsg)
     {
         case WM_NOTIFY: return on_notify(wParam, lParam);
+        case WM_SETTINGCHANGE: return on_setting_change(wParam, lParam);
     }
 
     return DefWindowProcA(hWnd, uMsg, wParam, lParam);
@@ -81,6 +82,13 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
             break;
         }
     }
+
+    return 0;
+}
+
+auto App::on_setting_change(WPARAM wParam, LPARAM lParam) -> int
+{
+    m_colors.update();
 
     return 0;
 }
