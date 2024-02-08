@@ -54,6 +54,8 @@ struct Window : public glow::Window<Window>
     Layout m_layout;
     // glow::Colors m_colors;
 
+    bool m_init{};
+
     std::pair<std::string, std::string> m_title{"Airglow", "Airglow"};
     std::pair<wil::unique_hicon, wil::unique_hicon> m_favicon;
     std::pair<std::string, std::string> m_faviconUrl;

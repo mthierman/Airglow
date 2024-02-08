@@ -25,11 +25,6 @@ export declare global {
     }
 
     namespace App {
-        // interface URL {
-        //     current: string;
-        //     loaded: string;
-        // }
-
         interface Layout {
             bar: number;
             border: number;
@@ -67,6 +62,7 @@ export declare global {
             m_focus: string;
             m_layout: Layout;
             m_url: URL;
+            navigate: [string, string];
         }
 
         interface Settings {

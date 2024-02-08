@@ -1,3 +1,6 @@
+// window.chrome.webview.postMessage({ first: firstCurrent });
+// window.chrome.webview.postMessage({ second: secondCurrent });
+
 import { SyntheticEvent, useState, useRef, useEffect } from "react";
 import * as url from "@libs/url";
 import {
@@ -33,6 +36,23 @@ export default function App() {
     useEffect(() => {
         const onMessage = (event: Event) => {
             const data: App.Window = (event as MessageEvent).data;
+            console.log(data);
+
+            if (Object.hasOwn(data, "navigate")) {
+                const [first, second] = data.navigate;
+                console.log(first);
+                console.log(second);
+
+                const goFirst = url.parseUrl(first).href;
+                window.chrome.webview.postMessage({ first: goFirst });
+
+                const goSecond = url.parseUrl(second).href;
+                window.chrome.webview.postMessage({ second: goSecond });
+
+                // const colors = data.m_colors.colors;
+                // setColors(colors);
+                // sessionStorage.setItem("colors", JSON.stringify(colors));
+            }
 
             if (Object.hasOwn(data, "m_colors")) {
                 const colors = data.m_colors.colors;
@@ -58,8 +78,6 @@ export default function App() {
                 sessionStorage.setItem("first", first);
                 setSecondCurrent(second);
                 sessionStorage.setItem("second", second);
-                // window.chrome.webview.postMessage({ first: firstCurrent });
-                // window.chrome.webview.postMessage({ second: secondCurrent });
             }
 
             if (Object.hasOwn(data, "m_faviconUrl")) {
