@@ -1,7 +1,6 @@
 import { SyntheticEvent, useState, useRef, useEffect } from "react";
 import * as url from "@libs/url";
 import { getColorStorage, applyColors, initialize } from "@libs/storage";
-// import iconRaw from "../../../data/release.svg?raw";
 
 export default function App() {
     const [colors, setColors] = useState<App.Colors>(getColorStorage());

@@ -1,4 +1,3 @@
-// NEED TO RENAME window variable (conflict with window.chrome...)
 // get [form.current?.offsetHeight] working so it updates when style changes (and maybe zoom?)
 
 import { SyntheticEvent, useState, useRef, useEffect } from "react";
@@ -48,7 +47,6 @@ export default function App() {
     useEffect(() => {
         const onMessage = (event: Event) => {
             const data: App.Window = (event as MessageEvent).data;
-            console.log(data);
 
             if (Object.hasOwn(data, "m_colors")) {
                 const colors = data.m_colors.colors;
@@ -88,7 +86,6 @@ export default function App() {
 
             if (Object.hasOwn(data, "m_focus")) {
                 const focus = data.m_focus;
-                // console.log(focus);
                 if (focus === "first") {
                     setSelectedCurrent("first");
                     inputFirst.current!.focus();
