@@ -1,5 +1,3 @@
-// get [form.current?.offsetHeight] working so it updates when style changes (and maybe zoom?)
-
 import { SyntheticEvent, useState, useRef, useEffect } from "react";
 import * as url from "@libs/url";
 import {
@@ -31,18 +29,6 @@ export default function App() {
     useEffect(() => {
         applyColors(colors);
     }, [colors]);
-
-    // useEffect(() => {
-    //     setLayout((prevState) => ({ ...prevState, bar: form.current!.offsetHeight }));
-    //     window.chrome.webview.postMessage({ height: layout.bar });
-    //     sessionStorage.setItem("layout", JSON.stringify(layout));
-    // }, [layout.bar]);
-
-    // useEffect(() => {
-    //     setLayout((prevState) => ({ ...prevState, bar: form.current!.offsetHeight }));
-    //     window.chrome.webview.postMessage({ height: layout.bar });
-    //     sessionStorage.setItem("layout", JSON.stringify(layout));
-    // }, [form.current?.offsetHeight]);
 
     useEffect(() => {
         const onMessage = (event: Event) => {

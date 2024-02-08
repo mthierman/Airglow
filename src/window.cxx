@@ -388,6 +388,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
             else if (webMessage.contains("height"))
             {
                 m_layout.bar = webMessage["height"].get<int>();
+                OutputDebugStringA(std::to_string(webMessage["height"].get<int>()).c_str());
                 PostMessageA(hwnd(), WM_SIZE, 0, 0);
             }
 
