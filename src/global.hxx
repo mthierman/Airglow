@@ -57,7 +57,7 @@ struct Layout
     bool split;
     bool swapped;
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Layout, bar, horizontal, split, swapped)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Layout, bar, border, horizontal, split, swapped)
 };
 
 struct Dimensions

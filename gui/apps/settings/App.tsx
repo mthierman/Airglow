@@ -1,49 +1,40 @@
 import { SyntheticEvent, useState, useRef, useEffect } from "react";
 import * as url from "@libs/url";
-import { getSystemColorsStorage } from "@libs/storage";
+import { getColorStorage, applyColors, initialize } from "@libs/storage";
+// import iconRaw from "../../../data/release.svg?raw";
 
 export default function App() {
-    const [systemColors, setSystemColors] = useState<App.SystemColors>(getSystemColorsStorage());
-
+    const [colors, setColors] = useState<App.Colors>(getColorStorage());
     const form = useRef<HTMLFormElement | null>(null);
     const first = useRef<HTMLInputElement | null>(null);
     const second = useRef<HTMLInputElement | null>(null);
-
     const [firstCurrent, setFirstCurrent] = useState("");
     const [secondCurrent, setSecondCurrent] = useState("");
 
     useEffect(() => {
-        window.chrome.webview.postMessage({ initialized: true });
+        initialize();
     }, []);
 
     useEffect(() => {
-        document.documentElement.style.setProperty("--accent", systemColors.accent);
-        document.documentElement.style.setProperty("--accentDark1", systemColors.accentDark1);
-        document.documentElement.style.setProperty("--accentDark2", systemColors.accentDark2);
-        document.documentElement.style.setProperty("--accentDark3", systemColors.accentDark3);
-        document.documentElement.style.setProperty("--accentLight1", systemColors.accentLight1);
-        document.documentElement.style.setProperty("--accentLight2", systemColors.accentLight2);
-        document.documentElement.style.setProperty("--accentLight3", systemColors.accentLight3);
-    }, [systemColors]);
+        applyColors(colors);
+    }, [colors]);
 
     useEffect(() => {
         const onMessage = (event: Event) => {
-            const data = (event as MessageEvent).data;
-            console.log(data);
+            const settings: App.Settings = (event as MessageEvent).data;
 
-            if (data.systemColors) {
-                setSystemColors(data.systemColors);
-                sessionStorage.setItem("systemColors", JSON.stringify(data.systemColors));
+            if (Object.hasOwn(settings, "m_colors")) {
+                const colors = settings.m_colors.colors;
+                setColors(colors);
+                sessionStorage.setItem("colors", JSON.stringify(colors));
             }
 
-            if (data.first) {
-                setFirstCurrent(data.first);
-                sessionStorage.setItem("first", data.first);
-            }
-
-            if (data.second) {
-                setSecondCurrent(data.second);
-                sessionStorage.setItem("second", data.second);
+            if (Object.hasOwn(settings, "m_url")) {
+                const [first, second] = settings.m_url.home;
+                setFirstCurrent(first);
+                sessionStorage.setItem("first", first);
+                setSecondCurrent(second);
+                sessionStorage.setItem("second", second);
             }
         };
 
@@ -66,29 +57,30 @@ export default function App() {
         };
     });
 
+    const submitFirst = () => {
+        const parsed = url.parseUrl(first.current?.value!).href;
+        setFirstCurrent(parsed);
+        sessionStorage.setItem("first", parsed);
+        window.chrome.webview.postMessage({ first: parsed });
+    };
+
+    const submitSecond = () => {
+        const parsed = url.parseUrl(second.current?.value!).href;
+        setSecondCurrent(parsed);
+        sessionStorage.setItem("second", parsed);
+        window.chrome.webview.postMessage({ second: parsed });
+    };
+
     const handleSubmit = (event: SyntheticEvent) => {
         event.preventDefault();
 
         if (document.activeElement === first.current) {
-            const parsed = url.parseUrl(first.current?.value!).href;
-            setFirstCurrent(parsed);
-            sessionStorage.setItem("first", parsed);
-            window.chrome.webview.postMessage({ first: parsed });
+            submitFirst();
         } else if (document.activeElement === second.current) {
-            const parsed = url.parseUrl(second.current?.value!).href;
-            setSecondCurrent(parsed);
-            sessionStorage.setItem("second", parsed);
-            window.chrome.webview.postMessage({ second: parsed });
+            submitSecond();
         } else {
-            const parsedFirst = url.parseUrl(first.current?.value!).href;
-            setFirstCurrent(parsedFirst);
-            sessionStorage.setItem("first", parsedFirst);
-            window.chrome.webview.postMessage({ first: parsedFirst });
-
-            const parsedSecond = url.parseUrl(second.current?.value!).href;
-            setSecondCurrent(parsedSecond);
-            sessionStorage.setItem("second", parsedSecond);
-            window.chrome.webview.postMessage({ second: parsedSecond });
+            submitFirst();
+            submitSecond();
         }
     };
 

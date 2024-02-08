@@ -47,6 +47,7 @@ struct Window : public glow::Window<Window>
 
     HWND m_app;
     URL& m_url;
+    // glow::Colors& m_colors;
 
     std::string m_firstTitle{"Airglow"};
     std::string m_secondTitle{"Airglow"};
@@ -54,10 +55,11 @@ struct Window : public glow::Window<Window>
     Browsers m_browsers;
     Positions m_positions;
     Layout m_layout;
-    glow::SystemColors m_systemColors;
-    bool m_initialized;
+    glow::Colors m_colors;
 
     wil::unique_hicon m_firstFavicon;
     wil::unique_hicon m_secondFavicon;
     std::string m_focused;
+
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Window, m_url, m_layout, m_colors)
 };

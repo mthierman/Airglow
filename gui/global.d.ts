@@ -25,10 +25,10 @@ export declare global {
     }
 
     namespace App {
-        interface URL {
-            current: string;
-            loaded: string;
-        }
+        // interface URL {
+        //     current: string;
+        //     loaded: string;
+        // }
 
         interface Layout {
             bar: number;
@@ -44,7 +44,12 @@ export declare global {
             offsetWidth: number;
         }
 
-        interface SystemColors {
+        interface URL {
+            current: [string, string];
+            home: [string, string];
+        }
+
+        interface Colors {
             accent: string;
             accentDark1: string;
             accentDark2: string;
@@ -52,6 +57,21 @@ export declare global {
             accentLight1: string;
             accentLight2: string;
             accentLight3: string;
+        }
+
+        interface Window {
+            m_colors: {
+                colors: Colors;
+            };
+            m_url: URL;
+            m_layout: Layout;
+        }
+
+        interface Settings {
+            m_colors: {
+                colors: Colors;
+            };
+            m_url: URL;
         }
     }
 }

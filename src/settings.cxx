@@ -9,8 +9,11 @@
 #include "settings.hxx"
 
 Settings::Settings(HWND app, URL& url)
-    : glow::Window<Settings>("Airglow - Settings"), m_app{app}, m_url{url}, m_file{json()}
+    : glow::Window<Settings>("Airglow - Settings"), m_app{app}, m_url{url}, m_file{file()}
 {
+    auto& current{m_url.current};
+    auto& home{m_url.home};
+
     if (!std::filesystem::exists(m_file)) { save(); }
 
     else { load(); }
@@ -19,20 +22,20 @@ Settings::Settings(HWND app, URL& url)
 
     if (args.size() == 2)
     {
-        m_url.current.first = args.at(1);
-        m_url.current.second = m_url.home.second;
+        current.first = args.at(1);
+        current.second = home.second;
     }
 
     else if (args.size() > 2)
     {
-        m_url.current.first = args.at(1);
-        m_url.current.second = args.at(2);
+        current.first = args.at(1);
+        current.second = args.at(2);
     }
 
     else
     {
-        m_url.current.first = m_url.home.first;
-        m_url.current.second = m_url.home.second;
+        current.first = home.first;
+        current.second = home.second;
     }
 
     dwm_caption_color(false);
@@ -119,20 +122,22 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
     {
         case msg::web_message_received:
         {
-            auto parsed{json::parse(message)};
+            auto webMessage{json::parse(message)};
 
-            if (parsed.contains("initialized"))
+            if (webMessage.contains("initialized"))
             {
-                if (m_browser)
-                {
-                    m_browser->post_json(nlohmann::json(m_systemColors));
-                    m_browser->post_json(nlohmann::json(m_url.home));
-                }
+                if (m_browser) { m_browser->post_json(json(*this)); }
             }
 
-            else if (parsed.contains("first")) { m_url.home.first = parsed.get<std::string>(); }
+            else if (webMessage.contains("first"))
+            {
+                m_url.home.first = webMessage["first"].get<std::string>();
+            }
 
-            else if (parsed.contains("second")) { m_url.home.second = parsed.get<std::string>(); }
+            else if (webMessage.contains("second"))
+            {
+                m_url.home.second = webMessage["second"].get<std::string>();
+            }
 
             notify(m_app, msg::save_settings);
 
@@ -193,29 +198,30 @@ auto Settings::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 auto Settings::on_setting_change(WPARAM wParam, LPARAM lParam) -> int
 {
     theme();
-
-    m_systemColors.update();
-    if (m_browser) { m_browser->post_json(nlohmann::json(m_systemColors)); }
+    m_colors.update();
+    if (m_browser) { m_browser->post_json(json(*this)); }
 
     return 0;
 }
 
 auto Settings::on_show_window(WPARAM wParam, LPARAM lParam) -> int
 {
-    if (m_browser->m_webView.controller4)
+    auto& controller{m_browser->m_webView.controller4};
+
+    if (controller)
     {
         switch (wParam)
         {
             case TRUE:
             {
-                m_browser->m_webView.controller4->put_IsVisible(TRUE);
+                controller->put_IsVisible(TRUE);
 
                 break;
             }
 
             case FALSE:
             {
-                m_browser->m_webView.controller4->put_IsVisible(FALSE);
+                controller->put_IsVisible(FALSE);
 
                 break;
             }
@@ -243,7 +249,7 @@ auto Settings::data() -> std::filesystem::path
     return path;
 }
 
-auto Settings::json() -> std::filesystem::path
+auto Settings::file() -> std::filesystem::path
 {
     return std::filesystem::path{{glow::app_path() / "Airglow.json"}};
 }

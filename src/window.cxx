@@ -9,7 +9,7 @@
 #include "window.hxx"
 
 Window::Window(HWND app, URL& url, uintptr_t id)
-    : glow::Window<Window>("Airglow", id), m_app{app}, m_url{url}, m_initialized{}
+    : glow::Window<Window>("Airglow", id), m_app{app}, m_url{url}
 {
     dwm_caption_color(false);
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
@@ -358,7 +358,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
         }
     }
 
-    if (m_browsers.url) { m_browsers.url->post_json(json{{"layout", json(m_layout)}}); }
+    if (m_browsers.url) { m_browsers.url->post_json(json(*this)); }
 
     PostMessageA(hwnd(), WM_SIZE, 0, 0);
     notify(hwnd(), msg::title_changed);
@@ -379,44 +379,32 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
     {
         case msg::web_message_received:
         {
-            auto parsed{json::parse(message)};
+            auto webMessage{json::parse(message)};
 
-            if (parsed.contains("initialized"))
+            if (webMessage.contains("initialized"))
             {
-                if (!m_initialized)
-                {
-                    m_initialized = true;
-                    if (m_browsers.first) { m_browsers.first->navigate(m_url.current.first); }
-                    if (m_browsers.second) { m_browsers.second->navigate(m_url.current.second); }
-                }
-
-                if (m_browsers.url)
-                {
-                    m_browsers.url->post_json(json{{"layout", json(m_layout)}});
-                    m_browsers.url->post_json(json(m_systemColors));
-                    m_browsers.url->post_json(json(m_url.current));
-                }
+                if (m_browsers.url) { m_browsers.url->post_json(json(*this)); }
             }
 
-            else if (parsed.contains("height"))
+            else if (webMessage.contains("height"))
             {
-                m_layout.bar = parsed["height"].get<int>();
+                m_layout.bar = webMessage["height"].get<int>();
                 PostMessageA(hwnd(), WM_SIZE, 0, 0);
             }
 
-            else if (parsed.contains("first"))
+            else if (webMessage.contains("first"))
             {
                 if (m_browsers.first)
                 {
-                    m_browsers.first->navigate(parsed["first"].get<std::string>());
+                    m_browsers.first->navigate(webMessage["first"].get<std::string>());
                 }
             }
 
-            else if (parsed.contains("second"))
+            else if (webMessage.contains("second"))
             {
                 if (m_browsers.second)
                 {
-                    m_browsers.second->navigate(parsed["second"].get<std::string>());
+                    m_browsers.second->navigate(webMessage["second"].get<std::string>());
                 }
             }
 
@@ -541,8 +529,8 @@ auto Window::on_setting_change(WPARAM wParam, LPARAM lParam) -> int
 {
     theme();
 
-    m_systemColors.update();
-    if (m_browsers.url) { m_browsers.url->post_json(nlohmann::json(m_systemColors)); }
+    m_colors.update();
+    if (m_browsers.url) { m_browsers.url->post_json(nlohmann::json(m_colors)); }
 
     return 0;
 }

@@ -9,7 +9,7 @@ export const getSessionStorage = (key: string, defaultValue: any) => {
 };
 
 export const getLayoutStorage = () => {
-    const value: App.Layout = JSON.parse(sessionStorage.getItem("position")!);
+    const value: App.Layout = JSON.parse(sessionStorage.getItem("layout")!);
 
     const defaultValue: App.Layout = {
         bar: 0,
@@ -26,10 +26,10 @@ export const getLayoutStorage = () => {
     }
 };
 
-export const getSystemColorsStorage = () => {
-    const value: App.SystemColors = JSON.parse(sessionStorage.getItem("systemColors")!);
+export const getColorStorage = () => {
+    const value: App.Colors = JSON.parse(sessionStorage.getItem("colors")!);
 
-    const defaultValue: App.SystemColors = {
+    const defaultValue: App.Colors = {
         accent: "",
         accentDark1: "",
         accentDark2: "",
@@ -44,4 +44,18 @@ export const getSystemColorsStorage = () => {
     } else {
         return value;
     }
+};
+
+export const applyColors = (colors: App.Colors) => {
+    document.documentElement.style.setProperty("--accent", colors.accent);
+    document.documentElement.style.setProperty("--accentDark1", colors.accentDark1);
+    document.documentElement.style.setProperty("--accentDark2", colors.accentDark2);
+    document.documentElement.style.setProperty("--accentDark3", colors.accentDark3);
+    document.documentElement.style.setProperty("--accentLight1", colors.accentLight1);
+    document.documentElement.style.setProperty("--accentLight2", colors.accentLight2);
+    document.documentElement.style.setProperty("--accentLight3", colors.accentLight3);
+};
+
+export const initialize = () => {
+    window.chrome.webview.postMessage({ initialized: true });
 };

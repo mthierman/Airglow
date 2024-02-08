@@ -91,16 +91,16 @@ add_dependencies(
     CopyIcon
 )
 
-add_custom_target(
-    Vite
-    COMMAND pnpm build
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-)
+# add_custom_target(
+#     Vite
+#     COMMAND pnpm build
+#     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+# )
 
-add_dependencies(
-    Airglow
-    Vite
-)
+# add_dependencies(
+#     Airglow
+#     Vite
+# )
 
 if(GLOW_EXTRAS)
     enable_testing()
