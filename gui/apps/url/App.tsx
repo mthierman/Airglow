@@ -48,10 +48,6 @@ export default function App() {
 
                 const goSecond = url.parseUrl(second).href;
                 window.chrome.webview.postMessage({ second: goSecond });
-
-                // const colors = data.m_colors.colors;
-                // setColors(colors);
-                // sessionStorage.setItem("colors", JSON.stringify(colors));
             }
 
             if (Object.hasOwn(data, "m_colors")) {
