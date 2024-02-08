@@ -1,6 +1,3 @@
-// window.chrome.webview.postMessage({ first: firstCurrent });
-// window.chrome.webview.postMessage({ second: secondCurrent });
-
 import { SyntheticEvent, useState, useRef, useEffect } from "react";
 import * as url from "@libs/url";
 import {
