@@ -21,16 +21,16 @@ export default function App() {
 
     useEffect(() => {
         const onMessage = (event: Event) => {
-            const settings: App.Settings = (event as MessageEvent).data;
+            const data: App.Settings = (event as MessageEvent).data;
 
-            if (Object.hasOwn(settings, "m_colors")) {
-                const colors = settings.m_colors.colors;
+            if (Object.hasOwn(data, "m_colors")) {
+                const colors = data.m_colors.colors;
                 setColors(colors);
                 sessionStorage.setItem("colors", JSON.stringify(colors));
             }
 
-            if (Object.hasOwn(settings, "m_url")) {
-                const [first, second] = settings.m_url.home;
+            if (Object.hasOwn(data, "m_url")) {
+                const [first, second] = data.m_url.home;
                 setFirstCurrent(first);
                 sessionStorage.setItem("first", first);
                 setSecondCurrent(second);
