@@ -13,13 +13,13 @@ auto App::operator()() -> int
     SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
     SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
                             "--allow-file-access-from-files");
-    settings();
+
+    m_settings = std::make_unique<Settings>(hwnd(), m_url);
+
     window();
 
     return glow::message_loop();
 }
-
-auto App::settings() -> void { m_settings = std::make_unique<Settings>(hwnd(), m_url); }
 
 auto App::window(uintptr_t id) -> void
 {

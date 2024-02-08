@@ -36,7 +36,4 @@ struct App : public glow::App<App>
     URL m_url;
     std::unique_ptr<Settings> m_settings;
     std::unordered_map<uintptr_t, std::unique_ptr<Window>> m_windows;
-
-  private:
-    auto settings() -> void;
 };
