@@ -1,3 +1,6 @@
+import blankLight from "@assets/blankLight.svg?raw";
+import blankDark from "@assets/blankDark.svg?raw";
+
 export const getSessionStorage = (key: string, defaultValue: any) => {
     const value = sessionStorage.getItem(key);
 
@@ -58,4 +61,12 @@ export const applyColors = (colors: App.Colors) => {
 
 export const initialize = () => {
     window.chrome.webview.postMessage({ initialized: true });
+};
+
+export const defaultFavicon = () => {
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        return `data:image/svg+xml,${encodeURIComponent(blankDark)}`;
+    } else {
+        return `data:image/svg+xml,${encodeURIComponent(blankLight)}`;
+    }
 };

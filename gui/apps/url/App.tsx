@@ -1,8 +1,6 @@
 import { SyntheticEvent, useState, useRef, useEffect } from "react";
 import * as url from "@libs/url";
-import { initialize, applyColors } from "@libs/storage";
-import blankLight from "./blankLight.svg?raw";
-import blankDark from "./blankDark.svg?raw";
+import { initialize, applyColors, defaultFavicon } from "@libs/storage";
 
 export default function App() {
     const form = useRef<HTMLFormElement | null>(null);
@@ -28,18 +26,10 @@ export default function App() {
     const [focus, setFocus] = useState("");
     const [firstCurrent, setFirstCurrent] = useState("");
     const [secondCurrent, setSecondCurrent] = useState("");
-    const [firstFavicon, setFirstFavicon] = useState("");
-    const [secondFavicon, setSecondFavicon] = useState("");
-
-    const defaultFavicon = () => {
-        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-            setFirstFavicon(`data:image/svg+xml,${encodeURIComponent(blankDark)}`);
-            setSecondFavicon(`data:image/svg+xml,${encodeURIComponent(blankDark)}`);
-        } else {
-            setFirstFavicon(`data:image/svg+xml,${encodeURIComponent(blankLight)}`);
-            setSecondFavicon(`data:image/svg+xml,${encodeURIComponent(blankLight)}`);
-        }
-    };
+    const [favicon, setFavicon] = useState<App.Favicon>({
+        first: defaultFavicon(),
+        second: defaultFavicon(),
+    });
 
     useEffect(() => {
         window.chrome.webview.postMessage({ height: form.current?.offsetHeight });
@@ -69,12 +59,12 @@ export default function App() {
                 if (dataFirst.length === 0) {
                     defaultFavicon();
                 } else {
-                    setFirstFavicon(dataFirst);
+                    setFavicon((prevState) => ({ ...prevState, first: dataFirst }));
                 }
                 if (dataSecond.length === 0) {
                     defaultFavicon();
                 } else {
-                    setSecondFavicon(dataSecond);
+                    setFavicon((prevState) => ({ ...prevState, second: dataSecond }));
                 }
             }
 
@@ -205,7 +195,7 @@ export default function App() {
                         !layout.split && layout.swapped ? "hidden" : "url"
                     } ${focus === "first" ? "focus" : ""}
                     }`}>
-                    <img className="url-favicon" width="16" height="16" src={firstFavicon} />
+                    <img className="url-favicon" width="16" height="16" src={favicon.first} />
                     <input
                         className="url-input"
                         ref={inputFirst}
@@ -223,7 +213,7 @@ export default function App() {
                         !layout.split && !layout.swapped ? "hidden" : "url"
                     } ${focus === "second" ? "focus" : ""}
                     }`}>
-                    <img className="url-favicon" width="16" height="16" src={secondFavicon} />
+                    <img className="url-favicon" width="16" height="16" src={favicon.second} />
                     <input
                         className="url-input"
                         ref={inputSecond}

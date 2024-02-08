@@ -54,6 +54,11 @@ export declare global {
             accentLight3: string;
         }
 
+        interface Favicon {
+            first: string;
+            second: string;
+        }
+
         interface Window {
             m_colors: {
                 colors: Colors;
