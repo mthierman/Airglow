@@ -49,7 +49,6 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
         case msg::settings_change:
         {
             m_colors.update();
-            OutputDebugStringA(m_colors.string.accent.c_str());
 
             break;
         }
