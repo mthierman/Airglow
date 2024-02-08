@@ -1,25 +1,46 @@
 import { SyntheticEvent, useState, useRef, useEffect } from "react";
 import * as url from "@libs/url";
-import {
-    getLayoutStorage,
-    getSessionStorage,
-    getColorStorage,
-    applyColors,
-    initialize,
-} from "@libs/storage";
-import iconRaw from "../../../data/release.svg?raw";
+import { getColorStorage, applyColors, initialize } from "@libs/storage";
+
+import blankLight from "./blankLight.svg?raw";
+import blankDark from "./blankDark.svg?raw";
 
 export default function App() {
-    const [layout, setLayout] = useState<App.Layout>(getLayoutStorage());
-    const [colors, setColors] = useState<App.Colors>(getColorStorage());
-    const [focus, setFocus] = useState("");
     const form = useRef<HTMLFormElement | null>(null);
     const inputFirst = useRef<HTMLInputElement | null>(null);
     const inputSecond = useRef<HTMLInputElement | null>(null);
+
+    const [layout, setLayout] = useState<App.Layout>({
+        bar: 0,
+        border: 0,
+        horizontal: false,
+        split: false,
+        swapped: false,
+    });
+    const [colors, setColors] = useState<App.Colors>({
+        accent: "",
+        accentDark1: "",
+        accentDark2: "",
+        accentDark3: "",
+        accentLight1: "",
+        accentLight2: "",
+        accentLight3: "",
+    });
+    const [focus, setFocus] = useState("");
     const [firstCurrent, setFirstCurrent] = useState("");
     const [secondCurrent, setSecondCurrent] = useState("");
-    const [firstFavicon, setFirstFavicon] = useState(getSessionStorage("firstFavicon", ""));
-    const [secondFavicon, setSecondFavicon] = useState(getSessionStorage("secondFavicon", ""));
+    const [firstFavicon, setFirstFavicon] = useState("");
+    const [secondFavicon, setSecondFavicon] = useState("");
+
+    const defaultFavicon = () => {
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            setFirstFavicon(`data:image/svg+xml,${encodeURIComponent(blankDark)}`);
+            setSecondFavicon(`data:image/svg+xml,${encodeURIComponent(blankDark)}`);
+        } else {
+            setFirstFavicon(`data:image/svg+xml,${encodeURIComponent(blankLight)}`);
+            setSecondFavicon(`data:image/svg+xml,${encodeURIComponent(blankLight)}`);
+        }
+    };
 
     useEffect(() => {
         window.chrome.webview.postMessage({ height: form.current?.offsetHeight });
@@ -34,6 +55,29 @@ export default function App() {
         const onMessage = (event: Event) => {
             const data: App.Window = (event as MessageEvent).data;
             // console.log(data);
+
+            if (Object.hasOwn(data, "m_url")) {
+                const [dataFirst, dataSecond] = data.m_url.current;
+                setFirstCurrent(dataFirst);
+                sessionStorage.setItem("first", dataFirst);
+                setSecondCurrent(dataSecond);
+                sessionStorage.setItem("second", dataSecond);
+            }
+
+            if (Object.hasOwn(data, "m_faviconUrl")) {
+                const [dataFirst, dataSecond] = data.m_faviconUrl;
+
+                if (dataFirst.length === 0) {
+                    defaultFavicon();
+                } else {
+                    setFirstFavicon(dataFirst);
+                }
+                if (dataSecond.length === 0) {
+                    defaultFavicon();
+                } else {
+                    setSecondFavicon(dataSecond);
+                }
+            }
 
             if (Object.hasOwn(data, "navigate")) {
                 const [first, second] = data.navigate;
@@ -70,28 +114,6 @@ export default function App() {
                 const dataLayout = data.m_layout;
                 setLayout(dataLayout);
                 sessionStorage.setItem("layout", JSON.stringify(dataLayout));
-            }
-
-            if (Object.hasOwn(data, "m_url")) {
-                const [dataFirst, dataSecond] = data.m_url.current;
-                if (dataFirst === "about:blank") {
-                    setFirstFavicon(`data:image/svg+xml,${encodeURIComponent(iconRaw)}`);
-                }
-                if (dataSecond === "about:blank") {
-                    setSecondFavicon(`data:image/svg+xml,${encodeURIComponent(iconRaw)}`);
-                }
-                setFirstCurrent(dataFirst);
-                sessionStorage.setItem("first", dataFirst);
-                setSecondCurrent(dataSecond);
-                sessionStorage.setItem("second", dataSecond);
-            }
-
-            if (Object.hasOwn(data, "m_faviconUrl")) {
-                const [dataFirst, dataSecond] = data.m_faviconUrl;
-                setFirstFavicon(dataFirst);
-                sessionStorage.setItem("firstFavicon", dataFirst);
-                setSecondFavicon(dataSecond);
-                sessionStorage.setItem("secondFavicon", dataSecond);
             }
         };
 

@@ -7,6 +7,11 @@ project(
               CXX
 )
 
+option(
+    BUILD_GUI
+    ON
+)
+
 add_subdirectory(libs/Glow)
 
 file(

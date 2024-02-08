@@ -29,7 +29,7 @@ Keys::Keys()
     // set.emplace(VK_F12);
 }
 
-URL::URL() : home{homepage(), homepage()}, current{"about:blank", "about:blank"} {}
+URL::URL() : home{"about:blank", "about:blank"}, current{"about:blank", "about:blank"} {}
 
 auto URL::homepage() -> std::string
 {
