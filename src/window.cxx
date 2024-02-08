@@ -242,8 +242,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
                     if (m_browsers.url)
                     {
                         m_browsers.url->post_json(json{{"focus", m_focus}});
-                        m_browsers.url->focus(COREWEBVIEW2_MOVE_FOCUS_REASON::
-                                                  COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+                        m_browsers.url->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
                     }
                 }
 
@@ -273,14 +272,12 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
             {
                 if (!m_layout.split && m_layout.swapped)
                 {
-                    m_browsers.first->focus(COREWEBVIEW2_MOVE_FOCUS_REASON::
-                                                COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+                    m_browsers.first->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
                 }
 
                 else if (!m_layout.split && !m_layout.swapped)
                 {
-                    m_browsers.second->focus(COREWEBVIEW2_MOVE_FOCUS_REASON::
-                                                 COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+                    m_browsers.second->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
                 }
 
                 m_layout.swapped = !m_layout.swapped;
