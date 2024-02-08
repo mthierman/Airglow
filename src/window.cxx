@@ -465,6 +465,18 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         case msg::title_changed:
         {
+            if (!m_browsers.url) { break; }
+
+            if (id == m_browsers.first->id())
+            {
+                m_title.first.assign(m_browsers.first->m_documentTitle);
+            }
+
+            else if (id == m_browsers.second->id())
+            {
+                m_title.second.assign(m_browsers.second->m_documentTitle);
+            }
+
             if (!m_layout.swapped)
             {
                 if (!m_browsers.first->m_documentTitle.empty())

@@ -49,14 +49,15 @@ struct Window : public glow::Window<Window>
     URL& m_url;
     // glow::Colors& m_colors;
 
-    std::string m_firstTitle{"Airglow"};
-    std::string m_secondTitle{"Airglow"};
+    // std::string m_firstTitle{"Airglow"};
+    // std::string m_secondTitle{"Airglow"};
 
     Browsers m_browsers;
     Positions m_positions;
     Layout m_layout;
     glow::Colors m_colors;
 
+    std::pair<std::string, std::string> m_title{"Airglow", "Airglow"};
     std::pair<wil::unique_hicon, wil::unique_hicon> m_favicon;
     std::pair<std::string, std::string> m_faviconUrl;
     std::string m_focus;
