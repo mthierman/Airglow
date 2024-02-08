@@ -37,14 +37,8 @@ export default function App() {
 
             if (Object.hasOwn(data, "navigate")) {
                 const [first, second] = data.navigate;
-                console.log(first);
-                console.log(second);
-
-                const goFirst = url.parseUrl(first).href;
-                window.chrome.webview.postMessage({ first: goFirst });
-
-                const goSecond = url.parseUrl(second).href;
-                window.chrome.webview.postMessage({ second: goSecond });
+                window.chrome.webview.postMessage({ first: url.parseUrl(first).href });
+                window.chrome.webview.postMessage({ second: url.parseUrl(second).href });
             }
 
             if (Object.hasOwn(data, "m_colors")) {
