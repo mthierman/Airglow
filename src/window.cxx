@@ -241,7 +241,6 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
                 {
                     if (m_browsers.url)
                     {
-                        // m_browsers.url->post_json(json{{"focus", m_focus}});
                         m_browsers.url->focus(COREWEBVIEW2_MOVE_FOCUS_REASON::
                                                   COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
                     }
@@ -415,15 +414,10 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
         {
             if (!m_browsers.url) { break; }
 
-            if (id == m_browsers.first->id())
-            {
-                // m_browsers.url->post_json(json{{"first", m_browsers.first->m_source}});
-                m_url.current.first = m_browsers.first->m_source;
-            }
+            if (id == m_browsers.first->id()) { m_url.current.first = m_browsers.first->m_source; }
 
             else if (id == m_browsers.second->id())
             {
-                // m_browsers.url->post_json(json{{"second", m_browsers.second->m_source}});
                 m_url.current.second = m_browsers.second->m_source;
             }
 
@@ -440,32 +434,18 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
             if (id == m_browsers.first->id())
             {
-                // m_firstFavicon.reset(m_browsers.first->m_favicon.get());
                 m_favicon.first.reset(m_browsers.first->m_favicon.get());
                 m_faviconUrl.first.assign(m_browsers.first->m_faviconUrl);
-                // if (m_browsers.url)
-                // {
-                //     m_browsers.url->post_json(
-                //         nlohmann::json{{"firstFavicon", m_browsers.first->m_faviconUrl}});
-                // }
             }
 
             else if (id == m_browsers.second->id())
             {
-                // m_secondFavicon.reset(m_browsers.second->m_favicon.get());
                 m_favicon.second.reset(m_browsers.second->m_favicon.get());
                 m_faviconUrl.second.assign(m_browsers.second->m_faviconUrl);
-                // if (m_browsers.url)
-                // {
-                //     m_browsers.url->post_json(
-                //         nlohmann::json{{"secondFavicon", m_browsers.second->m_faviconUrl}});
-                // }
             }
 
             if (!m_layout.swapped && !m_position.fullscreen)
             {
-                // PostMessageA(hwnd(), WM_SETICON, ICON_SMALL,
-                //              reinterpret_cast<LPARAM>(m_firstFavicon.get()));
                 PostMessageA(hwnd(), WM_SETICON, ICON_SMALL,
                              reinterpret_cast<LPARAM>(m_favicon.first.get()));
                 PostMessageA(hwnd(), WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(m_hicon.get()));
@@ -473,8 +453,6 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
             else if (!m_position.fullscreen)
             {
-                // PostMessageA(hwnd(), WM_SETICON, ICON_SMALL,
-                //              reinterpret_cast<LPARAM>(m_secondFavicon.get()));
                 PostMessageA(hwnd(), WM_SETICON, ICON_SMALL,
                              reinterpret_cast<LPARAM>(m_favicon.second.get()));
                 PostMessageA(hwnd(), WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(m_hicon.get()));
@@ -487,24 +465,6 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         case msg::title_changed:
         {
-            // if (id == m_browsers.first->id())
-            // {
-            //     if (m_browsers.url)
-            //     {
-            //         m_browsers.url->post_json(
-            //             nlohmann::json{{"firstTitle", m_browsers.first->m_documentTitle}});
-            //     }
-            // }
-
-            // else if (id == m_browsers.second->id())
-            // {
-            //     if (m_browsers.url)
-            //     {
-            //         m_browsers.url->post_json(
-            //             nlohmann::json{{"secondTitle", m_browsers.second->m_documentTitle}});
-            //     }
-            // }
-
             if (!m_layout.swapped)
             {
                 if (!m_browsers.first->m_documentTitle.empty())
