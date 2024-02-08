@@ -1,6 +1,6 @@
 import { SyntheticEvent, useState, useRef, useEffect } from "react";
 import { parseUrl } from "@libs/url";
-import { initialize, applyColors, defaultFavicon } from "@libs/storage";
+import { initialize, applyColors, defaultFavicon } from "@libs/index";
 
 export default function App() {
     const form = useRef<HTMLFormElement | null>(null);
