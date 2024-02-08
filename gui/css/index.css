@@ -11,6 +11,10 @@ body,
     @apply flex select-none place-content-center items-center rounded-b-sm border-b-2 border-transparent duration-300 ease-in-out focus-within:border-accent focus-within:bg-accentLight3 dark:focus-within:bg-accentDark3;
 }
 
+.focus {
+    @apply bg-accentLight3 dark:bg-accentDark3;
+}
+
 .url-favicon {
     @apply pointer-events-none ml-4 mr-1 aspect-square bg-transparent;
 }

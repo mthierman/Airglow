@@ -241,6 +241,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
                 {
                     if (m_browsers.url)
                     {
+                        m_browsers.url->post_json(json{{"focus", m_focus}});
                         m_browsers.url->focus(COREWEBVIEW2_MOVE_FOCUS_REASON::
                                                   COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
                     }
@@ -385,7 +386,6 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
                 if (!m_init)
                 {
                     m_init = true;
-                    // m_browsers.url->post_json(json({{"navigate", m_url.current}}));
                     m_browsers.url->post_json(json{{"navigate", m_url.current}});
                 }
 

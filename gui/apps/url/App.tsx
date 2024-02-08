@@ -12,10 +12,11 @@ import iconRaw from "../../../data/release.svg?raw";
 export default function App() {
     const [layout, setLayout] = useState<App.Layout>(getLayoutStorage());
     const [colors, setColors] = useState<App.Colors>(getColorStorage());
+    const [focus, setFocus] = useState("");
+    const [focusCurrent, setFocusCurrent] = useState("");
     const form = useRef<HTMLFormElement | null>(null);
     const inputFirst = useRef<HTMLInputElement | null>(null);
     const inputSecond = useRef<HTMLInputElement | null>(null);
-    const [selectedCurrent, setSelectedCurrent] = useState("");
     const [firstCurrent, setFirstCurrent] = useState("");
     const [secondCurrent, setSecondCurrent] = useState("");
     const [firstFavicon, setFirstFavicon] = useState(getSessionStorage("firstFavicon", ""));
@@ -33,7 +34,7 @@ export default function App() {
     useEffect(() => {
         const onMessage = (event: Event) => {
             const data: App.Window = (event as MessageEvent).data;
-            console.log(data);
+            // console.log(data);
 
             if (Object.hasOwn(data, "navigate")) {
                 const [first, second] = data.navigate;
@@ -41,59 +42,57 @@ export default function App() {
                 window.chrome.webview.postMessage({ second: url.parseUrl(second).href });
             }
 
+            if (Object.hasOwn(data, "m_focus")) {
+                const dataFocus = data.m_focus;
+                if (dataFocus === "first") {
+                    setFocusCurrent(dataFocus);
+                } else if (dataFocus === "second") {
+                    setFocusCurrent(dataFocus);
+                }
+            }
+
+            if (Object.hasOwn(data, "focus")) {
+                if (focusCurrent === "first") {
+                    inputFirst.current!.focus();
+                    inputFirst.current!.select();
+                } else if (focusCurrent === "second") {
+                    inputSecond.current!.focus();
+                    inputSecond.current!.select();
+                }
+            }
+
             if (Object.hasOwn(data, "m_colors")) {
-                const colors = data.m_colors.colors;
-                setColors(colors);
-                sessionStorage.setItem("colors", JSON.stringify(colors));
+                const dataColors = data.m_colors.colors;
+                setColors(dataColors);
+                sessionStorage.setItem("colors", JSON.stringify(dataColors));
             }
 
             if (Object.hasOwn(data, "m_layout")) {
-                const layout = data.m_layout;
-                setLayout(layout);
-                sessionStorage.setItem("layout", JSON.stringify(layout));
+                const dataLayout = data.m_layout;
+                setLayout(dataLayout);
+                sessionStorage.setItem("layout", JSON.stringify(dataLayout));
             }
 
             if (Object.hasOwn(data, "m_url")) {
-                const [first, second] = data.m_url.current;
-                if (first === "about:blank") {
+                const [dataFirst, dataSecond] = data.m_url.current;
+                if (dataFirst === "about:blank") {
                     setFirstFavicon(`data:image/svg+xml,${encodeURIComponent(iconRaw)}`);
                 }
-                if (second === "about:blank") {
+                if (dataSecond === "about:blank") {
                     setSecondFavicon(`data:image/svg+xml,${encodeURIComponent(iconRaw)}`);
                 }
-                setFirstCurrent(first);
-                sessionStorage.setItem("first", first);
-                setSecondCurrent(second);
-                sessionStorage.setItem("second", second);
+                setFirstCurrent(dataFirst);
+                sessionStorage.setItem("first", dataFirst);
+                setSecondCurrent(dataSecond);
+                sessionStorage.setItem("second", dataSecond);
             }
 
             if (Object.hasOwn(data, "m_faviconUrl")) {
-                const [first, second] = data.m_faviconUrl;
-                setFirstFavicon(first);
-                sessionStorage.setItem("firstFavicon", first);
-                setSecondFavicon(second);
-                sessionStorage.setItem("secondFavicon", second);
-            }
-
-            if (Object.hasOwn(data, "m_focus")) {
-                const focus = data.m_focus;
-                if (focus === "first") {
-                    setSelectedCurrent("first");
-                    inputFirst.current!.focus();
-                    inputFirst.current!.select();
-                } else if (focus === "second") {
-                    setSelectedCurrent("second");
-                    inputSecond.current!.focus();
-                    inputSecond.current!.select();
-                } else if (focus === "url") {
-                    if (selectedCurrent === "first") {
-                        inputFirst.current!.focus();
-                        inputFirst.current!.select();
-                    } else {
-                        inputSecond.current!.focus();
-                        inputSecond.current!.select();
-                    }
-                }
+                const [dataFirst, dataSecond] = data.m_faviconUrl;
+                setFirstFavicon(dataFirst);
+                sessionStorage.setItem("firstFavicon", dataFirst);
+                setSecondFavicon(dataSecond);
+                sessionStorage.setItem("secondFavicon", dataSecond);
             }
         };
 
@@ -109,22 +108,22 @@ export default function App() {
 
         const onFocus = () => {
             if (document.activeElement === inputFirst.current) {
-                setSelectedCurrent("first");
+                setFocusCurrent("first");
             } else if (document.activeElement === inputSecond.current) {
-                setSelectedCurrent("second");
+                setFocusCurrent("second");
             }
         };
 
         window.chrome.webview.addEventListener("message", onMessage);
         document.addEventListener("keydown", onEscape);
-        inputFirst.current!.addEventListener("focus", onFocus);
-        inputSecond.current!.addEventListener("focus", onFocus);
+        inputFirst.current?.addEventListener("focus", onFocus);
+        inputSecond.current?.addEventListener("focus", onFocus);
 
         return () => {
             window.chrome.webview.removeEventListener("message", onMessage);
             document.removeEventListener("keydown", onEscape);
-            inputFirst.current!.removeEventListener("focus", onFocus);
-            inputSecond.current!.removeEventListener("focus", onFocus);
+            inputFirst.current?.removeEventListener("focus", onFocus);
+            inputSecond.current?.removeEventListener("focus", onFocus);
         };
     });
 
@@ -177,6 +176,7 @@ export default function App() {
                 <label
                     className={`${layout.swapped ? "order-1" : "order-0"} ${
                         !layout.split && layout.swapped ? "hidden" : "url"
+                    } ${focusCurrent === "first" ? "focus" : ""}
                     }`}>
                     <img className="url-favicon" width="16" height="16" src={firstFavicon} />
                     <input
@@ -194,6 +194,7 @@ export default function App() {
                 <label
                     className={`${layout.swapped ? "order-0" : "order-1"} ${
                         !layout.split && !layout.swapped ? "hidden" : "url"
+                    } ${focusCurrent === "second" ? "focus" : ""}
                     }`}>
                     <img className="url-favicon" width="16" height="16" src={secondFavicon} />
                     <input

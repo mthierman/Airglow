@@ -62,6 +62,7 @@ export declare global {
             m_focus: string;
             m_layout: Layout;
             m_url: URL;
+            focus: string;
             navigate: [string, string];
         }
 
