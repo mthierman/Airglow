@@ -393,8 +393,9 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
                     m_init = true;
                     m_browsers.url->post_json(json{{"navigate", m_url.current}});
                     m_browsers.first->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-                    m_browsers.url->post_json(json(*this));
                 }
+
+                m_browsers.url->post_json(json(*this));
             }
 
             else if (webMessage.contains("height"))

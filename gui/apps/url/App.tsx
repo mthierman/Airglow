@@ -21,7 +21,7 @@ export default () => {
         first: defaultFavicon(),
         second: defaultFavicon(),
     });
-    const [focus, setFocus] = useState("");
+    const [focus, setFocus] = useState("first");
     const [layout, setLayout] = useState<App.Layout>({
         bar: 0,
         border: 0,
@@ -206,7 +206,7 @@ export default () => {
                 <label
                     className={`${layout.swapped ? "order-1" : "order-0"} ${
                         !layout.split && layout.swapped ? "hidden" : "url"
-                    } ${focus === "first" ? "focus" : ""}
+                    } ${focus === "first" ? "url-focus" : ""}
                     }`}>
                     <img className="url-favicon" width="16" height="16" src={favicon.first} />
                     <input
@@ -226,7 +226,7 @@ export default () => {
                 <label
                     className={`${layout.swapped ? "order-0" : "order-1"} ${
                         !layout.split && !layout.swapped ? "hidden" : "url"
-                    } ${focus === "second" ? "focus" : ""}
+                    } ${focus === "second" ? "url-focus" : ""}
                     }`}>
                     <img className="url-favicon" width="16" height="16" src={favicon.second} />
                     <input
