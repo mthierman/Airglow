@@ -57,10 +57,14 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         case SETTINGS_TOGGLE:
         {
+            if (!m_settings) { break; }
+
             m_settings->visible() ? m_settings->hide() : m_settings->show();
 
             if (m_settings->visible())
             {
+                if (!m_settings->m_browser) { break; }
+
                 m_settings->m_browser->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
             }
 
@@ -69,6 +73,8 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         case SETTINGS_SAVE:
         {
+            if (!m_settings) { break; }
+
             m_settings->save();
 
             break;
