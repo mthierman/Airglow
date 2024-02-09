@@ -1,15 +1,27 @@
 import { SyntheticEvent, useState, useRef, useEffect } from "react";
-import * as url from "@libs/url";
-import { getColorStorage, applyColors, initialize } from "@libs/index";
+import { parseUrl } from "@libs/url";
+import { initialize, applyColors } from "@libs/index";
 
 export default function App() {
     const form = useRef<HTMLFormElement | null>(null);
     const inputFirst = useRef<HTMLInputElement | null>(null);
     const inputSecond = useRef<HTMLInputElement | null>(null);
 
-    const [colors, setColors] = useState<App.Colors>(getColorStorage());
-    const [firstCurrent, setFirstCurrent] = useState("");
-    const [secondCurrent, setSecondCurrent] = useState("");
+    const [colors, setColors] = useState<App.Colors>({
+        accent: "",
+        accentDark1: "",
+        accentDark2: "",
+        accentDark3: "",
+        accentLight1: "",
+        accentLight2: "",
+        accentLight3: "",
+    });
+    const [url, setUrl] = useState<App.Pair>({
+        first: "",
+        second: "",
+    });
+    // const [firstCurrent, setFirstCurrent] = useState("");
+    // const [secondCurrent, setSecondCurrent] = useState("");
 
     useEffect(() => {
         initialize();
@@ -24,16 +36,14 @@ export default function App() {
             const data: App.Settings = (event as MessageEvent).data;
 
             if (Object.hasOwn(data, "m_colors")) {
-                const colors = data.m_colors.colors;
-                setColors(colors);
-                sessionStorage.setItem("colors", JSON.stringify(colors));
+                setColors(data.m_colors.colors);
+                sessionStorage.setItem("colors", JSON.stringify(data.m_colors.colors));
             }
 
             if (Object.hasOwn(data, "m_url")) {
                 const [first, second] = data.m_url.home;
-                setFirstCurrent(first);
+                setUrl((prevState) => ({ ...prevState, first: first, second: second }));
                 sessionStorage.setItem("first", first);
-                setSecondCurrent(second);
                 sessionStorage.setItem("second", second);
             }
         };
@@ -41,9 +51,15 @@ export default function App() {
         const onEscape = (event: KeyboardEvent) => {
             if (event.key === "Escape") {
                 if (document.activeElement === inputFirst.current) {
-                    setFirstCurrent(sessionStorage.getItem("first")!);
+                    setUrl((prevState) => ({
+                        ...prevState,
+                        first: sessionStorage.getItem("first")!,
+                    }));
                 } else if (document.activeElement === inputSecond.current) {
-                    setSecondCurrent(sessionStorage.getItem("second")!);
+                    setUrl((prevState) => ({
+                        ...prevState,
+                        second: sessionStorage.getItem("second")!,
+                    }));
                 }
             }
         };
@@ -58,15 +74,15 @@ export default function App() {
     });
 
     const submitFirst = () => {
-        const parsed = url.parseUrl(inputFirst.current?.value!).href;
-        setFirstCurrent(parsed);
+        const parsed = parseUrl(inputFirst.current?.value!).href;
+        setUrl((prevState) => ({ ...prevState, first: parsed }));
         sessionStorage.setItem("first", parsed);
         window.chrome.webview.postMessage({ first: parsed });
     };
 
     const submitSecond = () => {
-        const parsed = url.parseUrl(inputSecond.current?.value!).href;
-        setSecondCurrent(parsed);
+        const parsed = parseUrl(inputSecond.current?.value!).href;
+        setUrl((prevState) => ({ ...prevState, second: parsed }));
         sessionStorage.setItem("second", parsed);
         window.chrome.webview.postMessage({ second: parsed });
     };
@@ -88,9 +104,9 @@ export default function App() {
         let nativeEvent = event.nativeEvent as MouseEvent;
 
         if (document.activeElement === inputFirst.current) {
-            if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(firstCurrent);
+            if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(url.first);
         } else if (document.activeElement === inputSecond.current) {
-            if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(secondCurrent);
+            if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(url.second);
         }
     };
 
@@ -109,10 +125,10 @@ export default function App() {
                 ref={inputFirst}
                 id="first"
                 type="text"
-                value={firstCurrent}
+                value={url.first}
                 placeholder={sessionStorage.getItem("first")!}
                 title={sessionStorage.getItem("first")!}
-                onChange={(e) => setFirstCurrent(e.target.value)}
+                onChange={(e) => setUrl((prevState) => ({ ...prevState, first: e.target.value }))}
                 onClick={handleClick}></input>
             <h1 className="settings-title">🌃Second Home</h1>
             <input
@@ -120,10 +136,10 @@ export default function App() {
                 ref={inputSecond}
                 id="second"
                 type="text"
-                value={secondCurrent}
+                value={url.second}
                 placeholder={sessionStorage.getItem("second")!}
                 title={sessionStorage.getItem("second")!}
-                onChange={(e) => setSecondCurrent(e.target.value)}
+                onChange={(e) => setUrl((prevState) => ({ ...prevState, second: e.target.value }))}
                 onClick={handleClick}></input>
             <input className="settings-submit" type="submit" />
         </form>
