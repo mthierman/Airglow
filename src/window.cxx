@@ -21,7 +21,7 @@ Window::Window(HWND app, URL& url, glow::Colors& colors, uintptr_t id)
     m_browsers.second = std::make_unique<Browser>(hwnd());
     m_browsers.second->reveal();
 
-    m_browsers.url = std::make_unique<URLBrowser>(hwnd());
+    m_browsers.url = std::make_unique<Browser>(hwnd());
     m_browsers.url->reveal();
 }
 
@@ -383,6 +383,17 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
     switch (code)
     {
         using enum CODE;
+
+        case BROWSER_INIT:
+        {
+            if (id == m_browsers.url->id())
+            {
+                m_browsers.url->devtools();
+                m_browsers.url->navigate(m_browsers.url->url("url"));
+            }
+
+            break;
+        }
 
         case WEB_MESSAGE_RECEIVED:
         {

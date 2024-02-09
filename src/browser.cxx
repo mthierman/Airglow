@@ -170,6 +170,8 @@ auto Browser::zoom_factor_changed_handler(ICoreWebView2Controller* sender, IUnkn
     return S_OK;
 }
 
+auto Browser::initialized() -> void { notify(m_parent, CODE::BROWSER_INIT); }
+
 auto Browser::url(std::string page) -> std::string
 {
 #if defined(_DEBUG)
@@ -189,16 +191,4 @@ auto Browser::url(std::string page) -> std::string
 #endif
 
     else { return {}; }
-}
-
-auto URLBrowser::initialized() -> void
-{
-    // m_webView.core20->OpenDevToolsWindow();
-    navigate(url("url"));
-}
-
-auto SettingsBrowser::initialized() -> void
-{
-    // m_webView.core20->OpenDevToolsWindow();
-    navigate(url("settings"));
 }

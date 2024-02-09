@@ -22,6 +22,7 @@ enum class CODE : unsigned int
     SETTINGS_SAVE,
     WINDOW_NEW,
     WINDOW_CLOSE,
+    BROWSER_INIT,
     SETTING_CHANGE,
     DPI_CHANGE,
     LAYOUT_CHANGE,

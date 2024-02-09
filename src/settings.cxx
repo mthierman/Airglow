@@ -45,7 +45,7 @@ Settings::Settings(HWND app, URL& url, glow::Colors& colors)
 
     SetWindowPos(hwnd(), nullptr, 0, 0, 500, 500, SWP_NOMOVE);
 
-    m_browser = std::make_unique<SettingsBrowser>(hwnd());
+    m_browser = std::make_unique<Browser>(hwnd());
     m_browser->reveal();
 }
 
@@ -173,6 +173,14 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
     switch (code)
     {
         using enum CODE;
+
+        case BROWSER_INIT:
+        {
+            m_browser->devtools();
+            m_browser->navigate(m_browser->url("settings"));
+
+            break;
+        }
 
         case WEB_MESSAGE_RECEIVED:
         {

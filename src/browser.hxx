@@ -37,20 +37,7 @@ struct Browser : public glow::WebView<Browser>
         -> ::HRESULT override;
     virtual auto zoom_factor_changed_handler(ICoreWebView2Controller* sender, IUnknown* args)
         -> HRESULT override;
+    virtual auto initialized() -> void override;
 
     auto url(std::string compare) -> std::string;
-};
-
-struct URLBrowser final : public Browser
-{
-    using Browser::Browser;
-
-    virtual auto initialized() -> void override;
-};
-
-struct SettingsBrowser final : public Browser
-{
-    using Browser::Browser;
-
-    virtual auto initialized() -> void override;
 };

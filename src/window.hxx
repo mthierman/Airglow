@@ -25,7 +25,7 @@ struct Browsers
 {
     std::unique_ptr<Browser> first;
     std::unique_ptr<Browser> second;
-    std::unique_ptr<URLBrowser> url;
+    std::unique_ptr<Browser> url;
 };
 
 struct Window : public glow::Window<Window>
