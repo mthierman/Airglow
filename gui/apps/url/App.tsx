@@ -7,14 +7,6 @@ export default function App() {
     const inputFirst = useRef<HTMLInputElement | null>(null);
     const inputSecond = useRef<HTMLInputElement | null>(null);
 
-    const [layout, setLayout] = useState<App.Layout>({
-        bar: 0,
-        border: 0,
-        horizontal: false,
-        split: false,
-        swapped: false,
-    });
-    const [focus, setFocus] = useState("");
     const [colors, setColors] = useState<App.Colors>({
         accent: "",
         accentDark1: "",
@@ -28,7 +20,14 @@ export default function App() {
         first: defaultFavicon(),
         second: defaultFavicon(),
     });
-
+    const [focus, setFocus] = useState("");
+    const [layout, setLayout] = useState<App.Layout>({
+        bar: 0,
+        border: 0,
+        horizontal: false,
+        split: false,
+        swapped: false,
+    });
     const [url, setUrl] = useState<App.Pair>({
         first: "",
         second: "",
