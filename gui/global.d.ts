@@ -25,6 +25,11 @@ export declare global {
     }
 
     namespace App {
+        interface Pair {
+            first: string;
+            second: string;
+        }
+
         interface Layout {
             bar: number;
             border: number;
@@ -39,11 +44,6 @@ export declare global {
             offsetWidth: number;
         }
 
-        interface URL {
-            current: [string, string];
-            home: [string, string];
-        }
-
         interface Colors {
             accent: string;
             accentDark1: string;
@@ -54,11 +54,6 @@ export declare global {
             accentLight3: string;
         }
 
-        interface Favicon {
-            first: string;
-            second: string;
-        }
-
         interface Window {
             m_colors: {
                 colors: Colors;
@@ -66,7 +61,10 @@ export declare global {
             m_faviconUrl: [string, string];
             m_focus: string;
             m_layout: Layout;
-            m_url: URL;
+            m_url: {
+                current: [string, string];
+                home: [string, string];
+            };
             focus: string;
             navigate: [string, string];
         }
@@ -75,7 +73,10 @@ export declare global {
             m_colors: {
                 colors: Colors;
             };
-            m_url: URL;
+            m_url: {
+                current: [string, string];
+                home: [string, string];
+            };
         }
     }
 }

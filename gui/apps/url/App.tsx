@@ -14,6 +14,7 @@ export default function App() {
         split: false,
         swapped: false,
     });
+    const [focus, setFocus] = useState("");
     const [colors, setColors] = useState<App.Colors>({
         accent: "",
         accentDark1: "",
@@ -23,12 +24,14 @@ export default function App() {
         accentLight2: "",
         accentLight3: "",
     });
-    const [focus, setFocus] = useState("");
-    const [firstCurrent, setFirstCurrent] = useState("");
-    const [secondCurrent, setSecondCurrent] = useState("");
-    const [favicon, setFavicon] = useState<App.Favicon>({
+    const [favicon, setFavicon] = useState<App.Pair>({
         first: defaultFavicon(),
         second: defaultFavicon(),
+    });
+
+    const [url, setUrl] = useState<App.Pair>({
+        first: "",
+        second: "",
     });
 
     useEffect(() => {
@@ -46,41 +49,49 @@ export default function App() {
             // console.log(data);
 
             if (Object.hasOwn(data, "m_url")) {
-                const [dataFirst, dataSecond] = data.m_url.current;
-                setFirstCurrent(dataFirst);
-                sessionStorage.setItem("first", dataFirst);
-                setSecondCurrent(dataSecond);
-                sessionStorage.setItem("second", dataSecond);
+                const [first, second] = data.m_url.current;
+                setUrl((prevState) => ({ ...prevState, first: first, second: second }));
+                sessionStorage.setItem("first", first);
+                sessionStorage.setItem("second", second);
             }
 
             if (Object.hasOwn(data, "m_faviconUrl")) {
-                const [dataFirst, dataSecond] = data.m_faviconUrl;
+                const [first, second] = data.m_faviconUrl;
 
-                if (dataFirst.length === 0) {
+                if (first.length === 0) {
                     defaultFavicon();
                 } else {
-                    setFavicon((prevState) => ({ ...prevState, first: dataFirst }));
+                    setFavicon((prevState) => ({ ...prevState, first: first }));
                 }
-                if (dataSecond.length === 0) {
+                if (second.length === 0) {
                     defaultFavicon();
                 } else {
-                    setFavicon((prevState) => ({ ...prevState, second: dataSecond }));
+                    setFavicon((prevState) => ({ ...prevState, second: second }));
                 }
+            }
+
+            if (Object.hasOwn(data, "m_focus")) {
+                if (data.m_focus === "first") {
+                    setFocus(data.m_focus);
+                } else if (data.m_focus === "second") {
+                    setFocus(data.m_focus);
+                }
+            }
+
+            if (Object.hasOwn(data, "m_colors")) {
+                setColors(data.m_colors.colors);
+                sessionStorage.setItem("colors", JSON.stringify(data.m_colors.colors));
+            }
+
+            if (Object.hasOwn(data, "m_layout")) {
+                setLayout(data.m_layout);
+                sessionStorage.setItem("layout", JSON.stringify(data.m_layout));
             }
 
             if (Object.hasOwn(data, "navigate")) {
                 const [first, second] = data.navigate;
                 window.chrome.webview.postMessage({ first: parseUrl(first).href });
                 window.chrome.webview.postMessage({ second: parseUrl(second).href });
-            }
-
-            if (Object.hasOwn(data, "m_focus")) {
-                const dataFocus = data.m_focus;
-                if (dataFocus === "first") {
-                    setFocus(dataFocus);
-                } else if (dataFocus === "second") {
-                    setFocus(dataFocus);
-                }
             }
 
             if (Object.hasOwn(data, "focus")) {
@@ -92,26 +103,20 @@ export default function App() {
                     inputSecond.current!.select();
                 }
             }
-
-            if (Object.hasOwn(data, "m_colors")) {
-                const dataColors = data.m_colors.colors;
-                setColors(dataColors);
-                sessionStorage.setItem("colors", JSON.stringify(dataColors));
-            }
-
-            if (Object.hasOwn(data, "m_layout")) {
-                const dataLayout = data.m_layout;
-                setLayout(dataLayout);
-                sessionStorage.setItem("layout", JSON.stringify(dataLayout));
-            }
         };
 
         const onEscape = (event: KeyboardEvent) => {
             if (event.key === "Escape") {
                 if (document.activeElement === inputFirst.current) {
-                    setFirstCurrent(sessionStorage.getItem("first")!);
+                    setUrl((prevState) => ({
+                        ...prevState,
+                        first: sessionStorage.getItem("first")!,
+                    }));
                 } else if (document.activeElement === inputSecond.current) {
-                    setSecondCurrent(sessionStorage.getItem("second")!);
+                    setUrl((prevState) => ({
+                        ...prevState,
+                        second: sessionStorage.getItem("second")!,
+                    }));
                 }
             }
         };
@@ -146,14 +151,14 @@ export default function App() {
 
     const submitFirst = () => {
         const parsed = parseUrl(inputFirst.current?.value!).href;
-        setFirstCurrent(parsed);
+        setUrl((prevState) => ({ ...prevState, first: parsed }));
         sessionStorage.setItem("first", parsed);
         window.chrome.webview.postMessage({ first: parsed });
     };
 
     const submitSecond = () => {
         const parsed = parseUrl(inputSecond.current?.value!).href;
-        setSecondCurrent(parsed);
+        setUrl((prevState) => ({ ...prevState, second: parsed }));
         sessionStorage.setItem("second", parsed);
         window.chrome.webview.postMessage({ second: parsed });
     };
@@ -174,9 +179,9 @@ export default function App() {
         let nativeEvent = event.nativeEvent as MouseEvent;
 
         if (document.activeElement === inputFirst.current) {
-            if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(firstCurrent);
+            if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(url.first);
         } else if (document.activeElement === inputSecond.current) {
-            if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(secondCurrent);
+            if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(url.second);
         }
     };
 
@@ -201,10 +206,12 @@ export default function App() {
                         ref={inputFirst}
                         id="first"
                         type="text"
-                        value={firstCurrent}
+                        value={url.first}
                         placeholder={sessionStorage.getItem("first")!}
                         title={sessionStorage.getItem("first")!}
-                        onChange={(e) => setFirstCurrent(e.target.value)}
+                        onChange={(e) =>
+                            setUrl((prevState) => ({ ...prevState, first: e.target.value }))
+                        }
                         onClick={handleClick}
                     />
                 </label>
@@ -219,10 +226,12 @@ export default function App() {
                         ref={inputSecond}
                         id="second"
                         type="text"
-                        value={secondCurrent}
+                        value={url.second}
                         placeholder={sessionStorage.getItem("second")!}
                         title={sessionStorage.getItem("second")!}
-                        onChange={(e) => setSecondCurrent(e.target.value)}
+                        onChange={(e) =>
+                            setUrl((prevState) => ({ ...prevState, second: e.target.value }))
+                        }
                         onClick={handleClick}></input>
                 </label>
                 <input type="submit" hidden />
