@@ -509,7 +509,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 auto Window::on_setting_change(WPARAM wParam, LPARAM lParam) -> int
 {
     theme();
-    notify(hwnd());
+    if (m_browsers.url) { m_browsers.url->post_json(json(*this)); }
 
     return 0;
 }

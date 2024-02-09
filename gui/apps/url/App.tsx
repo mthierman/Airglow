@@ -206,7 +206,7 @@ export default () => {
                 <label
                     className={`${layout.swapped ? "order-1" : "order-0"} ${
                         !layout.split && layout.swapped ? "hidden" : "url"
-                    } ${focus === "first" ? "url-focus" : ""}
+                    } ${focus === "first" ? "url-focus" : "url-blur"}
                     }`}>
                     <img className="url-favicon" width="16" height="16" src={favicon.first} />
                     <input
@@ -226,7 +226,7 @@ export default () => {
                 <label
                     className={`${layout.swapped ? "order-0" : "order-1"} ${
                         !layout.split && !layout.swapped ? "hidden" : "url"
-                    } ${focus === "second" ? "url-focus" : ""}
+                    } ${focus === "second" ? "url-focus" : "url-blur"}
                     }`}>
                     <img className="url-favicon" width="16" height="16" src={favicon.second} />
                     <input

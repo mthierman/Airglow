@@ -205,7 +205,7 @@ auto Settings::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 auto Settings::on_setting_change(WPARAM wParam, LPARAM lParam) -> int
 {
     theme();
-    // if (m_browser) { m_browser->post_json(json(*this)); }
+    if (m_browser) { m_browser->post_json(json(*this)); }
 
     notify(m_app, msg::setting_change);
 

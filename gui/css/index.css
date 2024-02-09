@@ -3,11 +3,15 @@
 @tailwind utilities;
 
 .url {
-    @apply flex select-none items-center gap-2 border-b-2 border-transparent p-2 duration-300 ease-in-out focus-within:border-slate-400 focus-within:bg-slate-100 dark:focus-within:bg-slate-900;
+    @apply flex select-none items-center gap-2 p-2 duration-300 ease-in-out focus-within:bg-accentLight2 dark:focus-within:bg-accentDark2;
 }
 
 .url-focus {
-    @apply bg-slate-50 dark:bg-slate-950;
+    @apply bg-accentLight3 dark:bg-accentDark3;
+}
+
+.url-blur {
+    @apply bg-white dark:bg-black;
 }
 
 .url-favicon {
