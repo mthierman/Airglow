@@ -57,14 +57,16 @@ export default () => {
 
             if (Object.hasOwn(data, "m_faviconUrl")) {
                 const [first, second] = data.m_faviconUrl;
+                console.log(data.m_faviconUrl);
 
                 if (first.length === 0) {
-                    defaultFavicon();
+                    setFavicon((prevState) => ({ ...prevState, first: defaultFavicon() }));
                 } else {
                     setFavicon((prevState) => ({ ...prevState, first: first }));
                 }
+
                 if (second.length === 0) {
-                    defaultFavicon();
+                    setFavicon((prevState) => ({ ...prevState, second: defaultFavicon() }));
                 } else {
                     setFavicon((prevState) => ({ ...prevState, second: second }));
                 }
