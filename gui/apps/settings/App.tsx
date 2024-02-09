@@ -20,8 +20,6 @@ export default function App() {
         first: "",
         second: "",
     });
-    // const [firstCurrent, setFirstCurrent] = useState("");
-    // const [secondCurrent, setSecondCurrent] = useState("");
 
     useEffect(() => {
         initialize();
