@@ -8,7 +8,7 @@
 
 #include "app.hxx"
 
-auto App::operator()() -> int
+App::App()
 {
     SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
     SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
@@ -17,9 +17,9 @@ auto App::operator()() -> int
     m_settings = std::make_unique<Settings>(hwnd(), m_url, m_colors);
 
     window();
-
-    return glow::message_loop();
 }
+
+auto App::operator()() -> int { return glow::message_loop(); }
 
 auto App::window(uintptr_t id) -> void
 {

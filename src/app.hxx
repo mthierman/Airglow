@@ -24,6 +24,8 @@ struct App : public glow::App<App>
 {
     using glow::App<App>::App;
 
+    App();
+
     auto operator()() -> int;
     auto window(uintptr_t id = glow::random<uintptr_t>()) -> void;
 
