@@ -377,7 +377,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
     auto notification{reinterpret_cast<glow::Notification*>(lParam)};
 
     auto& id{notification->nmhdr.idFrom};
-    auto& code{notification->nmhdr.code};
+    auto code{static_cast<msg>(notification->nmhdr.code)};
     auto& message{notification->message};
 
     switch (code)

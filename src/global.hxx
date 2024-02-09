@@ -71,20 +71,20 @@ struct Dimensions
 
 auto log(std::string string) -> void;
 
-namespace msg
+enum class msg : unsigned int
 {
-inline constexpr unsigned int notify{WM_APP};
-inline constexpr unsigned int settings_toggle{WM_APP + 1};
-inline constexpr unsigned int settings_save{WM_APP + 2};
-inline constexpr unsigned int window_new{WM_APP + 3};
-inline constexpr unsigned int window_close{WM_APP + 4};
-inline constexpr unsigned int setting_change{WM_APP + 5};
-inline constexpr unsigned int dpi_change{WM_APP + 6};
-inline constexpr unsigned int layout_change{WM_APP + 7};
-inline constexpr unsigned int web_message_received{WM_APP + 8};
-inline constexpr unsigned int source_changed{WM_APP + 9};
-inline constexpr unsigned int favicon_changed{WM_APP + 10};
-inline constexpr unsigned int title_changed{WM_APP + 11};
-inline constexpr unsigned int home_changed{WM_APP + 12};
-inline constexpr unsigned int focus_changed{WM_APP + 13};
-} // namespace msg
+    notify = WM_APP,
+    settings_toggle,
+    settings_save,
+    window_new,
+    window_close,
+    setting_change,
+    dpi_change,
+    layout_change,
+    web_message_received,
+    source_changed,
+    favicon_changed,
+    title_changed,
+    home_changed,
+    focus_changed
+};
