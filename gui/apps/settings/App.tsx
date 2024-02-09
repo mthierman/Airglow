@@ -139,7 +139,7 @@ export default function App() {
                 title={sessionStorage.getItem("second")!}
                 onChange={(e) => setUrl((prevState) => ({ ...prevState, second: e.target.value }))}
                 onClick={handleClick}></input>
-            <input className="settings-submit" type="submit" />
+            <input className="settings-submit" type="submit" value="Save" />
         </form>
     );
 }
