@@ -120,7 +120,7 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
     auto notification{reinterpret_cast<glow::Notification*>(lParam)};
 
-    auto code{static_cast<CODE>(notification->nmhdr.code)};
+    auto& code{notification->code};
     auto& message{notification->message};
 
     switch (code)
