@@ -269,6 +269,19 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
             {
                 m_layout.swapped = !m_layout.swapped;
 
+                if (!m_layout.split)
+                {
+                    if (!m_layout.swapped)
+                    {
+                        m_browsers.first->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+                    }
+
+                    else if (m_layout.swapped)
+                    {
+                        m_browsers.second->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+                    }
+                }
+
                 notify(hwnd(), msg::layout_change);
 
                 break;
