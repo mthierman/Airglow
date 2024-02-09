@@ -240,6 +240,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
                 if (GetKeyState(VK_CONTROL) & 0x8000)
                 {
                     m_browsers.url->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+                    m_browsers.url->post_json(json{{"focus", m_focus}});
                 }
 
                 break;

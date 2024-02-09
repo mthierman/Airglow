@@ -111,11 +111,19 @@ export default function App() {
                         ...prevState,
                         first: sessionStorage.getItem("first")!,
                     }));
+                    inputFirst.current?.setSelectionRange(
+                        inputFirst.current.value.length,
+                        inputFirst.current.value.length,
+                    );
                 } else if (document.activeElement === inputSecond.current) {
                     setUrl((prevState) => ({
                         ...prevState,
                         second: sessionStorage.getItem("second")!,
                     }));
+                    inputSecond.current?.setSelectionRange(
+                        inputSecond.current.value.length,
+                        inputSecond.current.value.length,
+                    );
                 }
             }
         };
