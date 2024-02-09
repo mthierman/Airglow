@@ -3,10 +3,11 @@ import * as url from "@libs/url";
 import { getColorStorage, applyColors, initialize } from "@libs/index";
 
 export default function App() {
-    const [colors, setColors] = useState<App.Colors>(getColorStorage());
     const form = useRef<HTMLFormElement | null>(null);
-    const first = useRef<HTMLInputElement | null>(null);
-    const second = useRef<HTMLInputElement | null>(null);
+    const inputFirst = useRef<HTMLInputElement | null>(null);
+    const inputSecond = useRef<HTMLInputElement | null>(null);
+
+    const [colors, setColors] = useState<App.Colors>(getColorStorage());
     const [firstCurrent, setFirstCurrent] = useState("");
     const [secondCurrent, setSecondCurrent] = useState("");
 
@@ -39,9 +40,9 @@ export default function App() {
 
         const onEscape = (event: KeyboardEvent) => {
             if (event.key === "Escape") {
-                if (document.activeElement === first.current) {
+                if (document.activeElement === inputFirst.current) {
                     setFirstCurrent(sessionStorage.getItem("first")!);
-                } else if (document.activeElement === second.current) {
+                } else if (document.activeElement === inputSecond.current) {
                     setSecondCurrent(sessionStorage.getItem("second")!);
                 }
             }
@@ -57,14 +58,14 @@ export default function App() {
     });
 
     const submitFirst = () => {
-        const parsed = url.parseUrl(first.current?.value!).href;
+        const parsed = url.parseUrl(inputFirst.current?.value!).href;
         setFirstCurrent(parsed);
         sessionStorage.setItem("first", parsed);
         window.chrome.webview.postMessage({ first: parsed });
     };
 
     const submitSecond = () => {
-        const parsed = url.parseUrl(second.current?.value!).href;
+        const parsed = url.parseUrl(inputSecond.current?.value!).href;
         setSecondCurrent(parsed);
         sessionStorage.setItem("second", parsed);
         window.chrome.webview.postMessage({ second: parsed });
@@ -73,9 +74,9 @@ export default function App() {
     const handleSubmit = (event: SyntheticEvent) => {
         event.preventDefault();
 
-        if (document.activeElement === first.current) {
+        if (document.activeElement === inputFirst.current) {
             submitFirst();
-        } else if (document.activeElement === second.current) {
+        } else if (document.activeElement === inputSecond.current) {
             submitSecond();
         } else {
             submitFirst();
@@ -86,9 +87,9 @@ export default function App() {
     const handleClick = async (event: SyntheticEvent) => {
         let nativeEvent = event.nativeEvent as MouseEvent;
 
-        if (document.activeElement === first.current) {
+        if (document.activeElement === inputFirst.current) {
             if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(firstCurrent);
-        } else if (document.activeElement === second.current) {
+        } else if (document.activeElement === inputSecond.current) {
             if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(secondCurrent);
         }
     };
@@ -105,7 +106,7 @@ export default function App() {
             <h1 className="settings-title">🌆First Home</h1>
             <input
                 className="settings-input"
-                ref={first}
+                ref={inputFirst}
                 id="first"
                 type="text"
                 value={firstCurrent}
@@ -116,7 +117,7 @@ export default function App() {
             <h1 className="settings-title">🌃Second Home</h1>
             <input
                 className="settings-input"
-                ref={second}
+                ref={inputSecond}
                 id="second"
                 type="text"
                 value={secondCurrent}
