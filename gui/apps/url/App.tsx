@@ -57,19 +57,14 @@ export default () => {
 
             if (Object.hasOwn(data, "m_faviconUrl")) {
                 const [first, second] = data.m_faviconUrl;
-                console.log(data.m_faviconUrl);
 
-                if (first.length === 0) {
-                    setFavicon((prevState) => ({ ...prevState, first: defaultFavicon() }));
-                } else {
-                    setFavicon((prevState) => ({ ...prevState, first: first }));
-                }
+                first.length === 0
+                    ? setFavicon((prevState) => ({ ...prevState, first: defaultFavicon() }))
+                    : setFavicon((prevState) => ({ ...prevState, first: first }));
 
-                if (second.length === 0) {
-                    setFavicon((prevState) => ({ ...prevState, second: defaultFavicon() }));
-                } else {
-                    setFavicon((prevState) => ({ ...prevState, second: second }));
-                }
+                second.length === 0
+                    ? setFavicon((prevState) => ({ ...prevState, second: defaultFavicon() }))
+                    : setFavicon((prevState) => ({ ...prevState, second: second }));
             }
 
             if (Object.hasOwn(data, "m_focus")) {
@@ -82,12 +77,10 @@ export default () => {
 
             if (Object.hasOwn(data, "m_colors")) {
                 setColors(data.m_colors.colors);
-                sessionStorage.setItem("colors", JSON.stringify(data.m_colors.colors));
             }
 
             if (Object.hasOwn(data, "m_layout")) {
                 setLayout(data.m_layout);
-                sessionStorage.setItem("layout", JSON.stringify(data.m_layout));
             }
 
             if (Object.hasOwn(data, "navigate")) {
