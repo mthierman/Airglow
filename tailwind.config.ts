@@ -1,20 +1,15 @@
 import type { Config } from "tailwindcss";
-import Flexoki from "./gui/libs/flexoki";
 
 export default {
     content: ["./gui/**/*.{html,js,jsx,ts,tsx}"],
     theme: {
         fontFamily: {
-            small: ["Segoe UI Variable Small", "Segoe UI"],
-            text: ["Segoe UI Variable Text", "Segoe UI"],
-            sans: ["Segoe UI Variable Text", "Segoe UI"],
-            display: ["Segoe UI Variable Display", "Segoe UI"],
-            serif: ["Cambria", "Noto Emoji"],
-            mono: ["Cascadia Code", "Noto Emoji"],
+            sans: ["Segoe UI"],
+            serif: ["Cambria"],
+            mono: ["Cascadia Code"],
         },
         extend: {
             colors: {
-                ...Flexoki,
                 accent: "var(--accent)",
                 accentDark1: "var(--accentDark1)",
                 accentDark2: "var(--accentDark2)",

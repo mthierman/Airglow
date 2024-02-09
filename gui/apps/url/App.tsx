@@ -1,8 +1,9 @@
+import "@css/index.css";
 import { SyntheticEvent, useState, useRef, useEffect } from "react";
 import { parseUrl } from "@libs/url";
 import { initialize, applyColors, defaultFavicon } from "@libs/index";
 
-export default function App() {
+export default () => {
     const form = useRef<HTMLFormElement | null>(null);
     const inputFirst = useRef<HTMLInputElement | null>(null);
     const inputSecond = useRef<HTMLInputElement | null>(null);
@@ -245,4 +246,4 @@ export default function App() {
             </form>
         </>
     );
-}
+};
