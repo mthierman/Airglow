@@ -367,8 +367,6 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
     auto& code{notification->nmhdr.code};
     auto& message{notification->message};
 
-    OutputDebugStringA(notification->message.c_str());
-
     switch (code)
     {
         case msg::web_message_received:
