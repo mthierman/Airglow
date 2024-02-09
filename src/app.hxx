@@ -22,16 +22,13 @@
 
 struct App : public glow::App<App>
 {
-    using glow::App<App>::App;
-
     App();
 
-    auto operator()() -> int;
-    auto window(uintptr_t id = glow::random<uintptr_t>()) -> void;
+    auto make_settings() -> void;
+    auto make_window() -> void;
 
     auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     auto on_notify(WPARAM wParam, LPARAM lParam) -> int;
-    auto on_setting_change(WPARAM wParam, LPARAM lParam) -> int;
 
     glow::GdiPlus m_gdiInit;
     glow::CoInitialize m_coInit;

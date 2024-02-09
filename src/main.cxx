@@ -12,5 +12,8 @@ auto main() -> int
 {
     App app;
 
+    app.make_settings();
+    app.make_window();
+
     return app();
 }

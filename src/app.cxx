@@ -13,16 +13,13 @@ App::App()
     SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
     SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
                             "--allow-file-access-from-files");
-
-    m_settings = std::make_unique<Settings>(hwnd(), m_url, m_colors);
-
-    window();
 }
 
-auto App::operator()() -> int { return glow::message_loop(); }
+auto App::make_settings() -> void { m_settings = std::make_unique<Settings>(hwnd(), m_url, m_colors); }
 
-auto App::window(uintptr_t id) -> void
+auto App::make_window() -> void
 {
+    auto id{glow::random<uintptr_t>()};
     m_windows[id] = std::make_unique<Window>(hwnd(), m_url, m_colors, id);
     m_windows[id]->reveal();
 }
@@ -76,7 +73,7 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         case WINDOW_NEW:
         {
-            window();
+            make_window();
 
             break;
         }
