@@ -65,7 +65,6 @@ auto Browser::web_message_received_handler(ICoreWebView2* sender,
     wil::unique_cotaskmem_string message;
     if (FAILED(args->get_WebMessageAsJson(&message))) { return S_OK; }
 
-    // notify(m_parent, msg::web_message_received, glow::string(message.get()));
     notify(m_parent, CODE::WEB_MESSAGE_RECEIVED, glow::string(message.get()));
 
     return S_OK;
