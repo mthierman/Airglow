@@ -23,8 +23,8 @@ using json = nlohmann::json;
 
 struct Browsers
 {
-    std::unique_ptr<MainBrowser> first;
-    std::unique_ptr<SideBrowser> second;
+    std::unique_ptr<Browser> first;
+    std::unique_ptr<Browser> second;
     std::unique_ptr<URLBrowser> url;
 };
 

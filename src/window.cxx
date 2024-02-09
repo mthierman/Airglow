@@ -15,10 +15,10 @@ Window::Window(HWND app, URL& url, glow::Colors& colors, uintptr_t id)
     dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
     theme();
 
-    m_browsers.first = std::make_unique<MainBrowser>(hwnd());
+    m_browsers.first = std::make_unique<Browser>(hwnd());
     m_browsers.first->reveal();
 
-    m_browsers.second = std::make_unique<SideBrowser>(hwnd());
+    m_browsers.second = std::make_unique<Browser>(hwnd());
     m_browsers.second->reveal();
 
     m_browsers.url = std::make_unique<URLBrowser>(hwnd());

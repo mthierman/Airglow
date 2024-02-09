@@ -54,13 +54,3 @@ struct SettingsBrowser final : public Browser
 
     virtual auto initialized() -> void override;
 };
-
-struct MainBrowser final : public Browser
-{
-    using Browser::Browser;
-};
-
-struct SideBrowser final : public Browser
-{
-    using Browser::Browser;
-};
