@@ -109,7 +109,7 @@ auto Settings::on_dpi_changed(WPARAM wParam, LPARAM lParam) -> int
     dpi();
     scale();
 
-    notify(m_app, msg::dpi_change);
+    notify(m_app, CODE::DPI_CHANGE);
 
     return 0;
 }
@@ -120,12 +120,14 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
     auto notification{reinterpret_cast<glow::Notification*>(lParam)};
 
-    auto code{static_cast<msg>(notification->nmhdr.code)};
+    auto code{static_cast<CODE>(notification->nmhdr.code)};
     auto& message{notification->message};
 
     switch (code)
     {
-        case msg::web_message_received:
+        using enum CODE;
+
+        case WEB_MESSAGE_RECEIVED:
         {
             auto webMessage{json::parse(message)};
 
@@ -139,13 +141,13 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
             else if (webMessage.contains("first"))
             {
                 m_url.home.first = webMessage["first"].get<std::string>();
-                notify(m_app, msg::settings_save);
+                notify(m_app, CODE::SETTINGS_SAVE);
             }
 
             else if (webMessage.contains("second"))
             {
                 m_url.home.second = webMessage["second"].get<std::string>();
-                notify(m_app, msg::settings_save);
+                notify(m_app, CODE::SETTINGS_SAVE);
             }
 
             break;
@@ -178,21 +180,21 @@ auto Settings::on_key_down(WPARAM wParam, LPARAM lParam) -> int
         {
             case VK_PAUSE:
             {
-                notify(m_app, msg::settings_toggle);
+                notify(m_app, CODE::SETTINGS_TOGGLE);
 
                 break;
             }
 
             case 0x57:
             {
-                if (GetKeyState(VK_CONTROL) & 0x8000) { notify(m_app, msg::settings_toggle); }
+                if (GetKeyState(VK_CONTROL) & 0x8000) { notify(m_app, CODE::SETTINGS_TOGGLE); }
 
                 break;
             }
 
             case VK_F4:
             {
-                if (GetKeyState(VK_MENU) & 0x8000) { notify(m_app, msg::settings_toggle); }
+                if (GetKeyState(VK_MENU) & 0x8000) { notify(m_app, CODE::SETTINGS_TOGGLE); }
 
                 break;
             }
@@ -207,7 +209,7 @@ auto Settings::on_setting_change(WPARAM wParam, LPARAM lParam) -> int
     theme();
     if (m_browser) { m_browser->post_json(json(*this)); }
 
-    notify(m_app, msg::setting_change);
+    notify(m_app, CODE::SETTING_CHANGE);
 
     return 0;
 }

@@ -65,7 +65,8 @@ auto Browser::web_message_received_handler(ICoreWebView2* sender,
     wil::unique_cotaskmem_string message;
     if (FAILED(args->get_WebMessageAsJson(&message))) { return S_OK; }
 
-    notify(m_parent, msg::web_message_received, glow::string(message.get()));
+    // notify(m_parent, msg::web_message_received, glow::string(message.get()));
+    notify(m_parent, CODE::WEB_MESSAGE_RECEIVED, glow::string(message.get()));
 
     return S_OK;
 }
@@ -78,7 +79,7 @@ auto Browser::source_changed_handler(ICoreWebView2* sender,
 
     m_source.assign(glow::string(source.get()));
 
-    notify(m_parent, msg::source_changed);
+    notify(m_parent, CODE::SOURCE_CHANGED);
 
     return S_OK;
 }
@@ -90,7 +91,7 @@ auto Browser::document_title_changed_handler(ICoreWebView2* sender, IUnknown* ar
 
     m_documentTitle.assign(glow::string(documentTitle.get()));
 
-    notify(m_parent, msg::title_changed);
+    notify(m_parent, CODE::TITLE_CHANGED);
 
     return S_OK;
 }
@@ -113,7 +114,7 @@ auto Browser::favicon_changed_handler(ICoreWebView2* sender, IUnknown* args) -> 
 
                     iconBitmap.GetHICON(&m_favicon);
 
-                    notify(m_parent, msg::favicon_changed);
+                    notify(m_parent, CODE::FAVICON_CHANGED);
 
                     return S_OK;
                 })
@@ -127,7 +128,7 @@ auto Browser::favicon_changed_handler(ICoreWebView2* sender, IUnknown* args) -> 
 
 auto Browser::got_focus_handler(ICoreWebView2Controller* sender, IUnknown* args) -> HRESULT
 {
-    notify(m_parent, msg::focus_changed);
+    notify(m_parent, CODE::FOCUS_CHANGED);
 
     return S_OK;
 }

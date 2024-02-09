@@ -192,7 +192,7 @@ auto Window::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 
 auto Window::on_close(WPARAM wParam, LPARAM lParam) -> int
 {
-    notify(m_app, msg::window_close);
+    notify(m_app, CODE::WINDOW_CLOSE);
 
     return close();
 }
@@ -230,7 +230,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
         {
             case VK_PAUSE:
             {
-                notify(m_app, msg::settings_toggle);
+                notify(m_app, CODE::SETTINGS_TOGGLE);
 
                 break;
             }
@@ -248,7 +248,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
             case 0x4E:
             {
-                if (GetKeyState(VK_CONTROL) & 0x8000) { notify(m_app, msg::window_new); }
+                if (GetKeyState(VK_CONTROL) & 0x8000) { notify(m_app, CODE::WINDOW_NEW); }
 
                 break;
             }
@@ -282,7 +282,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
                     }
                 }
 
-                notify(hwnd(), msg::layout_change);
+                notify(hwnd(), CODE::LAYOUT_CHANGE);
 
                 break;
             }
@@ -291,7 +291,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
             {
                 m_layout.split = !m_layout.split;
 
-                notify(hwnd(), msg::layout_change);
+                notify(hwnd(), CODE::LAYOUT_CHANGE);
 
                 break;
             }
@@ -300,7 +300,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
             {
                 if (m_layout.split) { m_layout.horizontal = !m_layout.horizontal; }
 
-                notify(hwnd(), msg::layout_change);
+                notify(hwnd(), CODE::LAYOUT_CHANGE);
 
                 break;
             }
@@ -319,7 +319,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
                     m_position.maximize = !m_position.maximize;
                     maximize();
 
-                    notify(hwnd(), msg::layout_change);
+                    notify(hwnd(), CODE::LAYOUT_CHANGE);
                 }
 
                 break;
@@ -345,7 +345,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
                 m_position.topmost = !m_position.topmost;
                 topmost();
 
-                notify(hwnd(), msg::layout_change);
+                notify(hwnd(), CODE::LAYOUT_CHANGE);
 
                 break;
             }
@@ -355,7 +355,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
                 m_position.fullscreen = !m_position.fullscreen;
                 fullscreen();
 
-                notify(hwnd(), msg::layout_change);
+                notify(hwnd(), CODE::LAYOUT_CHANGE);
 
                 break;
             }
@@ -377,12 +377,14 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
     auto notification{reinterpret_cast<glow::Notification*>(lParam)};
 
     auto& id{notification->nmhdr.idFrom};
-    auto code{static_cast<msg>(notification->nmhdr.code)};
+    auto code{static_cast<CODE>(notification->nmhdr.code)};
     auto& message{notification->message};
 
     switch (code)
     {
-        case msg::web_message_received:
+        using enum CODE;
+
+        case WEB_MESSAGE_RECEIVED:
         {
             auto webMessage{json::parse(message)};
 
@@ -423,7 +425,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
             break;
         }
 
-        case msg::source_changed:
+        case SOURCE_CHANGED:
         {
             if (id == m_browsers.first->id()) { m_url.current.first = m_browsers.first->m_source; }
 
@@ -434,12 +436,12 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
             m_browsers.url->post_json(json(*this));
 
-            notify(m_app, msg::settings_save);
+            notify(m_app, SETTINGS_SAVE);
 
             break;
         }
 
-        case msg::favicon_changed:
+        case FAVICON_CHANGED:
         {
             if (id == m_browsers.first->id())
             {
@@ -460,7 +462,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
             break;
         }
 
-        case msg::title_changed:
+        case TITLE_CHANGED:
         {
             if (id == m_browsers.first->id())
             {
@@ -479,7 +481,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
             break;
         }
 
-        case msg::focus_changed:
+        case FOCUS_CHANGED:
         {
             if (id == m_browsers.first->id()) { m_focus = "first"; }
 
@@ -492,7 +494,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
             break;
         }
 
-        case msg::layout_change:
+        case LAYOUT_CHANGE:
         {
             PostMessageA(hwnd(), WM_SIZE, 0, 0);
             update_caption();

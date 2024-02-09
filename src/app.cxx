@@ -42,18 +42,20 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
     auto notification{reinterpret_cast<glow::Notification*>(lParam)};
 
     auto& id{notification->nmhdr.idFrom};
-    auto code{static_cast<msg>(notification->nmhdr.code)};
+    auto code{static_cast<CODE>(notification->nmhdr.code)};
 
     switch (code)
     {
-        case msg::setting_change:
+        using enum CODE;
+
+        case SETTING_CHANGE:
         {
             m_colors.update();
 
             break;
         }
 
-        case msg::settings_toggle:
+        case SETTINGS_TOGGLE:
         {
             m_settings->visible() ? m_settings->hide() : m_settings->show();
 
@@ -65,21 +67,21 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
             break;
         }
 
-        case msg::settings_save:
+        case SETTINGS_SAVE:
         {
             m_settings->save();
 
             break;
         }
 
-        case msg::window_new:
+        case WINDOW_NEW:
         {
             window();
 
             break;
         }
 
-        case msg::window_close:
+        case WINDOW_CLOSE:
         {
             m_windows.erase(id);
 

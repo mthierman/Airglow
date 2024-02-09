@@ -71,20 +71,19 @@ struct Dimensions
 
 auto log(std::string string) -> void;
 
-enum class msg : unsigned int
+enum class CODE : unsigned int
 {
-    notify = WM_APP,
-    settings_toggle,
-    settings_save,
-    window_new,
-    window_close,
-    setting_change,
-    dpi_change,
-    layout_change,
-    web_message_received,
-    source_changed,
-    favicon_changed,
-    title_changed,
-    home_changed,
-    focus_changed
+    SETTINGS_TOGGLE = WM_APP,
+    SETTINGS_SAVE,
+    WINDOW_NEW,
+    WINDOW_CLOSE,
+    SETTING_CHANGE,
+    DPI_CHANGE,
+    LAYOUT_CHANGE,
+    WEB_MESSAGE_RECEIVED,
+    SOURCE_CHANGED,
+    FAVICON_CHANGED,
+    TITLE_CHANGED,
+    HOME_CHANGED,
+    FOCUS_CHANGED
 };
