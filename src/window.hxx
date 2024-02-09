@@ -45,21 +45,19 @@ struct Window : public glow::Window<Window>
     auto on_size(WPARAM wParam, LPARAM lParam) -> int;
     auto on_sys_key_down(WPARAM wParam, LPARAM lParam) -> int;
 
+    auto update_caption() -> void;
+
     HWND m_app;
     URL& m_url;
     glow::Colors& m_colors;
-
+    bool m_init{};
     Browsers m_browsers;
     Positions m_positions;
     Layout m_layout;
-    // glow::Colors m_colors;
-
-    bool m_init{};
-
     std::pair<std::string, std::string> m_title{"Airglow", "Airglow"};
     std::pair<wil::unique_hicon, wil::unique_hicon> m_favicon;
     std::pair<std::string, std::string> m_faviconUrl;
-    std::string m_focus;
+    std::string m_focus{"first"};
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(Window, m_colors, m_faviconUrl, m_focus, m_layout, m_url)
 };

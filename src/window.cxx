@@ -192,7 +192,7 @@ auto Window::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 
 auto Window::on_close(WPARAM wParam, LPARAM lParam) -> int
 {
-    notify(m_app, msg::close_window);
+    notify(m_app, msg::window_close);
 
     return close();
 }
@@ -230,7 +230,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
         {
             case VK_PAUSE:
             {
-                notify(m_app, msg::toggle_settings);
+                notify(m_app, msg::settings_toggle);
 
                 break;
             }
@@ -239,11 +239,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
             {
                 if (GetKeyState(VK_CONTROL) & 0x8000)
                 {
-                    if (m_browsers.url)
-                    {
-                        m_browsers.url->post_json(json{{"focus", m_focus}});
-                        m_browsers.url->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-                    }
+                    m_browsers.url->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
                 }
 
                 break;
@@ -251,7 +247,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
             case 0x4E:
             {
-                if (GetKeyState(VK_CONTROL) & 0x8000) { notify(m_app, msg::new_window); }
+                if (GetKeyState(VK_CONTROL) & 0x8000) { notify(m_app, msg::window_new); }
 
                 break;
             }
@@ -270,17 +266,9 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
             case VK_F1:
             {
-                if (!m_layout.split && m_layout.swapped)
-                {
-                    m_browsers.first->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-                }
-
-                else if (!m_layout.split && !m_layout.swapped)
-                {
-                    m_browsers.second->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-                }
-
                 m_layout.swapped = !m_layout.swapped;
+
+                notify(hwnd(), msg::layout_change);
 
                 break;
             }
@@ -289,12 +277,16 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
             {
                 m_layout.split = !m_layout.split;
 
+                notify(hwnd(), msg::layout_change);
+
                 break;
             }
 
             case VK_F3:
             {
                 if (m_layout.split) { m_layout.horizontal = !m_layout.horizontal; }
+
+                notify(hwnd(), msg::layout_change);
 
                 break;
             }
@@ -312,6 +304,8 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
                 {
                     m_position.maximize = !m_position.maximize;
                     maximize();
+
+                    notify(hwnd(), msg::layout_change);
                 }
 
                 break;
@@ -337,6 +331,8 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
                 m_position.topmost = !m_position.topmost;
                 topmost();
 
+                notify(hwnd(), msg::layout_change);
+
                 break;
             }
 
@@ -344,6 +340,8 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
             {
                 m_position.fullscreen = !m_position.fullscreen;
                 fullscreen();
+
+                notify(hwnd(), msg::layout_change);
 
                 break;
             }
@@ -355,22 +353,20 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
         }
     }
 
-    if (m_browsers.url) { m_browsers.url->post_json(json(*this)); }
-
-    PostMessageA(hwnd(), WM_SIZE, 0, 0);
-    notify(hwnd(), msg::title_changed);
-    notify(hwnd(), msg::favicon_changed);
-
     return 0;
 }
 
 auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 {
+    if (!m_browsers.url) { return 0; }
+
     auto notification{reinterpret_cast<glow::Notification*>(lParam)};
 
     auto& id{notification->nmhdr.idFrom};
     auto& code{notification->nmhdr.code};
     auto& message{notification->message};
+
+    OutputDebugStringA(notification->message.c_str());
 
     switch (code)
     {
@@ -385,9 +381,8 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
                     m_init = true;
                     m_browsers.url->post_json(json{{"navigate", m_url.current}});
                     m_browsers.first->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+                    m_browsers.url->post_json(json(*this));
                 }
-
-                if (m_browsers.url) { m_browsers.url->post_json(json(*this)); }
             }
 
             else if (webMessage.contains("height"))
@@ -417,8 +412,6 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         case msg::source_changed:
         {
-            if (!m_browsers.url) { break; }
-
             if (id == m_browsers.first->id()) { m_url.current.first = m_browsers.first->m_source; }
 
             else if (id == m_browsers.second->id())
@@ -428,15 +421,13 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
             m_browsers.url->post_json(json(*this));
 
-            notify(m_app, msg::save_settings);
+            notify(m_app, msg::settings_save);
 
             break;
         }
 
         case msg::favicon_changed:
         {
-            if (!m_browsers.url) { break; }
-
             if (id == m_browsers.first->id())
             {
                 m_favicon.first.reset(m_browsers.first->m_favicon.get());
@@ -449,29 +440,15 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
                 m_faviconUrl.second.assign(m_browsers.second->m_faviconUrl);
             }
 
-            if (!m_layout.swapped && !m_position.fullscreen)
-            {
-                PostMessageA(hwnd(), WM_SETICON, ICON_SMALL,
-                             reinterpret_cast<LPARAM>(m_favicon.first.get()));
-                PostMessageA(hwnd(), WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(m_hicon.get()));
-            }
-
-            else if (!m_position.fullscreen)
-            {
-                PostMessageA(hwnd(), WM_SETICON, ICON_SMALL,
-                             reinterpret_cast<LPARAM>(m_favicon.second.get()));
-                PostMessageA(hwnd(), WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(m_hicon.get()));
-            }
-
             m_browsers.url->post_json(json(*this));
+
+            update_caption();
 
             break;
         }
 
         case msg::title_changed:
         {
-            if (!m_browsers.url) { break; }
-
             if (id == m_browsers.first->id())
             {
                 m_title.first.assign(m_browsers.first->m_documentTitle);
@@ -482,21 +459,9 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
                 m_title.second.assign(m_browsers.second->m_documentTitle);
             }
 
-            if (!m_layout.swapped)
-            {
-                if (!m_browsers.first->m_documentTitle.empty())
-                {
-                    title(m_browsers.first->m_documentTitle);
-                }
-            }
+            m_browsers.url->post_json(json(*this));
 
-            else
-            {
-                if (!m_browsers.second->m_documentTitle.empty())
-                {
-                    title(m_browsers.second->m_documentTitle);
-                }
-            }
+            update_caption();
 
             break;
         }
@@ -513,6 +478,16 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
             break;
         }
+
+        case msg::layout_change:
+        {
+            PostMessageA(hwnd(), WM_SIZE, 0, 0);
+            update_caption();
+
+            m_browsers.url->post_json(json(*this));
+
+            break;
+        }
     }
 
     return 0;
@@ -520,9 +495,8 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
 auto Window::on_setting_change(WPARAM wParam, LPARAM lParam) -> int
 {
-    notify(m_app, msg::settings_change);
     theme();
-    if (m_browsers.url) { m_browsers.url->post_json(json(*this)); }
+    notify(hwnd());
 
     return 0;
 }
@@ -555,4 +529,28 @@ auto Window::on_sys_key_down(WPARAM wParam, LPARAM lParam) -> int
     }
 
     return 0;
+}
+
+auto Window::update_caption() -> void
+{
+    if (!m_position.fullscreen)
+    {
+        if (!m_layout.swapped)
+        {
+            PostMessageA(hwnd(), WM_SETICON, ICON_SMALL,
+                         reinterpret_cast<LPARAM>(m_favicon.first.get()));
+            PostMessageA(hwnd(), WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(m_hicon.get()));
+        }
+
+        else
+        {
+            PostMessageA(hwnd(), WM_SETICON, ICON_SMALL,
+                         reinterpret_cast<LPARAM>(m_favicon.second.get()));
+            PostMessageA(hwnd(), WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(m_hicon.get()));
+        }
+    }
+
+    if (!m_layout.swapped) { title(m_title.first); }
+
+    else { title(m_title.second); }
 }

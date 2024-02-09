@@ -31,15 +31,6 @@ Keys::Keys()
 
 URL::URL() : home{"about:blank", "about:blank"}, current{"about:blank", "about:blank"} {}
 
-auto URL::homepage() -> std::string
-{
-#if defined(_DEBUG)
-    return "https://localhost:8000/home/index.html";
-#else
-    return "file:///" + glow::app_path().generic_string() + "/gui/home/index.html";
-#endif
-}
-
 Layout::Layout() : bar{}, border{2}, horizontal{}, split{}, swapped{} {}
 
 Dimensions::Dimensions() : devicePixelRatio{}, offsetHeight{}, offsetWidth{} {}

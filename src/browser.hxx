@@ -16,15 +16,12 @@ struct Browser : public glow::WebView<Browser>
 {
     using glow::WebView<Browser>::WebView;
 
-    virtual auto web_message_received_handler(ICoreWebView2* sender,
-                                              ICoreWebView2WebMessageReceivedEventArgs* args)
-        -> HRESULT override;
     virtual auto accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
                                                  ICoreWebView2AcceleratorKeyPressedEventArgs* args)
         -> HRESULT override;
-    virtual auto zoom_factor_changed_handler(ICoreWebView2Controller* sender, IUnknown* args)
+    virtual auto web_message_received_handler(ICoreWebView2* sender,
+                                              ICoreWebView2WebMessageReceivedEventArgs* args)
         -> HRESULT override;
-
     virtual auto source_changed_handler(ICoreWebView2* sender,
                                         ICoreWebView2SourceChangedEventArgs* args)
         -> HRESULT override;
@@ -38,6 +35,8 @@ struct Browser : public glow::WebView<Browser>
     virtual auto move_focus_requested_handler(ICoreWebView2Controller* sender,
                                               ICoreWebView2MoveFocusRequestedEventArgs* args)
         -> ::HRESULT override;
+    virtual auto zoom_factor_changed_handler(ICoreWebView2Controller* sender, IUnknown* args)
+        -> HRESULT override;
 
     auto url(std::string compare) -> std::string;
 };

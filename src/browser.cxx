@@ -8,27 +8,6 @@
 
 #include "browser.hxx"
 
-auto Browser::web_message_received_handler(ICoreWebView2* sender,
-                                           ICoreWebView2WebMessageReceivedEventArgs* args)
-    -> HRESULT
-{
-    wil::unique_cotaskmem_string source;
-    if (FAILED(args->get_Source(&source))) { return S_OK; }
-
-    if (!(std::wstring_view(source.get()) == glow::wstring(url("url")) ||
-          std::wstring_view(source.get()) == glow::wstring(url("settings"))))
-    {
-        return S_OK;
-    }
-
-    wil::unique_cotaskmem_string message;
-    if (FAILED(args->get_WebMessageAsJson(&message))) { return S_OK; }
-
-    notify(m_parent, msg::web_message_received, glow::string(message.get()));
-
-    return S_OK;
-}
-
 auto Browser::accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
                                               ICoreWebView2AcceleratorKeyPressedEventArgs* args)
     -> HRESULT
@@ -70,13 +49,23 @@ auto Browser::accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
     return S_OK;
 }
 
-auto Browser::zoom_factor_changed_handler(ICoreWebView2Controller* sender, IUnknown* args)
+auto Browser::web_message_received_handler(ICoreWebView2* sender,
+                                           ICoreWebView2WebMessageReceivedEventArgs* args)
     -> HRESULT
 {
-    double zoomFactor;
-    if (FAILED(sender->get_ZoomFactor(&zoomFactor))) { return S_OK; }
+    wil::unique_cotaskmem_string source;
+    if (FAILED(args->get_Source(&source))) { return S_OK; }
 
-    zoom(zoomFactor);
+    if (!(std::wstring_view(source.get()) == glow::wstring(url("url")) ||
+          std::wstring_view(source.get()) == glow::wstring(url("settings"))))
+    {
+        return S_OK;
+    }
+
+    wil::unique_cotaskmem_string message;
+    if (FAILED(args->get_WebMessageAsJson(&message))) { return S_OK; }
+
+    notify(m_parent, msg::web_message_received, glow::string(message.get()));
 
     return S_OK;
 }
@@ -140,15 +129,11 @@ auto Browser::got_focus_handler(ICoreWebView2Controller* sender, IUnknown* args)
 {
     notify(m_parent, msg::focus_changed);
 
-    m_focus = true;
-
     return S_OK;
 }
 
 auto Browser::lost_focus_handler(ICoreWebView2Controller* sender, IUnknown* args) -> HRESULT
 {
-    m_focus = false;
-
     return S_OK;
 }
 
@@ -170,6 +155,17 @@ auto Browser::move_focus_requested_handler(ICoreWebView2Controller* sender,
     }
 
     args->put_Handled(TRUE);
+
+    return S_OK;
+}
+
+auto Browser::zoom_factor_changed_handler(ICoreWebView2Controller* sender, IUnknown* args)
+    -> HRESULT
+{
+    double zoomFactor;
+    if (FAILED(sender->get_ZoomFactor(&zoomFactor))) { return S_OK; }
+
+    zoom(zoomFactor);
 
     return S_OK;
 }

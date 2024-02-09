@@ -109,11 +109,15 @@ auto Settings::on_dpi_changed(WPARAM wParam, LPARAM lParam) -> int
     dpi();
     scale();
 
+    notify(m_app, msg::dpi_change);
+
     return 0;
 }
 
 auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
 {
+    if (!m_browser) { return 0; }
+
     auto notification{reinterpret_cast<glow::Notification*>(lParam)};
 
     auto& code{notification->nmhdr.code};
@@ -127,20 +131,22 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
             if (webMessage.contains("initialized"))
             {
-                if (m_browser) { m_browser->post_json(json(*this)); }
+                if (!m_init) { m_init = true; }
+
+                m_browser->post_json(json(*this));
             }
 
             else if (webMessage.contains("first"))
             {
                 m_url.home.first = webMessage["first"].get<std::string>();
+                notify(m_app, msg::settings_save);
             }
 
             else if (webMessage.contains("second"))
             {
                 m_url.home.second = webMessage["second"].get<std::string>();
+                notify(m_app, msg::settings_save);
             }
-
-            notify(m_app, msg::save_settings);
 
             break;
         }
@@ -172,21 +178,21 @@ auto Settings::on_key_down(WPARAM wParam, LPARAM lParam) -> int
         {
             case VK_PAUSE:
             {
-                notify(m_app, msg::toggle_settings);
+                notify(m_app, msg::settings_toggle);
 
                 break;
             }
 
             case 0x57:
             {
-                if (GetKeyState(VK_CONTROL) & 0x8000) { notify(m_app, msg::toggle_settings); }
+                if (GetKeyState(VK_CONTROL) & 0x8000) { notify(m_app, msg::settings_toggle); }
 
                 break;
             }
 
             case VK_F4:
             {
-                if (GetKeyState(VK_MENU) & 0x8000) { notify(m_app, msg::toggle_settings); }
+                if (GetKeyState(VK_MENU) & 0x8000) { notify(m_app, msg::settings_toggle); }
 
                 break;
             }
@@ -199,7 +205,9 @@ auto Settings::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 auto Settings::on_setting_change(WPARAM wParam, LPARAM lParam) -> int
 {
     theme();
-    if (m_browser) { m_browser->post_json(json(*this)); }
+    // if (m_browser) { m_browser->post_json(json(*this)); }
+
+    notify(m_app, msg::setting_change);
 
     return 0;
 }

@@ -46,35 +46,40 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
     switch (code)
     {
-        case msg::settings_change:
+        case msg::setting_change:
         {
             m_colors.update();
 
             break;
         }
 
-        case msg::toggle_settings:
+        case msg::settings_toggle:
         {
             m_settings->visible() ? m_settings->hide() : m_settings->show();
+
+            if (m_settings->visible())
+            {
+                m_settings->m_browser->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+            }
 
             break;
         }
 
-        case msg::save_settings:
+        case msg::settings_save:
         {
             m_settings->save();
 
             break;
         }
 
-        case msg::new_window:
+        case msg::window_new:
         {
             window();
 
             break;
         }
 
-        case msg::close_window:
+        case msg::window_close:
         {
             m_windows.erase(id);
 

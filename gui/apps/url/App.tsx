@@ -45,7 +45,7 @@ export default function App() {
     useEffect(() => {
         const onMessage = (event: Event) => {
             const data: App.Window = (event as MessageEvent).data;
-            // console.log(data);
+            console.log(data);
 
             if (Object.hasOwn(data, "m_url")) {
                 const [first, second] = data.m_url.current;
