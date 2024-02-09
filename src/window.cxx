@@ -388,7 +388,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
         {
             if (id == m_browsers.url->id())
             {
-                m_browsers.url->devtools();
+                // m_browsers.url->devtools();
                 m_browsers.url->navigate(m_browsers.url->url("url"));
             }
 
@@ -405,7 +405,6 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
                 {
                     m_init = true;
                     m_browsers.url->post_json(json{{"navigate", m_url.current}});
-                    m_browsers.first->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
                 }
 
                 m_browsers.url->post_json(json(*this));

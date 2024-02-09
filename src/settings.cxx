@@ -176,7 +176,7 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         case BROWSER_INIT:
         {
-            m_browser->devtools();
+            // m_browser->devtools();
             m_browser->navigate(m_browser->url("settings"));
 
             break;
