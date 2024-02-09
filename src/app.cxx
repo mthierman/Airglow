@@ -15,7 +15,10 @@ App::App()
                             "--allow-file-access-from-files");
 }
 
-auto App::make_settings() -> void { m_settings = std::make_unique<Settings>(hwnd(), m_url, m_colors); }
+auto App::make_settings() -> void
+{
+    m_settings = std::make_unique<Settings>(hwnd(), m_url, m_colors);
+}
 
 auto App::make_window() -> void
 {

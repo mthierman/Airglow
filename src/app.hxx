@@ -10,7 +10,6 @@
 
 #include <Windows.h>
 
-#include <filesystem>
 #include <map>
 #include <memory>
 
@@ -32,9 +31,10 @@ struct App : public glow::App<App>
 
     glow::GdiPlus m_gdiInit;
     glow::CoInitialize m_coInit;
-    glow::Colors m_colors;
 
-    URL m_url;
     std::unique_ptr<Settings> m_settings;
     std::unordered_map<uintptr_t, std::unique_ptr<Window>> m_windows;
+
+    glow::Colors m_colors;
+    URL m_url;
 };
