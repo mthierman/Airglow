@@ -40,7 +40,7 @@ Settings::Settings(HWND app, URL& url, glow::Colors& colors)
     }
 
     dwm_caption_color(false);
-    dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_TRANSIENTWINDOW);
+    dwm_system_backdrop(DWMSBT_TRANSIENTWINDOW);
     theme();
 
     SetWindowPos(hwnd(), nullptr, 0, 0, 500, 500, SWP_NOMOVE);

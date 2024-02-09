@@ -12,7 +12,7 @@ Window::Window(HWND app, URL& url, glow::Colors& colors, uintptr_t id)
     : glow::Window<Window>("Airglow", id), m_app{app}, m_url{url}, m_colors{colors}
 {
     dwm_caption_color(false);
-    dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
+    dwm_system_backdrop(DWMSBT_TRANSIENTWINDOW);
     theme();
 
     m_browsers.first = std::make_unique<Browser>(hwnd());
