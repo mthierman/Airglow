@@ -19,14 +19,12 @@ Keys::Keys()
     set.emplace(VK_F2);
     set.emplace(VK_F3);
     set.emplace(VK_F4);
-    // set.emplace(VK_F5);
     set.emplace(VK_F6);
     set.emplace(VK_F7);
     set.emplace(VK_F8);
     set.emplace(VK_F9);
     set.emplace(VK_F10);
     set.emplace(VK_F11);
-    // set.emplace(VK_F12);
 }
 
 URL::URL() : home{"about:blank", "about:blank"}, current{"about:blank", "about:blank"} {}
@@ -34,9 +32,3 @@ URL::URL() : home{"about:blank", "about:blank"}, current{"about:blank", "about:b
 Layout::Layout() : bar{}, border{2}, horizontal{}, split{}, swapped{} {}
 
 Dimensions::Dimensions() : devicePixelRatio{}, offsetHeight{}, offsetWidth{} {}
-
-auto log(std::string string) -> void
-{
-    OutputDebugStringA(string.c_str());
-    OutputDebugStringA("\n");
-}

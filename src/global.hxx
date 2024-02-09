@@ -8,8 +8,6 @@
 
 #pragma once
 
-#include <Windows.h>
-
 #include <set>
 #include <string>
 #include <utility>
@@ -17,6 +15,23 @@
 #include <nlohmann/json.hpp>
 
 #include <glow/glow.hxx>
+
+enum class CODE : unsigned int
+{
+    SETTINGS_TOGGLE = WM_APP,
+    SETTINGS_SAVE,
+    WINDOW_NEW,
+    WINDOW_CLOSE,
+    SETTING_CHANGE,
+    DPI_CHANGE,
+    LAYOUT_CHANGE,
+    WEB_MESSAGE_RECEIVED,
+    SOURCE_CHANGED,
+    FAVICON_CHANGED,
+    TITLE_CHANGED,
+    HOME_CHANGED,
+    FOCUS_CHANGED
+};
 
 struct Keys
 {
@@ -67,23 +82,4 @@ struct Dimensions
     int offsetWidth;
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(Dimensions, devicePixelRatio, offsetHeight, offsetWidth)
-};
-
-auto log(std::string string) -> void;
-
-enum class CODE : unsigned int
-{
-    SETTINGS_TOGGLE = WM_APP,
-    SETTINGS_SAVE,
-    WINDOW_NEW,
-    WINDOW_CLOSE,
-    SETTING_CHANGE,
-    DPI_CHANGE,
-    LAYOUT_CHANGE,
-    WEB_MESSAGE_RECEIVED,
-    SOURCE_CHANGED,
-    FAVICON_CHANGED,
-    TITLE_CHANGED,
-    HOME_CHANGED,
-    FOCUS_CHANGED
 };

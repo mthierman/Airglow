@@ -114,49 +114,6 @@ auto Settings::on_dpi_changed(WPARAM wParam, LPARAM lParam) -> int
     return 0;
 }
 
-auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
-{
-    if (!m_browser) { return 0; }
-
-    auto notification{reinterpret_cast<glow::Notification*>(lParam)};
-
-    auto& code{notification->code};
-    auto& message{notification->message};
-
-    switch (code)
-    {
-        using enum CODE;
-
-        case WEB_MESSAGE_RECEIVED:
-        {
-            auto webMessage{json::parse(message)};
-
-            if (webMessage.contains("initialized"))
-            {
-                if (!m_init) { m_init = true; }
-
-                m_browser->post_json(json(*this));
-            }
-
-            else if (webMessage.contains("first"))
-            {
-                m_url.home.first = webMessage["first"].get<std::string>();
-                notify(m_app, CODE::SETTINGS_SAVE);
-            }
-
-            else if (webMessage.contains("second"))
-            {
-                m_url.home.second = webMessage["second"].get<std::string>();
-                notify(m_app, CODE::SETTINGS_SAVE);
-            }
-
-            break;
-        }
-    }
-
-    return 0;
-}
-
 auto Settings::on_get_min_max_info(WPARAM wParam, LPARAM lParam) -> int
 {
     auto minmax{reinterpret_cast<LPMINMAXINFO>(lParam)};
@@ -198,6 +155,49 @@ auto Settings::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
                 break;
             }
+        }
+    }
+
+    return 0;
+}
+
+auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
+{
+    if (!m_browser) { return 0; }
+
+    auto notification{reinterpret_cast<glow::Notification*>(lParam)};
+
+    auto& code{notification->code};
+    auto& message{notification->message};
+
+    switch (code)
+    {
+        using enum CODE;
+
+        case WEB_MESSAGE_RECEIVED:
+        {
+            auto webMessage{json::parse(message)};
+
+            if (webMessage.contains("initialized"))
+            {
+                if (!m_init) { m_init = true; }
+
+                m_browser->post_json(json(*this));
+            }
+
+            else if (webMessage.contains("first"))
+            {
+                m_url.home.first = webMessage["first"].get<std::string>();
+                notify(m_app, CODE::SETTINGS_SAVE);
+            }
+
+            else if (webMessage.contains("second"))
+            {
+                m_url.home.second = webMessage["second"].get<std::string>();
+                notify(m_app, CODE::SETTINGS_SAVE);
+            }
+
+            break;
         }
     }
 
