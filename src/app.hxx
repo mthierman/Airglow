@@ -23,11 +23,10 @@ struct App : public glow::App<App>
 {
     App();
 
-    auto make_settings() -> void;
-    auto make_window() -> void;
-
     auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     auto on_notify(WPARAM wParam, LPARAM lParam) -> int;
+
+    auto new_window() -> void;
 
     glow::GdiPlus m_gdiInit;
     glow::CoInitialize m_coInit;
