@@ -23,13 +23,13 @@
 }
 
 .settings-input {
-    @apply flex w-full select-none place-content-center items-center text-ellipsis rounded-md border-b-2 border-transparent bg-accentLight2 p-2 font-medium leading-none outline-none duration-300 ease-in-out focus-within:border-accent focus-within:bg-accentLight3 dark:bg-accentDark2 dark:focus-within:bg-accentDark3;
+    @apply flex select-none items-center text-ellipsis rounded-md border-b-2 border-transparent bg-accentLight3 p-2 outline-none duration-300 ease-in-out focus-within:border-accent focus-within:bg-accentLight2 dark:bg-accentDark3 dark:focus-within:bg-accentDark2;
 }
 
 .settings-title {
-    @apply select-none text-xl font-medium;
+    @apply select-none text-lg tracking-wider;
 }
 
 .settings-submit {
-    @apply w-fit place-self-center rounded-md bg-accentLight2 p-2 shadow-lg duration-100 ease-in-out hover:cursor-pointer hover:bg-accentLight3 dark:bg-accentDark2 dark:hover:bg-accentDark3;
+    @apply w-fit place-self-center rounded-md bg-accentLight3 p-2 shadow-lg duration-100 ease-in-out hover:cursor-pointer hover:bg-accentLight2 dark:bg-accentDark3 dark:hover:bg-accentDark2;
 }
