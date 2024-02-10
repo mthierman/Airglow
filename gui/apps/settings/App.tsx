@@ -7,19 +7,18 @@ export default () => {
     const form = useRef<HTMLFormElement | null>(null);
     const inputFirst = useRef<HTMLInputElement | null>(null);
     const inputSecond = useRef<HTMLInputElement | null>(null);
-
-    const [colors, setColors] = useState<App.Colors>({
-        accent: "",
-        accentDark1: "",
-        accentDark2: "",
-        accentDark3: "",
-        accentLight1: "",
-        accentLight2: "",
-        accentLight3: "",
-    });
-    const [url, setUrl] = useState<App.Pair>({
-        first: "",
-        second: "",
+    const [state, setState] = useState<App.State>({
+        args: ["about:blank", "about:blank"],
+        colors: {
+            accent: "",
+            accentDark1: "",
+            accentDark2: "",
+            accentDark3: "",
+            accentLight1: "",
+            accentLight2: "",
+            accentLight3: "",
+        },
+        home: ["about:blank", "about:blank"],
     });
 
     useEffect(() => {
@@ -27,38 +26,30 @@ export default () => {
     }, []);
 
     useEffect(() => {
-        applyColors(colors);
-    }, [colors]);
+        applyColors(state.colors);
+    }, [state.colors]);
 
     useEffect(() => {
         const onMessage = (event: Event) => {
             const data: App.Settings = (event as MessageEvent).data;
-            // console.log(data);
 
-            if (Object.hasOwn(data, "m_colors")) {
-                setColors(data.m_colors.colors);
-                sessionStorage.setItem("colors", JSON.stringify(data.m_colors.colors));
-            }
-
-            if (Object.hasOwn(data, "m_url")) {
-                const [first, second] = data.m_url.home;
-                setUrl((prevState) => ({ ...prevState, first: first, second: second }));
-                sessionStorage.setItem("first", first);
-                sessionStorage.setItem("second", second);
+            if (Object.hasOwn(data, "m_state")) {
+                const state: App.State = data.m_state;
+                setState(state);
             }
         };
 
         const onEscape = (event: KeyboardEvent) => {
             if (event.key === "Escape") {
                 if (document.activeElement === inputFirst.current) {
-                    setUrl((prevState) => ({
+                    setState((prevState) => ({
                         ...prevState,
-                        first: sessionStorage.getItem("first")!,
+                        home: [sessionStorage.getItem("first")!, prevState.home[1]],
                     }));
                 } else if (document.activeElement === inputSecond.current) {
-                    setUrl((prevState) => ({
+                    setState((prevState) => ({
                         ...prevState,
-                        second: sessionStorage.getItem("second")!,
+                        home: [prevState.home[0], sessionStorage.getItem("second")!],
                     }));
                 }
             }
@@ -73,16 +64,26 @@ export default () => {
         };
     });
 
+    const handleChange = (e: SyntheticEvent) => {
+        const target = e.target as HTMLInputElement;
+
+        if (document.activeElement === inputFirst.current) {
+            setState((prevState) => ({ ...prevState, home: [target.value, prevState.home[1]] }));
+        } else if (document.activeElement === inputSecond.current) {
+            setState((prevState) => ({ ...prevState, home: [prevState.home[0], target.value] }));
+        }
+    };
+
     const submitFirst = () => {
         const parsed = parseUrl(inputFirst.current?.value!).href;
-        setUrl((prevState) => ({ ...prevState, first: parsed }));
+        setState((prevState) => ({ ...prevState, home: [parsed, prevState.home[1]] }));
         sessionStorage.setItem("first", parsed);
         window.chrome.webview.postMessage({ first: parsed });
     };
 
     const submitSecond = () => {
         const parsed = parseUrl(inputSecond.current?.value!).href;
-        setUrl((prevState) => ({ ...prevState, second: parsed }));
+        setState((prevState) => ({ ...prevState, home: [prevState.home[0], parsed] }));
         sessionStorage.setItem("second", parsed);
         window.chrome.webview.postMessage({ second: parsed });
     };
@@ -102,11 +103,10 @@ export default () => {
 
     const handleClick = async (event: SyntheticEvent) => {
         let nativeEvent = event.nativeEvent as MouseEvent;
-
         if (document.activeElement === inputFirst.current) {
-            if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(url.first);
+            if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(state.home[0]);
         } else if (document.activeElement === inputSecond.current) {
-            if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(url.second);
+            if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(state.home[1]);
         }
     };
 
@@ -127,12 +127,10 @@ export default () => {
                         ref={inputFirst}
                         id="first"
                         type="text"
-                        value={url.first}
+                        value={state.home[0]}
                         placeholder={sessionStorage.getItem("first")!}
                         title={sessionStorage.getItem("first")!}
-                        onChange={(e) =>
-                            setUrl((prevState) => ({ ...prevState, first: e.target.value }))
-                        }
+                        onChange={handleChange}
                         onClick={handleClick}></input>
                 </label>
                 <label className="settings-spacer">
@@ -142,12 +140,10 @@ export default () => {
                         ref={inputSecond}
                         id="second"
                         type="text"
-                        value={url.second}
+                        value={state.home[1]}
                         placeholder={sessionStorage.getItem("second")!}
                         title={sessionStorage.getItem("second")!}
-                        onChange={(e) =>
-                            setUrl((prevState) => ({ ...prevState, second: e.target.value }))
-                        }
+                        onChange={handleChange}
                         onClick={handleClick}></input>
                 </label>
             </div>

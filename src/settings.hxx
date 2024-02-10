@@ -12,8 +12,9 @@
 
 #include <glow/glow.hxx>
 
-#include "global.hxx"
 #include "browser.hxx"
+#include "global.hxx"
+#include "state.hxx"
 
 using json = nlohmann::json;
 
@@ -21,7 +22,7 @@ struct Settings : public glow::Window<Settings>
 {
     using glow::Window<Settings>::Window;
 
-    Settings(HWND parent);
+    Settings(HWND parent, State& state);
 
     static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
     auto default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
@@ -35,5 +36,9 @@ struct Settings : public glow::Window<Settings>
     auto on_size(WPARAM wParam, LPARAM lParam) -> int;
 
     HWND m_parent;
+    State& m_state;
+
     std::unique_ptr<Browser> m_browser;
+
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Settings, m_state)
 };

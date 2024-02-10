@@ -14,21 +14,11 @@ App::App()
     SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
                             "--allow-file-access-from-files");
 
-    // if (!std::filesystem::exists(file())) { save(); }
+    if (!std::filesystem::exists(file())) { save(); }
 
     // else { load(); }
 
-    auto args{glow::cmd_to_argv()};
-
-    if (args.size() == 2) { m_args.first = args.at(1); }
-
-    else if (args.size() > 2)
-    {
-        m_args.first = args.at(1);
-        m_args.second = args.at(2);
-    }
-
-    m_settings = std::make_unique<Settings>(hwnd());
+    m_settings = std::make_unique<Settings>(hwnd(), m_state);
 }
 
 auto App::wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
@@ -104,6 +94,19 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
     }
 
     return 0;
+}
+
+auto App::parse_args() -> void
+{
+    auto argv{glow::cmd_to_argv()};
+
+    if (argv.size() == 2) { m_state.args.first = argv.at(1); }
+
+    else if (argv.size() > 2)
+    {
+        m_state.args.first = argv.at(1);
+        m_state.args.second = argv.at(2);
+    }
 }
 
 auto App::new_window() -> void

@@ -19,6 +19,7 @@
 
 #include "global.hxx"
 #include "settings.hxx"
+#include "state.hxx"
 #include "window.hxx"
 
 struct App : public glow::App<App>
@@ -28,6 +29,7 @@ struct App : public glow::App<App>
     auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     auto on_notify(WPARAM wParam, LPARAM lParam) -> int;
 
+    auto parse_args() -> void;
     auto new_window() -> void;
     auto data() -> std::filesystem::path;
     auto file() -> std::filesystem::path;
@@ -37,8 +39,7 @@ struct App : public glow::App<App>
     glow::GdiPlus m_gdiInit;
     glow::CoInitialize m_coInit;
 
-    std::pair<std::string, std::string> m_home;
-    std::pair<std::string, std::string> m_args;
+    State m_state;
 
     std::unique_ptr<Settings> m_settings;
     std::unordered_map<uintptr_t, std::unique_ptr<Window>> m_windows;

@@ -8,7 +8,8 @@
 
 #include "settings.hxx"
 
-Settings::Settings(HWND parent) : glow::Window<Settings>("Airglow - Settings"), m_parent{parent}
+Settings::Settings(HWND parent, State& state)
+    : glow::Window<Settings>("Airglow - Settings"), m_parent{parent}, m_state{state}
 {
     dwm_caption_color(false);
     dwm_system_backdrop(DWMSBT_TRANSIENTWINDOW);
@@ -157,19 +158,19 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
         {
             auto webMessage{json::parse(message)};
 
-            // if (webMessage.contains("initialized")) { m_browser->post_json(json(*this)); }
+            if (webMessage.contains("initialized")) { m_browser->post_json(json(*this)); }
 
-            // else if (webMessage.contains("first"))
-            // {
-            //     m_url.home.first = webMessage["first"].get<std::string>();
-            //     notify(m_app, CODE::SETTINGS_SAVE);
-            // }
+            else if (webMessage.contains("first"))
+            {
+                m_state.home.first = webMessage["first"].get<std::string>();
+                notify(m_parent, CODE::SETTINGS_SAVE);
+            }
 
-            // else if (webMessage.contains("second"))
-            // {
-            //     m_url.home.second = webMessage["second"].get<std::string>();
-            //     notify(m_app, CODE::SETTINGS_SAVE);
-            // }
+            else if (webMessage.contains("second"))
+            {
+                m_state.home.second = webMessage["second"].get<std::string>();
+                notify(m_parent, CODE::SETTINGS_SAVE);
+            }
 
             break;
         }

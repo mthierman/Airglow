@@ -24,10 +24,17 @@ export declare global {
         };
     }
 
+    type Pair = [first: string, second: string];
+
     namespace App {
-        interface Pair {
-            first: string;
-            second: string;
+        interface Colors {
+            accent: string;
+            accentDark1: string;
+            accentDark2: string;
+            accentDark3: string;
+            accentLight1: string;
+            accentLight2: string;
+            accentLight3: string;
         }
 
         interface Layout {
@@ -38,20 +45,14 @@ export declare global {
             swapped: boolean;
         }
 
-        interface Dimensions {
-            devicePixelRatio: number;
-            offsetHeight: number;
-            offsetWidth: number;
+        interface State {
+            args: Pair;
+            colors: Colors;
+            home: Pair;
         }
 
-        interface Colors {
-            accent: string;
-            accentDark1: string;
-            accentDark2: string;
-            accentDark3: string;
-            accentLight1: string;
-            accentLight2: string;
-            accentLight3: string;
+        interface Settings {
+            m_state: State;
         }
 
         interface Window {
@@ -67,16 +68,6 @@ export declare global {
             };
             focus: string;
             navigate: [string, string];
-        }
-
-        interface Settings {
-            m_colors: {
-                colors: Colors;
-            };
-            m_url: {
-                current: [string, string];
-                home: [string, string];
-            };
         }
     }
 }
