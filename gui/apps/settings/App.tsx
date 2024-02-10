@@ -104,10 +104,6 @@ export default () => {
         window.chrome.webview.postMessage({ m_state: post } as App.Settings);
     };
 
-    // useEffect(() => {
-    //     window.chrome.webview.postMessage({ m_state: state } as App.Settings);
-    // }, [state]);
-
     const handleClick = async (event: SyntheticEvent) => {
         let nativeEvent = event.nativeEvent as MouseEvent;
         if (document.activeElement === inputFirst.current) {
