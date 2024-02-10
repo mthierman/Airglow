@@ -203,7 +203,7 @@ auto Window::on_dpi_changed(WPARAM wParam, LPARAM lParam) -> int
 
 auto Window::on_get_min_max_info(WPARAM wParam, LPARAM lParam) -> int
 {
-    auto minmax{reinterpret_cast<LPMINMAXINFO>(lParam)};
+    auto minmax{reinterpret_cast<MINMAXINFO*>(lParam)};
 
     minmax->ptMinTrackSize.x = 500;
     minmax->ptMinTrackSize.y = 500;
@@ -213,14 +213,11 @@ auto Window::on_get_min_max_info(WPARAM wParam, LPARAM lParam) -> int
 
 auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 {
-    if (!m_browsers.url) { return 0; }
-
     auto key{static_cast<unsigned int>(wParam)};
-    Keys keys;
 
     if ((HIWORD(lParam) & KF_REPEAT) == KF_REPEAT) { return 0; }
 
-    if (keys.set.contains(key))
+    if (m_keys.set.contains(key))
     {
         switch (key)
         {

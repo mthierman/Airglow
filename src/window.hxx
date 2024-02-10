@@ -84,5 +84,7 @@ struct Window : public glow::Window<Window>
     std::string m_focus;
     bool m_init{};
 
+    Keys m_keys;
+
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(Window, m_faviconUrl, m_focus, m_layout)
 };
