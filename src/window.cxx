@@ -365,21 +365,15 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
 auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 {
-    if (!m_browsers.url) { return 0; }
-
     auto notification{reinterpret_cast<glow::Notification*>(lParam)};
 
-    auto& id{notification->id};
-    auto& code{notification->code};
-    auto& message{notification->message};
-
-    switch (code)
+    switch (notification->code)
     {
         using enum CODE;
 
         case BROWSER_INIT:
         {
-            if (id == m_browsers.url->id())
+            if (notification->id == m_browsers.url->id())
             {
                 // m_browsers.url->devtools();
                 m_browsers.url->navigate(m_browsers.url->url("url"));
@@ -390,7 +384,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         case WEB_MESSAGE_RECEIVED:
         {
-            auto webMessage{json::parse(message)};
+            auto webMessage{json::parse(notification->message)};
 
             if (webMessage.contains("initialized"))
             {
@@ -447,13 +441,13 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         case FAVICON_CHANGED:
         {
-            if (id == m_browsers.first->id())
+            if (notification->id == m_browsers.first->id())
             {
                 m_favicon.first.reset(m_browsers.first->m_favicon.get());
                 m_faviconUrl.first.assign(m_browsers.first->m_faviconUrl);
             }
 
-            else if (id == m_browsers.second->id())
+            else if (notification->id == m_browsers.second->id())
             {
                 m_favicon.second.reset(m_browsers.second->m_favicon.get());
                 m_faviconUrl.second.assign(m_browsers.second->m_faviconUrl);
@@ -468,12 +462,12 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         case TITLE_CHANGED:
         {
-            if (id == m_browsers.first->id())
+            if (notification->id == m_browsers.first->id())
             {
                 m_title.first.assign(m_browsers.first->m_documentTitle);
             }
 
-            else if (id == m_browsers.second->id())
+            else if (notification->id == m_browsers.second->id())
             {
                 m_title.second.assign(m_browsers.second->m_documentTitle);
             }
@@ -487,11 +481,11 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         case FOCUS_CHANGED:
         {
-            if (id == m_browsers.first->id()) { m_focus = "first"; }
+            if (notification->id == m_browsers.first->id()) { m_focus = "first"; }
 
-            else if (id == m_browsers.second->id()) { m_focus = "second"; }
+            else if (notification->id == m_browsers.second->id()) { m_focus = "second"; }
 
-            else if (id == m_browsers.url->id()) { m_focus = "url"; }
+            else if (notification->id == m_browsers.url->id()) { m_focus = "url"; }
 
             m_browsers.url->post_json(json(*this));
 

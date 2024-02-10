@@ -37,10 +37,7 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
 {
     auto notification{reinterpret_cast<glow::Notification*>(lParam)};
 
-    auto& id{notification->id};
-    auto& code{notification->code};
-
-    switch (code)
+    switch (notification->code)
     {
         using enum CODE;
 
@@ -84,7 +81,7 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         case WINDOW_CLOSE:
         {
-            m_windows.erase(id);
+            m_windows.erase(notification->id);
 
             if (m_windows.empty())
             {
