@@ -112,7 +112,7 @@ export default () => {
 
     return (
         <form
-            className="flex flex-grow flex-col place-content-between p-4"
+            className="settings-form"
             ref={form}
             id="form"
             method="post"

@@ -22,6 +22,14 @@
     @apply w-full text-ellipsis bg-transparent outline-none;
 }
 
+.settings-root {
+    @apply flex min-h-screen bg-neutral-50/50 dark:bg-neutral-950/50;
+}
+
+.settings-form {
+    @apply flex flex-grow flex-col place-content-between p-4;
+}
+
 .settings-spacer {
     @apply flex flex-col gap-2;
 }
