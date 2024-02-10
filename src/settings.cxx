@@ -27,7 +27,7 @@ auto CALLBACK Settings::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 
     if (!self) { return true; }
 
-    auto gwlId{static_cast<uintptr_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
+    auto gwlId{static_cast<intptr_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
     auto& rect{self->m_clientRect};
     auto& width{rect.right};
     auto& height{rect.bottom};

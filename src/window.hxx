@@ -54,7 +54,7 @@ struct Window : public glow::Window<Window>
 
     using glow::Window<Window>::Window;
 
-    Window(HWND parent, State& state, uintptr_t id);
+    Window(HWND parent, State& state, intptr_t id);
 
     static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
     auto default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;

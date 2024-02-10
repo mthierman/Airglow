@@ -8,7 +8,7 @@
 
 #include "window.hxx"
 
-Window::Window(HWND parent, State& state, uintptr_t id)
+Window::Window(HWND parent, State& state, intptr_t id)
     : glow::Window<Window>("Airglow", id), m_parent{parent}, m_state{state}
 {
     dwm_caption_color(false);
@@ -31,7 +31,7 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 
     if (!self) { return true; }
 
-    auto gwlId{static_cast<uintptr_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
+    auto gwlId{static_cast<intptr_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
     auto& rect{self->m_clientRect};
     auto& layout{self->m_layout};
 
