@@ -8,37 +8,8 @@
 
 #include "settings.hxx"
 
-Settings::Settings(HWND app, URL& url, glow::Colors& colors)
-    : glow::Window<Settings>("Airglow - Settings"), m_app{app}, m_url{url}, m_colors{colors},
-      m_file{file()}
+Settings::Settings(HWND parent) : glow::Window<Settings>("Airglow - Settings"), m_parent{parent}
 {
-    auto& current{m_url.current};
-    auto& home{m_url.home};
-
-    if (!std::filesystem::exists(m_file)) { save(); }
-
-    else { load(); }
-
-    auto args{glow::cmd_to_argv()};
-
-    if (args.size() == 2)
-    {
-        current.first = args.at(1);
-        current.second = home.second;
-    }
-
-    else if (args.size() > 2)
-    {
-        current.first = args.at(1);
-        current.second = args.at(2);
-    }
-
-    else
-    {
-        current.first = home.first;
-        current.second = home.second;
-    }
-
     dwm_caption_color(false);
     dwm_system_backdrop(DWMSBT_TRANSIENTWINDOW);
     theme();
@@ -109,7 +80,7 @@ auto Settings::on_dpi_changed(WPARAM wParam, LPARAM lParam) -> int
     dpi();
     scale();
 
-    notify(m_app, CODE::DPI_CHANGE);
+    notify(m_parent, CODE::DPI_CHANGE);
 
     return 0;
 }
@@ -137,21 +108,21 @@ auto Settings::on_key_down(WPARAM wParam, LPARAM lParam) -> int
         {
             case VK_PAUSE:
             {
-                notify(m_app, CODE::SETTINGS_TOGGLE);
+                notify(m_parent, CODE::SETTINGS_TOGGLE);
 
                 break;
             }
 
             case 0x57:
             {
-                if (GetKeyState(VK_CONTROL) & 0x8000) { notify(m_app, CODE::SETTINGS_TOGGLE); }
+                if (GetKeyState(VK_CONTROL) & 0x8000) { notify(m_parent, CODE::SETTINGS_TOGGLE); }
 
                 break;
             }
 
             case VK_F4:
             {
-                if (GetKeyState(VK_MENU) & 0x8000) { notify(m_app, CODE::SETTINGS_TOGGLE); }
+                if (GetKeyState(VK_MENU) & 0x8000) { notify(m_parent, CODE::SETTINGS_TOGGLE); }
 
                 break;
             }
@@ -186,19 +157,19 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
         {
             auto webMessage{json::parse(message)};
 
-            if (webMessage.contains("initialized")) { m_browser->post_json(json(*this)); }
+            // if (webMessage.contains("initialized")) { m_browser->post_json(json(*this)); }
 
-            else if (webMessage.contains("first"))
-            {
-                m_url.home.first = webMessage["first"].get<std::string>();
-                notify(m_app, CODE::SETTINGS_SAVE);
-            }
+            // else if (webMessage.contains("first"))
+            // {
+            //     m_url.home.first = webMessage["first"].get<std::string>();
+            //     notify(m_app, CODE::SETTINGS_SAVE);
+            // }
 
-            else if (webMessage.contains("second"))
-            {
-                m_url.home.second = webMessage["second"].get<std::string>();
-                notify(m_app, CODE::SETTINGS_SAVE);
-            }
+            // else if (webMessage.contains("second"))
+            // {
+            //     m_url.home.second = webMessage["second"].get<std::string>();
+            //     notify(m_app, CODE::SETTINGS_SAVE);
+            // }
 
             break;
         }
@@ -210,9 +181,9 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
 auto Settings::on_setting_change(WPARAM wParam, LPARAM lParam) -> int
 {
     theme();
-    if (m_browser) { m_browser->post_json(json(*this)); }
+    // if (m_browser) { m_browser->post_json(json(*this)); }
 
-    notify(m_app, CODE::SETTING_CHANGE);
+    notify(m_parent, CODE::SETTING_CHANGE);
 
     return 0;
 }
@@ -251,46 +222,4 @@ auto Settings::on_size(WPARAM wParam, LPARAM lParam) -> int
     // Sleep(1);
 
     return 0;
-}
-
-auto Settings::data() -> std::filesystem::path
-{
-    auto path{glow::known_folder() / "Airglow"};
-
-    if (!std::filesystem::exists(path)) { std::filesystem::create_directory(path); }
-
-    return path;
-}
-
-auto Settings::file() -> std::filesystem::path
-{
-    return std::filesystem::path{{glow::app_path() / "Airglow.json"}};
-}
-
-auto Settings::save() -> void
-{
-    try
-    {
-        std::ofstream f(m_file);
-        f << std::setw(4) << nlohmann::json(m_url) << std::endl;
-        f.close();
-    }
-    catch (const std::exception& e)
-    {
-        return;
-    }
-}
-
-auto Settings::load() -> void
-{
-    try
-    {
-        std::ifstream f(m_file);
-        m_url = nlohmann::json::parse(f, nullptr, false, true);
-        f.close();
-    }
-    catch (const std::exception& e)
-    {
-        return;
-    }
 }

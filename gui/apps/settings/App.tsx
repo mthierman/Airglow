@@ -112,7 +112,7 @@ export default () => {
 
     return (
         <form
-            className="grid gap-4 p-4"
+            className="grid"
             ref={form}
             id="form"
             method="post"

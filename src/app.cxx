@@ -14,7 +14,21 @@ App::App()
     SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
                             "--allow-file-access-from-files");
 
-    m_settings = std::make_unique<Settings>(hwnd(), m_url, m_colors);
+    if (!std::filesystem::exists(file())) { save(); }
+
+    else { load(); }
+
+    auto args{glow::cmd_to_argv()};
+
+    if (args.size() == 2) { m_args.first = args.at(1); }
+
+    else if (args.size() > 2)
+    {
+        m_args.first = args.at(1);
+        m_args.second = args.at(2);
+    }
+
+    m_settings = std::make_unique<Settings>(hwnd());
 }
 
 auto App::wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
@@ -47,11 +61,21 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         case SETTINGS_TOGGLE:
         {
-            m_settings->visible() ? m_settings->hide() : m_settings->show();
-
-            if (m_settings->visible())
+            if (!m_settings->visible())
             {
+                m_settings->show();
                 m_settings->m_browser->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+            }
+
+            else
+            {
+                if (GetForegroundWindow() != m_settings->hwnd())
+                {
+                    SetForegroundWindow(m_settings->hwnd());
+                    m_settings->m_browser->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+                }
+
+                else { m_settings->hide(); }
             }
 
             break;
@@ -59,7 +83,7 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         case SETTINGS_SAVE:
         {
-            m_settings->save();
+            save();
 
             break;
         }
@@ -77,7 +101,7 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
             if (m_windows.empty())
             {
-                m_settings->save();
+                save();
 
                 return close();
             }
@@ -94,4 +118,46 @@ auto App::new_window() -> void
     auto id{glow::random<uintptr_t>()};
     m_windows.try_emplace(id, std::make_unique<Window>(hwnd(), m_url, m_colors, id));
     m_windows.at(id)->reveal();
+}
+
+auto App::data() -> std::filesystem::path
+{
+    auto path{glow::known_folder() / "Airglow"};
+
+    if (!std::filesystem::exists(path)) { std::filesystem::create_directory(path); }
+
+    return path;
+}
+
+auto App::file() -> std::filesystem::path
+{
+    return std::filesystem::path{{glow::app_path() / "Airglow.json"}};
+}
+
+auto App::save() -> void
+{
+    try
+    {
+        std::ofstream f(file());
+        f << std::setw(4) << nlohmann::json(m_url) << std::endl;
+        f.close();
+    }
+    catch (const std::exception& e)
+    {
+        return;
+    }
+}
+
+auto App::load() -> void
+{
+    try
+    {
+        std::ifstream f(file());
+        m_url = nlohmann::json::parse(f, nullptr, false, true);
+        f.close();
+    }
+    catch (const std::exception& e)
+    {
+        return;
+    }
 }

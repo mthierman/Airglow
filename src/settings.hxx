@@ -8,8 +8,6 @@
 
 #pragma once
 
-#include <filesystem>
-#include <fstream>
 #include <memory>
 
 #include <glow/glow.hxx>
@@ -23,7 +21,7 @@ struct Settings : public glow::Window<Settings>
 {
     using glow::Window<Settings>::Window;
 
-    Settings(HWND app, URL& url, glow::Colors& colors);
+    Settings(HWND parent);
 
     static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
     auto default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
@@ -36,17 +34,7 @@ struct Settings : public glow::Window<Settings>
     auto on_show_window(WPARAM wParam, LPARAM lParam) -> int;
     auto on_size(WPARAM wParam, LPARAM lParam) -> int;
 
-    auto data() -> std::filesystem::path;
-    auto file() -> std::filesystem::path;
-    auto save() -> void;
-    auto load() -> void;
+    HWND m_parent;
 
-    HWND m_app;
-    URL& m_url;
-    glow::Colors& m_colors;
-
-    std::filesystem::path m_file;
     std::unique_ptr<Browser> m_browser;
-
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Settings, m_colors, m_url)
 };

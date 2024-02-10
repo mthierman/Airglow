@@ -10,6 +10,8 @@
 
 #include <Windows.h>
 
+#include <filesystem>
+#include <fstream>
 #include <map>
 #include <memory>
 
@@ -27,6 +29,10 @@ struct App : public glow::App<App>
     auto on_notify(WPARAM wParam, LPARAM lParam) -> int;
 
     auto new_window() -> void;
+    auto data() -> std::filesystem::path;
+    auto file() -> std::filesystem::path;
+    auto save() -> void;
+    auto load() -> void;
 
     glow::GdiPlus m_gdiInit;
     glow::CoInitialize m_coInit;
@@ -36,4 +42,5 @@ struct App : public glow::App<App>
 
     glow::Colors m_colors;
     URL m_url;
+    std::pair<std::string, std::string> m_args;
 };

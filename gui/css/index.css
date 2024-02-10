@@ -23,7 +23,7 @@
 }
 
 .settings-input {
-    @apply flex select-none items-center text-ellipsis rounded-md border-b-2 border-transparent bg-accentLight3 p-2 outline-none duration-300 ease-in-out focus-within:border-accent focus-within:bg-accentLight2 dark:bg-accentDark3 dark:focus-within:bg-accentDark2;
+    @apply flex select-none items-center text-ellipsis rounded-md border-b-2 border-transparent bg-neutral-200 p-2 outline-none duration-200 ease-in-out focus-within:border-neutral-400 focus-within:bg-neutral-100 hover:bg-neutral-100 dark:bg-neutral-900 dark:focus-within:bg-neutral-950 dark:hover:bg-neutral-950;
 }
 
 .settings-title {
@@ -31,5 +31,5 @@
 }
 
 .settings-submit {
-    @apply w-fit place-self-center rounded-md bg-accentLight3 p-2 shadow-lg duration-100 ease-in-out hover:cursor-pointer hover:bg-accentLight2 dark:bg-accentDark3 dark:hover:bg-accentDark2;
+    @apply w-fit place-self-center rounded-md border-2 border-transparent bg-neutral-200 p-2 shadow-lg outline-none duration-200 ease-in-out hover:cursor-pointer hover:bg-neutral-100 focus:border-neutral-400 focus:bg-neutral-100 dark:bg-neutral-900 dark:hover:bg-neutral-950 dark:focus:bg-neutral-950;
 }
