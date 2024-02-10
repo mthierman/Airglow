@@ -22,6 +22,8 @@
 #include "state.hxx"
 #include "window.hxx"
 
+using json = nlohmann::json;
+
 struct App : public glow::App<App>
 {
     App();

@@ -16,8 +16,9 @@
 
 #include <glow/glow.hxx>
 
-#include "global.hxx"
 #include "browser.hxx"
+#include "global.hxx"
+#include "state.hxx"
 
 using json = nlohmann::json;
 
@@ -53,7 +54,7 @@ struct Window : public glow::Window<Window>
 
     using glow::Window<Window>::Window;
 
-    Window(HWND parent, uintptr_t id);
+    Window(HWND parent, State& state, uintptr_t id);
 
     static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
     auto default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
@@ -69,6 +70,7 @@ struct Window : public glow::Window<Window>
     auto update_caption() -> void;
 
     HWND m_parent;
+    State& m_state;
 
     Browsers m_browsers;
     // std::unique_ptr<Browser> m_first;

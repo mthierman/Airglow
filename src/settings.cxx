@@ -28,11 +28,9 @@ auto CALLBACK Settings::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     if (self)
     {
         auto gwlId{static_cast<uintptr_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
-
-        auto rect{&self->m_clientRect};
-
-        auto width{rect->right - rect->left};
-        auto height{rect->bottom - rect->top};
+        auto& rect{self->m_clientRect};
+        auto width{rect.right - rect.left};
+        auto height{rect.bottom - rect.top};
 
         auto hdwp{BeginDeferWindowPos(1)};
 
@@ -88,10 +86,11 @@ auto Settings::on_dpi_changed(WPARAM wParam, LPARAM lParam) -> int
 
 auto Settings::on_get_min_max_info(WPARAM wParam, LPARAM lParam) -> int
 {
-    auto minmax{reinterpret_cast<LPMINMAXINFO>(lParam)};
+    auto minmax{reinterpret_cast<MINMAXINFO*>(lParam)};
+    auto& minTrackSize = minmax->ptMinTrackSize;
 
-    minmax->ptMinTrackSize.x = 500;
-    minmax->ptMinTrackSize.y = 500;
+    minTrackSize.x = 500;
+    minTrackSize.y = 500;
 
     return 0;
 }
