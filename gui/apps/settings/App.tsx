@@ -16,6 +16,13 @@ export default () => {
         applyColors(state.colors);
     }, [state.colors]);
 
+    const updateHome = (index: number, newValue: string) => {
+        setState((prevState) => ({
+            ...prevState,
+            home: prevState.home.map((v, i) => (i === index ? newValue : v)) as Pair,
+        }));
+    };
+
     useEffect(() => {
         const onMessage = (event: Event) => {
             const data: App.Settings = (event as MessageEvent).data;
@@ -28,17 +35,12 @@ export default () => {
 
         const onEscape = (event: KeyboardEvent) => {
             if (event.key === "Escape") {
-                const obj: App.State = JSON.parse(sessionStorage.getItem("state")!);
+                const store = getState();
+
                 if (document.activeElement === first.current) {
-                    setState((prevState) => ({
-                        ...prevState,
-                        home: [obj.home[0], prevState.home[1]],
-                    }));
+                    updateHome(0, store.home[0]);
                 } else if (document.activeElement === second.current) {
-                    setState((prevState) => ({
-                        ...prevState,
-                        home: [prevState.home[0], obj.home[1]],
-                    }));
+                    updateHome(1, store.home[1]);
                 }
             }
         };
@@ -56,19 +58,16 @@ export default () => {
         const target = e.target as HTMLInputElement;
 
         if (document.activeElement === first.current) {
-            setState((prevState) => ({ ...prevState, home: [target.value, prevState.home[1]] }));
+            updateHome(0, target.value);
         } else if (document.activeElement === second.current) {
-            setState((prevState) => ({ ...prevState, home: [prevState.home[0], target.value] }));
+            updateHome(1, target.value);
         }
     };
 
     const parse = (index: number, element: HTMLInputElement | null) => {
         if (element) {
             const parsed = parseUrl(element.value).href;
-            setState((prevState) => ({
-                ...prevState,
-                home: prevState.home.map((item, i) => (i === index ? parsed : item)) as Pair,
-            }));
+            updateHome(index, parsed);
             return parsed;
         }
     };
