@@ -29,8 +29,8 @@ auto CALLBACK Settings::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     {
         auto gwlId{static_cast<uintptr_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
         auto& rect{self->m_clientRect};
-        auto width{rect.right - rect.left};
-        auto height{rect.bottom - rect.top};
+        auto& width{rect.right};
+        auto& height{rect.bottom};
 
         auto hdwp{BeginDeferWindowPos(1)};
 
