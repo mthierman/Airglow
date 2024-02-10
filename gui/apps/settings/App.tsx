@@ -112,35 +112,45 @@ export default () => {
 
     return (
         <form
-            className="grid"
+            className="flex flex-grow flex-col place-content-between p-4"
             ref={form}
             id="form"
             method="post"
             autoComplete="off"
             spellCheck="false"
             onSubmit={handleSubmit}>
-            <h1 className="settings-title">🌆First Home</h1>
-            <input
-                className="settings-input"
-                ref={inputFirst}
-                id="first"
-                type="text"
-                value={url.first}
-                placeholder={sessionStorage.getItem("first")!}
-                title={sessionStorage.getItem("first")!}
-                onChange={(e) => setUrl((prevState) => ({ ...prevState, first: e.target.value }))}
-                onClick={handleClick}></input>
-            <h1 className="settings-title">🌃Second Home</h1>
-            <input
-                className="settings-input"
-                ref={inputSecond}
-                id="second"
-                type="text"
-                value={url.second}
-                placeholder={sessionStorage.getItem("second")!}
-                title={sessionStorage.getItem("second")!}
-                onChange={(e) => setUrl((prevState) => ({ ...prevState, second: e.target.value }))}
-                onClick={handleClick}></input>
+            <div className="settings-spacer">
+                <label className="settings-spacer">
+                    <h1 className="settings-title">🌆First Home</h1>
+                    <input
+                        className="settings-input"
+                        ref={inputFirst}
+                        id="first"
+                        type="text"
+                        value={url.first}
+                        placeholder={sessionStorage.getItem("first")!}
+                        title={sessionStorage.getItem("first")!}
+                        onChange={(e) =>
+                            setUrl((prevState) => ({ ...prevState, first: e.target.value }))
+                        }
+                        onClick={handleClick}></input>
+                </label>
+                <label className="settings-spacer">
+                    <h1 className="settings-title">🌃Second Home</h1>
+                    <input
+                        className="settings-input"
+                        ref={inputSecond}
+                        id="second"
+                        type="text"
+                        value={url.second}
+                        placeholder={sessionStorage.getItem("second")!}
+                        title={sessionStorage.getItem("second")!}
+                        onChange={(e) =>
+                            setUrl((prevState) => ({ ...prevState, second: e.target.value }))
+                        }
+                        onClick={handleClick}></input>
+                </label>
+            </div>
             <input className="settings-submit" type="submit" value="Save" />
         </form>
     );
