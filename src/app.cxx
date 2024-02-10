@@ -35,8 +35,6 @@ auto App::wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESUL
 
 auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
 {
-    if (!m_settings || !m_settings->m_browser) { return 0; }
-
     auto notification{reinterpret_cast<glow::Notification*>(lParam)};
 
     auto& id{notification->id};
@@ -48,13 +46,15 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         case SETTINGS_TOGGLE:
         {
-            if (!m_settings->visible())
+            if (!m_settings || !m_settings->m_browser) { break; }
+
+            else if (!m_settings->visible())
             {
                 m_settings->show();
                 m_settings->m_browser->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
             }
 
-            else
+            else if (m_settings->visible())
             {
                 if (GetForegroundWindow() != m_settings->hwnd())
                 {
