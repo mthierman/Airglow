@@ -26,6 +26,11 @@ export declare global {
 
     type Pair = [first: string, second: string];
 
+    interface PairObj {
+        first: string,
+        second: string
+    };
+
     namespace App {
         interface Colors {
             accent: string;

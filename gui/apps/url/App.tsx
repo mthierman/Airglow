@@ -17,7 +17,7 @@ export default () => {
         accentLight2: "",
         accentLight3: "",
     });
-    const [favicon, setFavicon] = useState<App.Pair>({
+    const [favicon, setFavicon] = useState<PairObj>({
         first: defaultFavicon(),
         second: defaultFavicon(),
     });
@@ -29,7 +29,7 @@ export default () => {
         split: false,
         swapped: false,
     });
-    const [url, setUrl] = useState<App.Pair>({
+    const [url, setUrl] = useState<PairObj>({
         first: "",
         second: "",
     });
