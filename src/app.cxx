@@ -92,6 +92,6 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
 auto App::new_window() -> void
 {
     auto id{glow::random<uintptr_t>()};
-    m_windows[id] = std::make_unique<Window>(hwnd(), m_url, m_colors, id);
-    m_windows[id]->reveal();
+    m_windows.try_emplace(id, std::make_unique<Window>(hwnd(), m_url, m_colors, id));
+    m_windows.at(id)->reveal();
 }
