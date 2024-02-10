@@ -160,15 +160,9 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
             if (webMessage.contains("initialized")) { m_browser->post_json(json(*this)); }
 
-            else if (webMessage.contains("first"))
+            else if (webMessage.contains("m_state"))
             {
-                m_state.home.first = webMessage["first"].get<std::string>();
-                notify(m_parent, CODE::SETTINGS_SAVE);
-            }
-
-            else if (webMessage.contains("second"))
-            {
-                m_state.home.second = webMessage["second"].get<std::string>();
+                m_state = webMessage["m_state"].get<State>();
                 notify(m_parent, CODE::SETTINGS_SAVE);
             }
 

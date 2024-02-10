@@ -34,6 +34,7 @@ export default () => {
             const data: App.Settings = (event as MessageEvent).data;
 
             if (Object.hasOwn(data, "m_state")) {
+                console.log(data.m_state);
                 const state: App.State = data.m_state;
                 setState(state);
             }
@@ -74,31 +75,42 @@ export default () => {
         }
     };
 
-    const submitFirst = () => {
-        const parsed = parseUrl(inputFirst.current?.value!).href;
-        setState((prevState) => ({ ...prevState, home: [parsed, prevState.home[1]] }));
-        sessionStorage.setItem("first", parsed);
-        window.chrome.webview.postMessage({ first: parsed });
+    const parse = (key: string, index: number, element: HTMLInputElement | null) => {
+        if (element) {
+            const parsed = parseUrl(element.value).href;
+            setState((prevState) => ({
+                ...prevState,
+                home: prevState.home.map((item, i) => (i === index ? parsed : item)) as Pair,
+            }));
+            sessionStorage.setItem(key, parsed);
+        }
     };
 
-    const submitSecond = () => {
-        const parsed = parseUrl(inputSecond.current?.value!).href;
-        setState((prevState) => ({ ...prevState, home: [prevState.home[0], parsed] }));
-        sessionStorage.setItem("second", parsed);
-        window.chrome.webview.postMessage({ second: parsed });
+    const parseFirst = () => {
+        parse("first", 0, inputFirst.current);
+    };
+
+    const parseSecond = () => {
+        parse("second", 1, inputSecond.current);
+    };
+
+    const parseBoth = () => {
+        parseFirst();
+        parseSecond();
     };
 
     const handleSubmit = (event: SyntheticEvent) => {
         event.preventDefault();
 
         if (document.activeElement === inputFirst.current) {
-            submitFirst();
+            parseFirst();
         } else if (document.activeElement === inputSecond.current) {
-            submitSecond();
+            parseSecond();
         } else {
-            submitFirst();
-            submitSecond();
+            parseBoth();
         }
+
+        window.chrome.webview.postMessage({ m_state: state } as App.Settings);
     };
 
     const handleClick = async (event: SyntheticEvent) => {
