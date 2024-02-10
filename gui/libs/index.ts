@@ -1,8 +1,32 @@
 import blankLight from "@assets/blankLight.svg?raw";
 import blankDark from "@assets/blankDark.svg?raw";
+// import debug from "@assets/debug.svg?raw";
+import release from "@assets/release.svg?raw";
 
 export const initialize = () => {
     window.chrome.webview.postMessage({ initialized: true });
+};
+
+export const applyColors = (colors: App.Colors) => {
+    document.documentElement.style.setProperty("--accent", colors.accent);
+    document.documentElement.style.setProperty("--accentDark1", colors.accentDark1);
+    document.documentElement.style.setProperty("--accentDark2", colors.accentDark2);
+    document.documentElement.style.setProperty("--accentDark3", colors.accentDark3);
+    document.documentElement.style.setProperty("--accentLight1", colors.accentLight1);
+    document.documentElement.style.setProperty("--accentLight2", colors.accentLight2);
+    document.documentElement.style.setProperty("--accentLight3", colors.accentLight3);
+};
+
+export const applyFavicon = () => {
+    document.onreadystatechange = () => {
+        if (document.readyState === "complete") {
+            const favicon = document.createElement("link");
+            favicon.type = "image/svg+xml";
+            favicon.rel = "icon";
+            favicon.href = `data:image/svg+xml,${encodeURIComponent(release)}`;
+            document.head.appendChild(favicon);
+        }
+    };
 };
 
 export const getState = () => {
@@ -24,16 +48,6 @@ export const getState = () => {
             },
             home: ["", ""],
         } as App.State;
-};
-
-export const applyColors = (colors: App.Colors) => {
-    document.documentElement.style.setProperty("--accent", colors.accent);
-    document.documentElement.style.setProperty("--accentDark1", colors.accentDark1);
-    document.documentElement.style.setProperty("--accentDark2", colors.accentDark2);
-    document.documentElement.style.setProperty("--accentDark3", colors.accentDark3);
-    document.documentElement.style.setProperty("--accentLight1", colors.accentLight1);
-    document.documentElement.style.setProperty("--accentLight2", colors.accentLight2);
-    document.documentElement.style.setProperty("--accentLight3", colors.accentLight3);
 };
 
 export const defaultFavicon = () => {

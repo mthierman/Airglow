@@ -45,11 +45,12 @@ struct Window : public glow::Window<Window>
     {
         int bar{};
         int border{0};
-        bool horizontal{};
+        std::string focus;
         bool split{};
-        bool swapped{};
+        bool swap{};
+        bool vertical{};
 
-        NLOHMANN_DEFINE_TYPE_INTRUSIVE(Layout, bar, border, horizontal, split, swapped)
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(Layout, bar, border, focus, split, swap, vertical)
     };
 
     using glow::Window<Window>::Window;
@@ -73,18 +74,16 @@ struct Window : public glow::Window<Window>
     State& m_state;
 
     Browsers m_browsers;
-    // std::unique_ptr<Browser> m_first;
-    // std::unique_ptr<Browser> m_second;
-    // std::unique_ptr<Browser> m_url;
     Positions m_positions;
     Layout m_layout;
+
+    bool m_init{};
+
     std::pair<std::string, std::string> m_title{"Airglow", "Airglow"};
     std::pair<wil::unique_hicon, wil::unique_hicon> m_favicon;
     std::pair<std::string, std::string> m_faviconUrl;
-    std::string m_focus;
-    bool m_init{};
 
     Keys m_keys;
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Window, m_faviconUrl, m_focus, m_layout)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Window, m_state, m_faviconUrl, m_layout)
 };

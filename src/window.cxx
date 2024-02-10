@@ -81,9 +81,9 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 
     if (layout.split)
     {
-        if (!layout.horizontal)
+        if (layout.vertical)
         {
-            if (!layout.swapped)
+            if (!layout.swap)
             {
                 first = left;
                 second = right;
@@ -98,7 +98,7 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 
         else
         {
-            if (!layout.swapped)
+            if (!layout.swap)
             {
                 first = top;
                 second = bottom;
@@ -114,7 +114,7 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 
     else
     {
-        if (!layout.swapped)
+        if (!layout.swap)
         {
             first = full;
             second = empty;
@@ -233,7 +233,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
                 if (GetKeyState(VK_CONTROL) & 0x8000)
                 {
                     m_browsers.url->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-                    m_browsers.url->post_json(json{{"focus", m_focus}});
+                    // m_browsers.url->post_json(json{{"focus", m_layout.focus}});
                 }
 
                 break;
@@ -260,16 +260,16 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
             case VK_F1:
             {
-                m_layout.swapped = !m_layout.swapped;
+                m_layout.swap = !m_layout.swap;
 
                 if (!m_layout.split)
                 {
-                    if (!m_layout.swapped)
+                    if (!m_layout.swap)
                     {
                         m_browsers.first->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
                     }
 
-                    else if (m_layout.swapped)
+                    else if (m_layout.swap)
                     {
                         m_browsers.second->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
                     }
@@ -291,7 +291,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
             case VK_F3:
             {
-                if (m_layout.split) { m_layout.horizontal = !m_layout.horizontal; }
+                if (m_layout.split) { m_layout.vertical = !m_layout.vertical; }
 
                 notify(hwnd(), CODE::LAYOUT_CHANGE);
 
@@ -375,7 +375,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
         {
             if (notification->id == m_browsers.url->id())
             {
-                // m_browsers.url->devtools();
+                m_browsers.url->devtools();
                 m_browsers.url->navigate(m_browsers.url->url("url"));
             }
 
@@ -475,11 +475,11 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         case FOCUS_CHANGED:
         {
-            if (notification->id == m_browsers.first->id()) { m_focus = "first"; }
+            if (notification->id == m_browsers.first->id()) { m_layout.focus = "first"; }
 
-            else if (notification->id == m_browsers.second->id()) { m_focus = "second"; }
+            else if (notification->id == m_browsers.second->id()) { m_layout.focus = "second"; }
 
-            else if (notification->id == m_browsers.url->id()) { m_focus = "url"; }
+            else if (notification->id == m_browsers.url->id()) { m_layout.focus = "url"; }
 
             m_browsers.url->post_json(json(*this));
 
@@ -540,7 +540,7 @@ auto Window::update_caption() -> void
 {
     if (!m_position.fullscreen)
     {
-        if (!m_layout.swapped)
+        if (!m_layout.swap)
         {
             PostMessageA(hwnd(), WM_SETICON, ICON_SMALL,
                          reinterpret_cast<LPARAM>(m_favicon.first.get()));
@@ -555,7 +555,7 @@ auto Window::update_caption() -> void
         }
     }
 
-    if (!m_layout.swapped) { title(m_title.first); }
+    if (!m_layout.swap) { title(m_title.first); }
 
     else { title(m_title.second); }
 }

@@ -1,7 +1,7 @@
 import "@css/index.css";
 import { SyntheticEvent, useState, useRef, useEffect } from "react";
 import { parseUrl } from "@libs/url";
-import { initialize, getState, applyColors } from "@libs/index";
+import { initialize, getState, applyColors, applyFavicon } from "@libs/index";
 
 export default () => {
     const first = useRef<HTMLInputElement | null>(null);
@@ -10,6 +10,7 @@ export default () => {
 
     useEffect(() => {
         initialize();
+        applyFavicon();
     }, []);
 
     useEffect(() => {
