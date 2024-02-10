@@ -133,11 +133,15 @@ export default () => {
                         value={state.home[0]}
                         placeholder={(() => {
                             const obj: App.State = JSON.parse(sessionStorage.getItem("state")!);
-                            return obj.home[0];
+                            if (obj) {
+                                return obj.home[0];
+                            } else return state.home[0];
                         })()}
                         title={(() => {
                             const obj: App.State = JSON.parse(sessionStorage.getItem("state")!);
-                            return obj.home[0];
+                            if (obj) {
+                                return obj.home[0];
+                            } else return state.home[0];
                         })()}
                         onChange={handleChange}
                         onClick={handleClick}></input>
@@ -152,11 +156,15 @@ export default () => {
                         value={state.home[1]}
                         placeholder={(() => {
                             const obj: App.State = JSON.parse(sessionStorage.getItem("state")!);
-                            return obj.home[1];
+                            if (obj) {
+                                return obj.home[1];
+                            } else return state.home[1];
                         })()}
                         title={(() => {
                             const obj: App.State = JSON.parse(sessionStorage.getItem("state")!);
-                            return obj.home[1];
+                            if (obj) {
+                                return obj.home[1];
+                            } else return state.home[1];
                         })()}
                         onChange={handleChange}
                         onClick={handleClick}></input>
