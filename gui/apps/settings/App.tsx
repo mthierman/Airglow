@@ -23,6 +23,13 @@ export default () => {
         }));
     };
 
+    const getHome = (index: number) => {
+        const store = getState();
+        if (store) {
+            return store.home[index];
+        } else return state.home[index];
+    };
+
     useEffect(() => {
         const onMessage = (event: Event) => {
             const data: App.Settings = (event as MessageEvent).data;
@@ -116,18 +123,8 @@ export default () => {
                         id="first"
                         type="text"
                         value={state.home[0]}
-                        placeholder={(() => {
-                            const obj: App.State = JSON.parse(sessionStorage.getItem("state")!);
-                            if (obj) {
-                                return obj.home[0];
-                            } else return state.home[0];
-                        })()}
-                        title={(() => {
-                            const obj: App.State = JSON.parse(sessionStorage.getItem("state")!);
-                            if (obj) {
-                                return obj.home[0];
-                            } else return state.home[0];
-                        })()}
+                        placeholder={getHome(0)}
+                        title={getHome(0)}
                         onChange={handleChange}
                         onClick={handleClick}></input>
                 </label>
@@ -139,18 +136,8 @@ export default () => {
                         id="second"
                         type="text"
                         value={state.home[1]}
-                        placeholder={(() => {
-                            const obj: App.State = JSON.parse(sessionStorage.getItem("state")!);
-                            if (obj) {
-                                return obj.home[1];
-                            } else return state.home[1];
-                        })()}
-                        title={(() => {
-                            const obj: App.State = JSON.parse(sessionStorage.getItem("state")!);
-                            if (obj) {
-                                return obj.home[1];
-                            } else return state.home[1];
-                        })()}
+                        placeholder={getHome(1)}
+                        title={getHome(1)}
                         onChange={handleChange}
                         onClick={handleClick}></input>
                 </label>
