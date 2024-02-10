@@ -14,9 +14,9 @@ App::App()
     SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
                             "--allow-file-access-from-files");
 
-    if (!std::filesystem::exists(file())) { save(); }
+    // if (!std::filesystem::exists(file())) { save(); }
 
-    else { load(); }
+    // else { load(); }
 
     auto args{glow::cmd_to_argv()};
 
@@ -51,13 +51,6 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
     switch (code)
     {
         using enum CODE;
-
-        case SETTING_CHANGE:
-        {
-            m_colors.update();
-
-            break;
-        }
 
         case SETTINGS_TOGGLE:
         {
@@ -116,7 +109,7 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
 auto App::new_window() -> void
 {
     auto id{glow::random<uintptr_t>()};
-    m_windows.try_emplace(id, std::make_unique<Window>(hwnd(), m_url, m_colors, id));
+    m_windows.try_emplace(id, std::make_unique<Window>(hwnd(), id));
     m_windows.at(id)->reveal();
 }
 
@@ -136,28 +129,28 @@ auto App::file() -> std::filesystem::path
 
 auto App::save() -> void
 {
-    try
-    {
-        std::ofstream f(file());
-        f << std::setw(4) << nlohmann::json(m_url) << std::endl;
-        f.close();
-    }
-    catch (const std::exception& e)
-    {
-        return;
-    }
+    // try
+    // {
+    //     std::ofstream f(file());
+    //     f << std::setw(4) << nlohmann::json(m_url) << std::endl;
+    //     f.close();
+    // }
+    // catch (const std::exception& e)
+    // {
+    //     return;
+    // }
 }
 
 auto App::load() -> void
 {
-    try
-    {
-        std::ifstream f(file());
-        m_url = nlohmann::json::parse(f, nullptr, false, true);
-        f.close();
-    }
-    catch (const std::exception& e)
-    {
-        return;
-    }
+    // try
+    // {
+    //     std::ifstream f(file());
+    //     m_url = nlohmann::json::parse(f, nullptr, false, true);
+    //     f.close();
+    // }
+    // catch (const std::exception& e)
+    // {
+    //     return;
+    // }
 }

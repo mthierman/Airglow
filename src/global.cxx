@@ -26,5 +26,3 @@ Keys::Keys()
     set.emplace(VK_F10);
     set.emplace(VK_F11);
 }
-
-URL::URL() : home{"about:blank", "about:blank"}, current{"about:blank", "about:blank"} {}

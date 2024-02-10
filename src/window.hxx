@@ -53,7 +53,7 @@ struct Window : public glow::Window<Window>
 
     using glow::Window<Window>::Window;
 
-    Window(HWND app, URL& url, glow::Colors& colors, uintptr_t id);
+    Window(HWND parent, uintptr_t id);
 
     static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
     auto default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
@@ -68,11 +68,12 @@ struct Window : public glow::Window<Window>
 
     auto update_caption() -> void;
 
-    HWND m_app;
-    URL& m_url;
-    glow::Colors& m_colors;
+    HWND m_parent;
 
     Browsers m_browsers;
+    // std::unique_ptr<Browser> m_first;
+    // std::unique_ptr<Browser> m_second;
+    // std::unique_ptr<Browser> m_url;
     Positions m_positions;
     Layout m_layout;
     std::pair<std::string, std::string> m_title{"Airglow", "Airglow"};
@@ -81,5 +82,5 @@ struct Window : public glow::Window<Window>
     std::string m_focus;
     bool m_init{};
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Window, m_colors, m_faviconUrl, m_focus, m_layout, m_url)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Window, m_faviconUrl, m_focus, m_layout)
 };

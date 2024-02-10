@@ -181,9 +181,6 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
 auto Settings::on_setting_change(WPARAM wParam, LPARAM lParam) -> int
 {
     theme();
-    // if (m_browser) { m_browser->post_json(json(*this)); }
-
-    notify(m_parent, CODE::SETTING_CHANGE);
 
     return 0;
 }

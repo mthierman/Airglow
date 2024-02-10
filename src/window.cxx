@@ -8,8 +8,7 @@
 
 #include "window.hxx"
 
-Window::Window(HWND app, URL& url, glow::Colors& colors, uintptr_t id)
-    : glow::Window<Window>("Airglow", id), m_app{app}, m_url{url}, m_colors{colors}
+Window::Window(HWND parent, uintptr_t id) : glow::Window<Window>("Airglow", id), m_parent{parent}
 {
     dwm_caption_color(false);
     dwm_system_backdrop(DWMSBT_MAINWINDOW);
@@ -192,7 +191,7 @@ auto Window::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 
 auto Window::on_close(WPARAM wParam, LPARAM lParam) -> int
 {
-    notify(m_app, CODE::WINDOW_CLOSE);
+    notify(m_parent, CODE::WINDOW_CLOSE);
 
     return close();
 }
@@ -230,7 +229,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
         {
             case VK_PAUSE:
             {
-                notify(m_app, CODE::SETTINGS_TOGGLE);
+                notify(m_parent, CODE::SETTINGS_TOGGLE);
 
                 break;
             }
@@ -248,7 +247,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
             case 0x4E:
             {
-                if (GetKeyState(VK_CONTROL) & 0x8000) { notify(m_app, CODE::WINDOW_NEW); }
+                if (GetKeyState(VK_CONTROL) & 0x8000) { notify(m_parent, CODE::WINDOW_NEW); }
 
                 break;
             }
@@ -404,7 +403,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
                 if (!m_init)
                 {
                     m_init = true;
-                    m_browsers.url->post_json(json{{"navigate", m_url.current}});
+                    // m_browsers.url->post_json(json{{"navigate", m_url.current}});
                 }
 
                 m_browsers.url->post_json(json(*this));
@@ -437,16 +436,17 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         case SOURCE_CHANGED:
         {
-            if (id == m_browsers.first->id()) { m_url.current.first = m_browsers.first->m_source; }
+            // if (id == m_browsers.first->id()) { m_url.current.first = m_browsers.first->m_source;
+            // }
 
-            else if (id == m_browsers.second->id())
-            {
-                m_url.current.second = m_browsers.second->m_source;
-            }
+            // else if (id == m_browsers.second->id())
+            // {
+            //     m_url.current.second = m_browsers.second->m_source;
+            // }
 
-            m_browsers.url->post_json(json(*this));
+            // m_browsers.url->post_json(json(*this));
 
-            notify(m_app, SETTINGS_SAVE);
+            notify(m_parent, SETTINGS_SAVE);
 
             break;
         }

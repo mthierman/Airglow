@@ -37,10 +37,9 @@ struct App : public glow::App<App>
     glow::GdiPlus m_gdiInit;
     glow::CoInitialize m_coInit;
 
+    std::pair<std::string, std::string> m_home;
+    std::pair<std::string, std::string> m_args;
+
     std::unique_ptr<Settings> m_settings;
     std::unordered_map<uintptr_t, std::unique_ptr<Window>> m_windows;
-
-    glow::Colors m_colors;
-    URL m_url;
-    std::pair<std::string, std::string> m_args;
 };

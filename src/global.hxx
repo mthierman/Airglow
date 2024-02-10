@@ -8,13 +8,9 @@
 
 #pragma once
 
+#include <Windows.h>
+
 #include <set>
-#include <string>
-#include <utility>
-
-#include <nlohmann/json.hpp>
-
-#include <glow/glow.hxx>
 
 enum struct CODE : unsigned int
 {
@@ -39,14 +35,4 @@ struct Keys
     Keys();
 
     std::set<unsigned int> set;
-};
-
-struct URL
-{
-    URL();
-
-    std::pair<std::string, std::string> home;
-    std::pair<std::string, std::string> current;
-
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(URL, home, current)
 };

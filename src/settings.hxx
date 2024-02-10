@@ -35,6 +35,5 @@ struct Settings : public glow::Window<Settings>
     auto on_size(WPARAM wParam, LPARAM lParam) -> int;
 
     HWND m_parent;
-
     std::unique_ptr<Browser> m_browser;
 };
