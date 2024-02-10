@@ -39,7 +39,7 @@
 }
 
 .settings-input {
-    @apply w-full text-ellipsis rounded-md border-b-2 border-transparent bg-neutral-200 p-2 outline-none duration-200 ease-in-out focus-within:border-neutral-400 focus-within:bg-neutral-100 hover:bg-neutral-100 dark:bg-neutral-900 dark:focus-within:bg-neutral-950 dark:hover:bg-neutral-950;
+    @apply w-full text-ellipsis rounded-md border-b-2 border-transparent bg-neutral-200 p-2 shadow-lg outline-none duration-200 ease-in-out focus-within:border-neutral-400 focus-within:bg-neutral-100 hover:bg-neutral-100 dark:bg-neutral-900 dark:focus-within:bg-neutral-950 dark:hover:bg-neutral-950;
 }
 
 .settings-title {
