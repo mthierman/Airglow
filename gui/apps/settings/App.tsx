@@ -83,35 +83,30 @@ export default () => {
                 home: prevState.home.map((item, i) => (i === index ? parsed : item)) as Pair,
             }));
             sessionStorage.setItem(key, parsed);
+            return parsed;
         }
-    };
-
-    const parseFirst = () => {
-        parse("first", 0, inputFirst.current);
-    };
-
-    const parseSecond = () => {
-        parse("second", 1, inputSecond.current);
-    };
-
-    const parseBoth = () => {
-        parseFirst();
-        parseSecond();
     };
 
     const handleSubmit = (event: SyntheticEvent) => {
         event.preventDefault();
 
+        let post: App.State = state;
+
         if (document.activeElement === inputFirst.current) {
-            parseFirst();
+            post.home[0] = parse("first", 0, inputFirst.current)!;
         } else if (document.activeElement === inputSecond.current) {
-            parseSecond();
+            post.home[1] = parse("second", 1, inputSecond.current)!;
         } else {
-            parseBoth();
+            post.home[0] = parse("first", 0, inputFirst.current)!;
+            post.home[1] = parse("second", 1, inputSecond.current)!;
         }
 
-        window.chrome.webview.postMessage({ m_state: state } as App.Settings);
+        window.chrome.webview.postMessage({ m_state: post } as App.Settings);
     };
+
+    // useEffect(() => {
+    //     window.chrome.webview.postMessage({ m_state: state } as App.Settings);
+    // }, [state]);
 
     const handleClick = async (event: SyntheticEvent) => {
         let nativeEvent = event.nativeEvent as MouseEvent;
