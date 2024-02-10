@@ -25,27 +25,26 @@ auto CALLBACK Settings::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 {
     auto self{reinterpret_cast<Settings*>(lParam)};
 
-    if (self)
+    if (!self) { return true; }
+
+    auto gwlId{static_cast<uintptr_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
+    auto& rect{self->m_clientRect};
+    auto& width{rect.right};
+    auto& height{rect.bottom};
+
+    auto hdwp{BeginDeferWindowPos(1)};
+
+    if (gwlId == self->m_browser->id())
     {
-        auto gwlId{static_cast<uintptr_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
-        auto& rect{self->m_clientRect};
-        auto& width{rect.right};
-        auto& height{rect.bottom};
-
-        auto hdwp{BeginDeferWindowPos(1)};
-
-        if (gwlId == self->m_browser->id())
+        if (hdwp && self->m_browser)
         {
-            if (hdwp && self->m_browser)
-            {
-                hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, 0, width, height,
-                                      SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
-                                          SWP_NOREDRAW | SWP_NOCOPYBITS);
-            }
+            hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, 0, width, height,
+                                  SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOREDRAW |
+                                      SWP_NOCOPYBITS);
         }
-
-        if (hdwp) { EndDeferWindowPos(hdwp); }
     }
+
+    if (hdwp) { EndDeferWindowPos(hdwp); }
 
     return true;
 }

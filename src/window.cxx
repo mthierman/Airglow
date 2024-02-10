@@ -29,148 +29,144 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 {
     auto self{reinterpret_cast<Window*>(lParam)};
 
-    if (self)
+    if (!self) { return true; }
+
+    auto gwlId{static_cast<uintptr_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
+    auto& rect{self->m_clientRect};
+    auto& layout{self->m_layout};
+
+    auto& width{rect.right};
+    auto& height{rect.bottom};
+    auto halfWidth{width / 2};
+    auto halfHeight{height / 2};
+
+    auto border{static_cast<int>(layout.border * self->m_scale)};
+    auto barHeight{static_cast<int>(layout.bar * self->m_scale)};
+
+    auto& full = self->m_positions.full;
+    auto& empty = self->m_positions.empty;
+    auto& left = self->m_positions.left;
+    auto& right = self->m_positions.right;
+    auto& top = self->m_positions.top;
+    auto& bottom = self->m_positions.bottom;
+
+    auto& first = self->m_browsers.first->m_position;
+    auto& second = self->m_browsers.second->m_position;
+    auto& url = self->m_browsers.url->m_position;
+
+    full.x = 0;
+    full.y = 0;
+    full.width = width;
+    full.height = height - barHeight;
+
+    left.x = 0;
+    left.y = 0;
+    left.width = halfWidth - border;
+    left.height = height - barHeight;
+
+    right.x = halfWidth + border;
+    right.y = 0;
+    right.width = halfWidth - border;
+    right.height = height - barHeight;
+
+    top.x = 0;
+    top.y = 0;
+    top.width = width;
+    top.height = halfHeight - (barHeight / 2) - border;
+
+    bottom.x = 0;
+    bottom.y = halfHeight - (barHeight / 2) + border;
+    bottom.width = width;
+    bottom.height = halfHeight - (barHeight / 2) - border;
+
+    if (layout.split)
     {
-        auto gwlId{static_cast<uintptr_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
-
-        auto rect{&self->m_clientRect};
-
-        auto width{rect->right - rect->left};
-        auto halfWidth{(rect->right - rect->left) / 2};
-
-        auto height{rect->bottom - rect->top};
-        auto halfHeight{(rect->bottom - rect->top) / 2};
-
-        auto border{static_cast<int>(self->m_layout.border * self->m_scale)};
-        auto barHeight{static_cast<int>(self->m_layout.bar * self->m_scale)};
-
-        auto full = &self->m_positions.full;
-        auto empty = &self->m_positions.empty;
-        auto left = &self->m_positions.left;
-        auto right = &self->m_positions.right;
-        auto top = &self->m_positions.top;
-        auto bottom = &self->m_positions.bottom;
-
-        auto first = &self->m_browsers.first->m_position;
-        auto second = &self->m_browsers.second->m_position;
-        auto url = &self->m_browsers.url->m_position;
-
-        full->x = 0;
-        full->y = 0;
-        full->width = width;
-        full->height = height - barHeight;
-
-        left->x = 0;
-        left->y = 0;
-        left->width = halfWidth - border;
-        left->height = height - barHeight;
-
-        right->x = halfWidth + border;
-        right->y = 0;
-        right->width = halfWidth - border;
-        right->height = height - barHeight;
-
-        top->x = 0;
-        top->y = 0;
-        top->width = width;
-        top->height = halfHeight - (barHeight / 2) - border;
-
-        bottom->x = 0;
-        bottom->y = halfHeight - (barHeight / 2) + border;
-        bottom->width = width;
-        bottom->height = halfHeight - (barHeight / 2) - border;
-
-        if (self->m_layout.split)
+        if (!layout.horizontal)
         {
-            if (!self->m_layout.horizontal)
+            if (!layout.swapped)
             {
-                if (!self->m_layout.swapped)
-                {
-                    *first = *left;
-                    *second = *right;
-                }
-
-                if (self->m_layout.swapped)
-                {
-                    *first = *right;
-                    *second = *left;
-                }
+                first = left;
+                second = right;
             }
 
-            if (self->m_layout.horizontal)
+            if (layout.swapped)
             {
-                if (!self->m_layout.swapped)
-                {
-                    *first = *top;
-                    *second = *bottom;
-                }
-
-                if (self->m_layout.swapped)
-                {
-                    *first = *bottom;
-                    *second = *top;
-                }
+                first = right;
+                second = left;
             }
         }
 
-        else
+        if (layout.horizontal)
         {
-            if (!self->m_layout.swapped)
+            if (!layout.swapped)
             {
-                *first = *full;
-                *second = *empty;
+                first = top;
+                second = bottom;
             }
 
-            if (self->m_layout.swapped)
+            if (layout.swapped)
             {
-                *first = *empty;
-                *second = *full;
+                first = bottom;
+                second = top;
             }
         }
-
-        url->x = 0;
-        url->y = rect->bottom - barHeight;
-        url->width = width;
-        url->height = barHeight;
-
-        auto hdwp{BeginDeferWindowPos(3)};
-
-        if (gwlId == self->m_browsers.first->id())
-        {
-            if (hdwp && self->m_browsers.first)
-            {
-                hdwp = DeferWindowPos(hdwp, hWnd, nullptr, first->x, first->y, first->width,
-                                      first->height,
-                                      SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
-                                          SWP_NOREDRAW | SWP_NOCOPYBITS);
-            }
-        }
-
-        if (gwlId == self->m_browsers.second->id())
-        {
-            if (hdwp && self->m_browsers.second)
-            {
-                hdwp = DeferWindowPos(hdwp, hWnd, nullptr, second->x, second->y, second->width,
-                                      second->height,
-                                      SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
-                                          SWP_NOREDRAW | SWP_NOCOPYBITS);
-            }
-        }
-
-        if (gwlId == self->m_browsers.url->id())
-        {
-            if (hdwp && self->m_browsers.url)
-            {
-                hdwp = DeferWindowPos(hdwp, hWnd, nullptr, url->x, url->y, url->width, url->height,
-                                      SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
-                                          SWP_NOREDRAW | SWP_NOCOPYBITS);
-            }
-        }
-
-        if (hdwp) { EndDeferWindowPos(hdwp); }
     }
 
-    return TRUE;
+    else
+    {
+        if (!layout.swapped)
+        {
+            first = full;
+            second = empty;
+        }
+
+        if (layout.swapped)
+        {
+            first = empty;
+            second = full;
+        }
+    }
+
+    url.x = 0;
+    url.y = rect.bottom - barHeight;
+    url.width = width;
+    url.height = barHeight;
+
+    auto hdwp{BeginDeferWindowPos(3)};
+
+    if (gwlId == self->m_browsers.first->id())
+    {
+        if (hdwp && self->m_browsers.first)
+        {
+            hdwp = DeferWindowPos(hdwp, hWnd, nullptr, first.x, first.y, first.width, first.height,
+                                  SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOREDRAW |
+                                      SWP_NOCOPYBITS);
+        }
+    }
+
+    if (gwlId == self->m_browsers.second->id())
+    {
+        if (hdwp && self->m_browsers.second)
+        {
+            hdwp = DeferWindowPos(
+                hdwp, hWnd, nullptr, second.x, second.y, second.width, second.height,
+                SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOREDRAW | SWP_NOCOPYBITS);
+        }
+    }
+
+    if (gwlId == self->m_browsers.url->id())
+    {
+        if (hdwp && self->m_browsers.url)
+        {
+            hdwp = DeferWindowPos(hdwp, hWnd, nullptr, url.x, url.y, url.width, url.height,
+                                  SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOREDRAW |
+                                      SWP_NOCOPYBITS);
+        }
+    }
+
+    if (hdwp) { EndDeferWindowPos(hdwp); }
+
+    return true;
 }
 
 auto Window::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
