@@ -148,7 +148,7 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         case BROWSER_INIT:
         {
-            // m_browser->devtools();
+            m_browser->devtools();
             m_browser->navigate(m_browser->url("settings"));
 
             break;
@@ -157,8 +157,6 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
         case WEB_MESSAGE_RECEIVED:
         {
             auto webMessage{json::parse(message)};
-
-            OutputDebugStringA(webMessage.dump().c_str());
 
             if (webMessage.contains("initialized")) { m_browser->post_json(json(*this)); }
 

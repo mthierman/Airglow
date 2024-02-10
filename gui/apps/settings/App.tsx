@@ -34,23 +34,23 @@ export default () => {
             const data: App.Settings = (event as MessageEvent).data;
 
             if (Object.hasOwn(data, "m_state")) {
-                console.log(data.m_state);
-                const state: App.State = data.m_state;
-                setState(state);
+                sessionStorage.setItem("state", JSON.stringify(data.m_state));
+                setState(data.m_state);
             }
         };
 
         const onEscape = (event: KeyboardEvent) => {
             if (event.key === "Escape") {
+                const obj: App.State = JSON.parse(sessionStorage.getItem("state")!);
                 if (document.activeElement === inputFirst.current) {
                     setState((prevState) => ({
                         ...prevState,
-                        home: [sessionStorage.getItem("first")!, prevState.home[1]],
+                        home: [obj.home[0], prevState.home[1]],
                     }));
                 } else if (document.activeElement === inputSecond.current) {
                     setState((prevState) => ({
                         ...prevState,
-                        home: [prevState.home[0], sessionStorage.getItem("second")!],
+                        home: [prevState.home[0], obj.home[1]],
                     }));
                 }
             }
@@ -82,7 +82,7 @@ export default () => {
                 ...prevState,
                 home: prevState.home.map((item, i) => (i === index ? parsed : item)) as Pair,
             }));
-            sessionStorage.setItem(key, parsed);
+            // sessionStorage.setItem(key, parsed);
             return parsed;
         }
     };
@@ -101,6 +101,7 @@ export default () => {
             post.home[1] = parse("second", 1, inputSecond.current)!;
         }
 
+        sessionStorage.setItem("state", JSON.stringify(post));
         window.chrome.webview.postMessage({ m_state: post } as App.Settings);
     };
 
@@ -131,8 +132,14 @@ export default () => {
                         id="first"
                         type="text"
                         value={state.home[0]}
-                        placeholder={sessionStorage.getItem("first")!}
-                        title={sessionStorage.getItem("first")!}
+                        placeholder={(() => {
+                            const obj: App.State = JSON.parse(sessionStorage.getItem("state")!);
+                            return obj.home[0];
+                        })()}
+                        title={(() => {
+                            const obj: App.State = JSON.parse(sessionStorage.getItem("state")!);
+                            return obj.home[0];
+                        })()}
                         onChange={handleChange}
                         onClick={handleClick}></input>
                 </label>
@@ -144,8 +151,14 @@ export default () => {
                         id="second"
                         type="text"
                         value={state.home[1]}
-                        placeholder={sessionStorage.getItem("second")!}
-                        title={sessionStorage.getItem("second")!}
+                        placeholder={(() => {
+                            const obj: App.State = JSON.parse(sessionStorage.getItem("state")!);
+                            return obj.home[1];
+                        })()}
+                        title={(() => {
+                            const obj: App.State = JSON.parse(sessionStorage.getItem("state")!);
+                            return obj.home[1];
+                        })()}
                         onChange={handleChange}
                         onClick={handleClick}></input>
                 </label>
