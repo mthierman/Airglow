@@ -16,7 +16,9 @@ App::App()
 
     if (!std::filesystem::exists(file())) { save(); }
 
-    // else { load(); }
+    else { load(); }
+
+    parse_args();
 
     m_settings = std::make_unique<Settings>(hwnd(), m_state);
 }
@@ -132,28 +134,28 @@ auto App::file() -> std::filesystem::path
 
 auto App::save() -> void
 {
-    // try
-    // {
-    //     std::ofstream f(file());
-    //     f << std::setw(4) << nlohmann::json(m_url) << std::endl;
-    //     f.close();
-    // }
-    // catch (const std::exception& e)
-    // {
-    //     return;
-    // }
+    try
+    {
+        std::ofstream f(file());
+        f << std::setw(4) << nlohmann::json(m_state) << std::endl;
+        f.close();
+    }
+    catch (const std::exception& e)
+    {
+        return;
+    }
 }
 
 auto App::load() -> void
 {
-    // try
-    // {
-    //     std::ifstream f(file());
-    //     m_url = nlohmann::json::parse(f, nullptr, false, true);
-    //     f.close();
-    // }
-    // catch (const std::exception& e)
-    // {
-    //     return;
-    // }
+    try
+    {
+        std::ifstream f(file());
+        m_state = nlohmann::json::parse(f, nullptr, false, true);
+        f.close();
+    }
+    catch (const std::exception& e)
+    {
+        return;
+    }
 }
