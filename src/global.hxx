@@ -16,7 +16,7 @@
 
 #include <glow/glow.hxx>
 
-enum class CODE : unsigned int
+enum struct CODE : unsigned int
 {
     SETTINGS_TOGGLE = WM_APP,
     SETTINGS_SAVE,
