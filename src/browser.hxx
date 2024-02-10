@@ -40,4 +40,6 @@ struct Browser : public glow::WebView<Browser>
     virtual auto initialized() -> void override;
 
     auto url(std::string compare) -> std::string;
+
+    Keys m_keys;
 };

@@ -40,5 +40,7 @@ struct Settings : public glow::Window<Settings>
 
     std::unique_ptr<Browser> m_browser;
 
+    Keys m_keys;
+
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(Settings, m_state)
 };

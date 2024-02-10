@@ -99,11 +99,10 @@ auto Settings::on_get_min_max_info(WPARAM wParam, LPARAM lParam) -> int
 auto Settings::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 {
     auto key{static_cast<unsigned int>(wParam)};
-    Keys keys;
 
     if ((HIWORD(lParam) & KF_REPEAT) == KF_REPEAT) { return 0; }
 
-    if (keys.set.contains(key))
+    if (m_keys.set.contains(key))
     {
         switch (key)
         {

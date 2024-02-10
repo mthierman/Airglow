@@ -22,15 +22,13 @@ auto Browser::accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
     if (kind == COREWEBVIEW2_KEY_EVENT_KIND_KEY_DOWN ||
         kind == COREWEBVIEW2_KEY_EVENT_KIND_SYSTEM_KEY_DOWN)
     {
-        Keys keys;
-
         unsigned int key{};
         if (FAILED(args2->get_VirtualKey(&key))) { return S_OK; }
 
         int lParam{};
         if (FAILED(args2->get_KeyEventLParam(&lParam))) { return S_OK; }
 
-        if (keys.set.contains(key))
+        if (m_keys.set.contains(key))
         {
             if (FAILED(args2->put_Handled(TRUE))) { return S_OK; }
             if (FAILED(args2->put_IsBrowserAcceleratorKeyEnabled(FALSE))) { return S_OK; }
