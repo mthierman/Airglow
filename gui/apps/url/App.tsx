@@ -191,7 +191,7 @@ export default () => {
     return (
         <>
             <form
-                className="grid grid-flow-col"
+                className="url-form"
                 ref={form}
                 id="form"
                 method="post"
