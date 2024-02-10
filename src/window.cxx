@@ -400,23 +400,17 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
             else if (webMessage.contains("height"))
             {
                 m_layout.bar = webMessage["height"].get<int>();
-                PostMessageA(hwnd(), WM_SIZE, 0, 0);
+                SendMessageA(hwnd(), WM_SIZE, 0, 0);
             }
 
             else if (webMessage.contains("first"))
             {
-                if (m_browsers.first)
-                {
-                    m_browsers.first->navigate(webMessage["first"].get<std::string>());
-                }
+                m_browsers.first->navigate(webMessage["first"].get<std::string>());
             }
 
             else if (webMessage.contains("second"))
             {
-                if (m_browsers.second)
-                {
-                    m_browsers.second->navigate(webMessage["second"].get<std::string>());
-                }
+                m_browsers.second->navigate(webMessage["second"].get<std::string>());
             }
 
             break;
@@ -518,7 +512,6 @@ auto Window::on_size(WPARAM wParam, LPARAM lParam) -> int
 {
     client_rect();
     EnumChildWindows(hwnd(), EnumChildProc, reinterpret_cast<intptr_t>(this));
-    // Sleep(1);
 
     return 0;
 }
@@ -526,11 +519,10 @@ auto Window::on_size(WPARAM wParam, LPARAM lParam) -> int
 auto Window::on_sys_key_down(WPARAM wParam, LPARAM lParam) -> int
 {
     auto key{static_cast<unsigned int>(wParam)};
-    Keys keys;
 
     if ((HIWORD(lParam) & KF_REPEAT) == KF_REPEAT) return 0;
 
-    if (keys.set.contains(key))
+    if (m_keys.set.contains(key))
     {
         switch (key)
         {
