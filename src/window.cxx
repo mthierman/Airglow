@@ -401,9 +401,11 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
             if (webMessage.contains("initialized"))
             {
-                if (!m_init)
+                static bool init;
+
+                if (!init)
                 {
-                    m_init = true;
+                    init = true;
                     m_browsers.url->post_json(json{{"navigate", m_url.current}});
                 }
 

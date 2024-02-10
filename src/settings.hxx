@@ -44,7 +44,7 @@ struct Settings : public glow::Window<Settings>
     HWND m_app;
     URL& m_url;
     glow::Colors& m_colors;
-    bool m_init{};
+
     std::filesystem::path m_file;
     std::unique_ptr<Browser> m_browser;
 

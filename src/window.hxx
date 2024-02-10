@@ -50,7 +50,7 @@ struct Window : public glow::Window<Window>
     HWND m_app;
     URL& m_url;
     glow::Colors& m_colors;
-    bool m_init{};
+
     Browsers m_browsers;
     Positions m_positions;
     Layout m_layout;

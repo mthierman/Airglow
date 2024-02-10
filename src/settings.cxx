@@ -186,12 +186,7 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
         {
             auto webMessage{json::parse(message)};
 
-            if (webMessage.contains("initialized"))
-            {
-                if (!m_init) { m_init = true; }
-
-                m_browser->post_json(json(*this));
-            }
+            if (webMessage.contains("initialized")) { m_browser->post_json(json(*this)); }
 
             else if (webMessage.contains("first"))
             {
