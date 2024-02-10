@@ -21,15 +21,36 @@
 
 using json = nlohmann::json;
 
-struct Browsers
-{
-    std::unique_ptr<Browser> first;
-    std::unique_ptr<Browser> second;
-    std::unique_ptr<Browser> url;
-};
-
 struct Window : public glow::Window<Window>
 {
+    struct Browsers
+    {
+        std::unique_ptr<Browser> first;
+        std::unique_ptr<Browser> second;
+        std::unique_ptr<Browser> url;
+    };
+
+    struct Positions
+    {
+        glow::Position full;
+        glow::Position empty;
+        glow::Position left;
+        glow::Position right;
+        glow::Position top;
+        glow::Position bottom;
+    };
+
+    struct Layout
+    {
+        int bar{};
+        int border{0};
+        bool horizontal{};
+        bool split{};
+        bool swapped{};
+
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(Layout, bar, border, horizontal, split, swapped)
+    };
+
     using glow::Window<Window>::Window;
 
     Window(HWND app, URL& url, glow::Colors& colors, uintptr_t id);

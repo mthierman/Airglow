@@ -28,7 +28,3 @@ Keys::Keys()
 }
 
 URL::URL() : home{"about:blank", "about:blank"}, current{"about:blank", "about:blank"} {}
-
-Layout::Layout() : bar{}, border{2}, horizontal{}, split{}, swapped{} {}
-
-Dimensions::Dimensions() : devicePixelRatio{}, offsetHeight{}, offsetWidth{} {}

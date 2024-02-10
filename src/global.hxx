@@ -50,37 +50,3 @@ struct URL
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(URL, home, current)
 };
-
-struct Positions
-{
-    glow::Position full;
-    glow::Position empty;
-    glow::Position left;
-    glow::Position right;
-    glow::Position top;
-    glow::Position bottom;
-};
-
-struct Layout
-{
-    Layout();
-
-    int bar;
-    int border;
-    bool horizontal;
-    bool split;
-    bool swapped;
-
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Layout, bar, border, horizontal, split, swapped)
-};
-
-struct Dimensions
-{
-    Dimensions();
-
-    float devicePixelRatio;
-    int offsetHeight;
-    int offsetWidth;
-
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Dimensions, devicePixelRatio, offsetHeight, offsetWidth)
-};
