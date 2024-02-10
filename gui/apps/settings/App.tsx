@@ -75,14 +75,13 @@ export default () => {
         }
     };
 
-    const parse = (key: string, index: number, element: HTMLInputElement | null) => {
+    const parse = (index: number, element: HTMLInputElement | null) => {
         if (element) {
             const parsed = parseUrl(element.value).href;
             setState((prevState) => ({
                 ...prevState,
                 home: prevState.home.map((item, i) => (i === index ? parsed : item)) as Pair,
             }));
-            // sessionStorage.setItem(key, parsed);
             return parsed;
         }
     };
@@ -93,12 +92,12 @@ export default () => {
         let post: App.State = state;
 
         if (document.activeElement === inputFirst.current) {
-            post.home[0] = parse("first", 0, inputFirst.current)!;
+            post.home[0] = parse(0, inputFirst.current)!;
         } else if (document.activeElement === inputSecond.current) {
-            post.home[1] = parse("second", 1, inputSecond.current)!;
+            post.home[1] = parse(1, inputSecond.current)!;
         } else {
-            post.home[0] = parse("first", 0, inputFirst.current)!;
-            post.home[1] = parse("second", 1, inputSecond.current)!;
+            post.home[0] = parse(0, inputFirst.current)!;
+            post.home[1] = parse(1, inputSecond.current)!;
         }
 
         sessionStorage.setItem("state", JSON.stringify(post));
