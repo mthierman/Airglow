@@ -47,7 +47,7 @@ auto CALLBACK Settings::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
         if (hdwp) { EndDeferWindowPos(hdwp); }
     }
 
-    return TRUE;
+    return true;
 }
 
 auto Settings::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
@@ -87,10 +87,9 @@ auto Settings::on_dpi_changed(WPARAM wParam, LPARAM lParam) -> int
 auto Settings::on_get_min_max_info(WPARAM wParam, LPARAM lParam) -> int
 {
     auto minmax{reinterpret_cast<MINMAXINFO*>(lParam)};
-    auto& minTrackSize = minmax->ptMinTrackSize;
 
-    minTrackSize.x = 500;
-    minTrackSize.y = 500;
+    minmax->ptMinTrackSize.x = 500;
+    minmax->ptMinTrackSize.y = 500;
 
     return 0;
 }
@@ -133,14 +132,9 @@ auto Settings::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
 auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
 {
-    if (!m_browser) { return 0; }
-
     auto notification{reinterpret_cast<glow::Notification*>(lParam)};
 
-    auto& code{notification->code};
-    auto& message{notification->message};
-
-    switch (code)
+    switch (notification->code)
     {
         using enum CODE;
 
@@ -154,7 +148,7 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         case WEB_MESSAGE_RECEIVED:
         {
-            auto webMessage{json::parse(message)};
+            auto webMessage{json::parse(notification->message)};
 
             if (webMessage.contains("initialized")) { m_browser->post_json(json(*this)); }
 
@@ -180,25 +174,20 @@ auto Settings::on_setting_change(WPARAM wParam, LPARAM lParam) -> int
 
 auto Settings::on_show_window(WPARAM wParam, LPARAM lParam) -> int
 {
-    auto& controller{m_browser->m_webView.controller4};
-
-    if (controller)
+    switch (wParam)
     {
-        switch (wParam)
+        case true:
         {
-            case TRUE:
-            {
-                controller->put_IsVisible(TRUE);
+            m_browser->visibile(true);
 
-                break;
-            }
+            break;
+        }
 
-            case FALSE:
-            {
-                controller->put_IsVisible(FALSE);
+        case false:
+        {
+            m_browser->visibile(false);
 
-                break;
-            }
+            break;
         }
     }
 
@@ -209,7 +198,6 @@ auto Settings::on_size(WPARAM wParam, LPARAM lParam) -> int
 {
     client_rect();
     EnumChildWindows(hwnd(), EnumChildProc, reinterpret_cast<intptr_t>(this));
-    // Sleep(1);
 
     return 0;
 }

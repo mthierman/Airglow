@@ -33,14 +33,14 @@ auto Browser::accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
             if (FAILED(args2->put_Handled(TRUE))) { return S_OK; }
             if (FAILED(args2->put_IsBrowserAcceleratorKeyEnabled(FALSE))) { return S_OK; }
 
-            if (key == VK_F10) { PostMessageA(m_parent, WM_SYSKEYDOWN, key, lParam); }
+            if (key == VK_F10) { SendMessageA(m_parent, WM_SYSKEYDOWN, key, lParam); }
 
             else if (key == 0x30)
             {
                 if (GetKeyState(VK_CONTROL) & 0x8000) { zoom(1.0); }
             }
 
-            else { PostMessageA(m_parent, WM_KEYDOWN, key, lParam); }
+            else { SendMessageA(m_parent, WM_KEYDOWN, key, lParam); }
         }
     }
 
