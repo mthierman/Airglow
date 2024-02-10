@@ -89,14 +89,14 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
                 second = right;
             }
 
-            if (layout.swapped)
+            else
             {
                 first = right;
                 second = left;
             }
         }
 
-        if (layout.horizontal)
+        else
         {
             if (!layout.swapped)
             {
@@ -104,7 +104,7 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
                 second = bottom;
             }
 
-            if (layout.swapped)
+            else
             {
                 first = bottom;
                 second = top;
@@ -120,7 +120,7 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
             second = empty;
         }
 
-        if (layout.swapped)
+        else
         {
             first = empty;
             second = full;
