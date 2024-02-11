@@ -8,7 +8,7 @@
         IconSourceFile="data/release.ico" AboutUrl="https://github.com/mthierman/Airglow"
         Copyright="© 2023 Mike Thierman" Manufacturer="Mike Thierman">
         <BootstrapperApplication>
-            <bal:WixStandardBootstrapperApplication Theme="rtfLicense" LicenseFile="LICENSE.rtf"
+            <bal:WixStandardBootstrapperApplication Theme="rtfLicense" LicenseFile="data/LICENSE.rtf"
                 ShowVersion="yes" LogoSideFile="data/release.png"
                 LogoFile="data/release.png" SuppressOptionsUI="true" />
         </BootstrapperApplication>

@@ -27,7 +27,7 @@
         <MediaTemplate EmbedCab="yes" />
 
         <ui:WixUI Id="WixUI_InstallDir" InstallDirectory="APPINSTALLDIR" />
-        <WixVariable Id="WixUILicenseRtf" Value="LICENSE.rtf" />
+        <WixVariable Id="WixUILicenseRtf" Value="data/LICENSE.rtf" />
         <WixVariable Id="WixUIBannerBmp" Value="data/WixUIBannerBmp.png" />
         <WixVariable Id="WixUIDialogBmp" Value="data/WixUIDialogBmp.png" />
         <WixVariable Id="WixUIExclamationIco" Value="data/WixUIExclamationIco.ico" />
