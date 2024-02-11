@@ -83,7 +83,6 @@ export default function App() {
             }
 
             if (Object.hasOwn(data, "focus")) {
-                // setFocus(data.focus);
                 if (focus === "first") {
                     first.current!.focus();
                     first.current!.select();
