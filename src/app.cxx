@@ -45,17 +45,17 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
         {
             if (!m_settings || !m_settings->m_browser) { break; }
 
-            else if (!m_settings->visible())
+            else if (!m_settings->is_visible())
             {
                 m_settings->show();
                 m_settings->m_browser->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
             }
 
-            else if (m_settings->visible())
+            else if (m_settings->is_visible())
             {
-                if (GetForegroundWindow() != m_settings->hwnd())
+                if (!m_settings->is_foreground())
                 {
-                    SetForegroundWindow(m_settings->hwnd());
+                    m_settings->foreground();
                     m_settings->m_browser->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
                 }
 

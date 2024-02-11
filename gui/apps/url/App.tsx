@@ -2,6 +2,7 @@ import "@css/index.css";
 import {
     applyColors,
     applyFavicon,
+    defaultFavicon,
     defaultLayout,
     defaultPage,
     defaultState,
@@ -193,7 +194,11 @@ export default function App() {
                         className="url-favicon"
                         width="16"
                         height="16"
-                        src={firstBrowser.favicon}
+                        src={
+                            firstBrowser.favicon.length !== 0
+                                ? firstBrowser.favicon
+                                : defaultFavicon()
+                        }
                     />
                     <input
                         className="url-input"
@@ -216,7 +221,11 @@ export default function App() {
                         className="url-favicon"
                         width="16"
                         height="16"
-                        src={secondBrowser.favicon}
+                        src={
+                            secondBrowser.favicon.length !== 0
+                                ? secondBrowser.favicon
+                                : defaultFavicon()
+                        }
                     />
                     <input
                         className="url-input"
