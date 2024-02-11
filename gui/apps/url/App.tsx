@@ -1,24 +1,27 @@
 import "@css/index.css";
-import { applyColors, applyFavicon, getLayout, getState, initialize } from "@libs/index";
+import {
+    applyColors,
+    applyFavicon,
+    defaultLayout,
+    defaultPage,
+    defaultState,
+    initialize,
+} from "@libs/index";
 import { parseUrl } from "@libs/url";
-import { useEffect, useRef, useState } from "react";
+import { SyntheticEvent, useEffect, useRef, useState } from "react";
 
 export default function App() {
     const form = useRef<HTMLFormElement | null>(null);
     const first = useRef<HTMLInputElement | null>(null);
     const second = useRef<HTMLInputElement | null>(null);
-    const [state, setState] = useState<App.State>(getState());
-    const [layout, setLayout] = useState<App.Layout>(getLayout());
-    const [firstBrowser, setFirstBrowser] = useState<App.Page>({
-        favicon: "",
-        source: "",
-        title: "",
-    });
-    const [secondBrowser, setSecondBrowser] = useState<App.Page>({
-        favicon: "",
-        source: "",
-        title: "",
-    });
+    const [firstValue, setFirstValue] = useState("");
+    const [secondValue, setSecondValue] = useState("");
+
+    const [state, setState] = useState(defaultState());
+    const [layout, setLayout] = useState(defaultLayout());
+    const [firstBrowser, setFirstBrowser] = useState(defaultPage());
+    const [secondBrowser, setSecondBrowser] = useState(defaultPage());
+
     const [offsetHeight, setOffsetHeight] = useState(0);
 
     useEffect(() => {
@@ -72,41 +75,6 @@ export default function App() {
                     window.chrome.webview.postMessage({ second: parseUrl(second).href });
                 }
             }
-
-            // if (Object.hasOwn(data, "m_url")) {
-            //     const [first, second] = data.m_url.current;
-            //     setUrl((prevState) => ({ ...prevState, first: first, second: second }));
-            //     sessionStorage.setItem("first", first);
-            //     sessionStorage.setItem("second", second);
-            // }
-
-            // if (Object.hasOwn(data, "m_faviconUrl")) {
-            //     const [first, second] = data.m_faviconUrl;
-
-            //     first.length === 0
-            //         ? setFavicon((prevState) => ({ ...prevState, first: defaultFavicon() }))
-            //         : setFavicon((prevState) => ({ ...prevState, first: first }));
-
-            //     second.length === 0
-            //         ? setFavicon((prevState) => ({ ...prevState, second: defaultFavicon() }))
-            //         : setFavicon((prevState) => ({ ...prevState, second: second }));
-            // }
-
-            // if (Object.hasOwn(data, "m_focus")) {
-            //     if (data.m_focus === "first") {
-            //         setFocus(data.m_focus);
-            //     } else if (data.m_focus === "second") {
-            //         setFocus(data.m_focus);
-            //     }
-            // }
-
-            // if (Object.hasOwn(data, "m_colors")) {
-            //     setColors(data.m_colors.colors);
-            // }
-
-            // if (Object.hasOwn(data, "m_layout")) {
-            //     setLayout(data.m_layout);
-            // }
 
             // if (Object.hasOwn(data, "focus")) {
             //     if (focus === "first") {
@@ -171,41 +139,41 @@ export default function App() {
         };
     });
 
-    // const submitFirst = () => {
-    //     const parsed = parseUrl(inputFirst.current?.value!).href;
-    //     setUrl((prevState) => ({ ...prevState, first: parsed }));
-    //     sessionStorage.setItem("first", parsed);
-    //     window.chrome.webview.postMessage({ first: parsed });
-    // };
+    const submitFirst = () => {
+        const parsed = parseUrl(first.current?.value!).href;
+        // setUrl((prevState) => ({ ...prevState, first: parsed }));
+        // sessionStorage.setItem("first", parsed);
+        window.chrome.webview.postMessage({ first: parsed });
+    };
 
-    // const submitSecond = () => {
-    //     const parsed = parseUrl(inputSecond.current?.value!).href;
-    //     setUrl((prevState) => ({ ...prevState, second: parsed }));
-    //     sessionStorage.setItem("second", parsed);
-    //     window.chrome.webview.postMessage({ second: parsed });
-    // };
+    const submitSecond = () => {
+        const parsed = parseUrl(second.current?.value!).href;
+        // setUrl((prevState) => ({ ...prevState, second: parsed }));
+        // sessionStorage.setItem("second", parsed);
+        window.chrome.webview.postMessage({ second: parsed });
+    };
 
-    // const handleSubmit = (event: SyntheticEvent) => {
-    //     event.preventDefault();
+    const handleSubmit = (event: SyntheticEvent) => {
+        event.preventDefault();
 
-    //     if (document.activeElement === inputFirst.current && inputFirst.current!.value !== "") {
-    //         submitFirst();
-    //     }
+        if (document.activeElement === first.current && first.current!.value !== "") {
+            submitFirst();
+        }
 
-    //     if (document.activeElement === inputSecond.current && inputSecond.current!.value !== "") {
-    //         submitSecond();
-    //     }
-    // };
+        if (document.activeElement === second.current && second.current!.value !== "") {
+            submitSecond();
+        }
+    };
 
-    // const handleClick = async (event: SyntheticEvent) => {
-    //     let nativeEvent = event.nativeEvent as MouseEvent;
+    const handleClick = async (event: SyntheticEvent) => {
+        let nativeEvent = event.nativeEvent as MouseEvent;
 
-    //     if (document.activeElement === inputFirst.current) {
-    //         if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(url.first);
-    //     } else if (document.activeElement === inputSecond.current) {
-    //         if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(url.second);
-    //     }
-    // };
+        if (document.activeElement === first.current) {
+            if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(firstBrowser.source);
+        } else if (document.activeElement === second.current) {
+            if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(secondBrowser.source);
+        }
+    };
 
     return (
         <>
@@ -216,8 +184,7 @@ export default function App() {
                 method="post"
                 autoComplete="off"
                 spellCheck="false"
-                // onSubmit={handleSubmit}
-            >
+                onSubmit={handleSubmit}>
                 <label
                     className={`${layout.swap ? "order-1" : "order-0"} ${
                         !layout.split && layout.swap ? "hidden" : "url"
@@ -234,13 +201,11 @@ export default function App() {
                         ref={first}
                         id="first"
                         type="text"
-                        value={firstBrowser.source}
-                        // placeholder={sessionStorage.getItem("first")!}
-                        // title={sessionStorage.getItem("first")!}
-                        // onChange={(e) =>
-                        //     setUrl((prevState) => ({ ...prevState, first: e.target.value }))
-                        // }
-                        // onClick={handleClick}
+                        placeholder={firstBrowser.source}
+                        title={firstBrowser.source}
+                        value={firstValue}
+                        onChange={(e) => setFirstValue(e.target.value)}
+                        onClick={handleClick}
                     />
                 </label>
                 <label
@@ -259,14 +224,11 @@ export default function App() {
                         ref={second}
                         id="second"
                         type="text"
-                        value={secondBrowser.source}
-                        // placeholder={sessionStorage.getItem("second")!}
-                        // title={sessionStorage.getItem("second")!}
-                        // onChange={(e) =>
-                        //     setUrl((prevState) => ({ ...prevState, second: e.target.value }))
-                        // }
-                        // onClick={handleClick}
-                    ></input>
+                        placeholder={secondBrowser.source}
+                        title={secondBrowser.source}
+                        value={secondValue}
+                        onChange={(e) => setSecondValue(e.target.value)}
+                        onClick={handleClick}></input>
                 </label>
                 <input type="submit" hidden />
             </form>

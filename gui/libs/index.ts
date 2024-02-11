@@ -37,6 +37,22 @@ export const defaultFavicon = () => {
     }
 };
 
+export const defaultState = () => {
+    return {
+        args: ["", ""],
+        colors: {
+            accent: "",
+            accentDark1: "",
+            accentDark2: "",
+            accentDark3: "",
+            accentLight1: "",
+            accentLight2: "",
+            accentLight3: "",
+        },
+        home: ["", ""],
+    } as App.State;
+};
+
 export const getState = () => {
     const state = sessionStorage.getItem("state");
 
@@ -58,6 +74,18 @@ export const getState = () => {
         } as App.State;
 };
 
+export const defaultLayout = () => {
+    return {
+        bar: 0,
+        border: 0,
+        focus: "first",
+        init: false,
+        split: false,
+        swap: false,
+        vertical: true,
+    } as App.Layout;
+};
+
 export const getLayout = () => {
     const layout = sessionStorage.getItem("layout");
 
@@ -74,4 +102,12 @@ export const getLayout = () => {
             vertical: true,
         } as App.Layout;
     }
+};
+
+export const defaultPage = () => {
+    return {
+        favicon: "",
+        source: "",
+        title: "",
+    } as App.Page;
 };
