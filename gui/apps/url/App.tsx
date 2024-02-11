@@ -9,6 +9,16 @@ export default function App() {
     const second = useRef<HTMLInputElement | null>(null);
     const [state, setState] = useState<App.State>(getState());
     const [layout, setLayout] = useState<App.Layout>(getLayout());
+    const [firstBrowser, setFirstBrowser] = useState<App.Page>({
+        favicon: "",
+        source: "",
+        title: "",
+    });
+    const [secondBrowser, setSecondBrowser] = useState<App.Page>({
+        favicon: "",
+        source: "",
+        title: "",
+    });
     const [offsetHeight, setOffsetHeight] = useState(0);
 
     useEffect(() => {
@@ -41,6 +51,16 @@ export default function App() {
             if (Object.hasOwn(data, "m_layout")) {
                 sessionStorage.setItem("layout", JSON.stringify(data.m_layout));
                 setLayout(data.m_layout);
+            }
+
+            if (Object.hasOwn(data, "m_first")) {
+                sessionStorage.setItem("first", JSON.stringify(data.m_first));
+                setFirstBrowser(data.m_first);
+            }
+
+            if (Object.hasOwn(data, "m_second")) {
+                sessionStorage.setItem("second", JSON.stringify(data.m_second));
+                setSecondBrowser(data.m_second);
             }
 
             if (Object.hasOwn(data, "navigate")) {
@@ -199,23 +219,22 @@ export default function App() {
                 // onSubmit={handleSubmit}
             >
                 <label
-                // className={`${layout.swapped ? "order-1" : "order-0"} ${
-                //     !layout.split && layout.swapped ? "hidden" : "url"
-                // } ${focus === "first" ? "url-focus" : "url-blur"}
-                // }`}
-                >
+                    className={`${layout.swap ? "order-1" : "order-0"} ${
+                        !layout.split && layout.swap ? "hidden" : "url"
+                    } ${layout.focus === "first" ? "url-focus" : "url-blur"}
+                }`}>
                     <img
                         className="url-favicon"
                         width="16"
                         height="16"
-                        // src={favicon.first}
+                        src={firstBrowser.favicon}
                     />
                     <input
                         className="url-input"
                         ref={first}
                         id="first"
                         type="text"
-                        // value={url.first}
+                        value={firstBrowser.source}
                         // placeholder={sessionStorage.getItem("first")!}
                         // title={sessionStorage.getItem("first")!}
                         // onChange={(e) =>
@@ -225,23 +244,22 @@ export default function App() {
                     />
                 </label>
                 <label
-                // className={`${layout.swapped ? "order-0" : "order-1"} ${
-                //     !layout.split && !layout.swapped ? "hidden" : "url"
-                // } ${focus === "second" ? "url-focus" : "url-blur"}
-                // }`}
-                >
+                    className={`${layout.swap ? "order-0" : "order-1"} ${
+                        !layout.split && !layout.swap ? "hidden" : "url"
+                    } ${layout.focus === "second" ? "url-focus" : "url-blur"}
+                }`}>
                     <img
                         className="url-favicon"
                         width="16"
                         height="16"
-                        // src={favicon.second}
+                        src={secondBrowser.favicon}
                     />
                     <input
                         className="url-input"
                         ref={second}
                         id="second"
                         type="text"
-                        // value={url.second}
+                        value={secondBrowser.source}
                         // placeholder={sessionStorage.getItem("second")!}
                         // title={sessionStorage.getItem("second")!}
                         // onChange={(e) =>

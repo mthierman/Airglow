@@ -420,15 +420,17 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         case SOURCE_CHANGED:
         {
-            // if (id == m_browsers.first->id()) { m_url.current.first = m_browsers.first->m_source;
-            // }
+            if (notification->id == m_first.browser->id())
+            {
+                m_first.source.assign(m_first.browser->m_source);
+            }
 
-            // else if (id == m_browsers.second->id())
-            // {
-            //     m_url.current.second = m_browsers.second->m_source;
-            // }
+            else if (notification->id == m_second.browser->id())
+            {
+                m_second.source.assign(m_second.browser->m_source);
+            }
 
-            // m_browsers.url->post_json(json(*this));
+            m_url.browser->post_json(json(*this));
 
             notify(m_parent, SETTINGS_SAVE);
 
