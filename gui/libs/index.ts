@@ -1,6 +1,6 @@
 import blankDark from "@assets/blankDark.svg?raw";
 import blankLight from "@assets/blankLight.svg?raw";
-// import debug from "@assets/debug.svg?raw";
+import debug from "@assets/debug.svg?raw";
 import release from "@assets/release.svg?raw";
 
 export const initialize = () => {
@@ -23,7 +23,7 @@ export const applyFavicon = () => {
             const favicon = document.createElement("link");
             favicon.type = "image/svg+xml";
             favicon.rel = "icon";
-            favicon.href = `data:image/svg+xml,${encodeURIComponent(release)}`;
+            favicon.href = `data:image/svg+xml,${encodeURIComponent(import.meta.env.DEV ? debug : release)}`;
             document.head.appendChild(favicon);
         }
     };

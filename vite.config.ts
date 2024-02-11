@@ -1,6 +1,6 @@
-import { defineConfig, UserConfig } from "vite";
-import path from "path";
 import react from "@vitejs/plugin-react-swc";
+import path from "path";
+import { defineConfig, UserConfig } from "vite";
 
 const defaults: UserConfig = {
     plugins: [react()],
@@ -42,17 +42,19 @@ const server: UserConfig["server"] = {
 };
 
 // https://vitejs.dev/config/
-export default defineConfig(async ({ mode }) => {
-    switch (mode) {
-        case "development":
+export default defineConfig(async ({ command, mode, isPreview }) => {
+    switch (command) {
+        case "serve": {
             return {
                 ...defaults,
                 server: { ...server },
                 preview: { ...server },
             };
-        default:
+        }
+        default: {
             return {
                 ...defaults,
             };
+        }
     }
 });
