@@ -187,7 +187,7 @@ export default function App() {
                 <label
                     className={`${layout.swap ? "order-1" : "order-0"} ${
                         !layout.split && layout.swap ? "hidden" : "url"
-                    } ${focus === "first" ? "url-focus" : "url-blur"}
+                    } ${focus === "first" ? "url-focus" : ""}
                 }`}>
                     <img
                         className="url-favicon"
@@ -210,7 +210,7 @@ export default function App() {
                 <label
                     className={`${layout.swap ? "order-0" : "order-1"} ${
                         !layout.split && !layout.swap ? "hidden" : "url"
-                    } ${focus === "second" ? "url-focus" : "url-blur"}
+                    } ${focus === "second" ? "url-focus" : ""}
                 }`}>
                     <img
                         className="url-favicon"
