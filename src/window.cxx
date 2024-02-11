@@ -555,7 +555,13 @@ auto Window::update_caption() -> void
         icon(m_hicon.get(), false, true);
     }
 
-    if (!m_layout.swap) { title(m_first.title); }
+    if (!m_layout.swap)
+    {
+        if (!m_first.title.empty()) { title(m_first.title); }
+    }
 
-    else { title(m_second.title); }
+    else
+    {
+        if (!m_second.title.empty()) { title(m_second.title); }
+    }
 }
