@@ -92,29 +92,23 @@ export default function App() {
             }
         };
 
-        // const onEscape = (event: KeyboardEvent) => {
-        //     if (event.key === "Escape") {
-        //         if (document.activeElement === inputFirst.current) {
-        //             setUrl((prevState) => ({
-        //                 ...prevState,
-        //                 first: sessionStorage.getItem("first")!,
-        //             }));
-        //             inputFirst.current?.setSelectionRange(
-        //                 inputFirst.current.value.length,
-        //                 inputFirst.current.value.length,
-        //             );
-        //         } else if (document.activeElement === inputSecond.current) {
-        //             setUrl((prevState) => ({
-        //                 ...prevState,
-        //                 second: sessionStorage.getItem("second")!,
-        //             }));
-        //             inputSecond.current?.setSelectionRange(
-        //                 inputSecond.current.value.length,
-        //                 inputSecond.current.value.length,
-        //             );
-        //         }
-        //     }
-        // };
+        const onEscape = (event: KeyboardEvent) => {
+            if (event.key === "Escape") {
+                if (document.activeElement === first.current) {
+                    setFirstValue(firstBrowser.source);
+                    first.current?.setSelectionRange(
+                        first.current.value.length,
+                        first.current.value.length,
+                    );
+                } else if (document.activeElement === second.current) {
+                    setSecondValue(secondBrowser.source);
+                    second.current?.setSelectionRange(
+                        second.current.value.length,
+                        second.current.value.length,
+                    );
+                }
+            }
+        };
 
         const onFocus = () => {
             if (document.activeElement === first.current) {
@@ -130,14 +124,14 @@ export default function App() {
         };
 
         window.chrome.webview.addEventListener("message", onMessage);
-        // document.addEventListener("keydown", onEscape);
+        document.addEventListener("keydown", onEscape);
         first.current?.addEventListener("focus", onFocus);
         second.current?.addEventListener("focus", onFocus);
         window.addEventListener("blur", onWindowBlur);
 
         return () => {
             window.chrome.webview.removeEventListener("message", onMessage);
-            // document.removeEventListener("keydown", onEscape);
+            document.removeEventListener("keydown", onEscape);
             first.current?.removeEventListener("focus", onFocus);
             second.current?.removeEventListener("focus", onFocus);
             window.removeEventListener("blur", onWindowBlur);
