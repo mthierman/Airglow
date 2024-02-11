@@ -19,6 +19,7 @@ enum struct CODE : unsigned int
     SETTINGS_SAVE,
     WINDOW_NEW,
     WINDOW_CLOSE,
+    WINDOW_ACTIVATE,
     BROWSER_INIT,
     SETTING_CHANGE,
     DPI_CHANGE,

@@ -23,9 +23,6 @@ Window::Window(HWND parent, State& state, intptr_t id)
 
     m_url.browser = std::make_unique<Browser>(hwnd());
     m_url.browser->reveal();
-
-    // ::SetFocus(m_first.browser->hwnd());
-    m_first.browser->focus();
 }
 
 auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
@@ -176,6 +173,7 @@ auto Window::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 {
     switch (uMsg)
     {
+        case WM_ACTIVATE: return on_activate(wParam, lParam);
         case WM_CLOSE: return on_close(wParam, lParam);
         case WM_DESTROY: return on_destroy(wParam, lParam);
         case WM_DPICHANGED: return on_dpi_changed(wParam, lParam);
@@ -190,12 +188,14 @@ auto Window::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
     return DefWindowProcA(hWnd, uMsg, wParam, lParam);
 }
 
-auto Window::on_close(WPARAM wParam, LPARAM lParam) -> int
+auto Window::on_activate(WPARAM wParam, LPARAM lParam) -> int
 {
-    // notify(m_parent, CODE::WINDOW_CLOSE);
+    notify(m_parent, CODE::WINDOW_ACTIVATE);
 
-    return close();
+    return 0;
 }
+
+auto Window::on_close(WPARAM wParam, LPARAM lParam) -> int { return close(); }
 
 auto Window::on_destroy(WPARAM wParam, LPARAM lParam) -> int
 {
@@ -243,7 +243,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
             {
                 if (GetKeyState(VK_CONTROL) & 0x8000)
                 {
-                    m_url.browser->move_focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+                    m_url.browser->move_focus();
                     m_url.browser->post_json(json{{"focus", m_layout.focus}});
                 }
 
@@ -270,15 +270,9 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
                 if (!m_layout.split)
                 {
-                    if (!m_layout.swap)
-                    {
-                        m_first.browser->move_focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-                    }
+                    if (!m_layout.swap) { m_first.browser->move_focus(); }
 
-                    else if (m_layout.swap)
-                    {
-                        m_second.browser->move_focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-                    }
+                    else if (m_layout.swap) { m_second.browser->move_focus(); }
                 }
 
                 notify(hwnd(), CODE::LAYOUT_CHANGE);
@@ -383,6 +377,12 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
             {
                 // m_url.browser->devtools();
                 m_url.browser->navigate(m_url.browser->url("url"));
+            }
+
+            if (notification->id == m_first.browser->id())
+            {
+                m_first.browser->focus();
+                m_first.browser->move_focus();
             }
 
             break;
