@@ -59,11 +59,13 @@ export default function App() {
             if (Object.hasOwn(data, "m_first")) {
                 sessionStorage.setItem("first", JSON.stringify(data.m_first));
                 setFirstBrowser(data.m_first);
+                setFirstValue(data.m_first.source);
             }
 
             if (Object.hasOwn(data, "m_second")) {
                 sessionStorage.setItem("second", JSON.stringify(data.m_second));
                 setSecondBrowser(data.m_second);
+                setSecondValue(data.m_second.source);
             }
 
             if (Object.hasOwn(data, "navigate")) {
