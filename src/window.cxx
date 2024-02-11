@@ -544,19 +544,11 @@ auto Window::update_caption() -> void
 {
     if (!m_position.fullscreen)
     {
-        if (!m_layout.swap)
-        {
-            PostMessageA(hwnd(), WM_SETICON, ICON_SMALL,
-                         reinterpret_cast<LPARAM>(m_first.hicon.get()));
-            PostMessageA(hwnd(), WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(m_hicon.get()));
-        }
+        if (!m_layout.swap) { icon(m_first.hicon.get(), true, false); }
 
-        else
-        {
-            PostMessageA(hwnd(), WM_SETICON, ICON_SMALL,
-                         reinterpret_cast<LPARAM>(m_second.hicon.get()));
-            PostMessageA(hwnd(), WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(m_hicon.get()));
-        }
+        else { icon(m_second.hicon.get(), true, false); }
+
+        icon(m_hicon.get(), false, true);
     }
 
     if (!m_layout.swap) { title(m_first.title); }
