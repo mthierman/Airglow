@@ -15,14 +15,14 @@ Window::Window(HWND parent, State& state, intptr_t id)
     dwm_system_backdrop(DWMSBT_MAINWINDOW);
     theme();
 
-    m_browsers.first = std::make_unique<Browser>(hwnd());
-    m_browsers.first->reveal();
+    m_first.browser = std::make_unique<Browser>(hwnd());
+    m_first.browser->reveal();
 
-    m_browsers.second = std::make_unique<Browser>(hwnd());
-    m_browsers.second->reveal();
+    m_second.browser = std::make_unique<Browser>(hwnd());
+    m_second.browser->reveal();
 
-    m_browsers.url = std::make_unique<Browser>(hwnd());
-    m_browsers.url->reveal();
+    m_url.browser = std::make_unique<Browser>(hwnd());
+    m_url.browser->reveal();
 }
 
 auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
@@ -50,9 +50,9 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     auto& top = self->m_positions.top;
     auto& bottom = self->m_positions.bottom;
 
-    auto& first = self->m_browsers.first->m_position;
-    auto& second = self->m_browsers.second->m_position;
-    auto& url = self->m_browsers.url->m_position;
+    auto& first = self->m_first.browser->m_position;
+    auto& second = self->m_second.browser->m_position;
+    auto& url = self->m_url.browser->m_position;
 
     full.x = 0;
     full.y = 0;
@@ -134,9 +134,9 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 
     auto hdwp{BeginDeferWindowPos(3)};
 
-    if (gwlId == self->m_browsers.first->id())
+    if (gwlId == self->m_first.browser->id())
     {
-        if (hdwp && self->m_browsers.first)
+        if (hdwp && self->m_first.browser)
         {
             hdwp = DeferWindowPos(hdwp, hWnd, nullptr, first.x, first.y, first.width, first.height,
                                   SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOREDRAW |
@@ -144,9 +144,9 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
         }
     }
 
-    if (gwlId == self->m_browsers.second->id())
+    if (gwlId == self->m_second.browser->id())
     {
-        if (hdwp && self->m_browsers.second)
+        if (hdwp && self->m_second.browser)
         {
             hdwp = DeferWindowPos(
                 hdwp, hWnd, nullptr, second.x, second.y, second.width, second.height,
@@ -154,9 +154,9 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
         }
     }
 
-    if (gwlId == self->m_browsers.url->id())
+    if (gwlId == self->m_url.browser->id())
     {
-        if (hdwp && self->m_browsers.url)
+        if (hdwp && self->m_url.browser)
         {
             hdwp = DeferWindowPos(hdwp, hWnd, nullptr, url.x, url.y, url.width, url.height,
                                   SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOREDRAW |
@@ -232,7 +232,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
             {
                 if (GetKeyState(VK_CONTROL) & 0x8000)
                 {
-                    m_browsers.url->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+                    m_url.browser->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
                     // m_browsers.url->post_json(json{{"focus", m_layout.focus}});
                 }
 
@@ -266,12 +266,12 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
                 {
                     if (!m_layout.swap)
                     {
-                        m_browsers.first->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+                        m_first.browser->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
                     }
 
                     else if (m_layout.swap)
                     {
-                        m_browsers.second->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+                        m_second.browser->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
                     }
                 }
 
@@ -373,10 +373,10 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         case BROWSER_INIT:
         {
-            if (notification->id == m_browsers.url->id())
+            if (notification->id == m_url.browser->id())
             {
-                m_browsers.url->devtools();
-                m_browsers.url->navigate(m_browsers.url->url("url"));
+                m_url.browser->devtools();
+                m_url.browser->navigate(m_url.browser->url("url"));
             }
 
             break;
@@ -394,7 +394,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
                     // m_browsers.url->post_json(json{{"navigate", m_url.current}});
                 }
 
-                m_browsers.url->post_json(json(*this));
+                m_url.browser->post_json(json(*this));
             }
 
             else if (webMessage.contains("height"))
@@ -405,12 +405,12 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
             else if (webMessage.contains("first"))
             {
-                m_browsers.first->navigate(webMessage["first"].get<std::string>());
+                m_first.browser->navigate(webMessage["first"].get<std::string>());
             }
 
             else if (webMessage.contains("second"))
             {
-                m_browsers.second->navigate(webMessage["second"].get<std::string>());
+                m_second.browser->navigate(webMessage["second"].get<std::string>());
             }
 
             break;
@@ -435,19 +435,19 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         case FAVICON_CHANGED:
         {
-            if (notification->id == m_browsers.first->id())
+            if (notification->id == m_first.browser->id())
             {
-                m_favicon.first.reset(m_browsers.first->m_favicon.get());
-                m_faviconUrl.first.assign(m_browsers.first->m_faviconUrl);
+                m_first.hicon.reset(m_first.browser->m_hicon.get());
+                m_first.favicon.assign(m_first.browser->m_favicon);
             }
 
-            else if (notification->id == m_browsers.second->id())
+            else if (notification->id == m_second.browser->id())
             {
-                m_favicon.second.reset(m_browsers.second->m_favicon.get());
-                m_faviconUrl.second.assign(m_browsers.second->m_faviconUrl);
+                m_second.hicon.reset(m_second.browser->m_hicon.get());
+                m_second.favicon.assign(m_second.browser->m_favicon);
             }
 
-            m_browsers.url->post_json(json(*this));
+            m_url.browser->post_json(json(*this));
 
             update_caption();
 
@@ -456,17 +456,17 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         case TITLE_CHANGED:
         {
-            if (notification->id == m_browsers.first->id())
+            if (notification->id == m_first.browser->id())
             {
-                m_title.first.assign(m_browsers.first->m_documentTitle);
+                m_first.title.assign(m_first.browser->m_title);
             }
 
-            else if (notification->id == m_browsers.second->id())
+            else if (notification->id == m_second.browser->id())
             {
-                m_title.second.assign(m_browsers.second->m_documentTitle);
+                m_second.title.assign(m_second.browser->m_title);
             }
 
-            m_browsers.url->post_json(json(*this));
+            m_url.browser->post_json(json(*this));
 
             update_caption();
 
@@ -475,13 +475,13 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         case FOCUS_CHANGED:
         {
-            if (notification->id == m_browsers.first->id()) { m_layout.focus = "first"; }
+            if (notification->id == m_first.browser->id()) { m_layout.focus = "first"; }
 
-            else if (notification->id == m_browsers.second->id()) { m_layout.focus = "second"; }
+            else if (notification->id == m_second.browser->id()) { m_layout.focus = "second"; }
 
-            else if (notification->id == m_browsers.url->id()) { m_layout.focus = "url"; }
+            else if (notification->id == m_url.browser->id()) { m_layout.focus = "url"; }
 
-            m_browsers.url->post_json(json(*this));
+            m_url.browser->post_json(json(*this));
 
             break;
         }
@@ -491,7 +491,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
             PostMessageA(hwnd(), WM_SIZE, 0, 0);
             update_caption();
 
-            m_browsers.url->post_json(json(*this));
+            m_url.browser->post_json(json(*this));
 
             break;
         }
@@ -503,7 +503,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 auto Window::on_setting_change(WPARAM wParam, LPARAM lParam) -> int
 {
     theme();
-    if (m_browsers.url) { m_browsers.url->post_json(json(*this)); }
+    if (m_url.browser) { m_url.browser->post_json(json(*this)); }
 
     return 0;
 }
@@ -543,19 +543,19 @@ auto Window::update_caption() -> void
         if (!m_layout.swap)
         {
             PostMessageA(hwnd(), WM_SETICON, ICON_SMALL,
-                         reinterpret_cast<LPARAM>(m_favicon.first.get()));
+                         reinterpret_cast<LPARAM>(m_first.hicon.get()));
             PostMessageA(hwnd(), WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(m_hicon.get()));
         }
 
         else
         {
             PostMessageA(hwnd(), WM_SETICON, ICON_SMALL,
-                         reinterpret_cast<LPARAM>(m_favicon.second.get()));
+                         reinterpret_cast<LPARAM>(m_second.hicon.get()));
             PostMessageA(hwnd(), WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(m_hicon.get()));
         }
     }
 
-    if (!m_layout.swap) { title(m_title.first); }
+    if (!m_layout.swap) { title(m_first.title); }
 
-    else { title(m_title.second); }
+    else { title(m_second.title); }
 }

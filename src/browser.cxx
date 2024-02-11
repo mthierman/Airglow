@@ -83,10 +83,10 @@ auto Browser::source_changed_handler(ICoreWebView2* sender,
 
 auto Browser::document_title_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT
 {
-    wil::unique_cotaskmem_string documentTitle;
-    if (FAILED(m_webView.core20->get_DocumentTitle(&documentTitle))) { return S_OK; }
+    wil::unique_cotaskmem_string title;
+    if (FAILED(m_webView.core20->get_DocumentTitle(&title))) { return S_OK; }
 
-    m_documentTitle.assign(glow::string(documentTitle.get()));
+    m_title.assign(glow::string(title.get()));
 
     notify(m_parent, CODE::TITLE_CHANGED);
 
@@ -98,7 +98,7 @@ auto Browser::favicon_changed_handler(ICoreWebView2* sender, IUnknown* args) -> 
     wil::unique_cotaskmem_string favicon;
     if (FAILED(m_webView.core20->get_FaviconUri(&favicon))) { return S_OK; }
 
-    m_faviconUrl.assign(glow::string(favicon.get()));
+    m_favicon.assign(glow::string(favicon.get()));
 
     if (FAILED(m_webView.core20->GetFavicon(
             COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
@@ -109,7 +109,7 @@ auto Browser::favicon_changed_handler(ICoreWebView2* sender, IUnknown* args) -> 
 
                     Gdiplus::Bitmap iconBitmap(iconStream);
 
-                    iconBitmap.GetHICON(&m_favicon);
+                    iconBitmap.GetHICON(&m_hicon);
 
                     notify(m_parent, CODE::FAVICON_CHANGED);
 

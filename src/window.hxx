@@ -24,11 +24,15 @@ using json = nlohmann::json;
 
 struct Window : public glow::Window<Window>
 {
-    struct Browsers
+    struct Page
     {
-        std::unique_ptr<Browser> first;
-        std::unique_ptr<Browser> second;
-        std::unique_ptr<Browser> url;
+        std::unique_ptr<Browser> browser;
+        wil::unique_hicon hicon;
+        std::string favicon;
+        std::string source;
+        std::string title;
+
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(Page, favicon, source, title)
     };
 
     struct Positions
@@ -73,17 +77,16 @@ struct Window : public glow::Window<Window>
     HWND m_parent;
     State& m_state;
 
-    Browsers m_browsers;
+    Page m_first;
+    Page m_second;
+    Page m_url;
+
     Positions m_positions;
     Layout m_layout;
 
     bool m_init{};
 
-    std::pair<std::string, std::string> m_title{"Airglow", "Airglow"};
-    std::pair<wil::unique_hicon, wil::unique_hicon> m_favicon;
-    std::pair<std::string, std::string> m_faviconUrl;
-
     Keys m_keys;
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Window, m_state, m_faviconUrl, m_layout)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Window, m_state, m_first, m_second, m_url, m_layout)
 };

@@ -41,5 +41,10 @@ struct Browser : public glow::WebView<Browser>
 
     auto url(std::string compare) -> std::string;
 
+    wil::unique_hicon m_hicon;
+    std::string m_favicon;
+    std::string m_source;
+    std::string m_title;
+
     Keys m_keys;
 };
