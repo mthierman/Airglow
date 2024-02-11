@@ -27,9 +27,9 @@ export declare global {
     type Pair = [first: string, second: string];
 
     interface PairObj {
-        first: string,
-        second: string
-    };
+        first: string;
+        second: string;
+    }
 
     namespace App {
         interface Colors {
@@ -45,9 +45,11 @@ export declare global {
         interface Layout {
             bar: number;
             border: number;
-            horizontal: boolean;
+            focus: string;
+            init: boolean;
             split: boolean;
-            swapped: boolean;
+            swap: boolean;
+            vertical: boolean;
         }
 
         interface State {
@@ -61,6 +63,7 @@ export declare global {
         }
 
         interface Window {
+            m_state: State;
             m_colors: {
                 colors: Colors;
             };

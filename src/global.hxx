@@ -11,6 +11,7 @@
 #include <Windows.h>
 
 #include <set>
+#include <string>
 
 enum struct CODE : unsigned int
 {
@@ -36,3 +37,5 @@ struct Keys
 
     std::set<unsigned int> set;
 };
+
+auto logger(std::string msg) -> void;

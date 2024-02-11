@@ -386,16 +386,9 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
         {
             auto webMessage{json::parse(notification->message)};
 
-            if (webMessage.contains("initialized"))
-            {
-                if (!m_init)
-                {
-                    m_init = true;
-                    // m_browsers.url->post_json(json{{"navigate", m_url.current}});
-                }
+            logger(webMessage.dump());
 
-                m_url.browser->post_json(json(*this));
-            }
+            if (webMessage.contains("initialized")) { m_url.browser->post_json(json(*this)); }
 
             else if (webMessage.contains("height"))
             {
@@ -503,7 +496,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 auto Window::on_setting_change(WPARAM wParam, LPARAM lParam) -> int
 {
     theme();
-    if (m_url.browser) { m_url.browser->post_json(json(*this)); }
+    // if (m_url.browser) { m_url.browser->post_json(json(*this)); }
 
     return 0;
 }

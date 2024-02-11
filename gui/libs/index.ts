@@ -1,5 +1,5 @@
-import blankLight from "@assets/blankLight.svg?raw";
 import blankDark from "@assets/blankDark.svg?raw";
+import blankLight from "@assets/blankLight.svg?raw";
 // import debug from "@assets/debug.svg?raw";
 import release from "@assets/release.svg?raw";
 
@@ -29,6 +29,14 @@ export const applyFavicon = () => {
     };
 };
 
+export const defaultFavicon = () => {
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        return `data:image/svg+xml,${encodeURIComponent(blankDark)}`;
+    } else {
+        return `data:image/svg+xml,${encodeURIComponent(blankLight)}`;
+    }
+};
+
 export const getState = () => {
     const state = sessionStorage.getItem("state");
 
@@ -50,58 +58,20 @@ export const getState = () => {
         } as App.State;
 };
 
-export const defaultFavicon = () => {
-    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-        return `data:image/svg+xml,${encodeURIComponent(blankDark)}`;
+export const getLayout = () => {
+    const layout = sessionStorage.getItem("layout");
+
+    if (layout) {
+        return JSON.parse(layout) as App.Layout;
     } else {
-        return `data:image/svg+xml,${encodeURIComponent(blankLight)}`;
-    }
-};
-
-export const getSessionStorage = (key: string, defaultValue: any) => {
-    const value = sessionStorage.getItem(key);
-
-    if (!value) {
-        return defaultValue;
-    } else {
-        return value;
-    }
-};
-
-export const getLayoutStorage = () => {
-    const value: App.Layout = JSON.parse(sessionStorage.getItem("layout")!);
-
-    const defaultValue: App.Layout = {
-        bar: 0,
-        border: 0,
-        horizontal: false,
-        split: false,
-        swapped: false,
-    };
-
-    if (!value) {
-        return defaultValue;
-    } else {
-        return value;
-    }
-};
-
-export const getColorStorage = () => {
-    const value: App.Colors = JSON.parse(sessionStorage.getItem("colors")!);
-
-    const defaultValue: App.Colors = {
-        accent: "",
-        accentDark1: "",
-        accentDark2: "",
-        accentDark3: "",
-        accentLight1: "",
-        accentLight2: "",
-        accentLight3: "",
-    };
-
-    if (!value) {
-        return defaultValue;
-    } else {
-        return value;
+        return {
+            bar: 0,
+            border: 0,
+            focus: "first",
+            init: false,
+            split: false,
+            swap: false,
+            vertical: true,
+        } as App.Layout;
     }
 };
