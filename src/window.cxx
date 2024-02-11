@@ -23,6 +23,9 @@ Window::Window(HWND parent, State& state, intptr_t id)
 
     m_url.browser = std::make_unique<Browser>(hwnd());
     m_url.browser->reveal();
+
+    // ::SetFocus(m_first.browser->hwnd());
+    m_first.browser->focus();
 }
 
 auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
@@ -240,7 +243,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
             {
                 if (GetKeyState(VK_CONTROL) & 0x8000)
                 {
-                    m_url.browser->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+                    m_url.browser->move_focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
                     m_url.browser->post_json(json{{"focus", m_layout.focus}});
                 }
 
@@ -269,12 +272,12 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
                 {
                     if (!m_layout.swap)
                     {
-                        m_first.browser->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+                        m_first.browser->move_focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
                     }
 
                     else if (m_layout.swap)
                     {
-                        m_second.browser->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+                        m_second.browser->move_focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
                     }
                 }
 
@@ -303,7 +306,12 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
             case VK_F4:
             {
-                if (GetKeyState(VK_MENU) & 0x8000) { close(); }
+                glow::log("F4 pressed!");
+                if (GetKeyState(VK_MENU) & 0x8000)
+                {
+                    glow::log("alt pressed!");
+                    close();
+                }
 
                 else
                 {

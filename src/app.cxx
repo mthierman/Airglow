@@ -48,7 +48,7 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
             else if (!m_settings->is_visible())
             {
                 m_settings->show();
-                m_settings->m_browser->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+                m_settings->m_browser->move_focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
             }
 
             else if (m_settings->is_visible())
@@ -56,7 +56,7 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
                 if (!m_settings->is_foreground())
                 {
                     m_settings->foreground();
-                    m_settings->m_browser->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+                    m_settings->m_browser->move_focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
                 }
 
                 else { m_settings->hide(); }
