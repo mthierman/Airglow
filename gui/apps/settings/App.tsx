@@ -1,16 +1,15 @@
 import "@css/index.css";
-import { applyColors, applyFavicon, getState, initialize } from "@libs/index";
+import { applyColors, getState, initialize } from "@libs/index";
 import { parseUrl } from "@libs/url";
 import { SyntheticEvent, useEffect, useRef, useState } from "react";
 
-export default () => {
+export default function App() {
     const first = useRef<HTMLInputElement | null>(null);
     const second = useRef<HTMLInputElement | null>(null);
     const [state, setState] = useState<App.State>(getState());
 
     useEffect(() => {
         initialize();
-        applyFavicon();
     }, []);
 
     useEffect(() => {
@@ -146,4 +145,4 @@ export default () => {
             <input className="settings-submit" type="submit" value="Save" />
         </form>
     );
-};
+}

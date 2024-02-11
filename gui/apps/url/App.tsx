@@ -1,7 +1,6 @@
 import "@css/index.css";
 import {
     applyColors,
-    applyFavicon,
     defaultFavicon,
     defaultLayout,
     defaultPage,
@@ -28,7 +27,6 @@ export default function App() {
 
     useEffect(() => {
         initialize();
-        applyFavicon();
     }, []);
 
     useEffect(() => {
