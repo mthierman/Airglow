@@ -28,7 +28,7 @@ auto CALLBACK Settings::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     if (!self) { return true; }
 
     auto gwlId{static_cast<intptr_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
-    auto& rect{self->m_clientRect};
+    auto& rect{self->m_client.rect};
     auto& width{rect.right};
     auto& height{rect.bottom};
 
@@ -195,7 +195,7 @@ auto Settings::on_show_window(WPARAM wParam, LPARAM lParam) -> int
 
 auto Settings::on_size(WPARAM wParam, LPARAM lParam) -> int
 {
-    client_rect();
+    position();
     EnumChildWindows(hwnd(), EnumChildProc, reinterpret_cast<intptr_t>(this));
 
     return 0;

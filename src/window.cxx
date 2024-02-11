@@ -32,7 +32,7 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     if (!self) { return true; }
 
     auto gwlId{static_cast<intptr_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
-    auto& rect{self->m_clientRect};
+    auto& rect{self->m_client.rect};
     auto& layout{self->m_layout};
 
     auto& width{rect.right};
@@ -50,9 +50,9 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     auto& top = self->m_positions.top;
     auto& bottom = self->m_positions.bottom;
 
-    auto& first = self->m_first.browser->m_position;
-    auto& second = self->m_second.browser->m_position;
-    auto& url = self->m_url.browser->m_position;
+    auto& first = self->m_first.browser->m_client;
+    auto& second = self->m_second.browser->m_client;
+    auto& url = self->m_url.browser->m_client;
 
     full.x = 0;
     full.y = 0;
@@ -309,7 +309,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
                 else
                 {
-                    m_position.maximize = !m_position.maximize;
+                    m_maximize = !m_maximize;
                     maximize();
 
                     notify(hwnd(), CODE::LAYOUT_CHANGE);
@@ -335,7 +335,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
             case VK_F9:
             {
-                m_position.topmost = !m_position.topmost;
+                m_topmost = !m_topmost;
                 topmost();
 
                 notify(hwnd(), CODE::LAYOUT_CHANGE);
@@ -345,7 +345,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
             case VK_F11:
             {
-                m_position.fullscreen = !m_position.fullscreen;
+                m_fullscreen = !m_fullscreen;
                 fullscreen();
 
                 notify(hwnd(), CODE::LAYOUT_CHANGE);
@@ -518,7 +518,7 @@ auto Window::on_setting_change(WPARAM wParam, LPARAM lParam) -> int
 
 auto Window::on_size(WPARAM wParam, LPARAM lParam) -> int
 {
-    client_rect();
+    position();
     EnumChildWindows(hwnd(), EnumChildProc, reinterpret_cast<intptr_t>(this));
 
     return 0;
@@ -546,7 +546,7 @@ auto Window::on_sys_key_down(WPARAM wParam, LPARAM lParam) -> int
 
 auto Window::update_caption() -> void
 {
-    if (!m_position.fullscreen)
+    if (!m_fullscreen)
     {
         if (!m_layout.swap) { icon(m_first.hicon.get(), true, false); }
 
