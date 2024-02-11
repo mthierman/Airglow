@@ -139,29 +139,27 @@ export default function App() {
         };
     });
 
-    const submitFirst = () => {
-        const parsed = parseUrl(first.current?.value!).href;
-        // setUrl((prevState) => ({ ...prevState, first: parsed }));
-        // sessionStorage.setItem("first", parsed);
-        window.chrome.webview.postMessage({ first: parsed });
-    };
-
-    const submitSecond = () => {
-        const parsed = parseUrl(second.current?.value!).href;
-        // setUrl((prevState) => ({ ...prevState, second: parsed }));
-        // sessionStorage.setItem("second", parsed);
-        window.chrome.webview.postMessage({ second: parsed });
-    };
-
     const handleSubmit = (event: SyntheticEvent) => {
         event.preventDefault();
 
-        if (document.activeElement === first.current && first.current!.value !== "") {
-            submitFirst();
+        if (document.activeElement === first.current) {
+            if (first.current) {
+                const value = first.current.value;
+                if (value !== "")
+                    window.chrome.webview.postMessage({
+                        first: parseUrl(value).href,
+                    });
+            }
         }
 
-        if (document.activeElement === second.current && second.current!.value !== "") {
-            submitSecond();
+        if (document.activeElement === second.current) {
+            if (second.current) {
+                const value = second.current.value;
+                if (value !== "")
+                    window.chrome.webview.postMessage({
+                        second: parseUrl(value).href,
+                    });
+            }
         }
     };
 
