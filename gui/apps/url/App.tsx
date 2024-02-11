@@ -124,23 +124,23 @@ export default function App() {
             }
         };
 
-        // const onWindowBlur = () => {
-        //     inputFirst.current?.blur();
-        //     inputSecond.current?.blur();
-        // };
+        const onWindowBlur = () => {
+            first.current?.blur();
+            second.current?.blur();
+        };
 
         window.chrome.webview.addEventListener("message", onMessage);
         // document.addEventListener("keydown", onEscape);
         first.current?.addEventListener("focus", onFocus);
         second.current?.addEventListener("focus", onFocus);
-        // window.addEventListener("blur", onWindowBlur);
+        window.addEventListener("blur", onWindowBlur);
 
         return () => {
             window.chrome.webview.removeEventListener("message", onMessage);
             // document.removeEventListener("keydown", onEscape);
             first.current?.removeEventListener("focus", onFocus);
             second.current?.removeEventListener("focus", onFocus);
-            // window.removeEventListener("blur", onWindowBlur);
+            window.removeEventListener("blur", onWindowBlur);
         };
     });
 
