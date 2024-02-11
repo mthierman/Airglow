@@ -17,16 +17,6 @@ export default function App() {
     }, []);
 
     useEffect(() => {
-        console.log(state);
-        // sessionStorage.setItem("state", JSON.stringify(state));
-    }, [state]);
-
-    useEffect(() => {
-        console.log(layout);
-        // sessionStorage.setItem("layout", JSON.stringify(layout));
-    }, [layout]);
-
-    useEffect(() => {
         applyColors(state.colors);
     }, [state.colors]);
 
@@ -39,25 +29,28 @@ export default function App() {
             setOffsetHeight(form.current.offsetHeight);
         }
 
-        if (!layout.init) {
-            setLayout((prevState) => ({ ...prevState, init: true }));
-            // sessionStorage.setItem("layout", JSON.stringify(layout));
-            window.chrome.webview.postMessage({ first: parseUrl(state.args[0]).href });
-            window.chrome.webview.postMessage({ second: parseUrl(state.args[1]).href });
-        }
-
         const onMessage = (event: Event) => {
             const data: App.Window = (event as MessageEvent).data;
             console.log(data);
 
             if (Object.hasOwn(data, "m_state")) {
-                // sessionStorage.setItem("state", JSON.stringify(data.m_state));
+                sessionStorage.setItem("state", JSON.stringify(data.m_state));
                 setState(data.m_state);
             }
 
             if (Object.hasOwn(data, "m_layout")) {
-                // sessionStorage.setItem("layout", JSON.stringify(data.m_layout));
+                sessionStorage.setItem("layout", JSON.stringify(data.m_layout));
                 setLayout(data.m_layout);
+            }
+
+            if (Object.hasOwn(data, "navigate")) {
+                const [first, second] = data.navigate as Pair;
+                if (first.length !== 0) {
+                    window.chrome.webview.postMessage({ first: parseUrl(first).href });
+                }
+                if (second.length !== 0) {
+                    window.chrome.webview.postMessage({ second: parseUrl(second).href });
+                }
             }
 
             // if (Object.hasOwn(data, "m_url")) {
@@ -93,12 +86,6 @@ export default function App() {
 
             // if (Object.hasOwn(data, "m_layout")) {
             //     setLayout(data.m_layout);
-            // }
-
-            // if (Object.hasOwn(data, "navigate")) {
-            //     const [first, second] = data.navigate;
-            //     window.chrome.webview.postMessage({ first: parseUrl(first).href });
-            //     window.chrome.webview.postMessage({ second: parseUrl(second).href });
             // }
 
             // if (Object.hasOwn(data, "focus")) {

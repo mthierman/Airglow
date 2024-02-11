@@ -388,7 +388,16 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
             logger(webMessage.dump());
 
-            if (webMessage.contains("initialized")) { m_url.browser->post_json(json(*this)); }
+            if (webMessage.contains("initialized"))
+            {
+                m_url.browser->post_json(json(*this));
+
+                if (!m_init)
+                {
+                    m_init = true;
+                    m_url.browser->post_json(json{{"navigate", m_state.args}});
+                }
+            }
 
             else if (webMessage.contains("height"))
             {

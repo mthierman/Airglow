@@ -1,7 +1,7 @@
 import "@css/index.css";
-import { SyntheticEvent, useState, useRef, useEffect } from "react";
+import { applyColors, applyFavicon, getState, initialize } from "@libs/index";
 import { parseUrl } from "@libs/url";
-import { initialize, getState, applyColors, applyFavicon } from "@libs/index";
+import { SyntheticEvent, useEffect, useRef, useState } from "react";
 
 export default () => {
     const first = useRef<HTMLInputElement | null>(null);

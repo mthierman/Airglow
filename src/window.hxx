@@ -50,12 +50,11 @@ struct Window : public glow::Window<Window>
         int bar{0};
         int border{0};
         std::string focus{"first"};
-        bool init{false};
         bool split{false};
         bool swap{false};
         bool vertical{true};
 
-        NLOHMANN_DEFINE_TYPE_INTRUSIVE(Layout, bar, border, focus, init, split, swap, vertical)
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(Layout, bar, border, focus, split, swap, vertical)
     };
 
     using glow::Window<Window>::Window;
@@ -84,6 +83,7 @@ struct Window : public glow::Window<Window>
 
     Positions m_positions;
     Layout m_layout;
+    bool m_init{false};
 
     Keys m_keys;
 

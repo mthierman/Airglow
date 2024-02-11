@@ -58,23 +58,22 @@ export declare global {
             home: Pair;
         }
 
+        interface Page {
+            favicon: string;
+            source: string;
+            title: string;
+        }
+
         interface Settings {
             m_state: State;
         }
 
         interface Window {
-            m_state: State;
-            m_colors: {
-                colors: Colors;
-            };
-            m_faviconUrl: [string, string];
-            m_focus: string;
+            m_first: Page;
             m_layout: Layout;
-            m_url: {
-                current: [string, string];
-                home: [string, string];
-            };
-            focus: string;
+            m_second: Page;
+            m_state: State;
+            m_url: Page;
             navigate: [string, string];
         }
     }
