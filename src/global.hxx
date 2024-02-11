@@ -37,5 +37,3 @@ struct Keys
 
     std::set<unsigned int> set;
 };
-
-auto logger(std::string msg) -> void;

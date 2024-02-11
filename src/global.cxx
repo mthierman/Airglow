@@ -26,9 +26,3 @@ Keys::Keys()
     set.emplace(VK_F10);
     set.emplace(VK_F11);
 }
-
-auto logger(std::string msg) -> void
-{
-    OutputDebugStringA(msg.c_str());
-    OutputDebugStringA("\n");
-}

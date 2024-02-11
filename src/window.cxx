@@ -174,6 +174,7 @@ auto Window::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
     switch (uMsg)
     {
         case WM_CLOSE: return on_close(wParam, lParam);
+        case WM_DESTROY: return on_destroy(wParam, lParam);
         case WM_DPICHANGED: return on_dpi_changed(wParam, lParam);
         case WM_GETMINMAXINFO: return on_get_min_max_info(wParam, lParam);
         case WM_KEYDOWN: return on_key_down(wParam, lParam);
@@ -188,9 +189,16 @@ auto Window::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 
 auto Window::on_close(WPARAM wParam, LPARAM lParam) -> int
 {
-    notify(m_parent, CODE::WINDOW_CLOSE);
+    // notify(m_parent, CODE::WINDOW_CLOSE);
 
     return close();
+}
+
+auto Window::on_destroy(WPARAM wParam, LPARAM lParam) -> int
+{
+    notify(m_parent, CODE::WINDOW_CLOSE);
+
+    return 0;
 }
 
 auto Window::on_dpi_changed(WPARAM wParam, LPARAM lParam) -> int
@@ -248,12 +256,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
             case 0x57:
             {
-                if (GetKeyState(VK_CONTROL) & 0x8000)
-                {
-                    SendMessageA(hwnd(), WM_CLOSE, 0, 0);
-
-                    return 0;
-                }
+                if (GetKeyState(VK_CONTROL) & 0x8000) { close(); }
 
                 break;
             }
@@ -300,12 +303,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
             case VK_F4:
             {
-                if (GetKeyState(VK_MENU) & 0x8000)
-                {
-                    SendMessageA(hwnd(), WM_CLOSE, 0, 0);
-
-                    return 0;
-                }
+                if (GetKeyState(VK_MENU) & 0x8000) { close(); }
 
                 else
                 {
@@ -375,7 +373,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
         {
             if (notification->id == m_url.browser->id())
             {
-                m_url.browser->devtools();
+                // m_url.browser->devtools();
                 m_url.browser->navigate(m_url.browser->url("url"));
             }
 
@@ -385,8 +383,6 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
         case WEB_MESSAGE_RECEIVED:
         {
             auto webMessage{json::parse(notification->message)};
-
-            logger(webMessage.dump());
 
             if (webMessage.contains("initialized"))
             {
@@ -402,7 +398,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
             else if (webMessage.contains("height"))
             {
                 m_layout.bar = webMessage["height"].get<int>();
-                SendMessageA(hwnd(), WM_SIZE, 0, 0);
+                size();
             }
 
             else if (webMessage.contains("first"))
@@ -492,7 +488,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         case LAYOUT_CHANGE:
         {
-            PostMessageA(hwnd(), WM_SIZE, 0, 0);
+            size();
             update_caption();
 
             m_url.browser->post_json(json(*this));
@@ -507,7 +503,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 auto Window::on_setting_change(WPARAM wParam, LPARAM lParam) -> int
 {
     theme();
-    // if (m_url.browser) { m_url.browser->post_json(json(*this)); }
+    m_url.browser->post_json(json(*this));
 
     return 0;
 }
