@@ -233,7 +233,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
                 if (GetKeyState(VK_CONTROL) & 0x8000)
                 {
                     m_url.browser->focus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
-                    // m_browsers.url->post_json(json{{"focus", m_layout.focus}});
+                    m_url.browser->post_json(json{{"focus", m_layout.focus}});
                 }
 
                 break;
@@ -483,7 +483,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
             else if (notification->id == m_second.browser->id()) { m_layout.focus = "second"; }
 
-            else if (notification->id == m_url.browser->id()) { m_layout.focus = "url"; }
+            // else if (notification->id == m_url.browser->id()) { m_layout.focus = "url"; }
 
             m_url.browser->post_json(json(*this));
 

@@ -23,6 +23,7 @@ export default function App() {
     const [secondBrowser, setSecondBrowser] = useState(defaultPage());
 
     const [offsetHeight, setOffsetHeight] = useState(0);
+    const [focus, setFocus] = useState("first");
 
     useEffect(() => {
         initialize();
@@ -54,6 +55,7 @@ export default function App() {
             if (Object.hasOwn(data, "m_layout")) {
                 sessionStorage.setItem("layout", JSON.stringify(data.m_layout));
                 setLayout(data.m_layout);
+                setFocus(data.m_layout.focus);
             }
 
             if (Object.hasOwn(data, "m_first")) {
@@ -78,15 +80,16 @@ export default function App() {
                 }
             }
 
-            // if (Object.hasOwn(data, "focus")) {
-            //     if (focus === "first") {
-            //         inputFirst.current!.focus();
-            //         inputFirst.current!.select();
-            //     } else if (focus === "second") {
-            //         inputSecond.current!.focus();
-            //         inputSecond.current!.select();
-            //     }
-            // }
+            if (Object.hasOwn(data, "focus")) {
+                console.log(data.focus);
+                if (focus === "first") {
+                    first.current!.focus();
+                    first.current!.select();
+                } else if (focus === "second") {
+                    second.current!.focus();
+                    second.current!.select();
+                }
+            }
         };
 
         // const onEscape = (event: KeyboardEvent) => {
@@ -113,13 +116,13 @@ export default function App() {
         //     }
         // };
 
-        // const onFocus = () => {
-        //     if (document.activeElement === inputFirst.current) {
-        //         setFocus("first");
-        //     } else if (document.activeElement === inputSecond.current) {
-        //         setFocus("second");
-        //     }
-        // };
+        const onFocus = () => {
+            if (document.activeElement === first.current) {
+                setFocus("first");
+            } else if (document.activeElement === second.current) {
+                setFocus("second");
+            }
+        };
 
         // const onWindowBlur = () => {
         //     inputFirst.current?.blur();
@@ -128,15 +131,15 @@ export default function App() {
 
         window.chrome.webview.addEventListener("message", onMessage);
         // document.addEventListener("keydown", onEscape);
-        // inputFirst.current?.addEventListener("focus", onFocus);
-        // inputSecond.current?.addEventListener("focus", onFocus);
+        first.current?.addEventListener("focus", onFocus);
+        second.current?.addEventListener("focus", onFocus);
         // window.addEventListener("blur", onWindowBlur);
 
         return () => {
             window.chrome.webview.removeEventListener("message", onMessage);
             // document.removeEventListener("keydown", onEscape);
-            // inputFirst.current?.removeEventListener("focus", onFocus);
-            // inputSecond.current?.removeEventListener("focus", onFocus);
+            first.current?.removeEventListener("focus", onFocus);
+            second.current?.removeEventListener("focus", onFocus);
             // window.removeEventListener("blur", onWindowBlur);
         };
     });

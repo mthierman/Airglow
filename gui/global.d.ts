@@ -74,6 +74,7 @@ export declare global {
             m_second: Page;
             m_state: State;
             m_url: Page;
+            focus: string;
             navigate: [string, string];
         }
     }
