@@ -39,13 +39,16 @@ export default function App() {
     }, [offsetHeight]);
 
     useEffect(() => {
+        setFocus(layout.focus);
+    }, [layout.focus]);
+
+    useEffect(() => {
         if (form.current) {
             setOffsetHeight(form.current.offsetHeight);
         }
 
         const onMessage = (event: Event) => {
             const data: App.Window = (event as MessageEvent).data;
-            console.log(data);
 
             if (Object.hasOwn(data, "m_state")) {
                 sessionStorage.setItem("state", JSON.stringify(data.m_state));
@@ -55,7 +58,6 @@ export default function App() {
             if (Object.hasOwn(data, "m_layout")) {
                 sessionStorage.setItem("layout", JSON.stringify(data.m_layout));
                 setLayout(data.m_layout);
-                setFocus(data.m_layout.focus);
             }
 
             if (Object.hasOwn(data, "m_first")) {
@@ -81,11 +83,12 @@ export default function App() {
             }
 
             if (Object.hasOwn(data, "focus")) {
-                console.log(data.focus);
+                // setFocus(data.focus);
                 if (focus === "first") {
                     first.current!.focus();
                     first.current!.select();
-                } else if (focus === "second") {
+                }
+                if (focus === "second") {
                     second.current!.focus();
                     second.current!.select();
                 }
@@ -185,7 +188,7 @@ export default function App() {
                 <label
                     className={`${layout.swap ? "order-1" : "order-0"} ${
                         !layout.split && layout.swap ? "hidden" : "url"
-                    } ${layout.focus === "first" ? "url-focus" : "url-blur"}
+                    } ${focus === "first" ? "url-focus" : "url-blur"}
                 }`}>
                     <img
                         className="url-favicon"
@@ -208,7 +211,7 @@ export default function App() {
                 <label
                     className={`${layout.swap ? "order-0" : "order-1"} ${
                         !layout.split && !layout.swap ? "hidden" : "url"
-                    } ${layout.focus === "second" ? "url-focus" : "url-blur"}
+                    } ${focus === "second" ? "url-focus" : "url-blur"}
                 }`}>
                     <img
                         className="url-favicon"
