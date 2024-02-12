@@ -6,20 +6,11 @@ import { SyntheticEvent, useEffect, useRef, useState } from "react";
 export default function App() {
     const first = useRef<HTMLInputElement | null>(null);
     const second = useRef<HTMLInputElement | null>(null);
-
-    const [home, setHome] = useState<PairObj>({ first: "", second: "" });
-    const [homeValue, setHomeValue] = useState<PairObj>({
-        first: "",
-        second: "",
-    });
+    const [state, setState] = useState(defaultState());
 
     useEffect(() => {
         initialize();
     }, []);
-
-    useEffect(() => {
-        console.log(home);
-    }, [home]);
 
     useEffect(() => {
         const onMessage = (event: Event) => {
@@ -27,9 +18,7 @@ export default function App() {
             // console.log(data);
 
             if (Object.hasOwn(data, "m_state")) {
-                const home = data.m_state.home;
-                setHome({ first: home[0], second: home[1] });
-                setHomeValue({ first: home[0], second: home[1] });
+                setState(data.m_state);
             }
         };
 
@@ -54,32 +43,6 @@ export default function App() {
         };
     });
 
-    const submit = (element: HTMLInputElement) => {
-        const parsed = parseUrl(element.value).href;
-        setHome((prev) => ({ ...prev, [element.id]: parsed }));
-        setHomeValue((prev) => ({ ...prev, [element.id]: parsed }));
-        window.chrome.webview.postMessage({ [element.id]: parsed });
-    };
-
-    const handleSubmit = (event: SyntheticEvent) => {
-        event.preventDefault();
-
-        if (document.activeElement === first.current) {
-            if (first.current) {
-                submit(first.current);
-            }
-        } else if (document.activeElement === second.current) {
-            if (second.current) {
-                submit(second.current);
-            }
-        } else {
-            if (first.current && second.current) {
-                submit(first.current);
-                submit(second.current);
-            }
-        }
-    };
-
     // const handleClick = async (event: SyntheticEvent) => {
     //     let nativeEvent = event.nativeEvent as MouseEvent;
     //     if (document.activeElement === first.current) {
@@ -89,18 +52,36 @@ export default function App() {
     //     }
     // };
 
+    // const submit = (element: HTMLInputElement) => {
+    //     const parsed = parseUrl(element.value).href;
+    //     setHome((prev) => ({ ...prev, [element.id]: parsed }));
+    //     setHomeValue((prev) => ({ ...prev, [element.id]: parsed }));
+    //     window.chrome.webview.postMessage({ [element.id]: parsed });
+    // };
+
+    const handleSubmit = (event: SyntheticEvent) => {
+        event.preventDefault();
+
+        if (document.activeElement === first.current) {
+        } else if (document.activeElement === second.current) {
+        } else {
+        }
+    };
+
     const onChange = (event: SyntheticEvent<HTMLInputElement, Event>) => {
         const {
             currentTarget: { id, value },
         } = event;
-        event.currentTarget;
-        setHomeValue((prev) => ({
-            ...prev,
-            [id]: value,
-        }));
 
-        console.log(`${id}: ${value}`);
+        setState({
+            ...state,
+            home: state.home.map((v, i) => (i === Number(id) ? value : v)) as Pair,
+        });
     };
+
+    useEffect(() => {
+        console.log(state.home);
+    }, [state]);
 
     return (
         <form
@@ -109,19 +90,20 @@ export default function App() {
             method="post"
             autoComplete="off"
             spellCheck="false"
-            onSubmit={handleSubmit}>
+            // onSubmit={handleSubmit}
+        >
             <div className="settings-spacer">
                 <label className="settings-spacer">
                     <h1 className="settings-title">🌆First Home</h1>
                     <input
                         className="settings-input"
                         ref={first}
-                        id="first"
+                        id="0"
                         type="text"
-                        value={homeValue.first}
+                        value={state.home[0]}
                         onChange={onChange}
-                        placeholder={home.first}
-                        title={home.first}
+                        // placeholder={home.first}
+                        // title={home.first}
                         // onClick={handleClick}
                     ></input>
                 </label>
@@ -130,12 +112,12 @@ export default function App() {
                     <input
                         className="settings-input"
                         ref={second}
-                        id="second"
+                        id="1"
                         type="text"
-                        value={homeValue.second}
+                        value={state.home[1]}
                         onChange={onChange}
-                        placeholder={home.second}
-                        title={home.second}
+                        // placeholder={home.second}
+                        // title={home.second}
                         // onClick={handleClick}
                     ></input>
                 </label>
