@@ -59,17 +59,9 @@ export default function App() {
         event.preventDefault();
 
         if (document.activeElement === first.current) {
-            if (first.current?.value === "") {
-                return;
-            } else {
-                postState(parseInput(first.current!));
-            }
+            if (first.current?.value !== "") postState(parseInput(first.current!));
         } else if (document.activeElement === second.current) {
-            if (second.current?.value === "") {
-                return;
-            } else {
-                postState(parseInput(second.current!));
-            }
+            if (second.current?.value !== "") postState(parseInput(second.current!));
         } else {
             postState({
                 ...state,

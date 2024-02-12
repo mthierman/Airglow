@@ -160,26 +160,6 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
                 m_browser->post_json(json(*this));
             }
 
-            // if (webMessage.contains("first"))
-            // {
-            //     glow::log(webMessage.dump());
-            //     auto msg{webMessage["first"].get<std::string>()};
-            //     glow::log(msg);
-
-            //     m_state.home.first = webMessage["first"].get<std::string>();
-            //     notify(m_parent, CODE::SETTINGS_SAVE);
-            // }
-
-            // if (webMessage.contains("second"))
-            // {
-            //     glow::log(webMessage.dump());
-            //     auto msg{webMessage["second"].get<std::string>()};
-            //     glow::log(msg);
-
-            //     m_state.home.second = webMessage["second"].get<std::string>();
-            //     notify(m_parent, CODE::SETTINGS_SAVE);
-            // }
-
             break;
         }
     }
