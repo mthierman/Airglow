@@ -75,9 +75,14 @@ export default function App() {
                 const [first, second] = data.navigate as Pair;
                 if (first.length !== 0) {
                     window.chrome.webview.postMessage({ first: parseUrl(first).href });
+                } else {
+                    window.chrome.webview.postMessage({ first: parseUrl(state.home[0]).href });
                 }
+
                 if (second.length !== 0) {
                     window.chrome.webview.postMessage({ second: parseUrl(second).href });
+                } else {
+                    window.chrome.webview.postMessage({ second: parseUrl(state.home[1]).href });
                 }
             }
 
