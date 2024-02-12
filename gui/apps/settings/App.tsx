@@ -1,5 +1,5 @@
 import "@css/index.css";
-import { defaultState, initialize } from "@libs/index";
+import { applyColors, defaultState, initialize } from "@libs/index";
 import { parseUrl } from "@libs/url";
 import { SyntheticEvent, useEffect, useRef, useState } from "react";
 
@@ -11,6 +11,10 @@ export default function App() {
     useEffect(() => {
         initialize();
     }, []);
+
+    useEffect(() => {
+        applyColors(state.colors);
+    }, [state.colors]);
 
     useEffect(() => {
         const onMessage = (event: Event) => {
@@ -69,6 +73,16 @@ export default function App() {
         }
     };
 
+    const handleClick = async (event: SyntheticEvent) => {
+        let nativeEvent = event.nativeEvent as MouseEvent;
+
+        if (document.activeElement === first.current) {
+            if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(state.home[0]);
+        } else if (document.activeElement === second.current) {
+            if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(state.home[1]);
+        }
+    };
+
     return (
         <form
             className="settings-form"
@@ -86,7 +100,8 @@ export default function App() {
                         id="0"
                         type="text"
                         value={state.home[0]}
-                        onChange={onChange}></input>
+                        onChange={onChange}
+                        onClick={handleClick}></input>
                 </label>
                 <label className="settings-spacer">
                     <h1 className="settings-title">🌃Second Home</h1>
@@ -96,7 +111,8 @@ export default function App() {
                         id="1"
                         type="text"
                         value={state.home[1]}
-                        onChange={onChange}></input>
+                        onChange={onChange}
+                        onClick={handleClick}></input>
                 </label>
             </div>
             <input className="settings-submit" type="submit" value="Save" />
