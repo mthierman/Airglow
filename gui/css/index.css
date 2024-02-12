@@ -23,7 +23,7 @@
 }
 
 .settings-root {
-    @apply flex min-h-screen bg-neutral-50/50 dark:bg-neutral-950/50;
+    @apply flex min-h-screen bg-white dark:bg-black;
 }
 
 .settings-form {
@@ -35,7 +35,7 @@
 }
 
 .settings-input {
-    @apply w-full text-ellipsis rounded-md border-b-2 border-transparent bg-neutral-200 p-2 shadow-lg outline-none duration-200 ease-in-out focus-within:border-neutral-400 focus-within:bg-neutral-100 hover:bg-neutral-100 dark:bg-neutral-900 dark:focus-within:bg-neutral-950 dark:hover:bg-neutral-950;
+    @apply w-full text-ellipsis rounded-md border-b-2 border-transparent bg-neutral-300 p-2 shadow-lg outline-none duration-200 ease-in-out focus-within:border-neutral-400 hover:bg-neutral-200 focus:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700;
 }
 
 .settings-title {
@@ -43,5 +43,5 @@
 }
 
 .settings-submit {
-    @apply rounded-md border-2 border-transparent bg-neutral-200 p-2 shadow-lg outline-none duration-200 ease-in-out hover:cursor-pointer hover:bg-neutral-100 focus:border-neutral-400 focus:bg-neutral-100 dark:bg-neutral-900 dark:hover:bg-neutral-950 dark:focus:bg-neutral-950;
+    @apply rounded-md border-2 border-transparent bg-neutral-300 p-2 shadow-lg outline-none duration-200 ease-in-out hover:cursor-pointer hover:bg-neutral-200 focus:border-neutral-400 focus:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700;
 }
