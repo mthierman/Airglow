@@ -139,7 +139,7 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         case BROWSER_INIT:
         {
-            // m_browser->devtools();
+            m_browser->devtools();
             m_browser->navigate(m_browser->url("settings"));
 
             break;
@@ -149,12 +149,28 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
         {
             auto webMessage{json::parse(notification->message)};
 
+            // glow::log(notification->message.c_str());
+
             if (webMessage.contains("initialized")) { m_browser->post_json(json(*this)); }
 
-            else if (webMessage.contains("m_state"))
+            // else if (webMessage.contains("m_state"))
+            // {
+            //     m_state = webMessage["m_state"].get<State>();
+            //     notify(m_parent, CODE::SETTINGS_SAVE);
+            // }
+
+            if (webMessage.contains("first"))
             {
-                m_state = webMessage["m_state"].get<State>();
-                notify(m_parent, CODE::SETTINGS_SAVE);
+                glow::log(webMessage.dump());
+                // auto msg{webMessage["first"].get<std::string>()};
+                // glow::log(msg);
+            }
+
+            if (webMessage.contains("second"))
+            {
+                glow::log(webMessage.dump());
+                // auto msg{webMessage["first"].get<std::string>()};
+                // glow::log(msg);
             }
 
             break;
