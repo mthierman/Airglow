@@ -54,28 +54,29 @@ export default function App() {
         };
     });
 
+    const submit = (element: HTMLInputElement) => {
+        const parsed = parseUrl(element.value).href;
+        setHome((prev) => ({ ...prev, [element.id]: parsed }));
+        setHomeValue((prev) => ({ ...prev, [element.id]: parsed }));
+        window.chrome.webview.postMessage({ [element.id]: parsed });
+    };
+
     const handleSubmit = (event: SyntheticEvent) => {
         event.preventDefault();
 
         if (document.activeElement === first.current) {
-            const firstParse = parseUrl(first.current!.value).href;
-            setHome((prev) => ({ ...prev, first: firstParse }));
-            setHomeValue((prev) => ({ ...prev, first: firstParse }));
-            window.chrome.webview.postMessage({ first: firstParse });
+            if (first.current) {
+                submit(first.current);
+            }
         } else if (document.activeElement === second.current) {
-            const secondParse = parseUrl(second.current!.value).href;
-            setHome((prev) => ({ ...prev, second: secondParse }));
-            setHomeValue((prev) => ({ ...prev, second: secondParse }));
-            window.chrome.webview.postMessage({ second: secondParse });
+            if (second.current) {
+                submit(second.current);
+            }
         } else {
-            const firstParse = parseUrl(first.current!.value).href;
-            const secondParse = parseUrl(second.current!.value).href;
-            setHome((prev) => ({ ...prev, first: firstParse }));
-            setHomeValue((prev) => ({ ...prev, first: firstParse }));
-            setHome((prev) => ({ ...prev, second: secondParse }));
-            setHomeValue((prev) => ({ ...prev, second: secondParse }));
-            window.chrome.webview.postMessage({ first: firstParse });
-            window.chrome.webview.postMessage({ second: secondParse });
+            if (first.current && second.current) {
+                submit(first.current);
+                submit(second.current);
+            }
         }
     };
 
