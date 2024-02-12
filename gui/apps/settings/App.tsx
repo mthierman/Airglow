@@ -15,7 +15,6 @@ export default function App() {
     useEffect(() => {
         const onMessage = (event: Event) => {
             const data: App.Settings = (event as MessageEvent).data;
-            // console.log(data);
 
             if (Object.hasOwn(data, "m_state")) {
                 setState(data.m_state);
