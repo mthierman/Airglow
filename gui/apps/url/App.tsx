@@ -38,35 +38,26 @@ export default function App() {
     }, [offsetHeight]);
 
     useEffect(() => {
-        setFocus(layout.focus);
-    }, [layout.focus]);
-
-    useEffect(() => {
-        if (form.current) {
-            setOffsetHeight(form.current.offsetHeight);
-        }
+        setOffsetHeight(form.current!.offsetHeight);
 
         const onMessage = (event: Event) => {
             const data: App.Window = (event as MessageEvent).data;
 
             if (Object.hasOwn(data, "m_state")) {
-                sessionStorage.setItem("state", JSON.stringify(data.m_state));
                 setState(data.m_state);
             }
 
             if (Object.hasOwn(data, "m_layout")) {
-                sessionStorage.setItem("layout", JSON.stringify(data.m_layout));
                 setLayout(data.m_layout);
+                setFocus(data.m_layout.focus);
             }
 
             if (Object.hasOwn(data, "m_first")) {
-                sessionStorage.setItem("first", JSON.stringify(data.m_first));
                 setFirstBrowser(data.m_first);
                 setFirstValue(data.m_first.source);
             }
 
             if (Object.hasOwn(data, "m_second")) {
-                sessionStorage.setItem("second", JSON.stringify(data.m_second));
                 setSecondBrowser(data.m_second);
                 setSecondValue(data.m_second.source);
             }
