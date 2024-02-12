@@ -89,5 +89,6 @@ struct Window : public glow::Window<Window>
 
     Keys m_keys;
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Window, m_state, m_first, m_second, m_url, m_layout)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Window, m_window, m_dpi, m_scale, m_maximize, m_fullscreen,
+                                   m_topmost, m_state, m_first, m_second, m_url, m_layout)
 };
