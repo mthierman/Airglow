@@ -185,8 +185,8 @@ export default function App() {
                 onSubmit={handleSubmit}>
                 <label
                     className={`${layout.swap ? "order-1" : "order-0"} ${
-                        !layout.split && layout.swap ? "hidden" : "url"
-                    } ${focus === "first" ? "url-focus" : ""}
+                        !layout.split && layout.swap ? "hidden" : "url-label"
+                    } ${focus === "first" ? "url-focus" : "url-blur"}
                 }`}>
                     <img
                         className="url-favicon"
@@ -212,8 +212,8 @@ export default function App() {
                 </label>
                 <label
                     className={`${layout.swap ? "order-0" : "order-1"} ${
-                        !layout.split && !layout.swap ? "hidden" : "url"
-                    } ${focus === "second" ? "url-focus" : ""}
+                        !layout.split && !layout.swap ? "hidden" : "url-label"
+                    } ${focus === "second" ? "url-focus" : "url-blur"}
                 }`}>
                     <img
                         className="url-favicon"
