@@ -149,35 +149,36 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
         {
             auto webMessage{json::parse(notification->message)};
 
-            // glow::log(notification->message.c_str());
+            glow::log(notification->message);
 
             if (webMessage.contains("initialized")) { m_browser->post_json(json(*this)); }
 
-            // else if (webMessage.contains("m_state"))
+            else if (webMessage.contains("m_state"))
+            {
+                m_state = webMessage["m_state"].get<State>();
+                notify(m_parent, CODE::SETTINGS_SAVE);
+                m_browser->post_json(json(*this));
+            }
+
+            // if (webMessage.contains("first"))
             // {
-            //     m_state = webMessage["m_state"].get<State>();
+            //     glow::log(webMessage.dump());
+            //     auto msg{webMessage["first"].get<std::string>()};
+            //     glow::log(msg);
+
+            //     m_state.home.first = webMessage["first"].get<std::string>();
             //     notify(m_parent, CODE::SETTINGS_SAVE);
             // }
 
-            if (webMessage.contains("first"))
-            {
-                glow::log(webMessage.dump());
-                auto msg{webMessage["first"].get<std::string>()};
-                glow::log(msg);
+            // if (webMessage.contains("second"))
+            // {
+            //     glow::log(webMessage.dump());
+            //     auto msg{webMessage["second"].get<std::string>()};
+            //     glow::log(msg);
 
-                m_state.home.first = webMessage["first"].get<std::string>();
-                notify(m_parent, CODE::SETTINGS_SAVE);
-            }
-
-            if (webMessage.contains("second"))
-            {
-                glow::log(webMessage.dump());
-                auto msg{webMessage["second"].get<std::string>()};
-                glow::log(msg);
-
-                m_state.home.second = webMessage["second"].get<std::string>();
-                notify(m_parent, CODE::SETTINGS_SAVE);
-            }
+            //     m_state.home.second = webMessage["second"].get<std::string>();
+            //     notify(m_parent, CODE::SETTINGS_SAVE);
+            // }
 
             break;
         }

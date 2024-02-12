@@ -22,50 +22,18 @@ export default function App() {
             }
         };
 
-        // const onEscape = (event: KeyboardEvent) => {
-        //     if (event.key === "Escape") {
-        //         const store = getState();
-
-        //         if (document.activeElement === first.current) {
-        //             updateHome(0, store.home[0]);
-        //         } else if (document.activeElement === second.current) {
-        //             updateHome(1, store.home[1]);
-        //         }
-        //     }
-        // };
-
         window.chrome.webview.addEventListener("message", onMessage);
-        // document.addEventListener("keydown", onEscape);
 
         return () => {
             window.chrome.webview.removeEventListener("message", onMessage);
-            // document.removeEventListener("keydown", onEscape);
         };
     });
 
-    // const handleClick = async (event: SyntheticEvent) => {
-    //     let nativeEvent = event.nativeEvent as MouseEvent;
-    //     if (document.activeElement === first.current) {
-    //         if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(state.home[0]);
-    //     } else if (document.activeElement === second.current) {
-    //         if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(state.home[1]);
-    //     }
-    // };
-
-    // const submit = (element: HTMLInputElement) => {
-    //     const parsed = parseUrl(element.value).href;
-    //     setHome((prev) => ({ ...prev, [element.id]: parsed }));
-    //     setHomeValue((prev) => ({ ...prev, [element.id]: parsed }));
-    //     window.chrome.webview.postMessage({ [element.id]: parsed });
-    // };
-
-    const handleSubmit = (event: SyntheticEvent) => {
-        event.preventDefault();
-
-        if (document.activeElement === first.current) {
-        } else if (document.activeElement === second.current) {
-        } else {
-        }
+    const mapHome = (value: string, id: string): App.State => {
+        return {
+            ...state,
+            home: state.home.map((v, i) => (i === Number(id) ? value : v)) as Pair,
+        };
     };
 
     const onChange = (event: SyntheticEvent<HTMLInputElement, Event>) => {
@@ -73,15 +41,42 @@ export default function App() {
             currentTarget: { id, value },
         } = event;
 
-        setState({
-            ...state,
-            home: state.home.map((v, i) => (i === Number(id) ? value : v)) as Pair,
-        });
+        setState(mapHome(value, id));
     };
 
-    useEffect(() => {
-        console.log(state.home);
-    }, [state]);
+    const parseInput = (element: HTMLInputElement) => {
+        const { id, value } = element;
+        const parsed = parseUrl(value).href;
+
+        return mapHome(parsed, id);
+    };
+
+    const postState = (newState: App.State) => {
+        window.chrome.webview.postMessage({ m_state: newState });
+    };
+
+    const handleSubmit = (event: SyntheticEvent<HTMLFormElement, SubmitEvent>) => {
+        event.preventDefault();
+
+        if (document.activeElement === first.current) {
+            if (first.current?.value === "") {
+                return;
+            } else {
+                postState(parseInput(first.current!));
+            }
+        } else if (document.activeElement === second.current) {
+            if (second.current?.value === "") {
+                return;
+            } else {
+                postState(parseInput(second.current!));
+            }
+        } else {
+            postState({
+                ...state,
+                home: [parseUrl(state.home[0]).href, parseUrl(state.home[1]).href],
+            });
+        }
+    };
 
     return (
         <form
@@ -90,8 +85,7 @@ export default function App() {
             method="post"
             autoComplete="off"
             spellCheck="false"
-            // onSubmit={handleSubmit}
-        >
+            onSubmit={handleSubmit}>
             <div className="settings-spacer">
                 <label className="settings-spacer">
                     <h1 className="settings-title">🌆First Home</h1>
@@ -101,11 +95,7 @@ export default function App() {
                         id="0"
                         type="text"
                         value={state.home[0]}
-                        onChange={onChange}
-                        // placeholder={home.first}
-                        // title={home.first}
-                        // onClick={handleClick}
-                    ></input>
+                        onChange={onChange}></input>
                 </label>
                 <label className="settings-spacer">
                     <h1 className="settings-title">🌃Second Home</h1>
@@ -115,11 +105,7 @@ export default function App() {
                         id="1"
                         type="text"
                         value={state.home[1]}
-                        onChange={onChange}
-                        // placeholder={home.second}
-                        // title={home.second}
-                        // onClick={handleClick}
-                    ></input>
+                        onChange={onChange}></input>
                 </label>
             </div>
             <input className="settings-submit" type="submit" value="Save" />
