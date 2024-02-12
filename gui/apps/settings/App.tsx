@@ -89,6 +89,19 @@ export default function App() {
     //     }
     // };
 
+    const onChange = (event: SyntheticEvent<HTMLInputElement, Event>) => {
+        const {
+            currentTarget: { id, value },
+        } = event;
+        event.currentTarget;
+        setHomeValue((prev) => ({
+            ...prev,
+            [id]: value,
+        }));
+
+        console.log(`${id}: ${value}`);
+    };
+
     return (
         <form
             className="settings-form"
@@ -106,12 +119,7 @@ export default function App() {
                         id="first"
                         type="text"
                         value={homeValue.first}
-                        onChange={(e) =>
-                            setHomeValue((prev) => ({
-                                ...prev,
-                                first: e.target.value,
-                            }))
-                        }
+                        onChange={onChange}
                         placeholder={home.first}
                         title={home.first}
                         // onClick={handleClick}
@@ -125,12 +133,7 @@ export default function App() {
                         id="second"
                         type="text"
                         value={homeValue.second}
-                        onChange={(e) =>
-                            setHomeValue((prev) => ({
-                                ...prev,
-                                second: e.target.value,
-                            }))
-                        }
+                        onChange={onChange}
                         placeholder={home.second}
                         title={home.second}
                         // onClick={handleClick}
