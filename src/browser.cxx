@@ -161,7 +161,12 @@ auto Browser::zoom_factor_changed_handler(ICoreWebView2Controller* sender, IUnkn
     return S_OK;
 }
 
-auto Browser::initialized() -> void { notify(m_parent, CODE::BROWSER_INIT); }
+auto Browser::created() -> ::HRESULT
+{
+    notify(m_parent, CODE::BROWSER_CREATED);
+
+    return S_OK;
+}
 
 auto Browser::url(std::string page) -> std::string
 {

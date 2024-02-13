@@ -137,7 +137,7 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
     {
         using enum CODE;
 
-        case BROWSER_INIT:
+        case BROWSER_CREATED:
         {
             // m_browser->devtools();
             m_browser->navigate(m_browser->url("settings"));

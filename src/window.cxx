@@ -371,7 +371,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
     {
         using enum CODE;
 
-        case BROWSER_INIT:
+        case BROWSER_CREATED:
         {
             if (notification->id == m_url.browser->id())
             {
