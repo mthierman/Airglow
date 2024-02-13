@@ -18,10 +18,8 @@
 
 using json = nlohmann::json;
 
-struct Settings : public glow::Window<Settings>
+struct Settings : public glow::Window
 {
-    using glow::Window<Settings>::Window;
-
     Settings(HWND parent, State& state);
 
     static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;

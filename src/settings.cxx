@@ -9,7 +9,7 @@
 #include "settings.hxx"
 
 Settings::Settings(HWND parent, State& state)
-    : glow::Window<Settings>("Airglow - Settings"), m_parent{parent}, m_state{state}
+    : glow::Window("Airglow - Settings"), m_parent{parent}, m_state{state}
 {
     dwm_caption_color(false);
     dwm_system_backdrop(DWMSBT_TRANSIENTWINDOW);

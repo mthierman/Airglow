@@ -22,7 +22,7 @@
 
 using json = nlohmann::json;
 
-struct Window : public glow::Window<Window>
+struct Window final : public glow::Window
 {
     struct Page
     {
@@ -56,8 +56,6 @@ struct Window : public glow::Window<Window>
 
         NLOHMANN_DEFINE_TYPE_INTRUSIVE(Layout, bar, border, focus, split, swap, vertical)
     };
-
-    using glow::Window<Window>::Window;
 
     Window(HWND parent, State& state, intptr_t id);
 

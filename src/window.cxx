@@ -9,7 +9,7 @@
 #include "window.hxx"
 
 Window::Window(HWND parent, State& state, intptr_t id)
-    : glow::Window<Window>("Airglow", id), m_parent{parent}, m_state{state}
+    : glow::Window("Airglow", id), m_parent{parent}, m_state{state}
 {
     dwm_caption_color(false);
     dwm_system_backdrop(DWMSBT_MAINWINDOW);
