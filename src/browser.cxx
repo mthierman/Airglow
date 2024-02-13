@@ -83,10 +83,7 @@ auto Browser::source_changed_handler(ICoreWebView2* sender,
 
 auto Browser::document_title_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT
 {
-    wil::unique_cotaskmem_string title;
-    if (FAILED(m_core->get_DocumentTitle(&title))) { return S_OK; }
-
-    m_title.assign(glow::string(title.get()));
+    m_title.assign(get_document_title());
 
     notify(m_parent, CODE::TITLE_CHANGED);
 
@@ -95,10 +92,7 @@ auto Browser::document_title_changed_handler(ICoreWebView2* sender, IUnknown* ar
 
 auto Browser::favicon_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT
 {
-    wil::unique_cotaskmem_string favicon;
-    if (FAILED(m_core->get_FaviconUri(&favicon))) { return S_OK; }
-
-    m_favicon.assign(glow::string(favicon.get()));
+    m_favicon.assign(get_favicon_url());
 
     if (FAILED(m_core->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
                                   Microsoft::WRL::Callback<ICoreWebView2GetFaviconCompletedHandler>(
