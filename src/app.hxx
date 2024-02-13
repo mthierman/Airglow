@@ -24,11 +24,11 @@
 
 using json = nlohmann::json;
 
-struct App : public glow::App<App>
+struct App final : public glow::App
 {
     App();
 
-    auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
+    virtual auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override;
     auto on_notify(WPARAM wParam, LPARAM lParam) -> int;
 
     auto parse_args() -> void;
