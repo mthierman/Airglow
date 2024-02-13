@@ -178,14 +178,14 @@ auto Settings::on_show_window(WPARAM wParam, LPARAM lParam) -> int
     {
         case true:
         {
-            m_browser->visibile(true);
+            m_browser->visible(true);
 
             break;
         }
 
         case false:
         {
-            m_browser->visibile(false);
+            m_browser->visible(false);
 
             break;
         }

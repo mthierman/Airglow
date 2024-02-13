@@ -84,7 +84,7 @@ auto Browser::source_changed_handler(ICoreWebView2* sender,
 auto Browser::document_title_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT
 {
     wil::unique_cotaskmem_string title;
-    if (FAILED(m_webView.core20->get_DocumentTitle(&title))) { return S_OK; }
+    if (FAILED(m_core21->get_DocumentTitle(&title))) { return S_OK; }
 
     m_title.assign(glow::string(title.get()));
 
@@ -96,26 +96,26 @@ auto Browser::document_title_changed_handler(ICoreWebView2* sender, IUnknown* ar
 auto Browser::favicon_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT
 {
     wil::unique_cotaskmem_string favicon;
-    if (FAILED(m_webView.core20->get_FaviconUri(&favicon))) { return S_OK; }
+    if (FAILED(m_core21->get_FaviconUri(&favicon))) { return S_OK; }
 
     m_favicon.assign(glow::string(favicon.get()));
 
-    if (FAILED(m_webView.core20->GetFavicon(
-            COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
-            Microsoft::WRL::Callback<ICoreWebView2GetFaviconCompletedHandler>(
-                [=, this](HRESULT errorCode, IStream* iconStream) -> HRESULT
-                {
-                    if (FAILED(errorCode)) { return S_OK; }
+    if (FAILED(
+            m_core21->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
+                                 Microsoft::WRL::Callback<ICoreWebView2GetFaviconCompletedHandler>(
+                                     [=, this](HRESULT errorCode, IStream* iconStream) -> HRESULT
+                                     {
+                                         if (FAILED(errorCode)) { return S_OK; }
 
-                    Gdiplus::Bitmap iconBitmap(iconStream);
+                                         Gdiplus::Bitmap iconBitmap(iconStream);
 
-                    iconBitmap.GetHICON(&m_hicon);
+                                         iconBitmap.GetHICON(&m_hicon);
 
-                    notify(m_parent, CODE::FAVICON_CHANGED);
+                                         notify(m_parent, CODE::FAVICON_CHANGED);
 
-                    return S_OK;
-                })
-                .Get())))
+                                         return S_OK;
+                                     })
+                                     .Get())))
     {
         return S_OK;
     }
