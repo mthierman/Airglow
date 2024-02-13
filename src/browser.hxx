@@ -12,9 +12,9 @@
 
 #include "global.hxx"
 
-struct Browser : public glow::WebView<Browser>
+struct Browser final : public glow::WebView
 {
-    using glow::WebView<Browser>::WebView;
+    using glow::WebView::WebView;
 
     virtual auto accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
                                                  ICoreWebView2AcceleratorKeyPressedEventArgs* args)
