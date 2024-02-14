@@ -71,11 +71,6 @@ auto Browser::web_message_received_handler(ICoreWebView2* sender,
 auto Browser::source_changed_handler(ICoreWebView2* sender,
                                      ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
 {
-    wil::unique_cotaskmem_string source;
-    if (FAILED(sender->get_Source(&source))) { return S_OK; }
-
-    m_source.assign(glow::string(source.get()));
-
     notify(m_parent, CODE::SOURCE_CHANGED);
 
     return S_OK;
@@ -83,8 +78,6 @@ auto Browser::source_changed_handler(ICoreWebView2* sender,
 
 auto Browser::document_title_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT
 {
-    m_title.assign(get_document_title());
-
     notify(m_parent, CODE::TITLE_CHANGED);
 
     return S_OK;
@@ -92,26 +85,7 @@ auto Browser::document_title_changed_handler(ICoreWebView2* sender, IUnknown* ar
 
 auto Browser::favicon_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT
 {
-    m_favicon.assign(get_favicon_url());
-
-    if (FAILED(m_core->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
-                                  Microsoft::WRL::Callback<ICoreWebView2GetFaviconCompletedHandler>(
-                                      [=, this](HRESULT errorCode, IStream* iconStream) -> HRESULT
-                                      {
-                                          if (FAILED(errorCode)) { return S_OK; }
-
-                                          Gdiplus::Bitmap iconBitmap(iconStream);
-
-                                          iconBitmap.GetHICON(&m_hicon);
-
-                                          notify(m_parent, CODE::FAVICON_CHANGED);
-
-                                          return S_OK;
-                                      })
-                                      .Get())))
-    {
-        return S_OK;
-    }
+    notify(m_parent, CODE::FAVICON_CHANGED);
 
     return S_OK;
 }

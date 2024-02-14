@@ -436,16 +436,37 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         case FAVICON_CHANGED:
         {
+            std::function<HRESULT()> firstCallback{
+                [this]()
+                {
+                    m_first.hicon.reset(m_first.browser->m_favicon.second.get());
+                    update_caption();
+
+                    return S_OK;
+                }};
+
+            std::function<HRESULT()> secondCallback{
+                [this]()
+                {
+                    m_second.hicon.reset(m_second.browser->m_favicon.second.get());
+                    update_caption();
+
+                    return S_OK;
+                }};
+
+            m_first.browser->get_favicon(firstCallback);
+            m_second.browser->get_favicon(secondCallback);
+
             if (notification->id == m_first.browser->m_id)
             {
-                m_first.hicon.reset(m_first.browser->m_hicon.get());
-                m_first.favicon.assign(m_first.browser->m_favicon);
+                m_first.favicon.assign(m_first.browser->m_favicon.first);
+                // m_first.hicon.reset(m_first.browser->m_favicon.second.get());
             }
 
             else if (notification->id == m_second.browser->m_id)
             {
-                m_second.hicon.reset(m_second.browser->m_hicon.get());
-                m_second.favicon.assign(m_second.browser->m_favicon);
+                m_second.favicon.assign(m_second.browser->m_favicon.first);
+                // m_second.hicon.reset(m_second.browser->m_favicon.second.get());
             }
 
             m_url.browser->post_json(json(*this));
