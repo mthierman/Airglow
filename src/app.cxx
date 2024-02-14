@@ -10,9 +10,9 @@
 
 App::App()
 {
-    SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
-    SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
-                            "--allow-file-access-from-files");
+    ::SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
+    ::SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
+                              "--allow-file-access-from-files");
 
     if (!std::filesystem::exists(file())) { save(); }
 
@@ -21,6 +21,8 @@ App::App()
     parse_args();
 
     m_settings = std::make_unique<Settings>(m_hwnd.get(), m_state);
+
+    new_window();
 }
 
 auto App::wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
@@ -30,7 +32,7 @@ auto App::wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESUL
         case WM_NOTIFY: return on_notify(wParam, lParam);
     }
 
-    return DefWindowProcA(hWnd, uMsg, wParam, lParam);
+    return ::DefWindowProcA(hWnd, uMsg, wParam, lParam);
 }
 
 auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int

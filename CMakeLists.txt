@@ -62,7 +62,6 @@ target_sources(
             ${PROJECT_SOURCE_DIR}/src/global.cxx
             ${PROJECT_SOURCE_DIR}/src/main.cxx
             ${PROJECT_SOURCE_DIR}/src/settings.cxx
-            ${PROJECT_SOURCE_DIR}/src/state.cxx
             ${PROJECT_SOURCE_DIR}/src/window.cxx
             ${PROJECT_SOURCE_DIR}/data/airglow.manifest
             ${PROJECT_BINARY_DIR}/data/airglow.rc

@@ -12,7 +12,5 @@ auto main() -> int
 {
     App app;
 
-    app.new_window();
-
     return app();
 }

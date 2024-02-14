@@ -46,7 +46,7 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 
     if (!self) { return true; }
 
-    auto gwlId{static_cast<size_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
+    auto gwlId{static_cast<size_t>(::GetWindowLongPtrA(hWnd, GWL_ID))};
     auto& rect{self->m_client.rect};
     auto& layout{self->m_layout};
 
@@ -147,15 +147,15 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     url.width = width;
     url.height = barHeight;
 
-    auto hdwp{BeginDeferWindowPos(3)};
+    auto hdwp{::BeginDeferWindowPos(3)};
 
     if (gwlId == self->m_first.browser->m_id)
     {
         if (hdwp && self->m_first.browser)
         {
-            hdwp = DeferWindowPos(hdwp, hWnd, nullptr, first.x, first.y, first.width, first.height,
-                                  SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOREDRAW |
-                                      SWP_NOCOPYBITS);
+            hdwp = ::DeferWindowPos(
+                hdwp, hWnd, nullptr, first.x, first.y, first.width, first.height,
+                SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOREDRAW | SWP_NOCOPYBITS);
         }
     }
 
@@ -163,7 +163,7 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     {
         if (hdwp && self->m_second.browser)
         {
-            hdwp = DeferWindowPos(
+            hdwp = ::DeferWindowPos(
                 hdwp, hWnd, nullptr, second.x, second.y, second.width, second.height,
                 SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOREDRAW | SWP_NOCOPYBITS);
         }
@@ -173,13 +173,13 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     {
         if (hdwp && self->m_url.browser)
         {
-            hdwp = DeferWindowPos(hdwp, hWnd, nullptr, url.x, url.y, url.width, url.height,
-                                  SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOREDRAW |
-                                      SWP_NOCOPYBITS);
+            hdwp = ::DeferWindowPos(hdwp, hWnd, nullptr, url.x, url.y, url.width, url.height,
+                                    SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
+                                        SWP_NOREDRAW | SWP_NOCOPYBITS);
         }
     }
 
-    if (hdwp) { EndDeferWindowPos(hdwp); }
+    if (hdwp) { ::EndDeferWindowPos(hdwp); }
 
     return true;
 }
@@ -199,7 +199,7 @@ auto Window::wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRE
         case WM_SYSKEYDOWN: return on_sys_key_down(wParam, lParam);
     }
 
-    return DefWindowProcA(hWnd, uMsg, wParam, lParam);
+    return ::DefWindowProcA(hWnd, uMsg, wParam, lParam);
 }
 
 auto Window::on_activate(WPARAM wParam, LPARAM lParam) -> int
@@ -253,7 +253,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
             case 0x4C:
             {
-                if (GetKeyState(VK_CONTROL) & 0x8000)
+                if (::GetKeyState(VK_CONTROL) & 0x8000)
                 {
                     m_url.browser->move_focus();
                     m_url.browser->post_json(json{{"focus", m_layout.focus}});
@@ -264,14 +264,14 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
             case 0x4E:
             {
-                if (GetKeyState(VK_CONTROL) & 0x8000) { notify(m_parent, CODE::WINDOW_NEW); }
+                if (::GetKeyState(VK_CONTROL) & 0x8000) { notify(m_parent, CODE::WINDOW_NEW); }
 
                 break;
             }
 
             case 0x57:
             {
-                if (GetKeyState(VK_CONTROL) & 0x8000)
+                if (::GetKeyState(VK_CONTROL) & 0x8000)
                 {
                     ::SendMessageA(m_hwnd.get(), WM_CLOSE, 0, 0);
                 }
@@ -510,7 +510,7 @@ auto Window::on_setting_change(WPARAM wParam, LPARAM lParam) -> int
 auto Window::on_size(WPARAM wParam, LPARAM lParam) -> int
 {
     position();
-    EnumChildWindows(m_hwnd.get(), EnumChildProc, reinterpret_cast<size_t>(this));
+    ::EnumChildWindows(m_hwnd.get(), EnumChildProc, reinterpret_cast<size_t>(this));
 
     return 0;
 }

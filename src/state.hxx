@@ -15,9 +15,9 @@
 
 struct State
 {
-    std::pair<std::string, std::string> args;
-    glow::Colors colors;
-    std::pair<std::string, std::string> home;
+    std::pair<std::string, std::string> args{};
+    glow::Colors colors{};
+    std::pair<std::string, std::string> home{};
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(State, args, colors, home)
 };

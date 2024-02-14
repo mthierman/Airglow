@@ -38,12 +38,10 @@ struct App final : public glow::App
     auto save() -> void;
     auto load() -> void;
 
-    glow::GdiPlus m_gdiInit;
-    glow::CoInitialize m_coInit;
-
-    State m_state;
-
-    std::unique_ptr<Settings> m_settings;
-    std::map<size_t, std::unique_ptr<Window>> m_windows;
+    glow::GdiPlus m_gdiInit{};
+    glow::CoInitialize m_coInit{};
+    State m_state{};
+    std::unique_ptr<Settings> m_settings{};
+    std::map<size_t, std::unique_ptr<Window>> m_windows{};
     size_t m_active{};
 };

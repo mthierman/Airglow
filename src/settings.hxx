@@ -22,7 +22,6 @@ struct Settings : public glow::Window
 {
     Settings(HWND parent, State& state);
 
-    static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
     auto default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     auto on_close(WPARAM wParam, LPARAM lParam) -> int;
     auto on_dpi_changed(WPARAM wParam, LPARAM lParam) -> int;
@@ -33,12 +32,13 @@ struct Settings : public glow::Window
     auto on_show_window(WPARAM wParam, LPARAM lParam) -> int;
     auto on_size(WPARAM wParam, LPARAM lParam) -> int;
 
-    HWND m_parent;
+    HWND m_parent{nullptr};
     State& m_state;
+    std::unique_ptr<Browser> m_browser{};
+    Keys m_keys{};
 
-    std::unique_ptr<Browser> m_browser;
-
-    Keys m_keys;
+  private:
+    static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(Settings, m_state)
 };

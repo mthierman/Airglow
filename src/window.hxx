@@ -26,23 +26,23 @@ struct Window final : public glow::Window
 {
     struct Page
     {
-        std::unique_ptr<Browser> browser;
-        wil::unique_hicon hicon;
-        std::string favicon;
-        std::string source;
-        std::string title;
+        std::unique_ptr<Browser> browser{};
+        wil::unique_hicon hicon{};
+        std::string favicon{};
+        std::string source{};
+        std::string title{};
 
         NLOHMANN_DEFINE_TYPE_INTRUSIVE(Page, favicon, source, title)
     };
 
     struct Positions
     {
-        glow::Position full;
-        glow::Position empty;
-        glow::Position left;
-        glow::Position right;
-        glow::Position top;
-        glow::Position bottom;
+        glow::Position full{};
+        glow::Position empty{};
+        glow::Position left{};
+        glow::Position right{};
+        glow::Position top{};
+        glow::Position bottom{};
     };
 
     struct Layout
@@ -59,7 +59,6 @@ struct Window final : public glow::Window
 
     Window(HWND parent, State& state, size_t id);
 
-    static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
     auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     auto on_activate(WPARAM wParam, LPARAM lParam) -> int;
     auto on_destroy(WPARAM wParam, LPARAM lParam) -> int;
@@ -73,19 +72,19 @@ struct Window final : public glow::Window
 
     auto update_caption() -> void;
 
-    HWND m_parent;
+    HWND m_parent{nullptr};
     State& m_state;
-
-    Page m_first;
-    Page m_second;
-    Page m_url;
-
-    Positions m_positions;
-    Layout m_layout;
-    bool m_init{false};
-
-    Keys m_keys;
+    Page m_first{};
+    Page m_second{};
+    Page m_url{};
+    Positions m_positions{};
+    Layout m_layout{};
+    bool m_init{};
+    Keys m_keys{};
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(Window, m_window, m_dpi, m_scale, m_maximize, m_fullscreen,
                                    m_topmost, m_state, m_first, m_second, m_url, m_layout)
+
+  private:
+    static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
 };

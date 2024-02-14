@@ -34,24 +34,24 @@ auto CALLBACK Settings::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 
     if (!self) { return true; }
 
-    auto gwlId{static_cast<size_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
+    auto gwlId{static_cast<size_t>(::GetWindowLongPtrA(hWnd, GWL_ID))};
     auto& rect{self->m_client.rect};
     auto& width{rect.right};
     auto& height{rect.bottom};
 
-    auto hdwp{BeginDeferWindowPos(1)};
+    auto hdwp{::BeginDeferWindowPos(1)};
 
     if (gwlId == self->m_browser->m_id)
     {
         if (hdwp && self->m_browser)
         {
-            hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, 0, width, height,
-                                  SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOREDRAW |
-                                      SWP_NOCOPYBITS);
+            hdwp = ::DeferWindowPos(hdwp, hWnd, nullptr, 0, 0, width, height,
+                                    SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
+                                        SWP_NOREDRAW | SWP_NOCOPYBITS);
         }
     }
 
-    if (hdwp) { EndDeferWindowPos(hdwp); }
+    if (hdwp) { ::EndDeferWindowPos(hdwp); }
 
     return true;
 }
@@ -70,7 +70,7 @@ auto Settings::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
         case WM_SIZE: return on_size(wParam, lParam);
     }
 
-    return DefWindowProcA(hWnd, uMsg, wParam, lParam);
+    return ::DefWindowProcA(hWnd, uMsg, wParam, lParam);
 }
 
 auto Settings::on_close(WPARAM wParam, LPARAM lParam) -> int
@@ -119,14 +119,14 @@ auto Settings::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
             case 0x57:
             {
-                if (GetKeyState(VK_CONTROL) & 0x8000) { notify(m_parent, CODE::SETTINGS_TOGGLE); }
+                if (::GetKeyState(VK_CONTROL) & 0x8000) { notify(m_parent, CODE::SETTINGS_TOGGLE); }
 
                 break;
             }
 
             case VK_F4:
             {
-                if (GetKeyState(VK_MENU) & 0x8000) { notify(m_parent, CODE::SETTINGS_TOGGLE); }
+                if (::GetKeyState(VK_MENU) & 0x8000) { notify(m_parent, CODE::SETTINGS_TOGGLE); }
 
                 break;
             }
@@ -196,7 +196,7 @@ auto Settings::on_show_window(WPARAM wParam, LPARAM lParam) -> int
 auto Settings::on_size(WPARAM wParam, LPARAM lParam) -> int
 {
     position();
-    EnumChildWindows(m_hwnd.get(), EnumChildProc, reinterpret_cast<size_t>(this));
+    ::EnumChildWindows(m_hwnd.get(), EnumChildProc, reinterpret_cast<size_t>(this));
 
     return 0;
 }
