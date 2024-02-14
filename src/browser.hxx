@@ -37,7 +37,6 @@ struct Browser final : public glow::WebView
         -> ::HRESULT override;
     virtual auto zoom_factor_changed_handler(ICoreWebView2Controller* sender, IUnknown* args)
         -> HRESULT override;
-    virtual auto created() -> ::HRESULT override;
 
     auto url(std::string compare) -> std::string;
 

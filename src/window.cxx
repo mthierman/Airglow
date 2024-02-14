@@ -15,13 +15,27 @@ Window::Window(HWND parent, State& state, intptr_t id)
     dwm_system_backdrop(DWMSBT_MAINWINDOW);
     theme();
 
-    m_first.browser = std::make_unique<Browser>(hwnd());
+    std::function<HRESULT()> firstCallback{[=, this]()
+                                           {
+                                               notify(hwnd(), CODE::BROWSER_FIRST_CREATED);
+
+                                               return S_OK;
+                                           }};
+
+    std::function<HRESULT()> urlCallback{[=, this]()
+                                         {
+                                             notify(hwnd(), CODE::BROWSER_URL_CREATED);
+
+                                             return S_OK;
+                                         }};
+
+    m_first.browser = std::make_unique<Browser>(hwnd(), firstCallback);
     m_first.browser->reveal();
 
     m_second.browser = std::make_unique<Browser>(hwnd());
     m_second.browser->reveal();
 
-    m_url.browser = std::make_unique<Browser>(hwnd());
+    m_url.browser = std::make_unique<Browser>(hwnd(), urlCallback);
     m_url.browser->reveal();
 }
 
@@ -371,19 +385,17 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
     {
         using enum CODE;
 
-        case BROWSER_CREATED:
+        case BROWSER_URL_CREATED:
         {
-            if (notification->id == m_url.browser->id())
-            {
-                // m_url.browser->devtools();
-                m_url.browser->navigate(m_url.browser->url("url"));
-            }
+            m_url.browser->navigate(m_url.browser->url("url"));
 
-            if (notification->id == m_first.browser->id())
-            {
-                m_first.browser->focus();
-                m_first.browser->move_focus();
-            }
+            break;
+        }
+
+        case BROWSER_FIRST_CREATED:
+        {
+            m_first.browser->focus();
+            m_first.browser->move_focus();
 
             break;
         }

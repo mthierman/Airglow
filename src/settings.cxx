@@ -17,7 +17,14 @@ Settings::Settings(HWND parent, State& state)
 
     SetWindowPos(hwnd(), nullptr, 0, 0, 500, 500, SWP_NOMOVE);
 
-    m_browser = std::make_unique<Browser>(hwnd());
+    std::function<HRESULT()> settingsCallback{[=, this]()
+                                              {
+                                                  notify(hwnd(), CODE::BROWSER_SETTINGS_CREATED);
+
+                                                  return S_OK;
+                                              }};
+
+    m_browser = std::make_unique<Browser>(hwnd(), settingsCallback);
     m_browser->reveal();
 }
 
@@ -137,9 +144,8 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
     {
         using enum CODE;
 
-        case BROWSER_CREATED:
+        case BROWSER_SETTINGS_CREATED:
         {
-            // m_browser->devtools();
             m_browser->navigate(m_browser->url("settings"));
 
             break;
