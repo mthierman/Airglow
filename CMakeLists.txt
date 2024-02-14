@@ -33,7 +33,7 @@ execute_process(
 file(
     GENERATE
     OUTPUT ${PROJECT_BINARY_DIR}/data/airglow.rc
-    CONTENT "101 ICON \"icon.ico\""
+    CONTENT "1 ICON \"icon.ico\""
 )
 
 add_custom_command(

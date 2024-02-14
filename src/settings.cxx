@@ -83,16 +83,16 @@ auto Settings::on_close(WPARAM wParam, LPARAM lParam) -> int
 
 auto Settings::on_create(WPARAM wParam, LPARAM lParam) -> int
 {
-    m_dpi = dpi();
-    m_scale = scale();
+    m_dpi = get_dpi();
+    m_scale = get_scale();
 
     return 0;
 }
 
 auto Settings::on_dpi_changed(WPARAM wParam, LPARAM lParam) -> int
 {
-    m_dpi = dpi();
-    m_scale = scale();
+    m_dpi = get_dpi();
+    m_scale = get_scale();
 
     notify(m_parent, CODE::DPI_CHANGE);
 

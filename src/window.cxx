@@ -311,7 +311,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
                 else
                 {
                     m_maximize = !m_maximize;
-                    maximize();
+                    toggle_maximize();
 
                     notify(m_hwnd.get(), CODE::LAYOUT_CHANGE);
                 }
@@ -337,7 +337,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
             case VK_F9:
             {
                 m_topmost = !m_topmost;
-                topmost();
+                toggle_topmost();
 
                 notify(m_hwnd.get(), CODE::LAYOUT_CHANGE);
 
@@ -347,7 +347,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
             case VK_F11:
             {
                 m_fullscreen = !m_fullscreen;
-                fullscreen();
+                toggle_fullscreen();
 
                 notify(m_hwnd.get(), CODE::LAYOUT_CHANGE);
 
@@ -390,7 +390,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
             else if (webMessage.contains("height"))
             {
                 m_layout.bar = webMessage["height"].get<int>();
-                size();
+                resize();
             }
 
             else if (webMessage.contains("first"))
@@ -495,7 +495,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         case LAYOUT_CHANGE:
         {
-            size();
+            resize();
             update_caption();
 
             m_url.browser->post_json(json(*this));
@@ -547,14 +547,14 @@ auto Window::update_caption() -> void
 {
     if (!m_fullscreen)
     {
-        if (!m_layout.swap) { icon(m_first.hicon.get(), true, false); }
+        if (!m_layout.swap) { set_icon(m_first.hicon.get(), true, false); }
 
-        else { icon(m_second.hicon.get(), true, false); }
+        else { set_icon(m_second.hicon.get(), true, false); }
 
-        icon(m_hicon.get(), false, true);
+        set_icon(m_hicon.get(), false, true);
     }
 
-    if (!m_layout.swap) { title(m_first.title); }
+    if (!m_layout.swap) { set_title(m_first.title); }
 
-    else { title(m_second.title); }
+    else { set_title(m_second.title); }
 }
