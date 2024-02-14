@@ -56,13 +56,10 @@ auto CALLBACK Settings::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     return true;
 }
 
-auto Settings::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+auto Settings::wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     switch (uMsg)
     {
-        case WM_CLOSE: return on_close(wParam, lParam);
-        case WM_CREATE: return on_create(wParam, lParam);
-        case WM_DPICHANGED: return on_dpi_changed(wParam, lParam);
         case WM_GETMINMAXINFO: return on_get_min_max_info(wParam, lParam);
         case WM_KEYDOWN: return on_key_down(wParam, lParam);
         case WM_NOTIFY: return on_notify(wParam, lParam);
@@ -77,24 +74,6 @@ auto Settings::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 auto Settings::on_close(WPARAM wParam, LPARAM lParam) -> int
 {
     hide();
-
-    return 0;
-}
-
-auto Settings::on_create(WPARAM wParam, LPARAM lParam) -> int
-{
-    m_dpi = get_dpi();
-    m_scale = get_scale();
-
-    return 0;
-}
-
-auto Settings::on_dpi_changed(WPARAM wParam, LPARAM lParam) -> int
-{
-    m_dpi = get_dpi();
-    m_scale = get_scale();
-
-    notify(m_parent, CODE::DPI_CHANGE);
 
     return 0;
 }

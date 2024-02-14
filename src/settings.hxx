@@ -22,10 +22,8 @@ struct Settings : public glow::Window
 {
     Settings(HWND parent, State& state);
 
-    auto default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
-    auto on_close(WPARAM wParam, LPARAM lParam) -> int;
-    auto on_create(WPARAM wParam, LPARAM lParam) -> int;
-    auto on_dpi_changed(WPARAM wParam, LPARAM lParam) -> int;
+    auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override;
+    auto on_close(WPARAM wParam, LPARAM lParam) -> int override;
     auto on_get_min_max_info(WPARAM wParam, LPARAM lParam) -> int;
     auto on_key_down(WPARAM wParam, LPARAM lParam) -> int;
     auto on_notify(WPARAM wParam, LPARAM lParam) -> int;
