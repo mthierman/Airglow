@@ -8,8 +8,8 @@
 
 #include "settings.hxx"
 
-Settings::Settings(HWND parent, State& state)
-    : glow::Window("Airglow - Settings"), m_parent{parent}, m_state{state}
+Settings::Settings(::HWND app, State& state)
+    : glow::Window("Airglow - Settings"), m_app{app}, m_state{state}
 {
     dwm_caption_color(false);
     dwm_system_backdrop(DWMSBT_TRANSIENTWINDOW);
@@ -100,21 +100,21 @@ auto Settings::on_key_down(WPARAM wParam, LPARAM lParam) -> int
         {
             case VK_PAUSE:
             {
-                notify(m_parent, CODE::SETTINGS_TOGGLE);
+                notify(m_app, CODE::SETTINGS_TOGGLE);
 
                 break;
             }
 
             case 0x57:
             {
-                if (::GetKeyState(VK_CONTROL) & 0x8000) { notify(m_parent, CODE::SETTINGS_TOGGLE); }
+                if (::GetKeyState(VK_CONTROL) & 0x8000) { notify(m_app, CODE::SETTINGS_TOGGLE); }
 
                 break;
             }
 
             case VK_F4:
             {
-                if (::GetKeyState(VK_MENU) & 0x8000) { notify(m_parent, CODE::SETTINGS_TOGGLE); }
+                if (::GetKeyState(VK_MENU) & 0x8000) { notify(m_app, CODE::SETTINGS_TOGGLE); }
 
                 break;
             }
@@ -141,7 +141,7 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
             else if (webMessage.contains("m_state"))
             {
                 m_state = webMessage["m_state"].get<State>();
-                notify(m_parent, CODE::SETTINGS_SAVE);
+                notify(m_app, CODE::SETTINGS_SAVE);
                 m_browser->post_json(json(*this));
             }
 

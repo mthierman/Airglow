@@ -20,7 +20,7 @@ using json = nlohmann::json;
 
 struct Settings : public glow::Window
 {
-    Settings(HWND parent, State& state);
+    Settings(::HWND app, State& state);
 
     auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override;
     auto on_close(WPARAM wParam, LPARAM lParam) -> int override;
@@ -31,7 +31,7 @@ struct Settings : public glow::Window
     auto on_show_window(WPARAM wParam, LPARAM lParam) -> int;
     auto on_size(WPARAM wParam, LPARAM lParam) -> int;
 
-    HWND m_parent{nullptr};
+    ::HWND m_app{nullptr};
     State& m_state;
     std::unique_ptr<Browser> m_browser{};
     Keys m_keys{};

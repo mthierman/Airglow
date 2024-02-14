@@ -57,7 +57,7 @@ struct Window final : public glow::Window
         NLOHMANN_DEFINE_TYPE_INTRUSIVE(Layout, bar, border, focus, split, swap, vertical)
     };
 
-    Window(HWND parent, State& state, size_t id);
+    Window(::HWND app, State& state, size_t id);
 
     auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     auto on_activate(WPARAM wParam, LPARAM lParam) -> int;
@@ -71,7 +71,7 @@ struct Window final : public glow::Window
 
     auto update_caption() -> void;
 
-    HWND m_parent{nullptr};
+    ::HWND m_app{nullptr};
     State& m_state;
     Page m_first{};
     Page m_second{};

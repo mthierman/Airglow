@@ -8,8 +8,8 @@
 
 #include "window.hxx"
 
-Window::Window(HWND parent, State& state, size_t id)
-    : glow::Window("Airglow", id), m_parent{parent}, m_state{state}
+Window::Window(::HWND app, State& state, size_t id)
+    : glow::Window("Airglow", id), m_app{app}, m_state{state}
 {
     dwm_caption_color(false);
     dwm_system_backdrop(DWMSBT_MAINWINDOW);
@@ -203,14 +203,14 @@ auto Window::wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRE
 
 auto Window::on_activate(WPARAM wParam, LPARAM lParam) -> int
 {
-    notify(m_parent, CODE::WINDOW_ACTIVATE);
+    notify(m_app, CODE::WINDOW_ACTIVATE);
 
     return 0;
 }
 
 auto Window::on_destroy(WPARAM wParam, LPARAM lParam) -> int
 {
-    notify(m_parent, CODE::WINDOW_CLOSE);
+    notify(m_app, CODE::WINDOW_CLOSE);
 
     return 0;
 }
@@ -237,7 +237,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
         {
             case VK_PAUSE:
             {
-                notify(m_parent, CODE::SETTINGS_TOGGLE);
+                notify(m_app, CODE::SETTINGS_TOGGLE);
 
                 break;
             }
@@ -255,7 +255,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
             case 0x4E:
             {
-                if (::GetKeyState(VK_CONTROL) & 0x8000) { notify(m_parent, CODE::WINDOW_NEW); }
+                if (::GetKeyState(VK_CONTROL) & 0x8000) { notify(m_app, CODE::WINDOW_NEW); }
 
                 break;
             }
@@ -420,7 +420,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
             m_url.browser->post_json(json(*this));
 
-            notify(m_parent, SETTINGS_SAVE);
+            notify(m_app, SETTINGS_SAVE);
 
             break;
         }
