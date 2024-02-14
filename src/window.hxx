@@ -60,9 +60,8 @@ struct Window final : public glow::Window
     Window(HWND parent, State& state, intptr_t id);
 
     static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
-    auto default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
+    auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     auto on_activate(WPARAM wParam, LPARAM lParam) -> int;
-    auto on_close(WPARAM wParam, LPARAM lParam) -> int;
     auto on_destroy(WPARAM wParam, LPARAM lParam) -> int;
     auto on_dpi_changed(WPARAM wParam, LPARAM lParam) -> int;
     auto on_get_min_max_info(WPARAM wParam, LPARAM lParam) -> int;

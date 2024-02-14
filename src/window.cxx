@@ -30,13 +30,13 @@ Window::Window(HWND parent, State& state, intptr_t id)
                                              return S_OK;
                                          }};
 
-    m_first.browser = std::make_unique<Browser>(hwnd(), firstCallback);
+    m_first.browser = std::make_unique<Browser>(m_hwnd.get(), firstCallback);
     m_first.browser->reveal();
 
-    m_second.browser = std::make_unique<Browser>(hwnd());
+    m_second.browser = std::make_unique<Browser>(m_hwnd.get());
     m_second.browser->reveal();
 
-    m_url.browser = std::make_unique<Browser>(hwnd(), urlCallback);
+    m_url.browser = std::make_unique<Browser>(m_hwnd.get(), urlCallback);
     m_url.browser->reveal();
 }
 
@@ -149,7 +149,7 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 
     auto hdwp{BeginDeferWindowPos(3)};
 
-    if (gwlId == self->m_first.browser->id())
+    if (gwlId == self->m_first.browser->m_id)
     {
         if (hdwp && self->m_first.browser)
         {
@@ -159,7 +159,7 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
         }
     }
 
-    if (gwlId == self->m_second.browser->id())
+    if (gwlId == self->m_second.browser->m_id)
     {
         if (hdwp && self->m_second.browser)
         {
@@ -169,7 +169,7 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
         }
     }
 
-    if (gwlId == self->m_url.browser->id())
+    if (gwlId == self->m_url.browser->m_id)
     {
         if (hdwp && self->m_url.browser)
         {
@@ -184,12 +184,11 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     return true;
 }
 
-auto Window::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+auto Window::wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     switch (uMsg)
     {
         case WM_ACTIVATE: return on_activate(wParam, lParam);
-        case WM_CLOSE: return on_close(wParam, lParam);
         case WM_DESTROY: return on_destroy(wParam, lParam);
         case WM_DPICHANGED: return on_dpi_changed(wParam, lParam);
         case WM_GETMINMAXINFO: return on_get_min_max_info(wParam, lParam);
@@ -209,8 +208,6 @@ auto Window::on_activate(WPARAM wParam, LPARAM lParam) -> int
 
     return 0;
 }
-
-auto Window::on_close(WPARAM wParam, LPARAM lParam) -> int { return close(); }
 
 auto Window::on_destroy(WPARAM wParam, LPARAM lParam) -> int
 {
@@ -274,7 +271,10 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
 
             case 0x57:
             {
-                if (GetKeyState(VK_CONTROL) & 0x8000) { close(); }
+                if (GetKeyState(VK_CONTROL) & 0x8000)
+                {
+                    ::SendMessageA(m_hwnd.get(), WM_CLOSE, 0, 0);
+                }
 
                 break;
             }
@@ -290,7 +290,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
                     else if (m_layout.swap) { m_second.browser->move_focus(); }
                 }
 
-                notify(hwnd(), CODE::LAYOUT_CHANGE);
+                notify(m_hwnd.get(), CODE::LAYOUT_CHANGE);
 
                 break;
             }
@@ -299,7 +299,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
             {
                 m_layout.split = !m_layout.split;
 
-                notify(hwnd(), CODE::LAYOUT_CHANGE);
+                notify(m_hwnd.get(), CODE::LAYOUT_CHANGE);
 
                 break;
             }
@@ -308,26 +308,21 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
             {
                 if (m_layout.split) { m_layout.vertical = !m_layout.vertical; }
 
-                notify(hwnd(), CODE::LAYOUT_CHANGE);
+                notify(m_hwnd.get(), CODE::LAYOUT_CHANGE);
 
                 break;
             }
 
             case VK_F4:
             {
-                glow::log("F4 pressed!");
-                if (GetKeyState(VK_MENU) & 0x8000)
-                {
-                    glow::log("alt pressed!");
-                    close();
-                }
+                if (GetKeyState(VK_MENU) & 0x8000) { ::SendMessageA(m_hwnd.get(), WM_CLOSE, 0, 0); }
 
                 else
                 {
                     m_maximize = !m_maximize;
                     maximize();
 
-                    notify(hwnd(), CODE::LAYOUT_CHANGE);
+                    notify(m_hwnd.get(), CODE::LAYOUT_CHANGE);
                 }
 
                 break;
@@ -353,7 +348,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
                 m_topmost = !m_topmost;
                 topmost();
 
-                notify(hwnd(), CODE::LAYOUT_CHANGE);
+                notify(m_hwnd.get(), CODE::LAYOUT_CHANGE);
 
                 break;
             }
@@ -363,7 +358,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
                 m_fullscreen = !m_fullscreen;
                 fullscreen();
 
-                notify(hwnd(), CODE::LAYOUT_CHANGE);
+                notify(m_hwnd.get(), CODE::LAYOUT_CHANGE);
 
                 break;
             }
@@ -422,12 +417,12 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         case SOURCE_CHANGED:
         {
-            if (notification->id == m_first.browser->id())
+            if (notification->id == m_first.browser->m_id)
             {
                 m_first.source.assign(m_first.browser->m_source);
             }
 
-            else if (notification->id == m_second.browser->id())
+            else if (notification->id == m_second.browser->m_id)
             {
                 m_second.source.assign(m_second.browser->m_source);
             }
@@ -441,13 +436,13 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         case FAVICON_CHANGED:
         {
-            if (notification->id == m_first.browser->id())
+            if (notification->id == m_first.browser->m_id)
             {
                 m_first.hicon.reset(m_first.browser->m_hicon.get());
                 m_first.favicon.assign(m_first.browser->m_favicon);
             }
 
-            else if (notification->id == m_second.browser->id())
+            else if (notification->id == m_second.browser->m_id)
             {
                 m_second.hicon.reset(m_second.browser->m_hicon.get());
                 m_second.favicon.assign(m_second.browser->m_favicon);
@@ -462,12 +457,12 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         case TITLE_CHANGED:
         {
-            if (notification->id == m_first.browser->id())
+            if (notification->id == m_first.browser->m_id)
             {
                 m_first.title.assign(m_first.browser->m_title);
             }
 
-            else if (notification->id == m_second.browser->id())
+            else if (notification->id == m_second.browser->m_id)
             {
                 m_second.title.assign(m_second.browser->m_title);
             }
@@ -481,11 +476,9 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         case FOCUS_CHANGED:
         {
-            if (notification->id == m_first.browser->id()) { m_layout.focus = "first"; }
+            if (notification->id == m_first.browser->m_id) { m_layout.focus = "first"; }
 
-            else if (notification->id == m_second.browser->id()) { m_layout.focus = "second"; }
-
-            // else if (notification->id == m_url.browser->id()) { m_layout.focus = "url"; }
+            else if (notification->id == m_second.browser->m_id) { m_layout.focus = "second"; }
 
             m_url.browser->post_json(json(*this));
 
@@ -517,7 +510,7 @@ auto Window::on_setting_change(WPARAM wParam, LPARAM lParam) -> int
 auto Window::on_size(WPARAM wParam, LPARAM lParam) -> int
 {
     position();
-    EnumChildWindows(hwnd(), EnumChildProc, reinterpret_cast<intptr_t>(this));
+    EnumChildWindows(m_hwnd.get(), EnumChildProc, reinterpret_cast<intptr_t>(this));
 
     return 0;
 }

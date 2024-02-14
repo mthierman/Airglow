@@ -15,7 +15,7 @@ Settings::Settings(HWND parent, State& state)
     dwm_system_backdrop(DWMSBT_TRANSIENTWINDOW);
     theme();
 
-    SetWindowPos(hwnd(), nullptr, 0, 0, 500, 500, SWP_NOMOVE);
+    ::SetWindowPos(m_hwnd.get(), nullptr, 0, 0, 500, 500, SWP_NOMOVE);
 
     std::function<HRESULT()> settingsCallback{[=, this]()
                                               {
@@ -24,7 +24,7 @@ Settings::Settings(HWND parent, State& state)
                                                   return S_OK;
                                               }};
 
-    m_browser = std::make_unique<Browser>(hwnd(), settingsCallback);
+    m_browser = std::make_unique<Browser>(m_hwnd.get(), settingsCallback);
     m_browser->reveal();
 }
 
@@ -41,7 +41,7 @@ auto CALLBACK Settings::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 
     auto hdwp{BeginDeferWindowPos(1)};
 
-    if (gwlId == self->m_browser->id())
+    if (gwlId == self->m_browser->m_id)
     {
         if (hdwp && self->m_browser)
         {
@@ -196,7 +196,7 @@ auto Settings::on_show_window(WPARAM wParam, LPARAM lParam) -> int
 auto Settings::on_size(WPARAM wParam, LPARAM lParam) -> int
 {
     position();
-    EnumChildWindows(hwnd(), EnumChildProc, reinterpret_cast<intptr_t>(this));
+    EnumChildWindows(m_hwnd.get(), EnumChildProc, reinterpret_cast<intptr_t>(this));
 
     return 0;
 }
