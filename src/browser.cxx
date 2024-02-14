@@ -37,7 +37,7 @@ auto Browser::accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
 
             else if (key == 0x30)
             {
-                if (::GetKeyState(VK_CONTROL) & 0x8000) { zoom(1.0); }
+                if (::GetKeyState(VK_CONTROL) & 0x8000) { put_zoom_factor(1.0); }
             }
 
             else { ::SendMessageA(get_parent(), WM_KEYDOWN, key, lParam); }
@@ -125,7 +125,7 @@ auto Browser::zoom_factor_changed_handler(ICoreWebView2Controller* sender, IUnkn
     double zoomFactor;
     if (FAILED(sender->get_ZoomFactor(&zoomFactor))) { return S_OK; }
 
-    zoom(zoomFactor);
+    put_zoom_factor(zoomFactor);
 
     return S_OK;
 }
