@@ -33,14 +33,14 @@ auto Browser::accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
             if (FAILED(args2->put_Handled(TRUE))) { return S_OK; }
             if (FAILED(args2->put_IsBrowserAcceleratorKeyEnabled(FALSE))) { return S_OK; }
 
-            if (key == VK_F10) { ::SendMessageA(m_parent, WM_SYSKEYDOWN, key, lParam); }
+            if (key == VK_F10) { ::SendMessageA(get_parent(), WM_SYSKEYDOWN, key, lParam); }
 
             else if (key == 0x30)
             {
                 if (::GetKeyState(VK_CONTROL) & 0x8000) { zoom(1.0); }
             }
 
-            else { ::SendMessageA(m_parent, WM_KEYDOWN, key, lParam); }
+            else { ::SendMessageA(get_parent(), WM_KEYDOWN, key, lParam); }
         }
     }
 
@@ -63,7 +63,7 @@ auto Browser::web_message_received_handler(ICoreWebView2* sender,
     wil::unique_cotaskmem_string message;
     if (FAILED(args->get_WebMessageAsJson(&message))) { return S_OK; }
 
-    notify(m_parent, CODE::WEB_MESSAGE_RECEIVED, glow::string(message.get()));
+    notify(get_parent(), CODE::WEB_MESSAGE_RECEIVED, glow::string(message.get()));
 
     return S_OK;
 }
@@ -71,28 +71,28 @@ auto Browser::web_message_received_handler(ICoreWebView2* sender,
 auto Browser::source_changed_handler(ICoreWebView2* sender,
                                      ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
 {
-    notify(m_parent, CODE::SOURCE_CHANGED);
+    notify(get_parent(), CODE::SOURCE_CHANGED);
 
     return S_OK;
 }
 
 auto Browser::document_title_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT
 {
-    notify(m_parent, CODE::TITLE_CHANGED);
+    notify(get_parent(), CODE::TITLE_CHANGED);
 
     return S_OK;
 }
 
 auto Browser::favicon_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT
 {
-    notify(m_parent, CODE::FAVICON_CHANGED);
+    notify(get_parent(), CODE::FAVICON_CHANGED);
 
     return S_OK;
 }
 
 auto Browser::got_focus_handler(ICoreWebView2Controller* sender, IUnknown* args) -> HRESULT
 {
-    notify(m_parent, CODE::FOCUS_CHANGED);
+    notify(get_parent(), CODE::FOCUS_CHANGED);
 
     return S_OK;
 }
