@@ -467,22 +467,12 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
         {
             if (notification->id == m_first.browser->m_id)
             {
-                if (!m_first.browser->m_title.empty())
-                {
-                    m_first.title.assign(m_first.browser->m_title);
-                }
-
-                else { m_first.title.assign("Airglow"); }
+                m_first.title = m_first.browser->m_title.value_or("Airglow");
             }
 
             else if (notification->id == m_second.browser->m_id)
             {
-                if (!m_second.browser->m_title.empty())
-                {
-                    m_second.title.assign(m_second.browser->m_title);
-                }
-
-                else { m_second.title.assign("Airglow"); }
+                m_second.title = m_second.browser->m_title.value_or("Airglow");
             }
 
             m_url.browser->post_json(json(*this));
