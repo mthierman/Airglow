@@ -15,16 +15,17 @@ Window::Window(HWND parent, State& state, intptr_t id)
     dwm_system_backdrop(DWMSBT_MAINWINDOW);
     theme();
 
-    std::function<HRESULT()> firstCallback{[=, this]()
+    std::function<HRESULT()> firstCallback{[this]()
                                            {
-                                               notify(hwnd(), CODE::BROWSER_FIRST_CREATED);
+                                               m_first.browser->focus();
+                                               m_first.browser->move_focus();
 
                                                return S_OK;
                                            }};
 
     std::function<HRESULT()> urlCallback{[=, this]()
                                          {
-                                             notify(hwnd(), CODE::BROWSER_URL_CREATED);
+                                             m_url.browser->navigate(m_url.browser->url("url"));
 
                                              return S_OK;
                                          }};
@@ -384,21 +385,6 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
     switch (notification->code)
     {
         using enum CODE;
-
-        case BROWSER_URL_CREATED:
-        {
-            m_url.browser->navigate(m_url.browser->url("url"));
-
-            break;
-        }
-
-        case BROWSER_FIRST_CREATED:
-        {
-            m_first.browser->focus();
-            m_first.browser->move_focus();
-
-            break;
-        }
 
         case WEB_MESSAGE_RECEIVED:
         {

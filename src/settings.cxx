@@ -19,7 +19,7 @@ Settings::Settings(HWND parent, State& state)
 
     std::function<HRESULT()> settingsCallback{[=, this]()
                                               {
-                                                  notify(hwnd(), CODE::BROWSER_SETTINGS_CREATED);
+                                                  m_browser->navigate(m_browser->url("settings"));
 
                                                   return S_OK;
                                               }};
@@ -143,13 +143,6 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
     switch (notification->code)
     {
         using enum CODE;
-
-        case BROWSER_SETTINGS_CREATED:
-        {
-            m_browser->navigate(m_browser->url("settings"));
-
-            break;
-        }
 
         case WEB_MESSAGE_RECEIVED:
         {
