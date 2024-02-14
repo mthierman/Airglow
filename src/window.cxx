@@ -467,12 +467,22 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
         {
             if (notification->id == m_first.browser->m_id)
             {
-                m_first.title.assign(m_first.browser->m_title);
+                if (!m_first.browser->m_title.empty())
+                {
+                    m_first.title.assign(m_first.browser->m_title);
+                }
+
+                else { m_first.title.assign("Airglow"); }
             }
 
             else if (notification->id == m_second.browser->m_id)
             {
-                m_second.title.assign(m_second.browser->m_title);
+                if (!m_second.browser->m_title.empty())
+                {
+                    m_second.title.assign(m_second.browser->m_title);
+                }
+
+                else { m_second.title.assign("Airglow"); }
             }
 
             m_url.browser->post_json(json(*this));
@@ -554,13 +564,7 @@ auto Window::update_caption() -> void
         icon(m_hicon.get(), false, true);
     }
 
-    if (!m_layout.swap)
-    {
-        if (!m_first.title.empty()) { title(m_first.title); }
-    }
+    if (!m_layout.swap) { title(m_first.title); }
 
-    else
-    {
-        if (!m_second.title.empty()) { title(m_second.title); }
-    }
+    else { title(m_second.title); }
 }

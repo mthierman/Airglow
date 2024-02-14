@@ -30,7 +30,7 @@ struct Window final : public glow::Window
         wil::unique_hicon hicon{};
         std::string favicon{};
         std::string source{};
-        std::string title{};
+        std::string title{"Airglow"};
 
         NLOHMANN_DEFINE_TYPE_INTRUSIVE(Page, favicon, source, title)
     };

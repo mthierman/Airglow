@@ -30,8 +30,6 @@ struct Browser final : public glow::WebView
     virtual auto favicon_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT override;
     virtual auto got_focus_handler(ICoreWebView2Controller* sender, IUnknown* args)
         -> HRESULT override;
-    virtual auto lost_focus_handler(ICoreWebView2Controller* sender, IUnknown* args)
-        -> HRESULT override;
     virtual auto move_focus_requested_handler(ICoreWebView2Controller* sender,
                                               ICoreWebView2MoveFocusRequestedEventArgs* args)
         -> ::HRESULT override;

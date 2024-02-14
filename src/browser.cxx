@@ -97,11 +97,6 @@ auto Browser::got_focus_handler(ICoreWebView2Controller* sender, IUnknown* args)
     return S_OK;
 }
 
-auto Browser::lost_focus_handler(ICoreWebView2Controller* sender, IUnknown* args) -> HRESULT
-{
-    return S_OK;
-}
-
 auto Browser::move_focus_requested_handler(ICoreWebView2Controller* sender,
                                            ICoreWebView2MoveFocusRequestedEventArgs* args)
     -> HRESULT
