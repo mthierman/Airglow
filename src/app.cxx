@@ -20,7 +20,7 @@ App::App()
 
     parse_args();
 
-    m_settings = std::make_unique<Settings>(hwnd(), m_state);
+    m_settings = std::make_unique<Settings>(m_hwnd.get(), m_state);
 }
 
 auto App::wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
@@ -93,7 +93,7 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
             {
                 save();
 
-                return close();
+                ::SendMessageA(m_hwnd.get(), WM_CLOSE, 0, 0);
             }
 
             break;
@@ -126,7 +126,7 @@ auto App::parse_args() -> void
 auto App::new_window() -> void
 {
     auto id{glow::random<intptr_t>()};
-    m_windows.try_emplace(id, std::make_unique<Window>(hwnd(), m_state, id));
+    m_windows.try_emplace(id, std::make_unique<Window>(m_hwnd.get(), m_state, id));
     m_windows.at(id)->reveal();
 }
 
