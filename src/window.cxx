@@ -190,7 +190,6 @@ auto Window::wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRE
     {
         case WM_ACTIVATE: return on_activate(wParam, lParam);
         case WM_DESTROY: return on_destroy(wParam, lParam);
-        case WM_DPICHANGED: return on_dpi_changed(wParam, lParam);
         case WM_GETMINMAXINFO: return on_get_min_max_info(wParam, lParam);
         case WM_KEYDOWN: return on_key_down(wParam, lParam);
         case WM_NOTIFY: return on_notify(wParam, lParam);
@@ -212,14 +211,6 @@ auto Window::on_activate(WPARAM wParam, LPARAM lParam) -> int
 auto Window::on_destroy(WPARAM wParam, LPARAM lParam) -> int
 {
     notify(m_parent, CODE::WINDOW_CLOSE);
-
-    return 0;
-}
-
-auto Window::on_dpi_changed(WPARAM wParam, LPARAM lParam) -> int
-{
-    dpi();
-    scale();
 
     return 0;
 }
