@@ -10,7 +10,7 @@
 
 auto Browser::accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
                                               ICoreWebView2AcceleratorKeyPressedEventArgs* args)
-    -> HRESULT
+    -> ::HRESULT
 {
     wil::com_ptr<ICoreWebView2AcceleratorKeyPressedEventArgs2> args2;
     if (FAILED(args->QueryInterface(IID_PPV_ARGS(&args2)))) { return S_OK; }
@@ -49,7 +49,7 @@ auto Browser::accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
 
 auto Browser::web_message_received_handler(ICoreWebView2* sender,
                                            ICoreWebView2WebMessageReceivedEventArgs* args)
-    -> HRESULT
+    -> ::HRESULT
 {
     wil::unique_cotaskmem_string source;
     if (FAILED(args->get_Source(&source))) { return S_OK; }
@@ -69,28 +69,28 @@ auto Browser::web_message_received_handler(ICoreWebView2* sender,
 }
 
 auto Browser::source_changed_handler(ICoreWebView2* sender,
-                                     ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
+                                     ICoreWebView2SourceChangedEventArgs* args) -> ::HRESULT
 {
     notify(get_parent(), CODE::SOURCE_CHANGED);
 
     return S_OK;
 }
 
-auto Browser::document_title_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT
+auto Browser::document_title_changed_handler(ICoreWebView2* sender, IUnknown* args) -> ::HRESULT
 {
     notify(get_parent(), CODE::TITLE_CHANGED);
 
     return S_OK;
 }
 
-auto Browser::favicon_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT
+auto Browser::favicon_changed_handler(ICoreWebView2* sender, IUnknown* args) -> ::HRESULT
 {
     notify(get_parent(), CODE::FAVICON_CHANGED);
 
     return S_OK;
 }
 
-auto Browser::got_focus_handler(ICoreWebView2Controller* sender, IUnknown* args) -> HRESULT
+auto Browser::got_focus_handler(ICoreWebView2Controller* sender, IUnknown* args) -> ::HRESULT
 {
     notify(get_parent(), CODE::FOCUS_CHANGED);
 
@@ -99,7 +99,7 @@ auto Browser::got_focus_handler(ICoreWebView2Controller* sender, IUnknown* args)
 
 auto Browser::move_focus_requested_handler(ICoreWebView2Controller* sender,
                                            ICoreWebView2MoveFocusRequestedEventArgs* args)
-    -> HRESULT
+    -> ::HRESULT
 {
     COREWEBVIEW2_MOVE_FOCUS_REASON reason;
     if (FAILED(args->get_Reason(&reason))) { return S_OK; }
@@ -120,7 +120,7 @@ auto Browser::move_focus_requested_handler(ICoreWebView2Controller* sender,
 }
 
 auto Browser::zoom_factor_changed_handler(ICoreWebView2Controller* sender, IUnknown* args)
-    -> HRESULT
+    -> ::HRESULT
 {
     double zoomFactor;
     if (FAILED(sender->get_ZoomFactor(&zoomFactor))) { return S_OK; }

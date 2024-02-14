@@ -25,7 +25,7 @@ App::App()
     new_window();
 }
 
-auto App::wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+auto App::wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT
 {
     switch (uMsg)
     {
@@ -35,7 +35,7 @@ auto App::wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESUL
     return ::DefWindowProcA(hWnd, uMsg, wParam, lParam);
 }
 
-auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
+auto App::on_notify(::WPARAM wParam, ::LPARAM lParam) -> int
 {
     auto notification{reinterpret_cast<glow::Notification*>(lParam)};
 

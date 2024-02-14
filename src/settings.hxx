@@ -22,14 +22,14 @@ struct Settings : public glow::Window
 {
     Settings(::HWND app, State& state);
 
-    auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override;
-    auto on_close(WPARAM wParam, LPARAM lParam) -> int override;
-    auto on_get_min_max_info(WPARAM wParam, LPARAM lParam) -> int;
-    auto on_key_down(WPARAM wParam, LPARAM lParam) -> int;
-    auto on_notify(WPARAM wParam, LPARAM lParam) -> int;
-    auto on_setting_change(WPARAM wParam, LPARAM lParam) -> int;
-    auto on_show_window(WPARAM wParam, LPARAM lParam) -> int;
-    auto on_size(WPARAM wParam, LPARAM lParam) -> int;
+    auto wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT override;
+    auto on_close(::WPARAM wParam, ::LPARAM lParam) -> int override;
+    auto on_get_min_max_info(::WPARAM wParam, ::LPARAM lParam) -> int;
+    auto on_key_down(::WPARAM wParam, ::LPARAM lParam) -> int;
+    auto on_notify(::WPARAM wParam, ::LPARAM lParam) -> int;
+    auto on_setting_change(::WPARAM wParam, ::LPARAM lParam) -> int;
+    auto on_show_window(::WPARAM wParam, ::LPARAM lParam) -> int;
+    auto on_size(::WPARAM wParam, ::LPARAM lParam) -> int;
 
     ::HWND m_app{nullptr};
     State& m_state;
@@ -37,7 +37,7 @@ struct Settings : public glow::Window
     Keys m_keys{};
 
   private:
-    static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
+    static auto EnumChildProc(::HWND hWnd, ::LPARAM lParam) -> ::BOOL;
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(Settings, m_state)
 };

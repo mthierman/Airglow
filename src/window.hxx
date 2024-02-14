@@ -59,15 +59,15 @@ struct Window final : public glow::Window
 
     Window(::HWND app, State& state, size_t id);
 
-    auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
-    auto on_activate(WPARAM wParam, LPARAM lParam) -> int;
-    auto on_destroy(WPARAM wParam, LPARAM lParam) -> int;
-    auto on_get_min_max_info(WPARAM wParam, LPARAM lParam) -> int;
-    auto on_key_down(WPARAM wParam, LPARAM lParam) -> int;
-    auto on_notify(WPARAM wParam, LPARAM lParam) -> int;
-    auto on_setting_change(WPARAM wParam, LPARAM lParam) -> int;
-    auto on_size(WPARAM wParam, LPARAM lParam) -> int;
-    auto on_sys_key_down(WPARAM wParam, LPARAM lParam) -> int;
+    auto wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT override;
+    auto on_activate(::WPARAM wParam, ::LPARAM lParam) -> int;
+    auto on_destroy(::WPARAM wParam, ::LPARAM lParam) -> int;
+    auto on_get_min_max_info(::WPARAM wParam, ::LPARAM lParam) -> int;
+    auto on_key_down(::WPARAM wParam, ::LPARAM lParam) -> int;
+    auto on_notify(::WPARAM wParam, ::LPARAM lParam) -> int;
+    auto on_setting_change(::WPARAM wParam, ::LPARAM lParam) -> int;
+    auto on_size(::WPARAM wParam, ::LPARAM lParam) -> int;
+    auto on_sys_key_down(::WPARAM wParam, ::LPARAM lParam) -> int;
 
     auto update_caption() -> void;
 
@@ -85,5 +85,5 @@ struct Window final : public glow::Window
                                    m_topmost, m_state, m_first, m_second, m_url, m_layout)
 
   private:
-    static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
+    static auto EnumChildProc(::HWND hWnd, ::LPARAM lParam) -> ::BOOL;
 };

@@ -28,8 +28,8 @@ struct App final : public glow::App
 {
     App();
 
-    virtual auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override;
-    auto on_notify(WPARAM wParam, LPARAM lParam) -> int;
+    auto wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT override;
+    auto on_notify(::WPARAM wParam, ::LPARAM lParam) -> int;
 
     auto parse_args() -> void;
     auto new_window() -> void;

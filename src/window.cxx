@@ -15,20 +15,20 @@ Window::Window(::HWND app, State& state, size_t id)
     dwm_system_backdrop(DWMSBT_MAINWINDOW);
     theme();
 
-    std::function<HRESULT()> firstCallback{[this]()
+    std::function<::HRESULT()> firstCallback{[this]()
+                                             {
+                                                 m_first.browser->focus();
+                                                 m_first.browser->move_focus();
+
+                                                 return S_OK;
+                                             }};
+
+    std::function<::HRESULT()> urlCallback{[=, this]()
                                            {
-                                               m_first.browser->focus();
-                                               m_first.browser->move_focus();
+                                               m_url.browser->navigate(m_url.browser->url("url"));
 
                                                return S_OK;
                                            }};
-
-    std::function<HRESULT()> urlCallback{[=, this]()
-                                         {
-                                             m_url.browser->navigate(m_url.browser->url("url"));
-
-                                             return S_OK;
-                                         }};
 
     m_first.browser = std::make_unique<Browser>(m_hwnd.get(), firstCallback);
     m_first.browser->reveal();
@@ -40,7 +40,7 @@ Window::Window(::HWND app, State& state, size_t id)
     m_url.browser->reveal();
 }
 
-auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
+auto CALLBACK Window::EnumChildProc(::HWND hWnd, ::LPARAM lParam) -> ::BOOL
 {
     auto self{reinterpret_cast<Window*>(lParam)};
 
@@ -184,7 +184,7 @@ auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     return true;
 }
 
-auto Window::wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+auto Window::wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT
 {
     switch (uMsg)
     {
@@ -201,23 +201,23 @@ auto Window::wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRE
     return ::DefWindowProcA(hWnd, uMsg, wParam, lParam);
 }
 
-auto Window::on_activate(WPARAM wParam, LPARAM lParam) -> int
+auto Window::on_activate(::WPARAM wParam, ::LPARAM lParam) -> int
 {
     notify(m_app, CODE::WINDOW_ACTIVATE);
 
     return 0;
 }
 
-auto Window::on_destroy(WPARAM wParam, LPARAM lParam) -> int
+auto Window::on_destroy(::WPARAM wParam, ::LPARAM lParam) -> int
 {
     notify(m_app, CODE::WINDOW_CLOSE);
 
     return 0;
 }
 
-auto Window::on_get_min_max_info(WPARAM wParam, LPARAM lParam) -> int
+auto Window::on_get_min_max_info(::WPARAM wParam, ::LPARAM lParam) -> int
 {
-    auto minmax{reinterpret_cast<MINMAXINFO*>(lParam)};
+    auto minmax{reinterpret_cast<::MINMAXINFO*>(lParam)};
 
     minmax->ptMinTrackSize.x = 500;
     minmax->ptMinTrackSize.y = 500;
@@ -225,7 +225,7 @@ auto Window::on_get_min_max_info(WPARAM wParam, LPARAM lParam) -> int
     return 0;
 }
 
-auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
+auto Window::on_key_down(::WPARAM wParam, ::LPARAM lParam) -> int
 {
     auto key{static_cast<unsigned int>(wParam)};
 
@@ -364,7 +364,7 @@ auto Window::on_key_down(WPARAM wParam, LPARAM lParam) -> int
     return 0;
 }
 
-auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
+auto Window::on_notify(::WPARAM wParam, ::LPARAM lParam) -> int
 {
     auto notification{reinterpret_cast<glow::Notification*>(lParam)};
 
@@ -427,7 +427,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
 
         case FAVICON_CHANGED:
         {
-            std::function<HRESULT()> firstCallback{
+            std::function<::HRESULT()> firstCallback{
                 [this]()
                 {
                     m_first.hicon.reset(m_first.browser->m_favicon.second.get());
@@ -436,7 +436,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
                     return S_OK;
                 }};
 
-            std::function<HRESULT()> secondCallback{
+            std::function<::HRESULT()> secondCallback{
                 [this]()
                 {
                     m_second.hicon.reset(m_second.browser->m_favicon.second.get());
@@ -507,7 +507,7 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
     return 0;
 }
 
-auto Window::on_setting_change(WPARAM wParam, LPARAM lParam) -> int
+auto Window::on_setting_change(::WPARAM wParam, ::LPARAM lParam) -> int
 {
     theme();
     m_url.browser->post_json(json(*this));
@@ -515,7 +515,7 @@ auto Window::on_setting_change(WPARAM wParam, LPARAM lParam) -> int
     return 0;
 }
 
-auto Window::on_size(WPARAM wParam, LPARAM lParam) -> int
+auto Window::on_size(::WPARAM wParam, ::LPARAM lParam) -> int
 {
     position();
     ::EnumChildWindows(m_hwnd.get(), EnumChildProc, reinterpret_cast<size_t>(this));
@@ -523,7 +523,7 @@ auto Window::on_size(WPARAM wParam, LPARAM lParam) -> int
     return 0;
 }
 
-auto Window::on_sys_key_down(WPARAM wParam, LPARAM lParam) -> int
+auto Window::on_sys_key_down(::WPARAM wParam, ::LPARAM lParam) -> int
 {
     auto key{static_cast<unsigned int>(wParam)};
 

@@ -17,18 +17,18 @@ Settings::Settings(::HWND app, State& state)
 
     ::SetWindowPos(m_hwnd.get(), nullptr, 0, 0, 500, 500, SWP_NOMOVE);
 
-    std::function<HRESULT()> settingsCallback{[=, this]()
-                                              {
-                                                  m_browser->navigate(m_browser->url("settings"));
+    std::function<::HRESULT()> settingsCallback{[=, this]()
+                                                {
+                                                    m_browser->navigate(m_browser->url("settings"));
 
-                                                  return S_OK;
-                                              }};
+                                                    return S_OK;
+                                                }};
 
     m_browser = std::make_unique<Browser>(m_hwnd.get(), settingsCallback);
     m_browser->reveal();
 }
 
-auto CALLBACK Settings::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
+auto CALLBACK Settings::EnumChildProc(::HWND hWnd, ::LPARAM lParam) -> ::BOOL
 {
     auto self{reinterpret_cast<Settings*>(lParam)};
 
@@ -56,7 +56,7 @@ auto CALLBACK Settings::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     return true;
 }
 
-auto Settings::wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+auto Settings::wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT
 {
     switch (uMsg)
     {
@@ -71,16 +71,16 @@ auto Settings::wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> L
     return ::DefWindowProcA(hWnd, uMsg, wParam, lParam);
 }
 
-auto Settings::on_close(WPARAM wParam, LPARAM lParam) -> int
+auto Settings::on_close(::WPARAM wParam, ::LPARAM lParam) -> int
 {
     hide();
 
     return 0;
 }
 
-auto Settings::on_get_min_max_info(WPARAM wParam, LPARAM lParam) -> int
+auto Settings::on_get_min_max_info(::WPARAM wParam, ::LPARAM lParam) -> int
 {
-    auto minmax{reinterpret_cast<MINMAXINFO*>(lParam)};
+    auto minmax{reinterpret_cast<::MINMAXINFO*>(lParam)};
 
     minmax->ptMinTrackSize.x = 500;
     minmax->ptMinTrackSize.y = 500;
@@ -88,7 +88,7 @@ auto Settings::on_get_min_max_info(WPARAM wParam, LPARAM lParam) -> int
     return 0;
 }
 
-auto Settings::on_key_down(WPARAM wParam, LPARAM lParam) -> int
+auto Settings::on_key_down(::WPARAM wParam, ::LPARAM lParam) -> int
 {
     auto key{static_cast<unsigned int>(wParam)};
 
@@ -124,7 +124,7 @@ auto Settings::on_key_down(WPARAM wParam, LPARAM lParam) -> int
     return 0;
 }
 
-auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
+auto Settings::on_notify(::WPARAM wParam, ::LPARAM lParam) -> int
 {
     auto notification{reinterpret_cast<glow::Notification*>(lParam)};
 
@@ -152,14 +152,14 @@ auto Settings::on_notify(WPARAM wParam, LPARAM lParam) -> int
     return 0;
 }
 
-auto Settings::on_setting_change(WPARAM wParam, LPARAM lParam) -> int
+auto Settings::on_setting_change(::WPARAM wParam, ::LPARAM lParam) -> int
 {
     theme();
 
     return 0;
 }
 
-auto Settings::on_show_window(WPARAM wParam, LPARAM lParam) -> int
+auto Settings::on_show_window(::WPARAM wParam, ::LPARAM lParam) -> int
 {
     switch (wParam)
     {
@@ -181,7 +181,7 @@ auto Settings::on_show_window(WPARAM wParam, LPARAM lParam) -> int
     return 0;
 }
 
-auto Settings::on_size(WPARAM wParam, LPARAM lParam) -> int
+auto Settings::on_size(::WPARAM wParam, ::LPARAM lParam) -> int
 {
     position();
     ::EnumChildWindows(m_hwnd.get(), EnumChildProc, reinterpret_cast<size_t>(this));
