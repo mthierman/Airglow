@@ -460,18 +460,14 @@ auto Window::on_notify(WPARAM wParam, LPARAM lParam) -> int
             if (notification->id == m_first.browser->m_id)
             {
                 m_first.favicon.assign(m_first.browser->m_favicon.first);
-                // m_first.hicon.reset(m_first.browser->m_favicon.second.get());
             }
 
             else if (notification->id == m_second.browser->m_id)
             {
                 m_second.favicon.assign(m_second.browser->m_favicon.first);
-                // m_second.hicon.reset(m_second.browser->m_favicon.second.get());
             }
 
             m_url.browser->post_json(json(*this));
-
-            update_caption();
 
             break;
         }
