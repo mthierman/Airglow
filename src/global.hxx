@@ -35,5 +35,5 @@ struct Keys
 {
     Keys();
 
-    std::set<unsigned int> set;
+    std::set<unsigned int> set{};
 };
