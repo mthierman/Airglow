@@ -44,6 +44,6 @@ struct App final : public glow::App
     State m_state;
 
     std::unique_ptr<Settings> m_settings;
-    std::map<intptr_t, std::unique_ptr<Window>> m_windows;
-    intptr_t m_active{};
+    std::map<size_t, std::unique_ptr<Window>> m_windows;
+    size_t m_active{};
 };

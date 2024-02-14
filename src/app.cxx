@@ -125,7 +125,7 @@ auto App::parse_args() -> void
 
 auto App::new_window() -> void
 {
-    auto id{glow::random<intptr_t>()};
+    auto id{glow::random<size_t>()};
     m_windows.try_emplace(id, std::make_unique<Window>(m_hwnd.get(), m_state, id));
     m_windows.at(id)->reveal();
 }

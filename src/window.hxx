@@ -57,7 +57,7 @@ struct Window final : public glow::Window
         NLOHMANN_DEFINE_TYPE_INTRUSIVE(Layout, bar, border, focus, split, swap, vertical)
     };
 
-    Window(HWND parent, State& state, intptr_t id);
+    Window(HWND parent, State& state, size_t id);
 
     static auto EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
     auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
