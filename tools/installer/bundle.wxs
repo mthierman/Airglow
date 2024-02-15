@@ -4,11 +4,12 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://wixtoolset.org/schemas/v4/wxs https://raw.githubusercontent.com/wixtoolset/web/master/src/xsd4/wix.xsd
                         http://wixtoolset.org/schemas/v4/wxs/bal https://raw.githubusercontent.com/wixtoolset/web/master/src/xsd4/bal.xsd">
-    <Bundle Name="Airglow" Version="1.6.0" UpgradeCode="254DC0BB-0BD7-44E8-A448-BB0872899BC2"
+    <Bundle Name="Airglow" Version="1.6.1" UpgradeCode="254DC0BB-0BD7-44E8-A448-BB0872899BC2"
         IconSourceFile="data/release.ico" AboutUrl="https://github.com/mthierman/Airglow"
         Copyright="© 2023 Mike Thierman" Manufacturer="Mike Thierman">
         <BootstrapperApplication>
-            <bal:WixStandardBootstrapperApplication Theme="rtfLicense" LicenseFile="data/LICENSE.rtf"
+            <bal:WixStandardBootstrapperApplication Theme="rtfLicense"
+                LicenseFile="data/LICENSE.rtf"
                 ShowVersion="yes" LogoSideFile="data/release.png"
                 LogoFile="data/release.png" SuppressOptionsUI="true" />
         </BootstrapperApplication>
