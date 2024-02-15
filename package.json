@@ -1,6 +1,6 @@
 {
     "name": "airglow",
-    "version": "1.6.1",
+    "version": "1.6.2",
     "private": true,
     "type": "module",
     "scripts": {
@@ -16,7 +16,7 @@
         "react-dom": "^18.2.0"
     },
     "devDependencies": {
-        "@types/node": "^20.11.17",
+        "@types/node": "^20.11.19",
         "@types/react": "^18.2.55",
         "@types/react-dom": "^18.2.19",
         "@vitejs/plugin-react-swc": "^3.6.0",
@@ -26,10 +26,10 @@
         "postcss-load-config": "^5.0.3",
         "prettier": "^3.2.5",
         "prettier-plugin-tailwindcss": "^0.5.11",
-        "rollup": "^4.10.0",
+        "rollup": "^4.11.0",
         "tailwindcss": "^3.4.1",
         "tsx": "^4.7.1",
         "typescript": "^5.3.3",
-        "vite": "^5.1.2"
+        "vite": "^5.1.3"
     }
 }
