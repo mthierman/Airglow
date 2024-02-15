@@ -1,6 +1,6 @@
 {
-    "$schema": "https://raw.githubusercontent.com/Kitware/CMake/master/Help/manual/presets/schema.json",
-    "version": 8,
+    // "$schema": "https://raw.githubusercontent.com/Kitware/CMake/master/Help/manual/presets/schema.json",
+    "version": 7,
     "cmakeMinimumRequired": {
         "major": 3,
         "minor": 27,

@@ -9,6 +9,7 @@ project(
 
 option(
     BUILD_GUI
+    "Build the GUI"
     ON
 )
 
