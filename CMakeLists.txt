@@ -115,9 +115,8 @@ if(AIRGLOW_RELEASE)
         Airglow
         Vite
     )
-
 endif()
 
-if(GLOW_EXTRAS)
+if(EXTRAS)
     enable_testing()
 endif()
