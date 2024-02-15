@@ -95,7 +95,7 @@ auto App::on_notify(::WPARAM wParam, ::LPARAM lParam) -> int
             {
                 save();
 
-                ::SendMessageA(m_hwnd.get(), WM_CLOSE, 0, 0);
+                close();
             }
 
             break;
