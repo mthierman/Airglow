@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://wixtoolset.org/schemas/v4/wxs https://raw.githubusercontent.com/wixtoolset/web/master/src/xsd4/wix.xsd
                         http://wixtoolset.org/schemas/v4/wxs/ui https://raw.githubusercontent.com/wixtoolset/web/master/src/xsd4/ui.xsd">
-    <Package Name="Airglow" Version="1.6.0" Manufacturer="Mike Thierman"
+    <Package Name="Airglow" Version="1.6.1" Manufacturer="Mike Thierman"
         UpgradeCode="B804DB35-0FC3-4E3E-8503-A5211287E156" InstallerVersion="500">
         <MajorUpgrade DowngradeErrorMessage="A newer version was detected." />
 
