@@ -1,7 +1,7 @@
-import blankDark from "@assets/blankDark.svg?raw";
-import blankLight from "@assets/blankLight.svg?raw";
-import debug from "@assets/debug.svg?raw";
-import release from "@assets/release.svg?raw";
+import blankDark from "#assets/blankDark.svg?raw";
+import blankLight from "#assets/blankLight.svg?raw";
+import debug from "#assets/debug.svg?raw";
+import release from "#assets/release.svg?raw";
 
 export const initialize = () => {
     window.chrome.webview.postMessage({ initialized: true });

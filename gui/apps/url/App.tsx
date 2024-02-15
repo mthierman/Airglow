@@ -1,4 +1,4 @@
-import "@css/index.css";
+import "#css/index.css";
 import {
     applyColors,
     defaultFavicon,
@@ -6,8 +6,8 @@ import {
     defaultPage,
     defaultState,
     initialize,
-} from "@libs/index";
-import { parseUrl } from "@libs/url";
+} from "#libs/index";
+import { parseUrl } from "#libs/url";
 import { SyntheticEvent, useEffect, useRef, useState } from "react";
 
 export default function App() {

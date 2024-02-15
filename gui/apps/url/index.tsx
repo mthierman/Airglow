@@ -1,4 +1,4 @@
-import { applyFavicon } from "@libs/index";
+import { applyFavicon } from "#libs/index";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";

@@ -8,7 +8,7 @@ const defaults: UserConfig = {
     root: "gui/apps",
     build: {
         emptyOutDir: true,
-        outDir: "../../build/Release/gui",
+        outDir: path.resolve("build/Release/gui"),
         rollupOptions: {
             output: {
                 entryFileNames: `assets/[name].js`,
@@ -19,16 +19,15 @@ const defaults: UserConfig = {
                 home: path.resolve("gui/apps/home/index.html"),
                 settings: path.resolve("gui/apps/settings/index.html"),
                 url: path.resolve("gui/apps/url/index.html"),
-                // test: path.resolve("gui/apps/test/index.html"),
             },
         },
     },
     resolve: {
         alias: {
-            "@assets": path.resolve("gui/assets"),
-            "@components": path.resolve("gui/components"),
-            "@css": path.resolve("gui/css"),
-            "@libs": path.resolve("gui/libs"),
+            "#assets": path.resolve("gui/assets"),
+            "#components": path.resolve("gui/components"),
+            "#css": path.resolve("gui/css"),
+            "#libs": path.resolve("gui/libs"),
         },
     },
 };
