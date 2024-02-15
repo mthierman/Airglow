@@ -46,17 +46,17 @@ function Convert-Icons
 
 function Get-Version
 {
-    Get-Content build/Release/notes/version
+    Get-Content build/notes/version
 }
 
 function Get-ShortHash
 {
-    Get-Content build/Release/notes/short_hash
+    Get-Content build/notes/short_hash
 }
 
 function Get-ReleaseNotes
 {
-    Get-Item build/Release/notes/release_notes
+    Get-Item build/notes/release_notes
 }
 
 function Get-Archive
