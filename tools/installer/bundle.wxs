@@ -14,7 +14,7 @@
                 LogoFile="data/release.png" SuppressOptionsUI="true" />
         </BootstrapperApplication>
         <Chain>
-            <BundlePackage SourceFile="data/VC_redist.x64.exe"
+            <BundlePackage SourceFile="build/VC_redist.x64.exe"
                 bal:PrereqLicenseUrl="https://visualstudio.microsoft.com/license-terms/vs2022-cruntime/"
                 InstallArguments="/install /passive /quiet /norestart" Permanent="yes"
                 bal:PrereqPackage="yes" />

@@ -1,3 +1,11 @@
+function Get-VCRedist
+{
+    Push-Location
+    Set-Location "build"
+    Invoke-WebRequest "https://aka.ms/vs/17/release/vc_redist.x64.exe" -OutFile "vc_redist.x64.exe"
+    Pop-Location
+}
+
 function Invoke-Go
 {
     go build -o "./build/Release/AirglowServer.exe" "./tools/server"
@@ -13,8 +21,8 @@ function Add-WixExtensions
 function Invoke-Archive
 {
     Push-Location
-    Set-Location build/Release
-    if (Test-Path Airglow.zip) { Remove-Item Airglow.zip -Force }
+    Set-Location "build/Release"
+    if (Test-Path "Airglow.zip") { Remove-Item "Airglow.zip" -Force }
     7z a Airglow.zip Airglow.exe gui
     Pop-Location
 }
@@ -46,27 +54,27 @@ function Convert-Icons
 
 function Get-Version
 {
-    Get-Content build/notes/version
+    Get-Content "build/notes/version"
 }
 
 function Get-ShortHash
 {
-    Get-Content build/notes/short_hash
+    Get-Content "build/notes/short_hash"
 }
 
 function Get-ReleaseNotes
 {
-    Get-Item build/notes/release_notes
+    Get-Item "build/notes/release_notes"
 }
 
 function Get-Archive
 {
-    Get-Item build/Release/Airglow.zip
+    Get-Item "build/Release/Airglow.zip"
 }
 
 function Get-Installer
 {
-    Get-Item build/Airglow.exe
+    Get-Item "build/Airglow.exe"
 }
 
 function Publish-Airglow
@@ -77,7 +85,7 @@ function Publish-Airglow
         [string]$Branch = 'main'
     )
 
-    $hash = Get-ShortHash
+    # $hash = Get-ShortHash
     $version = Get-Version
     $notes = Get-ReleaseNotes
     $archive = Get-Archive

@@ -8,8 +8,8 @@ project(
 )
 
 option(
-    BUILD_GUI
-    "Build the GUI"
+    AIRGLOW_RELEASE
+    "Build Airglow for release"
     ON
 )
 
@@ -98,7 +98,13 @@ add_dependencies(
     CopyIcon
 )
 
-if(BUILD_GUI)
+if(AIRGLOW_RELEASE)
+    file(
+        DOWNLOAD
+        "https://aka.ms/vs/17/release/vc_redist.x64.exe"
+        "vc_redist.x64.exe"
+    )
+
     add_custom_target(
         Vite
         COMMAND pnpm build
@@ -109,6 +115,7 @@ if(BUILD_GUI)
         Airglow
         Vite
     )
+
 endif()
 
 if(GLOW_EXTRAS)
