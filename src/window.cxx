@@ -228,28 +228,12 @@ auto Window::on_get_min_max_info(::WPARAM wParam, ::LPARAM lParam) -> int
 {
     RECT caption{};
     DwmGetWindowAttribute(m_hwnd.get(), DWMWA_CAPTION_BUTTON_BOUNDS, &caption, sizeof(caption));
-    auto captionWidth = caption.right - caption.left;
-
     UINT border{};
     DwmGetWindowAttribute(m_hwnd.get(), DWMWA_VISIBLE_FRAME_BORDER_THICKNESS, &border,
                           sizeof(border));
-    auto borderWidth = border * 2;
-
-    RECT extended{};
-    DwmGetWindowAttribute(m_hwnd.get(), DWMWA_EXTENDED_FRAME_BOUNDS, &extended, sizeof(extended));
-    auto extendedWidth = extended.right - extended.left;
-
-    auto iconWidth = GetSystemMetricsForDpi(SM_CXSMICON, m_dpi);
-
-    RECT window{};
-    GetWindowRect(m_hwnd.get(), &window);
-    auto windowWidth = window.right - window.left;
-
-    auto xMax = captionWidth + (border * 2) + iconWidth + (windowWidth - extendedWidth);
 
     auto minmax{reinterpret_cast<::MINMAXINFO*>(lParam)};
-    minmax->ptMinTrackSize.x = xMax;
-    // minmax->ptMinTrackSize.y = 500;
+    minmax->ptMinTrackSize.x = (((caption.right - caption.left) + (border * 2)) * 2);
 
     return 0;
 }
