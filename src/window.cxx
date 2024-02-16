@@ -394,7 +394,9 @@ auto Window::on_notify(::WPARAM wParam, ::LPARAM lParam) -> int
                 if (!m_init)
                 {
                     m_init = true;
-                    m_url.browser->post_json(json{{"navigate", m_state.args}});
+
+                    m_state.withArgs ? m_url.browser->post_json(json{{"navigate", m_state.args}})
+                                     : m_url.browser->post_json(json{{"navigate", m_state.home}});
                 }
             }
 

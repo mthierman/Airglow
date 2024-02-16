@@ -15,6 +15,7 @@
 
 struct State
 {
+    bool withArgs{};
     std::pair<std::string, std::string> args{};
     glow::Colors colors{};
     std::pair<std::string, std::string> home{};

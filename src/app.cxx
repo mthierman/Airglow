@@ -124,6 +124,8 @@ auto App::parse_args() -> void
 {
     auto argv{glow::cmd_to_argv()};
 
+    if (argv.size() > 1) { m_state.withArgs = true; }
+
     if (argv.size() == 2) { m_state.args.first = argv.at(1); }
 
     else if (argv.size() > 2)
