@@ -23,6 +23,7 @@ struct Settings : public glow::Window
     Settings(::HWND app, State& state);
 
     auto WndProc(::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT override;
+    auto on_create(::WPARAM wParam, ::LPARAM lParam) -> int override;
     auto on_close(::WPARAM wParam, ::LPARAM lParam) -> int override;
     auto on_get_min_max_info(::WPARAM wParam, ::LPARAM lParam) -> int;
     auto on_key_down(::WPARAM wParam, ::LPARAM lParam) -> int;

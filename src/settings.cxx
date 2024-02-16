@@ -10,23 +10,7 @@
 
 Settings::Settings(::HWND app, State& state)
     : glow::Window("Airglow - Settings"), m_app{app}, m_state{state}
-{
-    dwm_caption_color(false);
-    dwm_system_backdrop(DWMSBT_TRANSIENTWINDOW);
-    theme();
-
-    ::SetWindowPos(m_hwnd.get(), nullptr, 0, 0, 500, 500, SWP_NOMOVE);
-
-    std::function<::HRESULT()> settingsCallback{[=, this]()
-                                                {
-                                                    m_browser->navigate(m_browser->url("settings"));
-
-                                                    return S_OK;
-                                                }};
-
-    m_browser = std::make_unique<Browser>(m_hwnd.get(), settingsCallback);
-    m_browser->reveal();
-}
+{}
 
 auto CALLBACK Settings::EnumChildProc(::HWND hWnd, ::LPARAM lParam) -> ::BOOL
 {
@@ -68,6 +52,30 @@ auto Settings::WndProc(::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESU
         case WM_SIZE: return on_size(wParam, lParam);
         default: return ::DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
     }
+}
+
+auto Settings::on_create(::WPARAM wParam, ::LPARAM lParam) -> int
+{
+    position();
+
+    dwm_caption_color(false);
+    dwm_system_backdrop(DWMSBT_TRANSIENTWINDOW);
+    theme();
+
+    ::SetWindowPos(m_hwnd.get(), nullptr, 0, 0, 500, 500, SWP_NOMOVE);
+
+    std::function<::HRESULT()> settingsCallback{[=, this]()
+                                                {
+                                                    m_browser->navigate(m_browser->url("settings"));
+
+                                                    return S_OK;
+                                                }};
+
+    m_browser = std::make_unique<Browser>(m_hwnd.get(), settingsCallback);
+    m_browser->create_window();
+    m_browser->reveal();
+
+    return 0;
 }
 
 auto Settings::on_close(::WPARAM wParam, ::LPARAM lParam) -> int

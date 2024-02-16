@@ -20,8 +20,8 @@ App::App()
 
     parse_args();
 
-    // m_settings = std::make_unique<Settings>(m_hwnd.get(), m_state);
-    // m_settings->create_window();
+    m_settings = std::make_unique<Settings>(m_hwnd.get(), m_state);
+    m_settings->create_window();
 
     new_window();
 }
