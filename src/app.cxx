@@ -8,7 +8,17 @@
 
 #include "app.hxx"
 
-App::App()
+auto App::WndProc(::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT
+{
+    switch (uMsg)
+    {
+        case WM_CREATE: return on_create(wParam, lParam);
+        case WM_NOTIFY: return on_notify(wParam, lParam);
+        default: return ::DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
+    }
+}
+
+auto App::on_create(::WPARAM wParam, ::LPARAM lParam) -> int
 {
     ::SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
     ::SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
@@ -24,16 +34,8 @@ App::App()
     m_settings->create_window();
 
     new_window();
-}
 
-auto App::wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT
-{
-    switch (uMsg)
-    {
-        case WM_NOTIFY: return on_notify(wParam, lParam);
-    }
-
-    return ::DefWindowProcA(hWnd, uMsg, wParam, lParam);
+    return 0;
 }
 
 auto App::on_notify(::WPARAM wParam, ::LPARAM lParam) -> int
