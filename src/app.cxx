@@ -7,6 +7,10 @@
 // clang-format on
 
 #include "app.hxx"
+#include "global.hxx"
+
+#include <filesystem>
+#include <fstream>
 
 auto App::WndProc(::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT
 {

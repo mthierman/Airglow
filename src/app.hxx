@@ -10,14 +10,11 @@
 
 #include <Windows.h>
 
-#include <filesystem>
-#include <fstream>
 #include <map>
 #include <memory>
 
 #include <glow/glow.hxx>
 
-#include "global.hxx"
 #include "settings.hxx"
 #include "state.hxx"
 #include "window.hxx"
