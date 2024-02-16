@@ -20,7 +20,8 @@ App::App()
 
     parse_args();
 
-    m_settings = std::make_unique<Settings>(m_hwnd.get(), m_state);
+    // m_settings = std::make_unique<Settings>(m_hwnd.get(), m_state);
+    // m_settings->create_window();
 
     new_window();
 }
@@ -129,6 +130,7 @@ auto App::new_window() -> void
 {
     auto id{glow::random<size_t>()};
     m_windows.try_emplace(id, std::make_unique<Window>(m_hwnd.get(), m_state, id));
+    m_windows.at(id)->create_window();
     m_windows.at(id)->reveal();
 }
 

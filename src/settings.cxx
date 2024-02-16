@@ -56,7 +56,7 @@ auto CALLBACK Settings::EnumChildProc(::HWND hWnd, ::LPARAM lParam) -> ::BOOL
     return true;
 }
 
-auto Settings::wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT
+auto Settings::WndProc(::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT
 {
     switch (uMsg)
     {
@@ -66,9 +66,8 @@ auto Settings::wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lPar
         case WM_SETTINGCHANGE: return on_setting_change(wParam, lParam);
         case WM_SHOWWINDOW: return on_show_window(wParam, lParam);
         case WM_SIZE: return on_size(wParam, lParam);
+        default: return ::DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
     }
-
-    return ::DefWindowProcA(hWnd, uMsg, wParam, lParam);
 }
 
 auto Settings::on_close(::WPARAM wParam, ::LPARAM lParam) -> int

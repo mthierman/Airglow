@@ -10,35 +10,7 @@
 
 Window::Window(::HWND app, State& state, size_t id)
     : glow::Window("Airglow", id), m_app{app}, m_state{state}
-{
-    dwm_caption_color(false);
-    dwm_system_backdrop(DWMSBT_MAINWINDOW);
-    theme();
-
-    std::function<::HRESULT()> firstCallback{[this]()
-                                             {
-                                                 m_first.browser->focus();
-                                                 m_first.browser->move_focus();
-
-                                                 return S_OK;
-                                             }};
-
-    std::function<::HRESULT()> urlCallback{[=, this]()
-                                           {
-                                               m_url.browser->navigate(m_url.browser->url("url"));
-
-                                               return S_OK;
-                                           }};
-
-    m_first.browser = std::make_unique<Browser>(m_hwnd.get(), firstCallback);
-    m_first.browser->reveal();
-
-    m_second.browser = std::make_unique<Browser>(m_hwnd.get());
-    m_second.browser->reveal();
-
-    m_url.browser = std::make_unique<Browser>(m_hwnd.get(), urlCallback);
-    m_url.browser->reveal();
-}
+{}
 
 auto CALLBACK Window::EnumChildProc(::HWND hWnd, ::LPARAM lParam) -> ::BOOL
 {
@@ -184,7 +156,7 @@ auto CALLBACK Window::EnumChildProc(::HWND hWnd, ::LPARAM lParam) -> ::BOOL
     return true;
 }
 
-auto Window::wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT
+auto Window::WndProc(::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT
 {
     switch (uMsg)
     {
@@ -196,9 +168,46 @@ auto Window::wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam
         case WM_SETTINGCHANGE: return on_setting_change(wParam, lParam);
         case WM_SIZE: return on_size(wParam, lParam);
         case WM_SYSKEYDOWN: return on_sys_key_down(wParam, lParam);
+        default: return ::DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
     }
+}
 
-    return ::DefWindowProcA(hWnd, uMsg, wParam, lParam);
+auto Window::on_create(::WPARAM wParam, ::LPARAM lParam) -> int
+{
+    position();
+
+    dwm_caption_color(false);
+    dwm_system_backdrop(DWMSBT_MAINWINDOW);
+    theme();
+
+    std::function<::HRESULT()> firstCallback{[this]()
+                                             {
+                                                 m_first.browser->focus();
+                                                 m_first.browser->move_focus();
+
+                                                 return S_OK;
+                                             }};
+
+    std::function<::HRESULT()> urlCallback{[=, this]()
+                                           {
+                                               m_url.browser->navigate(m_url.browser->url("url"));
+
+                                               return S_OK;
+                                           }};
+
+    // m_first.browser = std::make_unique<Browser>(m_hwnd.get(), firstCallback);
+    // m_first.browser->create_window();
+    // m_first.browser->reveal();
+
+    // m_second.browser = std::make_unique<Browser>(m_hwnd.get());
+    // m_second.browser->create_window();
+    // m_second.browser->reveal();
+
+    // m_url.browser = std::make_unique<Browser>(m_hwnd.get(), urlCallback);
+    // m_url.browser->create_window();
+    // m_url.browser->reveal();
+
+    return 0;
 }
 
 auto Window::on_activate(::WPARAM wParam, ::LPARAM lParam) -> int
@@ -568,7 +577,7 @@ auto Window::update_caption() -> void
 
         else { set_icon(m_second.hicon.get(), true, false); }
 
-        set_icon(m_hicon.get(), false, true);
+        set_icon(m_icon.get(), false, true);
     }
 
     if (!m_layout.swap) { set_title(m_first.title); }

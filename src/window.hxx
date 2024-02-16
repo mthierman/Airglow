@@ -59,7 +59,8 @@ struct Window final : public glow::Window
 
     Window(::HWND app, State& state, size_t id);
 
-    auto wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT override;
+    auto WndProc(::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT override;
+    auto on_create(::WPARAM wParam, ::LPARAM lParam) -> int override;
     auto on_activate(::WPARAM wParam, ::LPARAM lParam) -> int;
     auto on_destroy(::WPARAM wParam, ::LPARAM lParam) -> int;
     auto on_get_min_max_info(::WPARAM wParam, ::LPARAM lParam) -> int;
