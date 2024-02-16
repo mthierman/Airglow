@@ -52,6 +52,6 @@ jobs:
           Import-Module ${{ github.workspace }}\tools\PowerShell
           Invoke-DevShell
           Invoke-CMake
-          Invoke-Archive
-          Invoke-Wix
+          Compress-Airglow
+          Build-AirglowInstaller
           Publish-Airglow
