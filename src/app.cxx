@@ -18,8 +18,9 @@ auto App::WndProc(::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT
     {
         case WM_CREATE: return on_create(wParam, lParam);
         case WM_NOTIFY: return on_notify(wParam, lParam);
-        default: return ::DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
     }
+
+    return ::DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
 }
 
 auto App::on_create(::WPARAM wParam, ::LPARAM lParam) -> int

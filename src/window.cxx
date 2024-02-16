@@ -168,8 +168,9 @@ auto Window::WndProc(::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT
         case WM_SETTINGCHANGE: return on_setting_change(wParam, lParam);
         case WM_SIZE: return on_size(wParam, lParam);
         case WM_SYSKEYDOWN: return on_sys_key_down(wParam, lParam);
-        default: return ::DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
     }
+
+    return ::DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
 }
 
 auto Window::on_create(::WPARAM wParam, ::LPARAM lParam) -> int

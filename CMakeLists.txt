@@ -13,6 +13,10 @@ option(
     ON
 )
 
+enable_testing()
+
+include(FetchContent)
+
 add_subdirectory(libs/Glow)
 
 file(
@@ -115,8 +119,4 @@ if(AIRGLOW_RELEASE)
         Airglow
         Vite
     )
-endif()
-
-if(EXTRAS)
-    enable_testing()
 endif()
