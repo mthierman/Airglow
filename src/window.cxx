@@ -195,17 +195,17 @@ auto Window::on_create(::WPARAM wParam, ::LPARAM lParam) -> int
                                                return S_OK;
                                            }};
 
-    // m_first.browser = std::make_unique<Browser>(m_hwnd.get(), firstCallback);
-    // m_first.browser->create_window();
-    // m_first.browser->reveal();
+    m_first.browser = std::make_unique<Browser>(m_hwnd.get(), firstCallback);
+    m_first.browser->create_window();
+    m_first.browser->reveal();
 
-    // m_second.browser = std::make_unique<Browser>(m_hwnd.get());
-    // m_second.browser->create_window();
-    // m_second.browser->reveal();
+    m_second.browser = std::make_unique<Browser>(m_hwnd.get());
+    m_second.browser->create_window();
+    m_second.browser->reveal();
 
-    // m_url.browser = std::make_unique<Browser>(m_hwnd.get(), urlCallback);
-    // m_url.browser->create_window();
-    // m_url.browser->reveal();
+    m_url.browser = std::make_unique<Browser>(m_hwnd.get(), urlCallback);
+    m_url.browser->create_window();
+    m_url.browser->reveal();
 
     return 0;
 }
