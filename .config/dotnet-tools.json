@@ -1,12 +1,10 @@
 {
-  "version": 1,
-  "isRoot": true,
-  "tools": {
-    "wix": {
-      "version": "4.0.3",
-      "commands": [
-        "wix"
-      ]
+    "version": 1,
+    "isRoot": true,
+    "tools": {
+        "wix": {
+            "version": "4.0.4",
+            "commands": ["wix"]
+        }
     }
-  }
 }
