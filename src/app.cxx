@@ -25,10 +25,6 @@ auto App::WndProc(::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT
 
 auto App::on_create(::WPARAM wParam, ::LPARAM lParam) -> int
 {
-    ::SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
-    ::SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
-                              "--allow-file-access-from-files");
-
     if (!std::filesystem::exists(file())) { save(); }
 
     else { load(); }
