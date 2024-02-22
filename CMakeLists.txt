@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.27)
 
 project(
     Airglow
-    VERSION 1.6.2
+    VERSION 1.7.0
     LANGUAGES C
               CXX
 )
@@ -19,21 +19,7 @@ include(FetchContent)
 
 add_subdirectory(libs/Glow)
 
-file(
-    WRITE
-    ${PROJECT_BINARY_DIR}/notes/version
-    v${PROJECT_VERSION}
-)
-
-execute_process(
-    COMMAND git rev-parse --short HEAD
-    OUTPUT_FILE ${PROJECT_BINARY_DIR}/notes/short_hash
-)
-
-execute_process(
-    COMMAND git --no-pager log -5 --oneline --no-decorate
-    OUTPUT_FILE ${PROJECT_BINARY_DIR}/notes/release_notes
-)
+include(libs/Glow/cmake/ReleaseInfo.cmake)
 
 file(
     GENERATE
