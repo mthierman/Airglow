@@ -9,7 +9,7 @@
         Copyright="© 2023 Mike Thierman" Manufacturer="Mike Thierman">
         <BootstrapperApplication>
             <bal:WixStandardBootstrapperApplication Theme="rtfLicense"
-                LicenseFile="data/LICENSE.rtf"
+                LicenseFile="data/installer/LICENSE.rtf"
                 ShowVersion="yes" LogoSideFile="data/release.png"
                 LogoFile="data/release.png" SuppressOptionsUI="true" />
         </BootstrapperApplication>

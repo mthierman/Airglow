@@ -27,13 +27,13 @@
         <MediaTemplate EmbedCab="yes" />
 
         <ui:WixUI Id="WixUI_InstallDir" InstallDirectory="APPINSTALLDIR" />
-        <WixVariable Id="WixUILicenseRtf" Value="data/LICENSE.rtf" />
-        <WixVariable Id="WixUIBannerBmp" Value="data/WixUIBannerBmp.png" />
-        <WixVariable Id="WixUIDialogBmp" Value="data/WixUIDialogBmp.png" />
-        <WixVariable Id="WixUIExclamationIco" Value="data/WixUIExclamationIco.ico" />
-        <WixVariable Id="WixUIInfoIco" Value="data/WixUIInfoIco.ico" />
-        <WixVariable Id="WixUINewIco" Value="data/WixUINewIco.ico" />
-        <WixVariable Id="WixUIUpIco" Value="data/WixUIUpIco.ico" />
+        <WixVariable Id="WixUILicenseRtf" Value="data/installer/LICENSE.rtf" />
+        <WixVariable Id="WixUIBannerBmp" Value="data/installer/WixUIBannerBmp.png" />
+        <WixVariable Id="WixUIDialogBmp" Value="data/installer/WixUIDialogBmp.png" />
+        <WixVariable Id="WixUIExclamationIco" Value="data/installer/WixUIExclamationIco.ico" />
+        <WixVariable Id="WixUIInfoIco" Value="data/installer/WixUIInfoIco.ico" />
+        <WixVariable Id="WixUINewIco" Value="data/installer/WixUINewIco.ico" />
+        <WixVariable Id="WixUIUpIco" Value="data/installer/WixUIUpIco.ico" />
 
         <Feature Id="Main">
             <Component Directory="Application">
