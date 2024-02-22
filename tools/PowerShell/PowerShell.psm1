@@ -7,9 +7,15 @@ function Compress-Airglow
     Pop-Location
 }
 
-function Build-AirglowInstaller
+function Restore-Wix
 {
     dotnet tool restore
+    dotnet wix extension add WixToolset.UI.wixext
+    dotnet wix extension add WixToolset.Bal.wixext
+}
+
+function Build-AirglowInstaller
+{
     dotnet wix build tools\installer\msi.wxs -o build/Airglow.msi -ext WixToolset.UI.wixext
     dotnet wix build tools\installer\bundle.wxs -o build/Airglow.exe -ext WixToolset.Bal.wixext
 }
@@ -43,13 +49,6 @@ function Get-VCRedist
 function Build-AirglowServer
 {
     go build -o "./build/Release/AirglowServer.exe" "./tools/server"
-}
-
-function Add-WixExtensions
-{
-    dotnet tool restore
-    dotnet wix extension add WixToolset.UI.wixext
-    dotnet wix extension add WixToolset.Bal.wixext
 }
 
 function ConvertTo-WixIco
