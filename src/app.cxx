@@ -118,7 +118,7 @@ auto App::on_notify(::WPARAM wParam, ::LPARAM lParam) -> int
 
 auto App::parse_args() -> void
 {
-    auto argv{glow::cmd_to_argv()};
+    auto argv{cmd_to_argv()};
 
     if (argv.size() > 1) { m_state.withArgs = true; }
 
