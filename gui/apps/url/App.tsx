@@ -64,8 +64,6 @@ export default function App() {
 
             if (Object.hasOwn(data, "navigate")) {
                 const [first, second] = data.navigate as Pair;
-                console.log(first);
-                console.log(second);
                 if (first.length !== 0) {
                     window.chrome.webview.postMessage({ first: parseUrl(first).href });
                 } else if (state.home[0].length !== 0) {

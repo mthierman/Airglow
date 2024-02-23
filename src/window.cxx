@@ -497,11 +497,17 @@ auto Window::on_notify(::WPARAM wParam, ::LPARAM lParam) -> int
 
         case FOCUS_CHANGED:
         {
-            if (notification->id == m_first.browser->m_id) { m_layout.focus = "first"; }
+            if (notification->id == m_first.browser->m_id)
+            {
+                m_layout.focus = "first";
+                m_url.browser->post_json(json(*this));
+            }
 
-            else if (notification->id == m_second.browser->m_id) { m_layout.focus = "second"; }
-
-            m_url.browser->post_json(json(*this));
+            else if (notification->id == m_second.browser->m_id)
+            {
+                m_layout.focus = "second";
+                m_url.browser->post_json(json(*this));
+            }
 
             break;
         }
