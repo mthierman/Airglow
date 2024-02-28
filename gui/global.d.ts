@@ -7,8 +7,8 @@ interface WebView extends EventTarget {
         listener: EventListenerOrEventListenerObject,
         options?: boolean | AddEventListenerOptions,
     ): void;
-    postMessage(message: any): void;
-    postMessageWithAdditionalObjects(message: any, additionalObjects: ArrayLike<any>): void;
+    postMessage(message: unknown): void;
+    postMessageWithAdditionalObjects(message: unknown, additionalObjects: ArrayLike<unknown>): void;
     releaseBuffer(buffer: ArrayBuffer): void;
     removeEventListener(
         type: string,
