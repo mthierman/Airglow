@@ -10,6 +10,9 @@ export default tseslint.config(
     eslint.configs.recommended,
     ...tseslint.configs.recommendedTypeChecked,
     {
+        ignores: ["**/build/**"],
+    },
+    {
         plugins: {
             "eslint-plugin-react": eslintPluginReact,
             "eslint-plugin-react-hooks": eslintPluginReactHooks,
