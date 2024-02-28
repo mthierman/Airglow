@@ -3,7 +3,19 @@ import blankLight from "#assets/blankLight.svg?raw";
 import debug from "#assets/debug.svg?raw";
 import release from "#assets/release.svg?raw";
 
-export const initialize = () => {
+export const applyFavicon = () => {
+    document.onreadystatechange = () => {
+        if (document.readyState === "complete") {
+            const favicon = document.createElement("link");
+            favicon.type = "image/svg+xml";
+            favicon.rel = "icon";
+            favicon.href = `data:image/svg+xml,${encodeURIComponent(import.meta.env.DEV ? debug : release)}`;
+            document.head.appendChild(favicon);
+        }
+    };
+};
+
+export const initialized = () => {
     window.chrome.webview.postMessage({ initialized: true });
 };
 
@@ -15,18 +27,6 @@ export const applyColors = (colors: App.Colors) => {
     document.documentElement.style.setProperty("--accentLight1", colors.accentLight1);
     document.documentElement.style.setProperty("--accentLight2", colors.accentLight2);
     document.documentElement.style.setProperty("--accentLight3", colors.accentLight3);
-};
-
-export const applyFavicon = () => {
-    document.onreadystatechange = () => {
-        if (document.readyState === "complete") {
-            const favicon = document.createElement("link");
-            favicon.type = "image/svg+xml";
-            favicon.rel = "icon";
-            favicon.href = `data:image/svg+xml,${encodeURIComponent(import.meta.env.DEV ? debug : release)}`;
-            document.head.appendChild(favicon);
-        }
-    };
 };
 
 export const defaultFavicon = () => {

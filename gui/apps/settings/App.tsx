@@ -1,5 +1,5 @@
 import "#css/index.css";
-import { applyColors, defaultState, initialize } from "#libs/index";
+import { applyColors, defaultState, initialized } from "#libs/index";
 import { parseUrl } from "#libs/url";
 import { SyntheticEvent, useEffect, useRef, useState } from "react";
 
@@ -9,7 +9,7 @@ export default function App() {
     const [state, setState] = useState(defaultState());
 
     useEffect(() => {
-        initialize();
+        initialized();
     }, []);
 
     useEffect(() => {

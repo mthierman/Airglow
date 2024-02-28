@@ -5,7 +5,7 @@ import {
     defaultLayout,
     defaultPage,
     defaultState,
-    initialize,
+    initialized,
 } from "#libs/index";
 import { parseUrl } from "#libs/url";
 import { SyntheticEvent, useEffect, useRef, useState } from "react";
@@ -26,7 +26,7 @@ export default function App() {
     const [focus, setFocus] = useState("first");
 
     useEffect(() => {
-        initialize();
+        initialized();
     }, []);
 
     useEffect(() => {
