@@ -1,8 +1,8 @@
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
-import { defineConfig, UserConfig } from "vite";
+import { CommonServerOptions, UserConfig, defineConfig } from "vite";
 
-const defaults: UserConfig = {
+const userConfig: UserConfig = {
     plugins: [react()],
     base: "./",
     root: "gui/apps",
@@ -32,7 +32,7 @@ const defaults: UserConfig = {
     },
 };
 
-const server: UserConfig["server"] = {
+const commonServerOptions: CommonServerOptions = {
     port: 8000,
     https: {
         pfx: path.resolve("../.cert/localhost.pfx"),
@@ -45,14 +45,14 @@ export default defineConfig(({ command }) => {
     switch (command) {
         case "serve": {
             return {
-                ...defaults,
-                server: { ...server },
-                preview: { ...server },
+                ...userConfig,
+                server: { ...commonServerOptions },
+                preview: { ...commonServerOptions },
             };
         }
         default: {
             return {
-                ...defaults,
+                ...userConfig,
             };
         }
     }
