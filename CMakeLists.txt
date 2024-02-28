@@ -7,12 +7,6 @@ project(
               CXX
 )
 
-option(
-    AIRGLOW_RELEASE
-    "Build Airglow for release"
-    ON
-)
-
 enable_testing()
 
 include(FetchContent)
@@ -20,6 +14,13 @@ include(FetchContent)
 add_subdirectory(libs/Glow)
 
 include(libs/Glow/cmake/ReleaseInfo.cmake)
+
+file(
+    DOWNLOAD
+    "https://aka.ms/vs/17/release/vc_redist.x64.exe"
+    "${PROJECT_BINARY_DIR}/vc_redist.x64.exe"
+    SHOW_PROGRESS
+)
 
 file(
     GENERATE
@@ -34,6 +35,19 @@ add_custom_command(
         ${PROJECT_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico
         ${PROJECT_BINARY_DIR}/data/icon.ico
     COMMENT "Copying icon..."
+)
+
+add_custom_target(
+    CopyIcon
+    ALL
+    DEPENDS ${PROJECT_BINARY_DIR}/data/icon.ico
+)
+
+add_custom_target(
+    GUI
+    ALL
+    COMMAND pnpm build
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
 
 add_executable(
@@ -77,32 +91,7 @@ target_link_libraries(
             glow::flags
 )
 
-add_custom_target(
-    CopyIcon
-    ALL
-    DEPENDS ${PROJECT_BINARY_DIR}/data/icon.ico
-)
-
 add_dependencies(
     Airglow
     CopyIcon
 )
-
-if(AIRGLOW_RELEASE)
-    file(
-        DOWNLOAD
-        "https://aka.ms/vs/17/release/vc_redist.x64.exe"
-        "${PROJECT_BINARY_DIR}/vc_redist.x64.exe"
-    )
-
-    add_custom_target(
-        Vite
-        COMMAND pnpm build
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-    )
-
-    add_dependencies(
-        Airglow
-        Vite
-    )
-endif()
