@@ -39,6 +39,8 @@
             <Component Directory="Application">
                 <File Id="Airglow" Source="build/Release/Airglow.exe" />
                 <Shortcut Name="Airglow" Directory="StartMenu" Advertise="yes" Icon="Airglow.exe" />
+                <Environment Action="set" Id="Path" Name="Path" Part="last" Permanent="no"
+                    Value="[APPINSTALLDIR]" />
             </Component>
             <Component Directory="Assets" Guid="1FC6B8D3-D063-433E-863D-B42680CFA2C5">
                 <File Source="build/Release/gui/assets/client.js" />
