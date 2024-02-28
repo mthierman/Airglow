@@ -3,6 +3,7 @@
 import eslint from "@eslint/js";
 import reactPlugin from "eslint-plugin-react";
 import reactHooksPlugin from "eslint-plugin-react-hooks";
+import reactPluginConfigsJsxRuntime from "eslint-plugin-react/configs/jsx-runtime";
 import reactPluginConfigsRecommended from "eslint-plugin-react/configs/recommended.js";
 import globals from "globals";
 import tseslint from "typescript-eslint";
@@ -20,6 +21,7 @@ export default tseslint.config(
         },
         rules: {
             ...reactPluginConfigsRecommended.rules,
+            ...reactPluginConfigsJsxRuntime.rules,
             ...reactHooksPlugin.configs.recommended.rules,
         },
         languageOptions: {

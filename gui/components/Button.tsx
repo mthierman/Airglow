@@ -3,9 +3,5 @@ export interface ButtonProps {
 }
 
 export const Button = ({ text = "" }: ButtonProps) => {
-    return (
-        <button className="button">
-            {text}
-        </button>
-    );
+    return <button className="button">{text}</button>;
 };
