@@ -2,8 +2,8 @@
 
 import eslint from "@eslint/js";
 import reactPlugin from "eslint-plugin-react";
-import hooksPlugin from "eslint-plugin-react-hooks";
-import eslintPluginReactRecommended from "eslint-plugin-react/configs/recommended.js";
+import reactHooksPlugin from "eslint-plugin-react-hooks";
+import reactPluginConfigsRecommended from "eslint-plugin-react/configs/recommended.js";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 
@@ -16,11 +16,11 @@ export default tseslint.config(
     {
         plugins: {
             "react": reactPlugin,
-            "react-hooks": hooksPlugin,
+            "react-hooks": reactHooksPlugin,
         },
         rules: {
-            ...eslintPluginReactRecommended.rules,
-            ...hooksPlugin.configs.recommended.rules,
+            ...reactPluginConfigsRecommended.rules,
+            ...reactHooksPlugin.configs.recommended.rules,
         },
         languageOptions: {
             globals: {
