@@ -19,13 +19,11 @@ file(
     DOWNLOAD
     "https://aka.ms/vs/17/release/vc_redist.x64.exe"
     "${PROJECT_BINARY_DIR}/vc_redist.x64.exe"
-    SHOW_PROGRESS
 )
 
 file(
-    GENERATE
-    OUTPUT ${PROJECT_BINARY_DIR}/data/airglow.rc
-    CONTENT "1 ICON \"icon.ico\""
+    COPY ${PROJECT_SOURCE_DIR}/data/airglow.rc
+    DESTINATION ${PROJECT_BINARY_DIR}/data
 )
 
 add_custom_command(
@@ -38,7 +36,7 @@ add_custom_command(
 )
 
 add_custom_target(
-    CopyIcon
+    Icon
     ALL
     DEPENDS ${PROJECT_BINARY_DIR}/data/icon.ico
 )
@@ -93,5 +91,5 @@ target_link_libraries(
 
 add_dependencies(
     Airglow
-    CopyIcon
+    Icon
 )
