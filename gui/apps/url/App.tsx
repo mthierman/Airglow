@@ -160,7 +160,7 @@ export default function App() {
     };
 
     const handleClick = async (event: SyntheticEvent) => {
-        let nativeEvent = event.nativeEvent as MouseEvent;
+        const nativeEvent = event.nativeEvent as MouseEvent;
 
         if (document.activeElement === first.current) {
             if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(firstBrowser.source);
@@ -203,7 +203,7 @@ export default function App() {
                         title={firstBrowser.source}
                         value={firstValue}
                         onChange={(e) => setFirstValue(e.target.value)}
-                        onClick={handleClick}
+                        onClick={() => handleClick}
                     />
                 </label>
                 <label
@@ -230,7 +230,7 @@ export default function App() {
                         title={secondBrowser.source}
                         value={secondValue}
                         onChange={(e) => setSecondValue(e.target.value)}
-                        onClick={handleClick}></input>
+                        onClick={() => handleClick}></input>
                 </label>
                 <input type="submit" hidden />
             </form>

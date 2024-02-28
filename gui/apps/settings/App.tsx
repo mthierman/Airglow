@@ -74,7 +74,7 @@ export default function App() {
     };
 
     const handleClick = async (event: SyntheticEvent) => {
-        let nativeEvent = event.nativeEvent as MouseEvent;
+        const nativeEvent = event.nativeEvent as MouseEvent;
 
         if (document.activeElement === first.current) {
             if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(state.home[0]);
@@ -100,8 +100,8 @@ export default function App() {
                         id="0"
                         type="text"
                         value={state.home[0]}
-                        onChange={onChange}
-                        onClick={handleClick}></input>
+                        onChange={() => onChange}
+                        onClick={() => handleClick}></input>
                 </label>
                 <label className="settings-spacer">
                     <h1 className="settings-title">🌃Second Home</h1>
@@ -111,8 +111,8 @@ export default function App() {
                         id="1"
                         type="text"
                         value={state.home[1]}
-                        onChange={onChange}
-                        onClick={handleClick}></input>
+                        onChange={() => onChange}
+                        onClick={() => handleClick}></input>
                 </label>
             </div>
             <input className="settings-submit" type="submit" value="Save" />

@@ -41,7 +41,7 @@ const server: UserConfig["server"] = {
 };
 
 // https://vitejs.dev/config/
-export default defineConfig(async ({ command, mode, isPreview }) => {
+export default defineConfig(({ command }) => {
     switch (command) {
         case "serve": {
             return {
