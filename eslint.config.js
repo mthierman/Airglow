@@ -1,8 +1,9 @@
 // @ts-check
 
 import eslint from "@eslint/js";
-import eslintPluginReact from "eslint-plugin-react";
-import eslintPluginReactHooks from "eslint-plugin-react-hooks";
+import reactPlugin from "eslint-plugin-react";
+import hooksPlugin from "eslint-plugin-react-hooks";
+import eslintPluginReactRecommended from "eslint-plugin-react/configs/recommended.js";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 
@@ -14,21 +15,40 @@ export default tseslint.config(
     },
     {
         plugins: {
-            "eslint-plugin-react": eslintPluginReact,
-            "eslint-plugin-react-hooks": eslintPluginReactHooks,
+            "react": reactPlugin,
+            "react-hooks": hooksPlugin,
+        },
+        rules: {
+            ...eslintPluginReactRecommended.rules,
+            ...hooksPlugin.configs.recommended.rules,
         },
         languageOptions: {
             globals: {
                 ...globals.browser,
             },
             parserOptions: {
-                project: ["tsconfig.json", "tsconfig.node.json"],
+                project: ["tsconfig.json"],
+                tsconfigRootDir: import.meta.dirname,
+                ecmaFeatures: {
+                    jsx: true,
+                },
+            },
+        },
+    },
+    {
+        files: ["**/*.config.ts"],
+        languageOptions: {
+            globals: {
+                ...globals.node,
+            },
+            parserOptions: {
+                project: ["tsconfig.node.json"],
                 tsconfigRootDir: import.meta.dirname,
             },
         },
     },
     {
-        files: ["**/*.js"],
+        files: ["**/*.config.js"],
         languageOptions: {
             globals: {
                 ...globals.node,
