@@ -41,7 +41,7 @@ export default function App() {
         setOffsetHeight(form.current!.offsetHeight);
 
         const onMessage = (event: Event) => {
-            const data: App.Window = (event as MessageEvent).data;
+            const data = (event as MessageEvent).data as App.Window;
 
             if (Object.hasOwn(data, "m_state")) {
                 setState(data.m_state);
@@ -203,7 +203,9 @@ export default function App() {
                         title={firstBrowser.source}
                         value={firstValue}
                         onChange={(e) => setFirstValue(e.target.value)}
-                        onClick={() => handleClick}
+                        onClick={(e) => {
+                            void handleClick(e);
+                        }}
                     />
                 </label>
                 <label
@@ -230,7 +232,10 @@ export default function App() {
                         title={secondBrowser.source}
                         value={secondValue}
                         onChange={(e) => setSecondValue(e.target.value)}
-                        onClick={() => handleClick}></input>
+                        onClick={(e) => {
+                            void handleClick(e);
+                        }}
+                    />
                 </label>
                 <input type="submit" hidden />
             </form>

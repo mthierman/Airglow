@@ -18,7 +18,7 @@ export default function App() {
 
     useEffect(() => {
         const onMessage = (event: Event) => {
-            const data: App.Settings = (event as MessageEvent).data;
+            const data = (event as MessageEvent).data as App.Settings;
 
             if (Object.hasOwn(data, "m_state")) {
                 setState(data.m_state);
@@ -100,8 +100,11 @@ export default function App() {
                         id="0"
                         type="text"
                         value={state.home[0]}
-                        onChange={() => onChange}
-                        onClick={() => handleClick}></input>
+                        onChange={onChange}
+                        onClick={(e) => {
+                            void handleClick(e);
+                        }}
+                    />
                 </label>
                 <label className="settings-spacer">
                     <h1 className="settings-title">🌃Second Home</h1>
@@ -111,8 +114,11 @@ export default function App() {
                         id="1"
                         type="text"
                         value={state.home[1]}
-                        onChange={() => onChange}
-                        onClick={() => handleClick}></input>
+                        onChange={onChange}
+                        onClick={(e) => {
+                            void handleClick(e);
+                        }}
+                    />
                 </label>
             </div>
             <input className="settings-submit" type="submit" value="Save" />
