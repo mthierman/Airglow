@@ -3,6 +3,7 @@
 import eslint from "@eslint/js";
 import eslintPluginReact from "eslint-plugin-react";
 import eslintPluginReactHooks from "eslint-plugin-react-hooks";
+import globals from "globals";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
@@ -17,6 +18,9 @@ export default tseslint.config(
             "eslint-plugin-react-hooks": eslintPluginReactHooks,
         },
         languageOptions: {
+            globals: {
+                ...globals.browser,
+            },
             parserOptions: {
                 project: ["tsconfig.json", "tsconfig.node.json"],
                 tsconfigRootDir: import.meta.dirname,
@@ -25,6 +29,11 @@ export default tseslint.config(
     },
     {
         files: ["**/*.js"],
+        languageOptions: {
+            globals: {
+                ...globals.node,
+            },
+        },
         ...tseslint.configs.disableTypeChecked,
     },
 );
