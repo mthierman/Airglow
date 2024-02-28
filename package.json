@@ -7,6 +7,7 @@
         "dev": "vite",
         "host": "vite --host",
         "check": "tsc",
+        "lint": "eslint .",
         "build": "tsc && vite build",
         "watch": "tsc && vite build --watch",
         "preview": "vite preview"
@@ -16,12 +17,15 @@
         "react-dom": "^18.2.0"
     },
     "devDependencies": {
-        "@types/node": "^20.11.19",
-        "@types/react": "^18.2.57",
+        "@types/node": "^20.11.21",
+        "@types/react": "^18.2.60",
         "@types/react-dom": "^18.2.19",
         "@vitejs/plugin-react-swc": "^3.6.0",
         "autoprefixer": "^10.4.17",
         "esbuild": "^0.20.1",
+        "eslint": "^8.57.0",
+        "eslint-plugin-react": "^7.33.2",
+        "eslint-plugin-react-hooks": "^4.6.0",
         "postcss": "^8.4.35",
         "postcss-load-config": "^5.0.3",
         "prettier": "^3.2.5",
@@ -30,6 +34,7 @@
         "tailwindcss": "^3.4.1",
         "tsx": "^4.7.1",
         "typescript": "^5.3.3",
+        "typescript-eslint": "^7.1.0",
         "vite": "^5.1.4"
     }
 }
