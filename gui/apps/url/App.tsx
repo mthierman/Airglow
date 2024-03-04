@@ -15,19 +15,18 @@ export default function App() {
     const form = useRef<HTMLFormElement | null>(null);
     const first = useRef<HTMLInputElement | null>(null);
     const second = useRef<HTMLInputElement | null>(null);
-
     const [firstValue, setFirstValue] = useState("");
     const [secondValue, setSecondValue] = useState("");
-
     const [state, setState] = useState(defaultState());
     const [layout, setLayout] = useState(defaultLayout());
     const [firstBrowser, setFirstBrowser] = useState(defaultPage());
     const [secondBrowser, setSecondBrowser] = useState(defaultPage());
-
     const [focus, setFocus] = useState("first");
 
     useInitializer();
+
     useColors(state.colors);
+
     const scale = useScale();
     if (form.current) {
         window.chrome.webview.postMessage({
@@ -55,16 +54,13 @@ export default function App() {
         };
 
         document.addEventListener("keydown", onEscape);
+
         return () => {
             document.removeEventListener("keydown", onEscape);
         };
     }, [firstBrowser.source, secondBrowser.source]);
 
     useEffect(() => {
-        if (first.current === null || second.current === null) {
-            return;
-        }
-
         const inputs = {
             first: first.current,
             second: second.current,
@@ -78,11 +74,12 @@ export default function App() {
             }
         };
 
-        inputs.first.addEventListener("focus", onFocus);
-        inputs.second.addEventListener("focus", onFocus);
+        inputs.first?.addEventListener("focus", onFocus);
+        inputs.second?.addEventListener("focus", onFocus);
+
         return () => {
-            inputs.first.removeEventListener("focus", onFocus);
-            inputs.second.removeEventListener("focus", onFocus);
+            inputs.first?.removeEventListener("focus", onFocus);
+            inputs.second?.removeEventListener("focus", onFocus);
         };
     }, []);
 
@@ -93,6 +90,7 @@ export default function App() {
         };
 
         window.addEventListener("blur", onWindowBlur);
+
         return () => {
             window.removeEventListener("blur", onWindowBlur);
         };
@@ -149,6 +147,7 @@ export default function App() {
         };
 
         window.chrome.webview.addEventListener("message", onMessage);
+
         return () => {
             window.chrome.webview.removeEventListener("message", onMessage);
         };
