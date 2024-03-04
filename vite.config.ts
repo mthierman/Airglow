@@ -24,6 +24,7 @@ const userConfig: UserConfig = {
     },
     resolve: {
         alias: {
+            "#data": path.resolve("data"),
             "#assets": path.resolve("gui/assets"),
             "#components": path.resolve("gui/components"),
             "#css": path.resolve("gui/css"),
