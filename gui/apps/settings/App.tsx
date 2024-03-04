@@ -25,56 +25,60 @@ export default function App() {
         return () => {
             window.chrome.webview.removeEventListener("message", onMessage);
         };
-    });
-
-    const mapHome = (value: string, id: string): App.State => {
-        return {
-            ...state,
-            home: state.home.map((v, i) => (i === Number(id) ? value : v)) as Pair,
-        };
-    };
+    }, []);
 
     const onChange = (event: SyntheticEvent<HTMLInputElement, Event>) => {
-        const {
-            currentTarget: { id, value },
-        } = event;
+        const { id, value } = event.currentTarget;
 
-        setState(mapHome(value, id));
+        setState({
+            ...state,
+            home: state.home.map((v, i) => (i === Number(id) ? value : v)) as Pair,
+        });
     };
 
     const parseInput = (element: HTMLInputElement) => {
         const { id, value } = element;
-        const parsed = url(value);
 
-        return mapHome(parsed, id);
-    };
-
-    const postState = (newState: App.State) => {
-        window.chrome.webview.postMessage({ m_state: newState });
+        return {
+            ...state,
+            home: state.home.map((v, i) => (i === Number(id) ? url(value) : v)) as Pair,
+        };
     };
 
     const handleSubmit = (event: SyntheticEvent<HTMLFormElement, SubmitEvent>) => {
         event.preventDefault();
 
+        let newState: App.State = defaultState();
+
         if (document.activeElement === first.current) {
-            if (first.current?.value !== "") postState(parseInput(first.current!));
+            if (first.current?.value !== "") {
+                newState = parseInput(first.current!);
+            }
         } else if (document.activeElement === second.current) {
-            if (second.current?.value !== "") postState(parseInput(second.current!));
+            if (second.current?.value !== "") {
+                newState = parseInput(second.current!);
+            }
         } else {
-            postState({
+            newState = {
                 ...state,
                 home: [url(state.home[0]), url(state.home[1])],
-            });
+            };
         }
+
+        window.chrome.webview.postMessage({ m_state: newState });
     };
 
     const handleClick = async (event: SyntheticEvent) => {
         const nativeEvent = event.nativeEvent as MouseEvent;
 
         if (document.activeElement === first.current) {
-            if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(state.home[0]);
+            if (nativeEvent.ctrlKey) {
+                await navigator.clipboard.writeText(state.home[0]);
+            }
         } else if (document.activeElement === second.current) {
-            if (nativeEvent.ctrlKey) await navigator.clipboard.writeText(state.home[1]);
+            if (nativeEvent.ctrlKey) {
+                await navigator.clipboard.writeText(state.home[1]);
+            }
         }
     };
 
