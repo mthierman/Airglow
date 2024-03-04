@@ -14,6 +14,7 @@ export default function App() {
     const form = useRef<HTMLFormElement | null>(null);
     const first = useRef<HTMLInputElement | null>(null);
     const second = useRef<HTMLInputElement | null>(null);
+
     const [firstValue, setFirstValue] = useState("");
     const [secondValue, setSecondValue] = useState("");
 
@@ -22,13 +23,14 @@ export default function App() {
     const [firstBrowser, setFirstBrowser] = useState(defaultPage());
     const [secondBrowser, setSecondBrowser] = useState(defaultPage());
 
-    const [offsetHeight, setOffsetHeight] = useState(0);
     const [scale, setScale] = useState(0);
-
     const [focus, setFocus] = useState("first");
 
     useInitializer();
+
     useColors(state.colors);
+
+    const [offsetHeight, setOffsetHeight] = useState(0);
 
     useEffect(() => {
         setOffsetHeight(Math.round(form.current!.offsetHeight * window.devicePixelRatio));
@@ -41,6 +43,76 @@ export default function App() {
             setScale(parseFloat(devicePixelRatio.toFixed(2)));
         };
 
+        window.addEventListener("resize", onResize);
+        return () => {
+            window.removeEventListener("resize", onResize);
+        };
+    }, []);
+
+    useEffect(() => {
+        const onEscape = (event: KeyboardEvent) => {
+            if (event.key === "Escape") {
+                if (document.activeElement === first.current) {
+                    setFirstValue(firstBrowser.source);
+                    first.current?.setSelectionRange(
+                        first.current.value.length,
+                        first.current.value.length,
+                    );
+                } else if (document.activeElement === second.current) {
+                    setSecondValue(secondBrowser.source);
+                    second.current?.setSelectionRange(
+                        second.current.value.length,
+                        second.current.value.length,
+                    );
+                }
+            }
+        };
+
+        document.addEventListener("keydown", onEscape);
+        return () => {
+            document.removeEventListener("keydown", onEscape);
+        };
+    }, [firstBrowser.source, secondBrowser.source]);
+
+    useEffect(() => {
+        if (first.current === null || second.current === null) {
+            return;
+        }
+
+        const inputs = {
+            first: first.current,
+            second: second.current,
+        };
+
+        const onFocus = () => {
+            if (document.activeElement === inputs.first) {
+                setFocus("first");
+            } else if (document.activeElement === inputs.second) {
+                setFocus("second");
+            }
+        };
+
+        inputs.first.addEventListener("focus", onFocus);
+        inputs.second.addEventListener("focus", onFocus);
+        return () => {
+            inputs.first.removeEventListener("focus", onFocus);
+            inputs.second.removeEventListener("focus", onFocus);
+        };
+    }, []);
+
+    useEffect(() => {
+        const onWindowBlur = () => {
+            first.current?.blur();
+            second.current?.blur();
+        };
+
+        window.addEventListener("blur", onWindowBlur);
+        return () => {
+            window.removeEventListener("blur", onWindowBlur);
+        };
+    }, []);
+
+    useEffect(() => {
         const onMessage = (event: Event) => {
             const data = (event as MessageEvent).data as App.Window;
 
@@ -90,54 +162,9 @@ export default function App() {
             }
         };
 
-        const onEscape = (event: KeyboardEvent) => {
-            if (event.key === "Escape") {
-                if (document.activeElement === first.current) {
-                    setFirstValue(firstBrowser.source);
-                    first.current?.setSelectionRange(
-                        first.current.value.length,
-                        first.current.value.length,
-                    );
-                } else if (document.activeElement === second.current) {
-                    setSecondValue(secondBrowser.source);
-                    second.current?.setSelectionRange(
-                        second.current.value.length,
-                        second.current.value.length,
-                    );
-                }
-            }
-        };
-
-        const onFocus = () => {
-            if (document.activeElement === first.current) {
-                setFocus("first");
-            } else if (document.activeElement === second.current) {
-                setFocus("second");
-            }
-        };
-
-        const onWindowBlur = () => {
-            first.current?.blur();
-            second.current?.blur();
-        };
-
-        const firstInput = first.current;
-        const secondInput = second.current;
-
-        window.addEventListener("resize", onResize);
         window.chrome.webview.addEventListener("message", onMessage);
-        document.addEventListener("keydown", onEscape);
-        firstInput?.addEventListener("focus", onFocus);
-        second.current?.addEventListener("focus", onFocus);
-        window.addEventListener("blur", onWindowBlur);
-
         return () => {
-            window.removeEventListener("resize", onResize);
             window.chrome.webview.removeEventListener("message", onMessage);
-            document.removeEventListener("keydown", onEscape);
-            firstInput?.removeEventListener("focus", onFocus);
-            secondInput?.removeEventListener("focus", onFocus);
-            window.removeEventListener("blur", onWindowBlur);
         };
     });
 
