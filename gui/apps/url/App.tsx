@@ -7,7 +7,7 @@ import {
     useColors,
     useInitializer,
 } from "#libs/common";
-import { parseUrl } from "#libs/url";
+import url from "#libs/url";
 import { SyntheticEvent, useEffect, useRef, useState } from "react";
 
 export default function App() {
@@ -60,15 +60,15 @@ export default function App() {
             if (Object.hasOwn(data, "navigate")) {
                 const [first, second] = data.navigate as Pair;
                 if (first.length !== 0) {
-                    window.chrome.webview.postMessage({ first: parseUrl(first).href });
+                    window.chrome.webview.postMessage({ first: url(first) });
                 } else if (state.home[0].length !== 0) {
-                    window.chrome.webview.postMessage({ first: parseUrl(state.home[0]).href });
+                    window.chrome.webview.postMessage({ first: url(state.home[0]) });
                 }
 
                 if (second.length !== 0) {
-                    window.chrome.webview.postMessage({ second: parseUrl(second).href });
+                    window.chrome.webview.postMessage({ second: url(second) });
                 } else if (state.home[1].length !== 0) {
-                    window.chrome.webview.postMessage({ second: parseUrl(state.home[1]).href });
+                    window.chrome.webview.postMessage({ second: url(state.home[1]) });
                 }
             }
 
@@ -138,7 +138,7 @@ export default function App() {
                 const value = first.current.value;
                 if (value !== "")
                     window.chrome.webview.postMessage({
-                        first: parseUrl(value).href,
+                        first: url(value),
                     });
             }
         }
@@ -148,7 +148,7 @@ export default function App() {
                 const value = second.current.value;
                 if (value !== "")
                     window.chrome.webview.postMessage({
-                        second: parseUrl(value).href,
+                        second: url(value),
                     });
             }
         }

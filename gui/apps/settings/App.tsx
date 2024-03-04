@@ -1,6 +1,6 @@
 import "#css/index.css";
-import { useColors, useInitializer, defaultState } from "#libs/common";
-import { parseUrl } from "#libs/url";
+import { defaultState, useColors, useInitializer } from "#libs/common";
+import url from "#libs/url";
 import { SyntheticEvent, useEffect, useRef, useState } from "react";
 
 export default function App() {
@@ -44,7 +44,7 @@ export default function App() {
 
     const parseInput = (element: HTMLInputElement) => {
         const { id, value } = element;
-        const parsed = parseUrl(value).href;
+        const parsed = url(value);
 
         return mapHome(parsed, id);
     };
@@ -63,7 +63,7 @@ export default function App() {
         } else {
             postState({
                 ...state,
-                home: [parseUrl(state.home[0]).href, parseUrl(state.home[1]).href],
+                home: [url(state.home[0]), url(state.home[1])],
             });
         }
     };
