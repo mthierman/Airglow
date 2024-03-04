@@ -11,45 +11,30 @@ export const tests = {
 export const values = Object.values(tests);
 export const searchEngine = "https://www.google.com/search?q=";
 
-export const trimInput = (input: string) => {
-    const trim = input.trim();
-
-    if (trim.startsWith("http://") || trim.startsWith("https://")) {
-        return trim;
-    }
-    if (trim.includes(".")) {
-        return `https://${trim}`;
-    } else {
-        return `${trim}`;
-    }
-};
-
-export const parseInput = (input: string): URL => {
-    const trim = input.trim();
+const parse = (input: string): URL => {
     let url: URL;
 
-    if (URL.canParse(trim)) {
-        url = new URL(trim);
+    if (URL.canParse(input)) {
+        url = new URL(input);
     } else {
-        url = parseInput(`${searchEngine}${encodeURIComponent(trim)}`);
+        url = parse(`${searchEngine}${encodeURIComponent(input)}`);
     }
 
     return url;
 };
 
-export const getResponse = async (input: string) => {
-    try {
-        const response = await fetch(input);
-        if (!response.ok) {
-            throw new Error("Network response was not OK");
-        }
+export default (input: string) => {
+    input = input.trim();
 
-        return true;
-    } catch (error) {
-        return false;
+    if (input.length === 0) {
+        return input;
     }
-};
 
-export const parseUrl = (input: string) => {
-    return parseInput(trimInput(input));
+    if (input.startsWith("http://") || input.startsWith("https://")) {
+        return parse(input).href;
+    } else if (input.includes(".")) {
+        return parse(`https://${input}`).href;
+    } else {
+        return parse(input).href;
+    }
 };
