@@ -1,12 +1,12 @@
 import "#css/index.css";
 import {
-    applyColors,
     defaultFavicon,
     defaultLayout,
     defaultPage,
     defaultState,
-    initialized,
-} from "#libs/index";
+    useColors,
+    useInitializer,
+} from "#libs/common";
 import { parseUrl } from "#libs/url";
 import { SyntheticEvent, useEffect, useRef, useState } from "react";
 
@@ -25,13 +25,8 @@ export default function App() {
     const [offsetHeight, setOffsetHeight] = useState(0);
     const [focus, setFocus] = useState("first");
 
-    useEffect(() => {
-        initialized();
-    }, []);
-
-    useEffect(() => {
-        applyColors(state.colors);
-    }, [state.colors]);
+    useInitializer();
+    useColors(state.colors);
 
     useEffect(() => {
         window.chrome.webview.postMessage({ height: offsetHeight });

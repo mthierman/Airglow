@@ -1,5 +1,5 @@
 import "#css/index.css";
-import { applyColors, defaultState, initialized } from "#libs/index";
+import { useColors, useInitializer, defaultState } from "#libs/common";
 import { parseUrl } from "#libs/url";
 import { SyntheticEvent, useEffect, useRef, useState } from "react";
 
@@ -8,13 +8,8 @@ export default function App() {
     const second = useRef<HTMLInputElement | null>(null);
     const [state, setState] = useState(defaultState());
 
-    useEffect(() => {
-        initialized();
-    }, []);
-
-    useEffect(() => {
-        applyColors(state.colors);
-    }, [state.colors]);
+    useInitializer();
+    useColors(state.colors);
 
     useEffect(() => {
         const onMessage = (event: Event) => {
