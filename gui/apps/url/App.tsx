@@ -23,17 +23,23 @@ export default function App() {
     const [secondBrowser, setSecondBrowser] = useState(defaultPage());
 
     const [offsetHeight, setOffsetHeight] = useState(0);
+    const [scale, setScale] = useState(0);
+
     const [focus, setFocus] = useState("first");
 
     useInitializer();
     useColors(state.colors);
 
     useEffect(() => {
-        window.chrome.webview.postMessage({ height: offsetHeight });
-    }, [offsetHeight]);
+        setOffsetHeight(Math.round(form.current!.offsetHeight * window.devicePixelRatio));
+    }, [scale]);
+
+    window.chrome.webview.postMessage({ height: offsetHeight });
 
     useEffect(() => {
-        setOffsetHeight(form.current!.offsetHeight);
+        const onResize = () => {
+            setScale(parseFloat(devicePixelRatio.toFixed(2)));
+        };
 
         const onMessage = (event: Event) => {
             const data = (event as MessageEvent).data as App.Window;
@@ -115,6 +121,7 @@ export default function App() {
             second.current?.blur();
         };
 
+        window.addEventListener("resize", onResize);
         window.chrome.webview.addEventListener("message", onMessage);
         document.addEventListener("keydown", onEscape);
         first.current?.addEventListener("focus", onFocus);
@@ -122,6 +129,7 @@ export default function App() {
         window.addEventListener("blur", onWindowBlur);
 
         return () => {
+            window.removeEventListener("resize", onResize);
             window.chrome.webview.removeEventListener("message", onMessage);
             document.removeEventListener("keydown", onEscape);
             first.current?.removeEventListener("focus", onFocus);
