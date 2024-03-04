@@ -121,10 +121,13 @@ export default function App() {
             second.current?.blur();
         };
 
+        const firstInput = first.current;
+        const secondInput = second.current;
+
         window.addEventListener("resize", onResize);
         window.chrome.webview.addEventListener("message", onMessage);
         document.addEventListener("keydown", onEscape);
-        first.current?.addEventListener("focus", onFocus);
+        firstInput?.addEventListener("focus", onFocus);
         second.current?.addEventListener("focus", onFocus);
         window.addEventListener("blur", onWindowBlur);
 
@@ -132,8 +135,8 @@ export default function App() {
             window.removeEventListener("resize", onResize);
             window.chrome.webview.removeEventListener("message", onMessage);
             document.removeEventListener("keydown", onEscape);
-            first.current?.removeEventListener("focus", onFocus);
-            second.current?.removeEventListener("focus", onFocus);
+            firstInput?.removeEventListener("focus", onFocus);
+            secondInput?.removeEventListener("focus", onFocus);
             window.removeEventListener("blur", onWindowBlur);
         };
     });
