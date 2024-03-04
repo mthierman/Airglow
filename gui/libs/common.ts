@@ -30,6 +30,38 @@ export const defaultFavicon = () => {
     }
 };
 
+enum FaviconProvider {
+    Default,
+    Google,
+    DuckDuckGo,
+    FaviconKit,
+}
+
+export const getFavicon = (input: string, provider: FaviconProvider) => {
+    let favicon = "";
+
+    if (URL.canParse(input)) {
+        const url = new URL(input);
+
+        switch (provider) {
+            case FaviconProvider.Default:
+                favicon = `${url.origin}/favicon.ico`;
+                break;
+            case FaviconProvider.Google:
+                favicon = `https://www.google.com/s2/favicons?domain=${url.origin}&sz=128`;
+                break;
+            case FaviconProvider.DuckDuckGo:
+                favicon = `https://icons.duckduckgo.com/ip3/${url.hostname}.ico`;
+                break;
+            case FaviconProvider.FaviconKit:
+                favicon = `https://api.faviconkit.com/${url.hostname}/144`;
+                break;
+        }
+    }
+
+    return favicon;
+};
+
 export const useColors = (colors: App.Colors) => {
     useEffect(() => {
         document.documentElement.style.setProperty("--accent", colors.accent);
