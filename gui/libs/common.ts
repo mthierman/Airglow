@@ -2,7 +2,7 @@ import iconBlankDark from "#assets/blankDark.svg?raw";
 import iconBlankLight from "#assets/blankLight.svg?raw";
 import iconDebug from "#data/debug.svg?raw";
 import iconRelease from "#data/release.svg?raw";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export const useInitializer = () => {
     useEffect(() => {
@@ -72,6 +72,23 @@ export const useColors = (colors: App.Colors) => {
         document.documentElement.style.setProperty("--accentLight2", colors.accentLight2);
         document.documentElement.style.setProperty("--accentLight3", colors.accentLight3);
     }, [colors]);
+};
+
+export const useScale = () => {
+    const [scale, setScale] = useState(parseFloat(devicePixelRatio.toFixed(2)));
+
+    useEffect(() => {
+        const onResize = () => {
+            setScale(parseFloat(devicePixelRatio.toFixed(2)));
+        };
+
+        window.addEventListener("resize", onResize);
+        return () => {
+            window.removeEventListener("resize", onResize);
+        };
+    }, []);
+
+    return scale;
 };
 
 export const defaultState = (): App.State => {

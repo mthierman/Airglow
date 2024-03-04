@@ -6,6 +6,7 @@ import {
     defaultState,
     useColors,
     useInitializer,
+    useScale,
 } from "#libs/common";
 import url from "#libs/url";
 import { SyntheticEvent, useEffect, useRef, useState } from "react";
@@ -23,31 +24,16 @@ export default function App() {
     const [firstBrowser, setFirstBrowser] = useState(defaultPage());
     const [secondBrowser, setSecondBrowser] = useState(defaultPage());
 
-    const [scale, setScale] = useState(0);
     const [focus, setFocus] = useState("first");
 
     useInitializer();
-
     useColors(state.colors);
-
-    const [offsetHeight, setOffsetHeight] = useState(0);
-
-    useEffect(() => {
-        setOffsetHeight(Math.round(form.current!.offsetHeight * window.devicePixelRatio));
-    }, [scale]);
-
-    window.chrome.webview.postMessage({ height: offsetHeight });
-
-    useEffect(() => {
-        const onResize = () => {
-            setScale(parseFloat(devicePixelRatio.toFixed(2)));
-        };
-
-        window.addEventListener("resize", onResize);
-        return () => {
-            window.removeEventListener("resize", onResize);
-        };
-    }, []);
+    const scale = useScale();
+    if (form.current) {
+        window.chrome.webview.postMessage({
+            height: Math.round(form.current.offsetHeight * scale),
+        });
+    }
 
     useEffect(() => {
         const onEscape = (event: KeyboardEvent) => {
