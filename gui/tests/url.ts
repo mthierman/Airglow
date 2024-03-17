@@ -8,12 +8,10 @@ const tests = {
     searchTerm: "apples",
     spaces: "   apples asdasd",
 };
-const values = Object.values(tests);
-// const searchEngine = "https://www.google.com/search?q=";
 
-import url from "libs/url";
+import { url } from "libs/common";
 
-for (const u of values) {
+for (const u of Object.values(tests)) {
     console.log(u);
     console.log(url(u));
     console.log("\n");

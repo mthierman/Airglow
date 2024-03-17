@@ -1,6 +1,5 @@
 import "css/index.css";
-import { defaultState, useColors, useInitializer } from "libs/common";
-import url from "libs/url";
+import { defaultState, url, useColors, useInitializer } from "libs/common";
 import { SyntheticEvent, useEffect, useRef, useState } from "react";
 
 export default function App() {
@@ -9,6 +8,7 @@ export default function App() {
     const [state, setState] = useState(defaultState());
 
     useInitializer();
+
     useColors(state.colors);
 
     useEffect(() => {
@@ -61,7 +61,7 @@ export default function App() {
         } else {
             newState = {
                 ...state,
-                home: [url(state.home[0]), url(state.home[1])],
+                home: [url(state.home[0])!, url(state.home[1])!],
             };
         }
 
