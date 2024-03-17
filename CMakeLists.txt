@@ -1,8 +1,8 @@
-cmake_minimum_required(VERSION 3.27)
+cmake_minimum_required(VERSION 3.28)
 
 project(
     Airglow
-    VERSION 1.7.1
+    VERSION 1.7.2
     LANGUAGES C
               CXX
 )
