@@ -1,4 +1,4 @@
-import "#css/index.css";
+import "css/index.css";
 import {
     defaultFavicon,
     defaultLayout,
@@ -7,8 +7,8 @@ import {
     useColors,
     useInitializer,
     useScale,
-} from "#libs/common";
-import url from "#libs/url";
+} from "libs/common";
+import url from "libs/url";
 import { SyntheticEvent, useEffect, useRef, useState } from "react";
 
 export default function App() {

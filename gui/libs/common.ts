@@ -1,7 +1,7 @@
-import iconBlankDark from "#assets/blankDark.svg?raw";
-import iconBlankLight from "#assets/blankLight.svg?raw";
-import iconDebug from "#data/debug.svg?raw";
-import iconRelease from "#data/release.svg?raw";
+import iconBlankDark from "assets/blankDark.svg?raw";
+import iconBlankLight from "assets/blankLight.svg?raw";
+import iconDebug from "data/debug.svg?raw";
+import iconRelease from "data/release.svg?raw";
 import { useEffect, useState } from "react";
 
 export const useInitializer = () => {
