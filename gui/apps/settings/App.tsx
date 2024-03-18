@@ -1,6 +1,7 @@
 import "css/index.css";
-import { defaultState, url, useColors, useInitializer } from "libs/common";
+import { defaultState, useColors, useInitializer } from "libs/common";
 import { AppSettings, pair } from "libs/types";
+import url from "libs/url";
 import { SyntheticEvent, useEffect, useRef, useState } from "react";
 
 export default function App() {

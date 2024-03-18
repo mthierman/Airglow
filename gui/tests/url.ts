@@ -9,7 +9,7 @@ const tests = {
     spaces: "   apples asdasd",
 };
 
-import { url } from "libs/common";
+import url from "libs/url";
 
 for (const u of Object.values(tests)) {
     console.log(u);

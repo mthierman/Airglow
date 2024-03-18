@@ -2,16 +2,16 @@ import iconBlankDark from "assets/blankDark.svg?raw";
 import iconBlankLight from "assets/blankLight.svg?raw";
 import iconDebug from "data/debug.svg?raw";
 import iconRelease from "data/release.svg?raw";
-import { AppColors, AppLayout, AppState, Page } from "libs/types";
+import { AppColors, AppLayout, AppState, FaviconProvider, Page } from "libs/types";
 import { useEffect, useState } from "react";
 
-export const useInitializer = () => {
+const useInitializer = () => {
     useEffect(() => {
         window.chrome.webview.postMessage({ initialized: true });
     }, []);
 };
 
-export const appFavicon = () => {
+const appFavicon = () => {
     document.onreadystatechange = () => {
         if (document.readyState === "complete") {
             const favicon = document.createElement("link");
@@ -23,7 +23,7 @@ export const appFavicon = () => {
     };
 };
 
-export const defaultFavicon = () => {
+const defaultFavicon = () => {
     if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
         return `data:image/svg+xml,${encodeURIComponent(iconBlankDark)}`;
     } else {
@@ -31,14 +31,7 @@ export const defaultFavicon = () => {
     }
 };
 
-export enum FaviconProvider {
-    Default,
-    Google,
-    DuckDuckGo,
-    FaviconKit,
-}
-
-export const getFavicon = (input: string, provider: FaviconProvider) => {
+const getFavicon = (input: string, provider: FaviconProvider) => {
     let favicon = "";
 
     if (URL.canParse(input)) {
@@ -63,7 +56,7 @@ export const getFavicon = (input: string, provider: FaviconProvider) => {
     return favicon;
 };
 
-export const useColors = (colors: AppColors) => {
+const useColors = (colors: AppColors) => {
     useEffect(() => {
         document.documentElement.style.setProperty("--accent", colors.accent);
         document.documentElement.style.setProperty("--accentDark1", colors.accentDark1);
@@ -75,7 +68,7 @@ export const useColors = (colors: AppColors) => {
     }, [colors]);
 };
 
-export const useScale = () => {
+const useScale = () => {
     const [scale, setScale] = useState(parseFloat(devicePixelRatio.toFixed(2)));
 
     useEffect(() => {
@@ -92,7 +85,7 @@ export const useScale = () => {
     return scale;
 };
 
-export const defaultState = (): AppState => {
+const defaultState = (): AppState => {
     return {
         args: ["", ""],
         colors: {
@@ -108,7 +101,7 @@ export const defaultState = (): AppState => {
     };
 };
 
-export const defaultLayout = (): AppLayout => {
+const defaultLayout = (): AppLayout => {
     return {
         bar: 0,
         border: 0,
@@ -120,7 +113,7 @@ export const defaultLayout = (): AppLayout => {
     };
 };
 
-export const defaultPage = (): Page => {
+const defaultPage = (): Page => {
     return {
         favicon: "",
         source: "",
@@ -128,25 +121,7 @@ export const defaultPage = (): Page => {
     };
 };
 
-export const url = (input: string) => {
-    input = input.trim();
-
-    if (input.length === 0) {
-        return null;
-    } else if (input.startsWith("http")) {
-        if (URL.canParse(input)) {
-            return new URL(input).href;
-        }
-    } else if (input.includes(".")) {
-        if (URL.canParse(`https://${input}`)) {
-            return new URL(`https://${input}`).href;
-        }
-    } else if (URL.canParse("https://www.google.com/")) {
-        return new URL(`https://www.google.com/search?q=${encodeURIComponent(input)}`).href;
-    } else return null;
-};
-
-export const response = async (input: string) => {
+const response = async (input: string) => {
     try {
         const response = await fetch(input);
 
@@ -158,4 +133,17 @@ export const response = async (input: string) => {
     } catch (error) {
         return false;
     }
+};
+
+export {
+    appFavicon,
+    defaultFavicon,
+    defaultLayout,
+    defaultPage,
+    defaultState,
+    getFavicon,
+    response,
+    useColors,
+    useInitializer,
+    useScale,
 };

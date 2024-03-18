@@ -1,3 +1,10 @@
+enum FaviconProvider {
+    Default,
+    Google,
+    DuckDuckGo,
+    FaviconKit,
+}
+
 interface AppColors {
     accent: string;
     accentDark1: string;
@@ -46,4 +53,5 @@ interface Page {
 
 type pair = [first: string, second: string];
 
+export { FaviconProvider };
 export type { AppColors, AppLayout, AppSettings, AppState, AppWindow, Page, pair };
