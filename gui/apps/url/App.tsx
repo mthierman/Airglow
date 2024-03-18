@@ -9,6 +9,7 @@ import {
     useInitializer,
     useScale,
 } from "libs/common";
+import { AppWindow, pair } from "libs/types";
 import { SyntheticEvent, useEffect, useRef, useState } from "react";
 
 export default function App() {
@@ -98,7 +99,7 @@ export default function App() {
 
     useEffect(() => {
         const onMessage = (event: Event) => {
-            const data = (event as MessageEvent).data as App.Window;
+            const data = (event as MessageEvent).data as AppWindow;
 
             if (Object.hasOwn(data, "m_state")) {
                 setState(data.m_state);
@@ -120,7 +121,7 @@ export default function App() {
             }
 
             if (Object.hasOwn(data, "navigate")) {
-                const [first, second] = data.navigate as Pair;
+                const [first, second] = data.navigate as pair;
                 if (first.length !== 0) {
                     window.chrome.webview.postMessage({ first: url(first) });
                 } else if (state.home[0].length !== 0) {

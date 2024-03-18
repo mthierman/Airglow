@@ -1,5 +1,6 @@
 import "css/index.css";
 import { defaultState, url, useColors, useInitializer } from "libs/common";
+import { AppSettings, pair } from "libs/types";
 import { SyntheticEvent, useEffect, useRef, useState } from "react";
 
 export default function App() {
@@ -13,7 +14,7 @@ export default function App() {
 
     useEffect(() => {
         const onMessage = (event: Event) => {
-            const data = (event as MessageEvent).data as App.Settings;
+            const data = (event as MessageEvent).data as AppSettings;
 
             if (Object.hasOwn(data, "m_state")) {
                 setState(data.m_state);
@@ -32,7 +33,7 @@ export default function App() {
 
         setState({
             ...state,
-            home: state.home.map((v, i) => (i === Number(id) ? value : v)) as Pair,
+            home: state.home.map((v, i) => (i === Number(id) ? value : v)) as pair,
         });
     };
 
@@ -41,14 +42,14 @@ export default function App() {
 
         return {
             ...state,
-            home: state.home.map((v, i) => (i === Number(id) ? url(value) : v)) as Pair,
+            home: state.home.map((v, i) => (i === Number(id) ? url(value) : v)) as pair,
         };
     };
 
     const handleSubmit = (event: SyntheticEvent<HTMLFormElement, SubmitEvent>) => {
         event.preventDefault();
 
-        let newState: App.State = defaultState();
+        let newState = defaultState();
 
         if (document.activeElement === first.current) {
             if (first.current?.value !== "") {

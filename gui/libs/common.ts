@@ -2,6 +2,7 @@ import iconBlankDark from "assets/blankDark.svg?raw";
 import iconBlankLight from "assets/blankLight.svg?raw";
 import iconDebug from "data/debug.svg?raw";
 import iconRelease from "data/release.svg?raw";
+import { Colors, Layout, Page, State } from "libs/types";
 import { useEffect, useState } from "react";
 
 export const useInitializer = () => {
@@ -62,7 +63,7 @@ export const getFavicon = (input: string, provider: FaviconProvider) => {
     return favicon;
 };
 
-export const useColors = (colors: App.Colors) => {
+export const useColors = (colors: Colors) => {
     useEffect(() => {
         document.documentElement.style.setProperty("--accent", colors.accent);
         document.documentElement.style.setProperty("--accentDark1", colors.accentDark1);
@@ -91,7 +92,7 @@ export const useScale = () => {
     return scale;
 };
 
-export const defaultState = (): App.State => {
+export const defaultState = (): State => {
     return {
         args: ["", ""],
         colors: {
@@ -107,7 +108,7 @@ export const defaultState = (): App.State => {
     };
 };
 
-export const defaultLayout = (): App.Layout => {
+export const defaultLayout = (): Layout => {
     return {
         bar: 0,
         border: 0,
@@ -119,7 +120,7 @@ export const defaultLayout = (): App.Layout => {
     };
 };
 
-export const defaultPage = (): App.Page => {
+export const defaultPage = (): Page => {
     return {
         favicon: "",
         source: "",
