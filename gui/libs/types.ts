@@ -1,6 +1,4 @@
-type pair = [first: string, second: string];
-
-interface Colors {
+interface AppColors {
     accent: string;
     accentDark1: string;
     accentDark2: string;
@@ -10,7 +8,7 @@ interface Colors {
     accentLight3: string;
 }
 
-interface Layout {
+interface AppLayout {
     bar: number;
     border: number;
     focus: string;
@@ -20,10 +18,24 @@ interface Layout {
     vertical: boolean;
 }
 
-interface State {
+interface AppSettings {
+    m_state: AppState;
+}
+
+interface AppState {
     args: pair;
-    colors: Colors;
+    colors: AppColors;
     home: pair;
+}
+
+interface AppWindow {
+    m_first: Page;
+    m_layout: AppLayout;
+    m_second: Page;
+    m_state: AppState;
+    m_url: Page;
+    focus: string;
+    navigate: pair;
 }
 
 interface Page {
@@ -32,18 +44,6 @@ interface Page {
     title: string;
 }
 
-interface AppSettings {
-    m_state: State;
-}
+type pair = [first: string, second: string];
 
-interface AppWindow {
-    m_first: Page;
-    m_layout: Layout;
-    m_second: Page;
-    m_state: State;
-    m_url: Page;
-    focus: string;
-    navigate: pair;
-}
-
-export type { AppSettings, AppWindow, Colors, Layout, Page, State, pair };
+export type { AppColors, AppLayout, AppSettings, AppState, AppWindow, Page, pair };
