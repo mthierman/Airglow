@@ -1,4 +1,4 @@
-// https://learn.microsoft.com/en-us/microsoft-edge/webview2/reference/javascript/webview
+// https://learn.microsoft.com/en-us/microsoft-edge/webview2/reference/javascript/
 
 interface HostObjectAsyncProxy extends HostObjectAsyncProxyBase {
     sync(): Promise<HostObjectSyncProxy>;
@@ -9,6 +9,15 @@ interface HostObjectAsyncProxyBase extends CallableFunction {
     getHostProperty(propertyName: string): Promise<unknown>;
     getLocalProperty(propertyName: string): unknown;
     setHostProperty(propertyName: string, propertyValue: unknown): Promise<unknown>;
+    setLocalProperty(propertyName: string, propertyValue: unknown): unknown;
+}
+
+interface HostObjectSyncProxy {
+    applyHostFunction(argArray?: unknown): unknown;
+    async(): HostObjectAsyncProxy;
+    getHostProperty(propertyName: string): unknown;
+    getLocalProperty(propertyName: string): unknown;
+    setHostProperty(propertyName: string, propertyValue: unknown): unknown;
     setLocalProperty(propertyName: string, propertyValue: unknown): unknown;
 }
 
@@ -28,15 +37,6 @@ interface HostObjectsOptions {
 }
 
 interface HostObjectsSyncRoot extends HostObjectSyncProxy {}
-
-interface HostObjectSyncProxy {
-    applyHostFunction(argArray?: unknown): unknown;
-    async(): HostObjectAsyncProxy;
-    getHostProperty(propertyName: string): unknown;
-    getLocalProperty(propertyName: string): unknown;
-    setHostProperty(propertyName: string, propertyValue: unknown): unknown;
-    setLocalProperty(propertyName: string, propertyValue: unknown): unknown;
-}
 
 interface SharedBufferReceivedEvent extends Event {
     additionalData: unknown;
@@ -61,10 +61,21 @@ interface WebView extends EventTarget {
     ): void;
 }
 
-export declare global {
+declare global {
     interface Window {
         chrome: {
             webview: WebView;
         };
     }
 }
+
+export type {
+    HostObjectAsyncProxy,
+    HostObjectAsyncProxyBase,
+    HostObjectSyncProxy,
+    HostObjectsAsyncRoot,
+    HostObjectsOptions,
+    HostObjectsSyncRoot,
+    SharedBufferReceivedEvent,
+    WebView,
+};
