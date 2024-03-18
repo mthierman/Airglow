@@ -1,5 +1,49 @@
 // https://learn.microsoft.com/en-us/microsoft-edge/webview2/reference/javascript/webview
 
+interface HostObjectAsyncProxy extends HostObjectAsyncProxyBase {
+    sync(): Promise<HostObjectSyncProxy>;
+}
+
+interface HostObjectAsyncProxyBase extends CallableFunction {
+    applyHostFunction(argArray?: unknown): Promise<unknown>;
+    getHostProperty(propertyName: string): Promise<unknown>;
+    getLocalProperty(propertyName: string): unknown;
+    setHostProperty(propertyName: string, propertyValue: unknown): Promise<unknown>;
+    setLocalProperty(propertyName: string, propertyValue: unknown): unknown;
+}
+
+interface HostObjectsAsyncRoot extends HostObjectAsyncProxyBase {
+    options: HostObjectsOptions;
+    sync: HostObjectsSyncRoot;
+    cleanupSome(): void;
+}
+
+interface HostObjectsOptions {
+    defaultSyncProxy: boolean;
+    forceAsyncMethodMatches: RegExp[];
+    forceLocalProperties: string[];
+    ignoreMemberNotFoundError: boolean;
+    log: (...data: unknown[]) => void;
+    shouldSerializeDates: boolean;
+}
+
+interface HostObjectsSyncRoot extends HostObjectSyncProxy {}
+
+interface HostObjectSyncProxy {
+    applyHostFunction(argArray?: unknown): unknown;
+    async(): HostObjectAsyncProxy;
+    getHostProperty(propertyName: string): unknown;
+    getLocalProperty(propertyName: string): unknown;
+    setHostProperty(propertyName: string, propertyValue: unknown): unknown;
+    setLocalProperty(propertyName: string, propertyValue: unknown): unknown;
+}
+
+interface SharedBufferReceivedEvent extends Event {
+    additionalData: unknown;
+    source: WebView;
+    getBuffer(): ArrayBuffer;
+}
+
 interface WebView extends EventTarget {
     hostObjects: HostObjectsAsyncRoot;
     addEventListener(
