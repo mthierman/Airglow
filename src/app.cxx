@@ -111,6 +111,8 @@ auto App::on_notify(::WPARAM wParam, ::LPARAM lParam) -> int
 
             break;
         }
+
+        default: break;
     }
 
     return 0;
