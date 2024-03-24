@@ -5,7 +5,7 @@
         <img src="./data/banner_horizontal.png" height="100">
     </picture>
     <br>
-    <font size="+2">Split screen browser for Windows</font>
+    Split screen browser for Windows
 </p>
 
 -   Vertical and horizontal split screen
