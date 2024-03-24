@@ -55,19 +55,22 @@ export default function App() {
         if (document.activeElement === first.current) {
             if (first.current?.value !== "") {
                 newState = parseInput(first.current!);
+                window.chrome.webview.postMessage({ m_state: newState });
             }
         } else if (document.activeElement === second.current) {
             if (second.current?.value !== "") {
                 newState = parseInput(second.current!);
+                window.chrome.webview.postMessage({ m_state: newState });
             }
         } else {
-            newState = {
-                ...state,
-                home: [url(state.home[0])!, url(state.home[1])!],
-            };
+            if (first.current?.value !== "" && second.current?.value !== "") {
+                newState = {
+                    ...state,
+                    home: [url(state.home[0])!, url(state.home[1])!],
+                };
+                window.chrome.webview.postMessage({ m_state: newState });
+            }
         }
-
-        window.chrome.webview.postMessage({ m_state: newState });
     };
 
     const handleClick = async (event: SyntheticEvent) => {
