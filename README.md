@@ -4,7 +4,7 @@
         <source media="(prefers-color-scheme: light)" srcset="./data/banner_horizontal.png">
         <img src="./data/banner_horizontal.png" height="100">
     </picture>
-    <h1>Split screen browser for Windows</h1>
+    <p align="center">Split screen browser for Windows</p>
 </p>
 
 -   Vertical and horizontal split screen
