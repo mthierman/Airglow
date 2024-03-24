@@ -2,7 +2,7 @@
     <picture>
         <source media="(prefers-color-scheme: dark)" srcset="./data/banner_horizontal.png">
         <source media="(prefers-color-scheme: light)" srcset="./data/banner_horizontal.png">
-        <img src="./data/banner_horizontal.png" height="100">
+        <img src="./data/banner_horizontal.png" height="150">
     </picture>
 </p>
 
