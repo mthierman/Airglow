@@ -4,9 +4,9 @@
         <source media="(prefers-color-scheme: light)" srcset="./data/banner_horizontal.png">
         <img src="./data/banner_horizontal.png" height="100">
     </picture>
-    <br>
-    Split screen browser for Windows
 </p>
+
+# Split screen browser for Windows
 
 -   Vertical and horizontal split screen
 -   Full system dark & light mode support
