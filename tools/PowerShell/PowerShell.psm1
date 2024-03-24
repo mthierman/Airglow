@@ -10,8 +10,8 @@ function Compress-Airglow
 function Restore-Wix
 {
     dotnet tool restore
-    dotnet wix extension add WixToolset.UI.wixext
-    dotnet wix extension add WixToolset.Bal.wixext
+    dotnet wix extension add WixToolset.UI.wixext/4.0.5
+    dotnet wix extension add WixToolset.Bal.wixext/4.0.5
 }
 
 function Build-AirglowInstaller
