@@ -28,7 +28,7 @@ auto CALLBACK Window::EnumChildProc(::HWND hWnd, ::LPARAM lParam) -> ::BOOL
     auto halfHeight{height / 2};
 
     auto border{static_cast<int>(layout.border * self->m_scale)};
-    auto barHeight{static_cast<int>(layout.bar * self->m_scale)};
+    auto barHeight{static_cast<int>(layout.bar)};
 
     auto& full = self->m_positions.full;
     auto& empty = self->m_positions.empty;
