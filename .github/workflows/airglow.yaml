@@ -71,9 +71,9 @@ jobs:
         run: |
           Set-Location ${{ github.workspace }}\mthierman.com
           Copy-Item "${{ github.workspace }}\airglow\build\notes\version" -Destination "${{ github.workspace }}\mthierman.com\src\includes\airglow\version"
-          (Get-Date).ToString() > "${{ github.workspace }}\mthierman.com\src\includes\airglow\date"
+          Get-Date -Format "dd/MM/yyyy HH:mm:ss" > "${{ github.workspace }}\mthierman.com\src\includes\airglow\date"
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add -A
-          git commit -m 'Update Airglow version'
+          git commit -m 'Update Airglow'
           git push
