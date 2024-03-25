@@ -66,3 +66,13 @@ jobs:
           Restore-Wix
           Build-AirglowInstaller
           Publish-Airglow
+
+      - name: Update website
+        run: |
+          Set-Location ${{ github.workspace }}\mthierman.com
+          Copy-Item "${{ github.workspace }}\airglow\build\notes\version" -Destination "${{ github.workspace }}\mthierman.com\src\includes\airglow\version"
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add -A
+          git commit -m 'Update Airglow version'
+          git push
