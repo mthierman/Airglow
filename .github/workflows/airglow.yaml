@@ -19,6 +19,14 @@ jobs:
         with:
           fetch-depth: 5
           submodules: true
+          path: airglow
+
+      - name: Checkout website
+        uses: actions/checkout@v4
+        with:
+          repository: mthierman/mthierman.com
+          token: ${{ secrets.WEBSITE }}
+          path: mthierman.com
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v3
@@ -31,10 +39,11 @@ jobs:
           node-version: "*"
           check-latest: true
           cache: "pnpm"
-          cache-dependency-path: pnpm-lock.yaml
+          cache-dependency-path: airglow/pnpm-lock.yaml
 
       - name: Install node_modules
         run: |
+          Set-Location ${{ github.workspace }}\airglow
           pnpm install --frozen-lockfile
 
       - name: Cache
@@ -42,14 +51,15 @@ jobs:
         id: deps
         with:
           path: |
-            build/_deps
-          key: deps-${{ hashFiles('**/CMakeLists.txt') }}
+            ${{ github.workspace }}/airglow/build/_deps
+          key: deps-${{ hashFiles('airglow/CMakeLists.txt') }}
 
       - name: Stable release
         if: github.ref == 'refs/heads/main'
         run: |
-          Import-Module ${{ github.workspace }}\libs\Glow\tools\PowerShell
-          Import-Module ${{ github.workspace }}\tools\PowerShell
+          Set-Location ${{ github.workspace }}\airglow
+          Import-Module ${{ github.workspace }}\airglow\libs\Glow\tools\PowerShell
+          Import-Module ${{ github.workspace }}\airglow\tools\PowerShell
           Invoke-DevShell
           Invoke-CMake
           Compress-Airglow
