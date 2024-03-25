@@ -13,9 +13,9 @@
 
 <p align="center">
     <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="./data/screenshot.png">
-        <source media="(prefers-color-scheme: light)" srcset="./data/screenshot.png">
-        <img src="./data/screenshot.png">
+        <source media="(prefers-color-scheme: dark)" srcset="./data/screenshot_dark.png">
+        <source media="(prefers-color-scheme: light)" srcset="./data/screenshot_light.png">
+        <img src="./data/screenshot_dark.png">
     </picture>
 </p>
 
