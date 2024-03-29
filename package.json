@@ -10,7 +10,8 @@
         "lint": "eslint .",
         "build": "tsc && vite build",
         "watch": "tsc && vite build --watch",
-        "preview": "vite preview"
+        "preview": "vite preview",
+        "manifest": "esbuild tools/generateManifest.ts --bundle --outdir=build --platform=node --format=esm --packages=external && node build/generateManifest.js"
     },
     "dependencies": {
         "react": "^18.2.0",
