@@ -21,7 +21,7 @@
 
 ## Attributions
 
--   [WebView2](https://www.nuget.org/packages/Microsoft.Web.WebView2/) - [license](https://www.nuget.org/packages/Microsoft.Web.WebView2/1.0.2365.46/License)
+-   [WebView2](https://www.nuget.org/packages/Microsoft.Web.WebView2/) - [license](https://www.nuget.org/packages/Microsoft.Web.WebView2/1.0.2420.47/License)
 -   [C++/WinRT](https://github.com/microsoft/cppwinrt) - [license](https://github.com/microsoft/cppwinrt?tab=MIT-1-ov-file#readme)
 -   [Windows Implementation Library](https://github.com/microsoft/wil) - [license](https://github.com/microsoft/wil?tab=MIT-1-ov-file#readme)
 -   [JSON for Modern C++](https://github.com/nlohmann/json) - [license](https://github.com/nlohmann/json?tab=MIT-1-ov-file#readme)
