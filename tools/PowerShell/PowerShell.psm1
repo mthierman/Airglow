@@ -3,10 +3,10 @@ function Compress-Airglow
     [CmdletBinding()]
     param ()
 
-    if (Test-Path "build/release/Airglow.zip") { Remove-Item "Airglow.zip" -Force }
+    if (Test-Path "build/Airglow.zip") { Remove-Item "build/Airglow.zip" -Force }
     Push-Location
     Set-Location "build/Release"
-    7z a Airglow.zip Airglow.exe gui
+    7z a ../Airglow.zip Airglow.exe gui
     Pop-Location
 }
 
@@ -34,7 +34,7 @@ function Publish-Airglow
     # $hash = Get-Content "build/notes/short_hash"
     $version = Get-Content "build/notes/version"
     $notes = Get-Item "build/notes/release_notes"
-    $archive = Get-Item "build/Release/Airglow.zip"
+    $archive = Get-Item "build/Airglow.zip"
     $installer = Get-Item "build/Airglow.exe"
 
     gh release delete $version -y

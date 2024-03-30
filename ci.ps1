@@ -1,7 +1,7 @@
-& $PSScriptRoot/pwsh.ps1
+& .\pwsh.ps1
 
 Invoke-DevShell
-Invoke-CMake
+Invoke-CMake 
 Compress-Airglow
 Restore-Wix
 Build-AirglowInstaller
