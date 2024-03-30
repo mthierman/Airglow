@@ -1,8 +1,11 @@
 function Compress-Airglow
 {
+    [CmdletBinding()]
+    param ()
+
+    if (Test-Path "build/release/Airglow.zip") { Remove-Item "Airglow.zip" -Force }
     Push-Location
     Set-Location "build/Release"
-    if (Test-Path "Airglow.zip") { Remove-Item "Airglow.zip" -Force }
     7z a Airglow.zip Airglow.exe gui
     Pop-Location
 }
