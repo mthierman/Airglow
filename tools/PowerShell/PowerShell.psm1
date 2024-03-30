@@ -43,10 +43,8 @@ function Publish-Airglow
 
 function Get-VCRedist
 {
-    Push-Location
-    Set-Location "build"
-    Invoke-WebRequest "https://aka.ms/vs/17/release/vc_redist.x64.exe" -OutFile "vc_redist.x64.exe"
-    Pop-Location
+    if (Test-Path "build/vc_redist.x64.exe") { Remove-Item "build/vc_redist.x64.exe" -Force }
+    Invoke-WebRequest "https://aka.ms/vs/17/release/vc_redist.x64.exe" -OutFile "build/vc_redist.x64.exe"
 }
 
 function Build-AirglowServer
