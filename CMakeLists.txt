@@ -34,15 +34,22 @@ add_custom_command(
 )
 
 add_custom_target(
-    Icon
+    AirglowIcon
     ALL
     DEPENDS ${PROJECT_BINARY_DIR}/data/icon.ico
 )
 
 add_custom_target(
-    GUI
+    AirglowGui
     ALL
     COMMAND pnpm build
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+)
+
+add_custom_target(
+    AirglowManifest
+    ALL
+    COMMAND pnpm manifest
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
 
@@ -89,5 +96,7 @@ target_link_libraries(
 
 add_dependencies(
     Airglow
-    Icon
+    AirglowIcon
+    AirglowGui
+    AirglowManifest
 )
