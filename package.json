@@ -1,5 +1,7 @@
 {
     "name": "airglow",
+    "fullname": "Airglow",
+    "description": "Split screen browser for Windows",
     "version": "1.7.2",
     "private": true,
     "type": "module",
@@ -11,7 +13,7 @@
         "build": "tsc && vite build",
         "watch": "tsc && vite build --watch",
         "preview": "vite preview",
-        "manifest": "esbuild tools/generateManifest.ts --bundle --outdir=build --platform=node --format=esm --packages=external && node build/generateManifest.js"
+        "manifest": "esbuild tools/scripts/manifest.ts --bundle --outdir=build/tools --platform=node --format=esm --packages=external && node build/tools/manifest.js"
     },
     "dependencies": {
         "react": "^18.2.0",

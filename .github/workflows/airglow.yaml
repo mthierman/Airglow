@@ -70,8 +70,7 @@ jobs:
       - name: Update website
         run: |
           Set-Location ${{ github.workspace }}\mthierman.com
-          Copy-Item "${{ github.workspace }}\airglow\build\notes\version" -Destination "${{ github.workspace }}\mthierman.com\src\includes\airglow\version"
-          Get-Date -Format "dd/MM/yyyy HH:mm:ss" > "${{ github.workspace }}\mthierman.com\src\includes\airglow\date"
+          Copy-Item "${{ github.workspace }}\airglow\build\manifest.json" -Destination "${{ github.workspace }}\mthierman.com\src\content\projects\airglow.json"
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add -A
