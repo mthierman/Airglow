@@ -1,0 +1,14 @@
+# IDE
+.vscode
+
+# Artifacts
+build
+
+# C++
+CMakeUserPresets.json
+
+# JavaScript & TypeScript
+node_modules
+
+# WIX
+.wix
