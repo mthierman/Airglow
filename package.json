@@ -2,7 +2,7 @@
     "name": "airglow",
     "fullname": "Airglow",
     "description": "Split screen browser for Windows",
-    "version": "1.7.2",
+    "version": "1.7.3",
     "private": true,
     "type": "module",
     "scripts": {
