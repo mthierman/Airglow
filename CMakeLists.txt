@@ -9,8 +9,6 @@ project(
 
 enable_testing()
 
-include(FetchContent)
-
 add_subdirectory(libs/Glow)
 
 include(libs/Glow/cmake/ReleaseInfo.cmake)
