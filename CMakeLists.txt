@@ -46,13 +46,6 @@ add_custom_target(
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
 
-add_custom_target(
-    AirglowManifest
-    ALL
-    COMMAND pnpm manifest
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-)
-
 add_executable(
     Airglow
     WIN32
@@ -98,5 +91,4 @@ add_dependencies(
     Airglow
     AirglowIcon
     AirglowGui
-    AirglowManifest
 )
