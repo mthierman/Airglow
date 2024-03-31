@@ -12,7 +12,7 @@ const airglow = () => {
         hash: execSync("git rev-parse HEAD").toString().trim(),
         symbol: "🔵",
         github: "https://github.com/mthierman/Airglow",
-        download: `https://github.com/mthierman/Airglow/releases/download/${manifest.version}/Airglow.exe`,
+        download: `https://github.com/mthierman/Airglow/releases/download/v${manifest.version}/Airglow.exe`,
     };
 };
 
