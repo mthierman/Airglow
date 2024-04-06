@@ -13,14 +13,14 @@ function Compress-Airglow
 function Restore-Wix
 {
     dotnet tool restore
-    dotnet wix extension add WixToolset.UI.wixext/4.0.5
-    dotnet wix extension add WixToolset.Bal.wixext/4.0.5
+    wix extension add WixToolset.UI.wixext/5.0.0
+    wix extension add WixToolset.BootstrapperApplications.wixext/5.0.0
 }
 
 function Build-AirglowInstaller
 {
-    dotnet wix build tools\installer\msi.wxs -o build/Airglow.msi -ext WixToolset.UI.wixext
-    dotnet wix build tools\installer\bundle.wxs -o build/Airglow.exe -ext WixToolset.Bal.wixext
+    wix build tools\installer\msi.wxs -o build/Airglow.msi -ext WixToolset.UI.wixext
+    wix build tools\installer\bundle.wxs -o build/Airglow.exe -ext WixToolset.BootstrapperApplications.wixext
 }
 
 function Publish-Airglow
