@@ -2,7 +2,7 @@
 
 import eslint from "@eslint/js";
 import react from "eslint-plugin-react";
-import reactHooks from "eslint-plugin-react-hooks";
+// import reactHooks from "eslint-plugin-react-hooks";
 import reactJsxRuntime from "eslint-plugin-react/configs/jsx-runtime.js";
 import reactRecommended from "eslint-plugin-react/configs/recommended.js";
 import globals from "globals";
