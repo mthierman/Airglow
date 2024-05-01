@@ -1,13 +1,11 @@
 {
     "compilerOptions": {
         "target": "ESNext",
-        "lib": ["ESNext", "DOM", "DOM.Iterable"],
-        "jsx": "react-jsx",
-        "useDefineForClassFields": true,
         "module": "ESNext",
         "moduleResolution": "Bundler",
         "baseUrl": "./",
         "paths": {
+            "root/*": ["./*"],
             "data/*": ["data"],
             "apps/*": ["gui/apps"],
             "assets/*": ["gui/assets"],
@@ -15,16 +13,14 @@
             "css/*": ["gui/css/*"],
             "libs/*": ["gui/libs/*"]
         },
+        "lib": ["ESNext", "DOM", "DOM.Iterable"],
+        "jsx": "react-jsx",
         "allowImportingTsExtensions": true,
         "resolveJsonModule": true,
         "noEmit": true,
         "isolatedModules": true,
         "strict": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "noFallthroughCasesInSwitch": true,
         "skipLibCheck": true
     },
-    "include": ["gui"],
-    "references": [{ "path": "./tsconfig.node.json" }]
+    "include": ["gui", "**/*.config.ts", "**/tools/scripts/*.ts"]
 }
