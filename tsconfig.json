@@ -11,7 +11,10 @@
             "assets/*": ["gui/assets"],
             "components/*": ["gui/components/*"],
             "css/*": ["gui/css/*"],
-            "libs/*": ["gui/libs/*"]
+            "libs/*": ["gui/libs/*"],
+            "modules/*": ["modules/*"],
+            "scripts/*": ["scripts/*"],
+            "src/*": ["src/*"]
         },
         "lib": ["ESNext", "DOM", "DOM.Iterable"],
         "jsx": "react-jsx",
@@ -22,5 +25,5 @@
         "strict": true,
         "skipLibCheck": true
     },
-    "include": ["gui", "**/*.config.ts", "**/tools/scripts/*.ts"]
+    "include": ["gui", "modules", "scripts", "**/*.config.ts", "**/tools/scripts/*.ts"]
 }

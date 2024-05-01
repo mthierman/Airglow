@@ -6,9 +6,9 @@
     "private": true,
     "type": "module",
     "scripts": {
+        "check": "tsc",
         "dev": "vite",
         "host": "vite --host",
-        "check": "tsc",
         "lint": "eslint .",
         "build": "tsc && vite build",
         "watch": "tsc && vite build --watch",

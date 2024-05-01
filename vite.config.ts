@@ -1,5 +1,5 @@
 import react from "@vitejs/plugin-react-swc";
-import path from "path";
+import { resolve } from "path";
 import { CommonServerOptions, UserConfig, defineConfig } from "vite";
 
 const userConfig: UserConfig = {
@@ -8,7 +8,7 @@ const userConfig: UserConfig = {
     root: "gui/apps",
     build: {
         emptyOutDir: true,
-        outDir: path.resolve("build/Release/gui"),
+        outDir: resolve("build/Release/gui"),
         rollupOptions: {
             output: {
                 entryFileNames: `assets/[name].js`,
@@ -16,20 +16,24 @@ const userConfig: UserConfig = {
                 assetFileNames: `assets/[name].[ext]`,
             },
             input: {
-                home: path.resolve("gui/apps/home/index.html"),
-                settings: path.resolve("gui/apps/settings/index.html"),
-                url: path.resolve("gui/apps/url/index.html"),
+                home: resolve("gui/apps/home/index.html"),
+                settings: resolve("gui/apps/settings/index.html"),
+                url: resolve("gui/apps/url/index.html"),
             },
         },
     },
     resolve: {
         alias: {
-            data: path.resolve("data"),
-            apps: path.resolve("gui/apps"),
-            assets: path.resolve("gui/assets"),
-            components: path.resolve("gui/components"),
-            css: path.resolve("gui/css"),
-            libs: path.resolve("gui/libs"),
+            root: resolve("./"),
+            data: resolve("data"),
+            apps: resolve("gui/apps"),
+            assets: resolve("gui/assets"),
+            components: resolve("gui/components"),
+            css: resolve("gui/css"),
+            libs: resolve("gui/libs"),
+            modules: resolve("modules"),
+            scripts: resolve("scripts"),
+            src: resolve("src"),
         },
     },
 };
@@ -37,7 +41,7 @@ const userConfig: UserConfig = {
 const commonServerOptions: CommonServerOptions = {
     port: 8000,
     https: {
-        pfx: path.resolve("../.cert/localhost.pfx"),
+        pfx: resolve("../.cert/localhost.pfx"),
         passphrase: "localhost",
     },
 };
