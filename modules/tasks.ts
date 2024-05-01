@@ -1,3 +1,4 @@
+import { mkdir, writeFile } from "node:fs/promises";
 import { stdin, stdout } from "node:process";
 import { createInterface } from "node:readline/promises";
 
@@ -36,5 +37,13 @@ export const tasks = {
         cli.on("close", async () => {
             vite.close();
         });
+    },
+
+    manifest: () => {
+        mkdir("dist", { recursive: true })
+            .then(() => {
+                writeFile("dist/package.json", JSON.stringify(actions.manifest(), null, 4));
+            })
+            .catch(() => process.exit(1));
     },
 };

@@ -1,6 +1,8 @@
-import { copyFile, mkdir, writeFile } from "node:fs/promises";
+import { execSync } from "node:child_process";
 import type { RollupWatcher } from "rollup";
 import { build, createServer, preview } from "vite";
+
+import manifest from "root/package.json" with { type: "json" };
 
 export const actions = {
     build: async () => {
@@ -33,17 +35,16 @@ export const actions = {
         return server;
     },
 
-    // manifest: () => {
-    //     mkdir("dist", { recursive: true })
-    //         .then(() => {
-    //             writeFile("dist/package.json", JSON.stringify(manifest(), null, 4));
-    //         })
-    //         .catch(() => process.exit(1));
-    // },
-
-    // icon: () => {
-    //     copyFile("data/icon.ico", "dist/icon.ico").catch(() =>
-    //         console.error("Failed to copy icon"),
-    //     );
-    // },
+    manifest: () => {
+        return {
+            name: `${manifest.fullname}`,
+            description: `${manifest.description}`,
+            version: `${manifest.version}`,
+            date: `${new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit", year: "2-digit" })} ${new Date().toLocaleTimeString("en-GB", { hour12: false })}`,
+            hash: execSync("git rev-parse HEAD").toString().trim(),
+            symbol: "🔵",
+            github: "https://github.com/mthierman/Airglow",
+            download: `https://github.com/mthierman/Airglow/releases/download/v${manifest.version}/Airglow.exe`,
+        };
+    },
 };
