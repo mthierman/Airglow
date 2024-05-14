@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .url-form {
-    @apply grid grid-flow-col bg-neutral-300 dark:bg-neutral-800;
+    @apply grid grid-flow-col;
 }
 
 .url-label {
