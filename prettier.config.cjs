@@ -1,6 +1,6 @@
 /** @type {import('prettier').Config} */
 
-export default {
+module.exports = {
     printWidth: 100,
     tabWidth: 4,
     bracketSameLine: true,
