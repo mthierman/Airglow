@@ -1,6 +1,8 @@
 {
     "compilerOptions": {
         "target": "ESNext",
+        "lib": ["ESNext", "DOM", "DOM.Iterable"],
+        "jsx": "react-jsx",
         "module": "ESNext",
         "moduleResolution": "Bundler",
         "baseUrl": "./",
@@ -16,16 +18,15 @@
             "scripts/*": ["scripts/*"],
             "src/*": ["src/*"]
         },
-        "lib": ["ESNext", "DOM", "DOM.Iterable"],
-        "jsx": "react-jsx",
+        "types": ["vite/client"],
         "allowImportingTsExtensions": true,
         "resolveJsonModule": true,
         "noEmit": true,
-        "esModuleInterop": true,
         "isolatedModules": true,
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
         "strict": true,
-        "skipLibCheck": true,
-        "types": ["vite/client"]
+        "skipLibCheck": true
     },
     "include": ["gui", "modules", "scripts", "**/*.config.ts", "**/tools/scripts/*.ts"]
 }
