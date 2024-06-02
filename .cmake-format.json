@@ -49,7 +49,7 @@
             "If an argument group contains more than this many sub-groups",
             "(parg or kwarg groups) then force it to a vertical layout."
         ],
-        "max_subgroups_hwrap": 1,
+        "max_subgroups_hwrap": 3,
         "_help_max_pargs_hwrap": [
             "If a positional argument group contains more than this many",
             "arguments, then force it to a vertical layout."
@@ -82,7 +82,7 @@
             "statement, plus one indentation  level, `child`: align to",
             "the column of the arguments"
         ],
-        "dangle_align": "prefix",
+        "dangle_align": "prefix-indent",
         "_help_min_prefix_chars": [
             "If the statement spelling length (including space and",
             "parenthesis) is smaller than this amount, then force reject",

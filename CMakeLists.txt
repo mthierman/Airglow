@@ -2,10 +2,10 @@ cmake_minimum_required(VERSION 3.28)
 
 project(
     Airglow
-    VERSION 1.7.3
+    VERSION 1.7.4
     LANGUAGES C
               CXX
-)
+    )
 
 enable_testing()
 
@@ -17,12 +17,9 @@ file(
     DOWNLOAD
     "https://aka.ms/vs/17/release/vc_redist.x64.exe"
     "${PROJECT_BINARY_DIR}/vc_redist.x64.exe"
-)
+    )
 
-file(
-    COPY ${PROJECT_SOURCE_DIR}/data/airglow.rc
-    DESTINATION ${PROJECT_BINARY_DIR}/data
-)
+file(COPY ${PROJECT_SOURCE_DIR}/data/airglow.rc DESTINATION ${PROJECT_BINARY_DIR}/data)
 
 add_custom_command(
     OUTPUT ${PROJECT_BINARY_DIR}/data/icon.ico
@@ -31,30 +28,30 @@ add_custom_command(
         ${PROJECT_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico
         ${PROJECT_BINARY_DIR}/data/icon.ico
     COMMENT "Copying icon..."
-)
+    )
 
 add_custom_target(
     AirglowIcon
     ALL
     DEPENDS ${PROJECT_BINARY_DIR}/data/icon.ico
-)
+    )
 
 add_custom_target(
     AirglowGui
     ALL
     COMMAND pnpm build
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-)
+    )
 
 add_executable(
     Airglow
     WIN32
-)
+    )
 
 configure_file(
     ${PROJECT_SOURCE_DIR}/src/config.hxx
     ${PROJECT_BINARY_DIR}/include/airglow/config.hxx
-)
+    )
 
 target_sources(
     Airglow
@@ -79,16 +76,16 @@ target_sources(
             ${PROJECT_SOURCE_DIR}/src/state.hxx
             ${PROJECT_SOURCE_DIR}/src/window.hxx
             ${PROJECT_BINARY_DIR}/include/airglow/config.hxx
-)
+    )
 
 target_link_libraries(
     Airglow
     PRIVATE glow::glow
             glow::flags
-)
+    )
 
 add_dependencies(
     Airglow
     AirglowIcon
     AirglowGui
-)
+    )

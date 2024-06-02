@@ -10,13 +10,17 @@
 
 Settings::Settings(::HWND app, State& state)
     : glow::Window("Airglow - Settings"), m_app{app}, m_state{state}
-{}
+{
+}
 
 auto CALLBACK Settings::EnumChildProc(::HWND hWnd, ::LPARAM lParam) -> ::BOOL
 {
     auto self{reinterpret_cast<Settings*>(lParam)};
 
-    if (!self) { return true; }
+    if (!self)
+    {
+        return true;
+    }
 
     auto gwlId{static_cast<size_t>(::GetWindowLongPtrA(hWnd, GWL_ID))};
     auto& rect{self->m_client.rect};
@@ -35,7 +39,10 @@ auto CALLBACK Settings::EnumChildProc(::HWND hWnd, ::LPARAM lParam) -> ::BOOL
         }
     }
 
-    if (hdwp) { ::EndDeferWindowPos(hdwp); }
+    if (hdwp)
+    {
+        ::EndDeferWindowPos(hdwp);
+    }
 
     return true;
 }
@@ -44,12 +51,18 @@ auto Settings::WndProc(::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESU
 {
     switch (uMsg)
     {
-        case WM_GETMINMAXINFO: return on_get_min_max_info(wParam, lParam);
-        case WM_KEYDOWN: return on_key_down(wParam, lParam);
-        case WM_NOTIFY: return on_notify(wParam, lParam);
-        case WM_SETTINGCHANGE: return on_setting_change(wParam, lParam);
-        case WM_SHOWWINDOW: return on_show_window(wParam, lParam);
-        case WM_SIZE: return on_size(wParam, lParam);
+        case WM_GETMINMAXINFO:
+            return on_get_min_max_info(wParam, lParam);
+        case WM_KEYDOWN:
+            return on_key_down(wParam, lParam);
+        case WM_NOTIFY:
+            return on_notify(wParam, lParam);
+        case WM_SETTINGCHANGE:
+            return on_setting_change(wParam, lParam);
+        case WM_SHOWWINDOW:
+            return on_show_window(wParam, lParam);
+        case WM_SIZE:
+            return on_size(wParam, lParam);
     }
 
     return ::DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
@@ -100,7 +113,10 @@ auto Settings::on_key_down(::WPARAM wParam, ::LPARAM lParam) -> int
 {
     auto key{static_cast<unsigned int>(wParam)};
 
-    if ((HIWORD(lParam) & KF_REPEAT) == KF_REPEAT) { return 0; }
+    if ((HIWORD(lParam) & KF_REPEAT) == KF_REPEAT)
+    {
+        return 0;
+    }
 
     if (m_keys.set.contains(key))
     {
@@ -115,14 +131,20 @@ auto Settings::on_key_down(::WPARAM wParam, ::LPARAM lParam) -> int
 
             case 0x57:
             {
-                if (::GetKeyState(VK_CONTROL) & 0x8000) { notify(m_app, CODE::SETTINGS_TOGGLE); }
+                if (::GetKeyState(VK_CONTROL) & 0x8000)
+                {
+                    notify(m_app, CODE::SETTINGS_TOGGLE);
+                }
 
                 break;
             }
 
             case VK_F4:
             {
-                if (::GetKeyState(VK_MENU) & 0x8000) { notify(m_app, CODE::SETTINGS_TOGGLE); }
+                if (::GetKeyState(VK_MENU) & 0x8000)
+                {
+                    notify(m_app, CODE::SETTINGS_TOGGLE);
+                }
 
                 break;
             }
@@ -144,7 +166,10 @@ auto Settings::on_notify(::WPARAM wParam, ::LPARAM lParam) -> int
         {
             auto webMessage{json::parse(notification->message)};
 
-            if (webMessage.contains("initialized")) { m_browser->post_json(json(*this)); }
+            if (webMessage.contains("initialized"))
+            {
+                m_browser->post_json(json(*this));
+            }
 
             else if (webMessage.contains("m_state"))
             {
@@ -156,7 +181,8 @@ auto Settings::on_notify(::WPARAM wParam, ::LPARAM lParam) -> int
             break;
         }
 
-        default: break;
+        default:
+            break;
     }
 
     return 0;

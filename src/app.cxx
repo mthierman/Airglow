@@ -16,8 +16,10 @@ auto App::WndProc(::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT
 {
     switch (uMsg)
     {
-        case WM_CREATE: return on_create(wParam, lParam);
-        case WM_NOTIFY: return on_notify(wParam, lParam);
+        case WM_CREATE:
+            return on_create(wParam, lParam);
+        case WM_NOTIFY:
+            return on_notify(wParam, lParam);
     }
 
     return ::DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
@@ -25,9 +27,15 @@ auto App::WndProc(::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT
 
 auto App::on_create(::WPARAM wParam, ::LPARAM lParam) -> int
 {
-    if (!std::filesystem::exists(file())) { save(); }
+    if (!std::filesystem::exists(file()))
+    {
+        save();
+    }
 
-    else { load(); }
+    else
+    {
+        load();
+    }
 
     parse_args();
 
@@ -112,7 +120,8 @@ auto App::on_notify(::WPARAM wParam, ::LPARAM lParam) -> int
             break;
         }
 
-        default: break;
+        default:
+            break;
     }
 
     return 0;
@@ -122,9 +131,15 @@ auto App::parse_args() -> void
 {
     auto argv{cmd_to_argv()};
 
-    if (argv.size() > 1) { m_state.withArgs = true; }
+    if (argv.size() > 1)
+    {
+        m_state.withArgs = true;
+    }
 
-    if (argv.size() == 2) { m_state.args.first = argv.at(1); }
+    if (argv.size() == 2)
+    {
+        m_state.args.first = argv.at(1);
+    }
 
     else if (argv.size() > 2)
     {
@@ -145,7 +160,10 @@ auto App::data() -> std::filesystem::path
 {
     auto path{glow::known_folder() / "Airglow"};
 
-    if (!std::filesystem::exists(path)) { std::filesystem::create_directory(path); }
+    if (!std::filesystem::exists(path))
+    {
+        std::filesystem::create_directory(path);
+    }
 
     return path;
 }
