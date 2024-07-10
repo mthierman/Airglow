@@ -1,23 +1,19 @@
-cmake_minimum_required(VERSION 3.28)
+cmake_minimum_required(VERSION 3.29)
 
-project(
-    Airglow
-    VERSION 1.7.4
-    LANGUAGES C
-              CXX
-    )
-
-enable_testing()
+project(Airglow VERSION 1.7.4)
 
 add_subdirectory(libs/Glow)
 
-include(libs/Glow/cmake/ReleaseInfo.cmake)
-
-file(
-    DOWNLOAD
-    "https://aka.ms/vs/17/release/vc_redist.x64.exe"
-    "${PROJECT_BINARY_DIR}/vc_redist.x64.exe"
+list(
+    APPEND
+    CMAKE_MODULE_PATH
+    "${PROJECT_SOURCE_DIR}/libs/Glow/libs/cmake-modules/"
     )
+
+include(cmake-modules)
+
+release_info()
+download_vcredist()
 
 file(COPY ${PROJECT_SOURCE_DIR}/data/airglow.rc DESTINATION ${PROJECT_BINARY_DIR}/data)
 
@@ -81,7 +77,7 @@ target_sources(
 target_link_libraries(
     Airglow
     PRIVATE glow::glow
-            glow::flags
+            common::flags
     )
 
 add_dependencies(
