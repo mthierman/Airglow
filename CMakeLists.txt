@@ -49,7 +49,8 @@ target_sources(
     PRIVATE "src/app.cxx"
             # "src/browser.cxx" "src/global.cxx"
             "src/main.cxx"
-            # "src/settings.cxx" "src/window.cxx"
+            "src/settings.cxx"
+            # "src/window.cxx"
             "data/airglow.manifest"
             "${PROJECT_BINARY_DIR}/data/airglow.rc"
     )

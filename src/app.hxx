@@ -19,7 +19,7 @@
 
 #include <nlohmann/json.hpp>
 
-// #include "settings.hxx"
+#include "settings.hxx"
 #include "state.hxx"
 // #include "window.hxx"
 
@@ -37,7 +37,7 @@ struct App final : glow::window::Window {
     // auto new_window() -> void;
 
     State m_state;
-    // std::unique_ptr<Settings> m_settings {};
+    std::unique_ptr<Settings> m_settings;
     // std::map<size_t, std::unique_ptr<Window>> m_windows {};
     // size_t m_active {};
 
