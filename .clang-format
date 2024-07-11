@@ -1,8 +1,11 @@
-BreakBeforeBraces: Allman
+BasedOnStyle: WebKit
+AlignAfterOpenBracket: Align
+BinPackArguments: false
+BinPackParameters: false
+BreakBeforeBraces: Attach
+BreakConstructorInitializers: BeforeColon
 ColumnLimit: 100
-IndentWidth: 4
-PointerAlignment: Left
-SortIncludes: Never
-AllowShortFunctionsOnASingleLine: Empty
-IndentCaseBlocks: false
+FixNamespaceComments: true
 IndentCaseLabels: true
+LambdaBodyIndentation: OuterScope
+PackConstructorInitializers: Never
