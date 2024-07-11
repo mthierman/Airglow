@@ -14,12 +14,16 @@ App::App(std::vector<std::string>& args, glow::system::Event& singleInstance)
     : m_args { args },
       m_singleInstance { singleInstance },
       m_gdiToken { glow::system::gdi_plus_startup() } {
-    if (!std::filesystem::exists(file())) {
-        save();
+    if (!std::filesystem::exists(m_appData)) {
+        std::filesystem::create_directory(m_appData);
+    }
+
+    if (!std::filesystem::exists(m_settingsFile)) {
+        save_settings();
     }
 
     else {
-        load();
+        load_settings();
     }
 
     if (m_args.size() > 1) {
@@ -120,23 +124,9 @@ App::~App() { glow::system::gdi_plus_shutdown(m_gdiToken); }
 
 auto App::operator()() -> int { return glow::messages::run_loop(); }
 
-auto App::data() -> std::filesystem::path {
-    auto data { glow::filesystem::known_folder(FOLDERID_LocalAppData, { "Airglow" }) };
-
-    if (!std::filesystem::exists(data)) {
-        std::filesystem::create_directory(data);
-    }
-
-    return data;
-}
-
-auto App::file() -> std::filesystem::path {
-    return std::filesystem::path { { data() / "Airglow.json" } };
-}
-
-auto App::save() -> void {
+auto App::save_settings() -> void {
     try {
-        std::ofstream f(file());
+        std::ofstream f(m_settingsFile);
         f << std::setw(4) << nlohmann::json(m_state) << std::endl;
         f.close();
     } catch (const std::exception& e) {
@@ -144,9 +134,9 @@ auto App::save() -> void {
     }
 }
 
-auto App::load() -> void {
+auto App::load_settings() -> void {
     try {
-        std::ifstream f(file());
+        std::ifstream f(m_settingsFile);
         m_state = nlohmann::json::parse(f, nullptr, false, true);
         f.close();
     } catch (const std::exception& e) {

@@ -31,10 +31,8 @@ struct App final : glow::window::Window {
 
     auto operator()() -> int;
 
-    auto data() -> std::filesystem::path;
-    auto file() -> std::filesystem::path;
-    auto save() -> void;
-    auto load() -> void;
+    auto save_settings() -> void;
+    auto load_settings() -> void;
 
     // auto new_window() -> void;
 
@@ -46,6 +44,10 @@ struct App final : glow::window::Window {
     std::vector<std::string>& m_args;
     glow::system::Event& m_singleInstance;
     ::ULONG_PTR& m_gdiToken;
+    std::filesystem::path m_appData { glow::filesystem::known_folder(FOLDERID_LocalAppData,
+                                                                     { "Airglow" }) };
+    std::filesystem::path m_settingsFile { glow::filesystem::known_folder(
+        FOLDERID_LocalAppData, { "Airglow", "Airglow.json" }) };
     glow::window::WindowManager<Window> m_windows;
     std::unordered_map<char, bool> m_keys { { 'N', false }, { 'W', false } };
     glow::webview::WebViewEnvironment m_webViewEnvironment;
