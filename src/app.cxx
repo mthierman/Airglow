@@ -5,196 +5,163 @@
 // clang-format on
 
 #include "app.hxx"
-#include "global.hxx"
+// #include "global.hxx"
 
-#include <filesystem>
-#include <fstream>
+// #include <filesystem>
+// #include <fstream>
 
-auto App::WndProc(::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT
-{
-    switch (uMsg)
-    {
-        case WM_CREATE:
-            return on_create(wParam, lParam);
-        case WM_NOTIFY:
-            return on_notify(wParam, lParam);
-    }
+App::App(glow::system::Event& singleInstance)
+    : m_singleInstance { singleInstance },
+      m_gdiToken { glow::system::gdi_plus_startup() } {
+    // if (!std::filesystem::exists(file())) {
+    //     save();
+    // }
 
-    return ::DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
+    // else {
+    //     load();
+    // }
+
+    // parse_args();
+
+    // m_settings = std::make_unique<Settings>(m_hwnd.get(), m_state);
+    // m_settings->create_window();
+
+    // new_window();
+
+    message(WM_NOTIFY, [this](glow::messages::wm_notify message) {
+        //     auto notification { reinterpret_cast<glow::Notification*>(lParam) };
+
+        //     switch (notification->code) {
+        //         using enum CODE;
+
+        //         case SETTINGS_TOGGLE: {
+        //             if (!m_settings->is_visible()) {
+        //                 m_settings->show();
+        //                 m_settings->m_browser->move_focus();
+        //             }
+
+        //             else if (m_settings->is_visible()) {
+        //                 if (!m_settings->is_foreground()) {
+        //                     m_settings->foreground();
+        //                     m_settings->m_browser->move_focus();
+        //                 }
+
+        //                 else {
+        //                     m_settings->hide();
+
+        //                     if (!m_windows.empty()) {
+        //                         m_windows.find(m_active)->second->m_first.browser->move_focus();
+        //                     }
+        //                 }
+        //             }
+
+        //             break;
+        //         }
+
+        //         case SETTINGS_SAVE: {
+        //             save();
+
+        //             break;
+        //         }
+
+        //         case WINDOW_NEW: {
+        //             new_window();
+
+        //             break;
+        //         }
+
+        //         case WINDOW_CLOSE: {
+        //             m_windows.erase(notification->id);
+
+        //             if (m_windows.empty()) {
+        //                 save();
+
+        //                 close();
+        //             }
+
+        //             break;
+        //         }
+
+        //         case WINDOW_ACTIVATE: {
+        //             m_active = notification->id;
+
+        //             break;
+        //         }
+
+        //         default:
+        //             break;
+        //     }
+
+        create_message_only();
+
+        m_webViewEnvironment.create([this]() {
+            // m_singleInstance.m_callback = [this]() { notify(CREATE_FOREGROUND_WINDOW); };
+
+            // notify(CREATE_WINDOW);
+        });
+
+        return 0;
+    });
 }
 
-auto App::on_create(::WPARAM wParam, ::LPARAM lParam) -> int
-{
-    if (!std::filesystem::exists(file()))
-    {
-        save();
-    }
+App::~App() { glow::system::gdi_plus_shutdown(m_gdiToken); }
 
-    else
-    {
-        load();
-    }
+// auto App::parse_args() -> void {
+//     auto argv { cmd_to_argv() };
 
-    parse_args();
+//     if (argv.size() > 1) {
+//         m_state.withArgs = true;
+//     }
 
-    m_settings = std::make_unique<Settings>(m_hwnd.get(), m_state);
-    m_settings->create_window();
+//     if (argv.size() == 2) {
+//         m_state.args.first = argv.at(1);
+//     }
 
-    new_window();
+//     else if (argv.size() > 2) {
+//         m_state.args.first = argv.at(1);
+//         m_state.args.second = argv.at(2);
+//     }
+// }
 
-    return 0;
-}
+// auto App::new_window() -> void {
+//     auto id { glow::random<size_t>() };
+//     m_windows.try_emplace(id, std::make_unique<Window>(m_hwnd.get(), m_state, id));
+//     m_windows.at(id)->create_window();
+//     m_windows.at(id)->reveal();
+// }
 
-auto App::on_notify(::WPARAM wParam, ::LPARAM lParam) -> int
-{
-    auto notification{reinterpret_cast<glow::Notification*>(lParam)};
+// auto App::data() -> std::filesystem::path {
+//     auto path { glow::known_folder() / "Airglow" };
 
-    switch (notification->code)
-    {
-        using enum CODE;
+//     if (!std::filesystem::exists(path)) {
+//         std::filesystem::create_directory(path);
+//     }
 
-        case SETTINGS_TOGGLE:
-        {
-            if (!m_settings->is_visible())
-            {
-                m_settings->show();
-                m_settings->m_browser->move_focus();
-            }
+//     return path;
+// }
 
-            else if (m_settings->is_visible())
-            {
-                if (!m_settings->is_foreground())
-                {
-                    m_settings->foreground();
-                    m_settings->m_browser->move_focus();
-                }
+// auto App::file() -> std::filesystem::path {
+//     return std::filesystem::path { { glow::app_path() / "Airglow.json" } };
+// }
 
-                else
-                {
-                    m_settings->hide();
+// auto App::save() -> void {
+//     try {
+//         std::ofstream f(file());
+//         f << std::setw(4) << nlohmann::json(m_state) << std::endl;
+//         f.close();
+//     } catch (const std::exception& e) {
+//         return;
+//     }
+// }
 
-                    if (!m_windows.empty())
-                    {
-                        m_windows.find(m_active)->second->m_first.browser->move_focus();
-                    }
-                }
-            }
+// auto App::load() -> void {
+//     try {
+//         std::ifstream f(file());
+//         m_state = nlohmann::json::parse(f, nullptr, false, true);
+//         f.close();
+//     } catch (const std::exception& e) {
+//         return;
+//     }
+// }
 
-            break;
-        }
-
-        case SETTINGS_SAVE:
-        {
-            save();
-
-            break;
-        }
-
-        case WINDOW_NEW:
-        {
-            new_window();
-
-            break;
-        }
-
-        case WINDOW_CLOSE:
-        {
-            m_windows.erase(notification->id);
-
-            if (m_windows.empty())
-            {
-                save();
-
-                close();
-            }
-
-            break;
-        }
-
-        case WINDOW_ACTIVATE:
-        {
-            m_active = notification->id;
-
-            break;
-        }
-
-        default:
-            break;
-    }
-
-    return 0;
-}
-
-auto App::parse_args() -> void
-{
-    auto argv{cmd_to_argv()};
-
-    if (argv.size() > 1)
-    {
-        m_state.withArgs = true;
-    }
-
-    if (argv.size() == 2)
-    {
-        m_state.args.first = argv.at(1);
-    }
-
-    else if (argv.size() > 2)
-    {
-        m_state.args.first = argv.at(1);
-        m_state.args.second = argv.at(2);
-    }
-}
-
-auto App::new_window() -> void
-{
-    auto id{glow::random<size_t>()};
-    m_windows.try_emplace(id, std::make_unique<Window>(m_hwnd.get(), m_state, id));
-    m_windows.at(id)->create_window();
-    m_windows.at(id)->reveal();
-}
-
-auto App::data() -> std::filesystem::path
-{
-    auto path{glow::known_folder() / "Airglow"};
-
-    if (!std::filesystem::exists(path))
-    {
-        std::filesystem::create_directory(path);
-    }
-
-    return path;
-}
-
-auto App::file() -> std::filesystem::path
-{
-    return std::filesystem::path{{glow::app_path() / "Airglow.json"}};
-}
-
-auto App::save() -> void
-{
-    try
-    {
-        std::ofstream f(file());
-        f << std::setw(4) << nlohmann::json(m_state) << std::endl;
-        f.close();
-    }
-    catch (const std::exception& e)
-    {
-        return;
-    }
-}
-
-auto App::load() -> void
-{
-    try
-    {
-        std::ifstream f(file());
-        m_state = nlohmann::json::parse(f, nullptr, false, true);
-        f.close();
-    }
-    catch (const std::exception& e)
-    {
-        return;
-    }
-}
+auto App::operator()() -> int { return glow::messages::run_loop(); }

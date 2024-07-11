@@ -6,9 +6,18 @@
 
 #include "app.hxx"
 
-auto main() -> int
-{
-    App app;
+#include <glow/system.hxx>
+
+auto main() -> int {
+    auto coInit { glow::system::co_initialize() };
+
+    glow::system::Event singleInstance;
+
+    if (singleInstance.create("SingleInstance")) {
+        return EXIT_SUCCESS;
+    }
+
+    App app(singleInstance);
 
     return app();
 }

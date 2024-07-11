@@ -27,6 +27,14 @@ enum struct CODE : unsigned int {
     FOCUS_CHANGED
 };
 
+namespace glow::messages {
+enum struct notice : unsigned int {
+    CREATE_WINDOW = WM_APP,
+    CREATE_FOREGROUND_WINDOW,
+    CLOSE_WINDOW,
+};
+}
+
 struct Keys {
     Keys();
 
