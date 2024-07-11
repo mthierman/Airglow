@@ -29,37 +29,30 @@ Settings::Settings(glow::webview::WebViewEnvironment& webViewEnvironment)
     });
 
     message(WM_KEYDOWN, [this](glow::messages::wm_keydown_keyup message) {
+        using enum glow::messages::notice;
         auto key { message.key() };
 
         if (message.wasKeyDown()) {
             return 0;
         }
 
-        // if (m_keys.set.contains(key)) {
-        //     switch (key) {
-        //         case VK_PAUSE: {
-        //             notify(m_app, CODE::SETTINGS_TOGGLE);
+        switch (key) {
+            case VK_PAUSE: {
+                notify(TOGGLE_SETTINGS);
+            } break;
 
-        //             break;
-        //         }
+            case 0x57: {
+                if (glow::input::was_key_down(VK_CONTROL)) {
+                    notify(TOGGLE_SETTINGS);
+                }
+            } break;
 
-        //         case 0x57: {
-        //             if (::GetKeyState(VK_CONTROL) & 0x8000) {
-        //                 notify(m_app, CODE::SETTINGS_TOGGLE);
-        //             }
-
-        //             break;
-        //         }
-
-        //         case VK_F4: {
-        //             if (::GetKeyState(VK_MENU) & 0x8000) {
-        //                 notify(m_app, CODE::SETTINGS_TOGGLE);
-        //             }
-
-        //             break;
-        //         }
-        //     }
-        // }
+            case VK_F4: {
+                if (glow::input::was_key_down(VK_CONTROL)) {
+                    notify(TOGGLE_SETTINGS);
+                }
+            } break;
+        }
 
         return 0;
     });

@@ -10,12 +10,11 @@
 
 #include <glow/window.hxx>
 #include <glow/webview.hxx>
+#include <glow/input.hxx>
 
 #include <nlohmann/json.hpp>
 
-// #include "browser.hxx"
 #include "global.hxx"
-// #include "state.hxx"
 
 namespace airglow {
 using json = nlohmann::json;
@@ -23,15 +22,7 @@ using json = nlohmann::json;
 struct Settings final : glow::window::Window {
     Settings(glow::webview::WebViewEnvironment& webViewEnvironment);
 
-    // std::unique_ptr<Browser> m_browser {};
-    // Keys m_keys {};
-
     glow::webview::WebViewEnvironment& m_webViewEnvironment;
     glow::webview::WebView m_webView;
-
-private:
-    // static auto EnumChildProc(::HWND hWnd, ::LPARAM lParam) -> ::BOOL;
-
-    // NLOHMANN_DEFINE_TYPE_INTRUSIVE(Settings, m_state)
 };
 }; // namespace airglow

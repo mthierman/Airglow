@@ -5,7 +5,6 @@
 // clang-format on
 
 #include "app.hxx"
-// #include "global.hxx"
 
 #include <filesystem>
 #include <fstream>

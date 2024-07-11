@@ -6,11 +6,6 @@
 
 #pragma once
 
-// #include <Windows.h>
-
-// #include <map>
-// #include <memory>
-
 #include <glow/filesystem.hxx>
 #include <glow/input.hxx>
 #include <glow/messages.hxx>
