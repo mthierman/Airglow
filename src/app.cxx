@@ -92,7 +92,7 @@ App::App(std::vector<std::string>& args, glow::system::Event& singleInstance)
         });
 
         m_singleInstance.m_callback = [this]() { notify(glow::messages::notice::SINGLE_INSTANCE); };
-        m_settings = std::make_unique<Settings>();
+        m_settings = std::make_unique<Settings>(m_webViewEnvironment);
         notify(glow::messages::notice::CREATE_BROWSER);
     });
 }

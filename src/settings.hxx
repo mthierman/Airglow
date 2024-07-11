@@ -14,7 +14,7 @@
 #include <nlohmann/json.hpp>
 
 // #include "browser.hxx"
-// #include "global.hxx"
+#include "global.hxx"
 // #include "state.hxx"
 
 namespace airglow {
