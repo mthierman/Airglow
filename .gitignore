@@ -3,6 +3,7 @@
 
 # Artifacts
 build
+tools/*.js
 
 # C++
 CMakeUserPresets.json
