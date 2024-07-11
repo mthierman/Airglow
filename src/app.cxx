@@ -48,7 +48,7 @@ App::App(std::vector<std::string>& args, glow::system::Event& singleInstance)
             switch (notification.notice) {
                 using enum glow::messages::notice;
                 case SINGLE_INSTANCE: {
-                    notify(CREATE_WINDOW);
+                    notify(CREATE_BROWSER);
                     glow::window::set_foreground(m_windows.last_window());
                 } break;
 
@@ -74,11 +74,11 @@ App::App(std::vector<std::string>& args, glow::system::Event& singleInstance)
                     save_settings();
                 } break;
 
-                case CREATE_WINDOW: {
+                case CREATE_BROWSER: {
                     m_windows.add(std::make_unique<Browser>());
                 } break;
 
-                case CLOSE_WINDOW: {
+                case CLOSE_BROWSER: {
                     // m_windows.erase(notification->id);
 
                     // if (m_windows.empty()) {
@@ -88,7 +88,7 @@ App::App(std::vector<std::string>& args, glow::system::Event& singleInstance)
                     // }
                 } break;
 
-                case ACTIVATE_WINDOW: {
+                case ACTIVE_BROWSER: {
                     // m_active = notification->id;
                 } break;
             }
@@ -98,7 +98,7 @@ App::App(std::vector<std::string>& args, glow::system::Event& singleInstance)
 
         m_singleInstance.m_callback = [this]() { notify(glow::messages::notice::SINGLE_INSTANCE); };
         m_settings = std::make_unique<Settings>();
-        notify(glow::messages::notice::CREATE_WINDOW);
+        notify(glow::messages::notice::CREATE_BROWSER);
     });
 }
 
