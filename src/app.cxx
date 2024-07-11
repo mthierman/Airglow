@@ -39,7 +39,8 @@ App::App(std::vector<std::string>& args, glow::system::Event& singleInstance)
         m_state.args.second = m_args.at(2);
     }
 
-    // m_settings = std::make_unique<Settings>(m_hwnd.get(), m_state);
+    m_settings = std::make_unique<Settings>();
+    glow::window::activate(m_settings->m_hwnd.get());
     // m_settings->create_window();
 
     // new_window();
