@@ -12,9 +12,9 @@
 
 namespace glow::messages {
 enum struct notice : unsigned int {
-    SETTINGS_TOGGLE = WM_APP,
-    SETTINGS_SAVE,
-    SINGLE_INSTANCE,
+    SINGLE_INSTANCE = WM_APP,
+    TOGGLE_SETTINGS,
+    SAVE_SETTINGS,
     CREATE_WINDOW,
     CLOSE_WINDOW,
     ACTIVATE_WINDOW,

@@ -43,34 +43,35 @@ App::App(std::vector<std::string>& args, glow::system::Event& singleInstance)
 
         switch (notification.notice) {
             using enum glow::messages::notice;
-            case SETTINGS_TOGGLE: {
-                // if (!m_settings->is_visible()) {
-                //     m_settings->show();
-                //     m_settings->m_browser->move_focus();
-                // }
-
-                // else if (m_settings->is_visible()) {
-                //     if (!m_settings->is_foreground()) {
-                //         m_settings->foreground();
-                //         m_settings->m_browser->move_focus();
-                //     }
-
-                //     else {
-                //         m_settings->hide();
-
-                //         if (!m_windows.empty()) {
-                //             m_windows.find(m_active)->second->m_first.browser->move_focus();
-                //         }
-                //     }
-                // }
+            case SINGLE_INSTANCE: {
+                notify(CREATE_WINDOW);
+                glow::window::set_foreground(m_windows.last_window());
             } break;
 
-            case SETTINGS_SAVE: {
-                // save();
+            case TOGGLE_SETTINGS: {
+                auto visible { glow::window::check_visibility(m_settings->m_hwnd.get()) };
+                auto foreground { glow::window::get_foreground(m_settings->m_hwnd.get())
+                                  == m_settings->m_hwnd.get() };
+                if (!visible) {
+                    glow::window::show(m_settings->m_hwnd.get());
+                    // m_settings->m_browser->move_focus();
+                } else if (visible && !foreground) {
+                    glow::window::set_foreground(m_settings->m_hwnd.get());
+                    // m_settings->m_browser->move_focus();
+                } else {
+                    glow::window::hide(m_settings->m_hwnd.get());
+                    // if (!m_windows.empty()) {
+                    //     m_windows.find(m_active)->second->m_first.browser->move_focus();
+                    // }
+                }
+            } break;
+
+            case SAVE_SETTINGS: {
+                save_settings();
             } break;
 
             case CREATE_WINDOW: {
-                // new_window();
+                // m_windows.add(std::make_unique<::Window>(m_keys));
             } break;
 
             case CLOSE_WINDOW: {
@@ -94,8 +95,7 @@ App::App(std::vector<std::string>& args, glow::system::Event& singleInstance)
     create_message_only();
 
     m_webViewEnvironment.create([this]() {
-        m_singleInstance.m_callback
-            = [this]() { notify(glow::messages::notice::CREATE_FOREGROUND_WINDOW); };
+        m_singleInstance.m_callback = [this]() { notify(glow::messages::notice::SINGLE_INSTANCE); };
         m_settings = std::make_unique<Settings>();
         notify(glow::messages::notice::CREATE_WINDOW);
     });
