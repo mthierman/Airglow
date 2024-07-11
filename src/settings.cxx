@@ -51,6 +51,31 @@ Settings::Settings(glow::webview::WebViewEnvironment& webViewEnvironment)
             }
             return 0;
         });
+
+        message(WM_NOTIFY, [this](glow::messages::wm_notify message) {
+            // auto notification { reinterpret_cast<glow::Notification*>(lParam) };
+            auto& notification { message.notification() };
+
+            switch (notification.notice) {
+                using enum glow::messages::notice;
+
+                case WEB_MESSAGE_RECEIVED: {
+                    // auto webMessage { json::parse(notification->message) };
+
+                    // if (webMessage.contains("initialized")) {
+                    //     m_browser->post_json(json(*this));
+                    // }
+
+                    // else if (webMessage.contains("m_state")) {
+                    //     m_state = webMessage["m_state"].get<State>();
+                    //     notify(m_app, CODE::SETTINGS_SAVE);
+                    //     m_browser->post_json(json(*this));
+                    // }
+                } break;
+            }
+
+            return 0;
+        });
     });
 }
 
@@ -121,35 +146,6 @@ Settings::Settings(glow::webview::WebViewEnvironment& webViewEnvironment)
 //                 break;
 //             }
 //         }
-//     }
-
-//     return 0;
-// }
-
-// auto Settings::on_notify(::WPARAM wParam, ::LPARAM lParam) -> int {
-//     auto notification { reinterpret_cast<glow::Notification*>(lParam) };
-
-//     switch (notification->code) {
-//         using enum CODE;
-
-//         case WEB_MESSAGE_RECEIVED: {
-//             auto webMessage { json::parse(notification->message) };
-
-//             if (webMessage.contains("initialized")) {
-//                 m_browser->post_json(json(*this));
-//             }
-
-//             else if (webMessage.contains("m_state")) {
-//                 m_state = webMessage["m_state"].get<State>();
-//                 notify(m_app, CODE::SETTINGS_SAVE);
-//                 m_browser->post_json(json(*this));
-//             }
-
-//             break;
-//         }
-
-//         default:
-//             break;
 //     }
 
 //     return 0;

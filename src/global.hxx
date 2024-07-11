@@ -18,6 +18,7 @@ enum struct notice : unsigned int {
     CREATE_BROWSER,
     CLOSE_BROWSER,
     ACTIVE_BROWSER,
+    WEB_MESSAGE_RECEIVED,
 };
 }
 

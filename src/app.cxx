@@ -47,6 +47,7 @@ App::App(std::vector<std::string>& args, glow::system::Event& singleInstance)
 
             switch (notification.notice) {
                 using enum glow::messages::notice;
+
                 case SINGLE_INSTANCE: {
                     notify(CREATE_BROWSER);
                     glow::window::set_foreground(m_windows.last_window());
