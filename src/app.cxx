@@ -39,63 +39,63 @@ App::App(std::vector<std::string>& args, glow::system::Event& singleInstance)
         m_state.args.second = m_args.at(2);
     }
 
-    message(WM_NOTIFY, [this](glow::messages::wm_notify message) {
-        auto& notification { message.notification() };
-
-        switch (notification.notice) {
-            using enum glow::messages::notice;
-            case SINGLE_INSTANCE: {
-                notify(CREATE_WINDOW);
-                glow::window::set_foreground(m_windows.last_window());
-            } break;
-
-            case TOGGLE_SETTINGS: {
-                auto visible { glow::window::check_visibility(m_settings->m_hwnd.get()) };
-                auto foreground { glow::window::get_foreground(m_settings->m_hwnd.get())
-                                  == m_settings->m_hwnd.get() };
-                if (!visible) {
-                    glow::window::show(m_settings->m_hwnd.get());
-                    // m_settings->m_browser->move_focus();
-                } else if (visible && !foreground) {
-                    glow::window::set_foreground(m_settings->m_hwnd.get());
-                    // m_settings->m_browser->move_focus();
-                } else {
-                    glow::window::hide(m_settings->m_hwnd.get());
-                    // if (!m_windows.empty()) {
-                    //     m_windows.find(m_active)->second->m_first.browser->move_focus();
-                    // }
-                }
-            } break;
-
-            case SAVE_SETTINGS: {
-                save_settings();
-            } break;
-
-            case CREATE_WINDOW: {
-                m_windows.add(std::make_unique<Browser>());
-            } break;
-
-            case CLOSE_WINDOW: {
-                // m_windows.erase(notification->id);
-
-                // if (m_windows.empty()) {
-                //     save();
-
-                //     close();
-                // }
-            } break;
-
-            case ACTIVATE_WINDOW: {
-                // m_active = notification->id;
-            } break;
-        }
-
-        return 0;
-    });
-
     create_message_only();
 
     m_webViewEnvironment.create([this]() {
+        message(WM_NOTIFY, [this](glow::messages::wm_notify message) {
+            auto& notification { message.notification() };
+
+            switch (notification.notice) {
+                using enum glow::messages::notice;
+                case SINGLE_INSTANCE: {
+                    notify(CREATE_WINDOW);
+                    glow::window::set_foreground(m_windows.last_window());
+                } break;
+
+                case TOGGLE_SETTINGS: {
+                    auto visible { glow::window::check_visibility(m_settings->m_hwnd.get()) };
+                    auto foreground { glow::window::get_foreground(m_settings->m_hwnd.get())
+                                      == m_settings->m_hwnd.get() };
+                    if (!visible) {
+                        glow::window::show(m_settings->m_hwnd.get());
+                        // m_settings->m_browser->move_focus();
+                    } else if (visible && !foreground) {
+                        glow::window::set_foreground(m_settings->m_hwnd.get());
+                        // m_settings->m_browser->move_focus();
+                    } else {
+                        glow::window::hide(m_settings->m_hwnd.get());
+                        // if (!m_windows.empty()) {
+                        //     m_windows.find(m_active)->second->m_first.browser->move_focus();
+                        // }
+                    }
+                } break;
+
+                case SAVE_SETTINGS: {
+                    save_settings();
+                } break;
+
+                case CREATE_WINDOW: {
+                    m_windows.add(std::make_unique<Browser>());
+                } break;
+
+                case CLOSE_WINDOW: {
+                    // m_windows.erase(notification->id);
+
+                    // if (m_windows.empty()) {
+                    //     save();
+
+                    //     close();
+                    // }
+                } break;
+
+                case ACTIVATE_WINDOW: {
+                    // m_active = notification->id;
+                } break;
+            }
+
+            return 0;
+        });
+
         m_singleInstance.m_callback = [this]() { notify(glow::messages::notice::SINGLE_INSTANCE); };
         m_settings = std::make_unique<Settings>();
         notify(glow::messages::notice::CREATE_WINDOW);
