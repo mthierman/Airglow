@@ -10,6 +10,7 @@
 #include <filesystem>
 #include <fstream>
 
+namespace airglow {
 App::App(std::vector<std::string>& args, glow::system::Event& singleInstance)
     : m_args { args },
       m_singleInstance { singleInstance } {
@@ -71,7 +72,7 @@ App::App(std::vector<std::string>& args, glow::system::Event& singleInstance)
             } break;
 
             case CREATE_WINDOW: {
-                // m_windows.add(std::make_unique<::Window>(m_keys));
+                m_windows.add(std::make_unique<Browser>());
             } break;
 
             case CLOSE_WINDOW: {
@@ -124,3 +125,4 @@ auto App::load_settings() -> void {
         return;
     }
 }
+}; // namespace airglow

@@ -19,11 +19,12 @@
 
 #include <nlohmann/json.hpp>
 
+#include "browser.hxx"
 #include "global.hxx"
 #include "settings.hxx"
 #include "state.hxx"
-// #include "window.hxx"
 
+namespace airglow {
 using json = nlohmann::json;
 
 struct App final : glow::window::Window {
@@ -49,3 +50,4 @@ struct App final : glow::window::Window {
     std::unordered_map<char, bool> m_keys { { 'N', false }, { 'W', false } };
     glow::webview::WebViewEnvironment m_webViewEnvironment;
 };
+}; // namespace airglow

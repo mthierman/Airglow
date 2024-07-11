@@ -30,8 +30,10 @@ enum struct notice : unsigned int {
 };
 }
 
+namespace airglow {
 struct Keys {
     Keys();
 
     std::set<unsigned int> set {};
 };
+}; // namespace airglow

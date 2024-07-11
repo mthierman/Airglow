@@ -47,11 +47,11 @@ add_executable(
 target_sources(
     Airglow
     PRIVATE "src/app.cxx"
-            # "src/browser.cxx"
+            "src/browser.cxx"
             "src/global.cxx"
             "src/main.cxx"
             "src/settings.cxx"
-            # "src/window.cxx"
+            # "src/webview.cxx"
             "data/airglow.manifest"
             "${PROJECT_BINARY_DIR}/data/airglow.rc"
     )

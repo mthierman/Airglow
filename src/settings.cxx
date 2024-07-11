@@ -6,6 +6,7 @@
 
 #include "settings.hxx"
 
+namespace airglow {
 Settings::Settings() {
     // message(WM_GETMINMAXINFO, [this](glow::messages::wm_getminmaxinfo message) {
     //     message.minMaxInfo().ptMinTrackSize.x = 500;
@@ -176,3 +177,4 @@ Settings::Settings() {
 
 //     return 0;
 // }
+}; // namespace airglow

@@ -19,7 +19,7 @@ auto main(int argc, char* argv[]) -> int {
         return EXIT_SUCCESS;
     }
 
-    App app(args, singleInstance);
+    airglow::App app(args, singleInstance);
 
     return app();
 }

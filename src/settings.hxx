@@ -15,6 +15,7 @@
 // #include "global.hxx"
 // #include "state.hxx"
 
+namespace airglow{
 using json = nlohmann::json;
 
 struct Settings final : glow::window::Window {
@@ -27,4 +28,5 @@ private:
     // static auto EnumChildProc(::HWND hWnd, ::LPARAM lParam) -> ::BOOL;
 
     // NLOHMANN_DEFINE_TYPE_INTRUSIVE(Settings, m_state)
+};
 };

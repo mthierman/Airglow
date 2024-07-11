@@ -9,6 +9,7 @@
 #include <string>
 #include <utility>
 
+namespace airglow {
 struct State {
     bool withArgs {};
     std::pair<std::string, std::string> args {};
@@ -18,3 +19,4 @@ struct State {
     // NLOHMANN_DEFINE_TYPE_INTRUSIVE(State, args, colors, home)
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(State, args, home)
 };
+}; // namespace airglow

@@ -6,6 +6,7 @@
 
 #include "global.hxx"
 
+namespace airglow {
 Keys::Keys() {
     set.emplace(VK_PAUSE);
     set.emplace(0x30);
@@ -23,3 +24,4 @@ Keys::Keys() {
     set.emplace(VK_F10);
     set.emplace(VK_F11);
 }
+}; // namespace airglow
