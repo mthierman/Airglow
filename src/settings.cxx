@@ -29,7 +29,6 @@ Settings::Settings(glow::webview::WebViewEnvironment& webViewEnvironment)
     });
 
     message(WM_KEYDOWN, [this](glow::messages::wm_keydown_keyup message) {
-        // auto key { static_cast<unsigned int>(wParam) };
         auto key { message.key() };
 
         if (message.wasKeyDown()) {
