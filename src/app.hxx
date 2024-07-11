@@ -26,7 +26,7 @@
 using json = nlohmann::json;
 
 struct App final : glow::window::Window {
-    App(glow::system::Event& singleInstance);
+    App(std::vector<std::string>& args, glow::system::Event& singleInstance);
     ~App();
 
     auto operator()() -> int;
@@ -36,7 +36,7 @@ struct App final : glow::window::Window {
     auto save() -> void;
     auto load() -> void;
 
-    auto parse_args(int argc, char* argv[]) -> void;
+    auto parse_args() -> void;
     // auto new_window() -> void;
 
     State m_state;
@@ -44,6 +44,7 @@ struct App final : glow::window::Window {
     // std::map<size_t, std::unique_ptr<Window>> m_windows {};
     // size_t m_active {};
 
+    std::vector<std::string>& m_args;
     glow::system::Event& m_singleInstance;
     ::ULONG_PTR& m_gdiToken;
     glow::window::WindowManager<Window> m_windows;

@@ -8,8 +8,10 @@
 
 #include <glow/system.hxx>
 
-auto main() -> int {
+auto main(int argc, char* argv[]) -> int {
     auto coInit { glow::system::co_initialize() };
+
+    auto args { std::vector<std::string>(argv, argv + argc) };
 
     glow::system::Event singleInstance;
 
@@ -17,7 +19,7 @@ auto main() -> int {
         return EXIT_SUCCESS;
     }
 
-    App app(singleInstance);
+    App app(args, singleInstance);
 
     return app();
 }

@@ -10,8 +10,9 @@
 #include <filesystem>
 #include <fstream>
 
-App::App(glow::system::Event& singleInstance)
-    : m_singleInstance { singleInstance },
+App::App(std::vector<std::string>& args, glow::system::Event& singleInstance)
+    : m_args { args },
+      m_singleInstance { singleInstance },
       m_gdiToken { glow::system::gdi_plus_startup() } {
     if (!std::filesystem::exists(file())) {
         save();
@@ -21,7 +22,7 @@ App::App(glow::system::Event& singleInstance)
         load();
     }
 
-    // parse_args();
+    parse_args();
 
     // m_settings = std::make_unique<Settings>(m_hwnd.get(), m_state);
     // m_settings->create_window();
@@ -142,20 +143,18 @@ auto App::load() -> void {
     }
 }
 
-auto App::parse_args(int argc, char* argv[]) -> void {
-    auto args { std::vector<std::string>(argv, argv + argc) };
-
-    if (args.size() > 1) {
+auto App::parse_args() -> void {
+    if (m_args.size() > 1) {
         m_state.withArgs = true;
     }
 
-    if (args.size() == 2) {
-        m_state.args.first = args.at(1);
+    if (m_args.size() == 2) {
+        m_state.args.first = m_args.at(1);
     }
 
-    else if (args.size() > 2) {
-        m_state.args.first = args.at(1);
-        m_state.args.second = args.at(2);
+    else if (m_args.size() > 2) {
+        m_state.args.first = m_args.at(1);
+        m_state.args.second = m_args.at(2);
     }
 }
 
