@@ -22,7 +22,18 @@ App::App(std::vector<std::string>& args, glow::system::Event& singleInstance)
         load();
     }
 
-    parse_args();
+    if (m_args.size() > 1) {
+        m_state.withArgs = true;
+    }
+
+    if (m_args.size() == 2) {
+        m_state.args.first = m_args.at(1);
+    }
+
+    else if (m_args.size() > 2) {
+        m_state.args.first = m_args.at(1);
+        m_state.args.second = m_args.at(2);
+    }
 
     // m_settings = std::make_unique<Settings>(m_hwnd.get(), m_state);
     // m_settings->create_window();
@@ -140,21 +151,6 @@ auto App::load() -> void {
         f.close();
     } catch (const std::exception& e) {
         return;
-    }
-}
-
-auto App::parse_args() -> void {
-    if (m_args.size() > 1) {
-        m_state.withArgs = true;
-    }
-
-    if (m_args.size() == 2) {
-        m_state.args.first = m_args.at(1);
-    }
-
-    else if (m_args.size() > 2) {
-        m_state.args.first = m_args.at(1);
-        m_state.args.second = m_args.at(2);
     }
 }
 

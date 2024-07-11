@@ -36,7 +36,6 @@ struct App final : glow::window::Window {
     auto save() -> void;
     auto load() -> void;
 
-    auto parse_args() -> void;
     // auto new_window() -> void;
 
     State m_state;
