@@ -1,9 +1,7 @@
 // clang-format off
-// ╔─────────────────────╗
-// │ ╔═╗╦╦═╗╔═╗╦  ╔═╗╦ ╦ │  Airglow - https://github.com/mthierman/Airglow
-// │ ╠═╣║╠╦╝║ ╦║  ║ ║║║║ │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
-// │ ╩ ╩╩╩╚═╚═╝╩═╝╚═╝╚╩╝ │  SPDX-License-Identifier: MIT
-// ╚─────────────────────╝
+// Airglow - https://github.com/mthierman/Airglow
+// SPDX-FileCopyrightText: © 2024 Mike Thierman <mthierman@gmail.com>
+// SPDX-License-Identifier: MIT
 // clang-format on
 
 #pragma once
@@ -12,8 +10,7 @@
 
 #include <set>
 
-enum struct CODE : unsigned int
-{
+enum struct CODE : unsigned int {
     SETTINGS_TOGGLE = WM_APP,
     SETTINGS_SAVE,
     WINDOW_NEW,
@@ -30,9 +27,8 @@ enum struct CODE : unsigned int
     FOCUS_CHANGED
 };
 
-struct Keys
-{
+struct Keys {
     Keys();
 
-    std::set<unsigned int> set{};
+    std::set<unsigned int> set {};
 };

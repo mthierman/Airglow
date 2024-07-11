@@ -1,9 +1,7 @@
 // clang-format off
-// ╔─────────────────────╗
-// │ ╔═╗╦╦═╗╔═╗╦  ╔═╗╦ ╦ │  Airglow - https://github.com/mthierman/Airglow
-// │ ╠═╣║╠╦╝║ ╦║  ║ ║║║║ │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
-// │ ╩ ╩╩╩╚═╚═╝╩═╝╚═╝╚╩╝ │  SPDX-License-Identifier: MIT
-// ╚─────────────────────╝
+// Airglow - https://github.com/mthierman/Airglow
+// SPDX-FileCopyrightText: © 2024 Mike Thierman <mthierman@gmail.com>
+// SPDX-License-Identifier: MIT
 // clang-format on
 
 #pragma once
@@ -18,8 +16,7 @@
 
 using json = nlohmann::json;
 
-struct Settings : public glow::Window
-{
+struct Settings : public glow::Window {
     Settings(::HWND app, State& state);
 
     auto WndProc(::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT override;
@@ -32,12 +29,12 @@ struct Settings : public glow::Window
     auto on_show_window(::WPARAM wParam, ::LPARAM lParam) -> int;
     auto on_size(::WPARAM wParam, ::LPARAM lParam) -> int;
 
-    ::HWND m_app{nullptr};
+    ::HWND m_app { nullptr };
     State& m_state;
-    std::unique_ptr<Browser> m_browser{};
-    Keys m_keys{};
+    std::unique_ptr<Browser> m_browser {};
+    Keys m_keys {};
 
-  private:
+private:
     static auto EnumChildProc(::HWND hWnd, ::LPARAM lParam) -> ::BOOL;
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(Settings, m_state)

@@ -1,9 +1,7 @@
 // clang-format off
-// ╔─────────────────────╗
-// │ ╔═╗╦╦═╗╔═╗╦  ╔═╗╦ ╦ │  Airglow - https://github.com/mthierman/Airglow
-// │ ╠═╣║╠╦╝║ ╦║  ║ ║║║║ │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
-// │ ╩ ╩╩╩╚═╚═╝╩═╝╚═╝╚╩╝ │  SPDX-License-Identifier: MIT
-// ╚─────────────────────╝
+// Airglow - https://github.com/mthierman/Airglow
+// SPDX-FileCopyrightText: © 2024 Mike Thierman <mthierman@gmail.com>
+// SPDX-License-Identifier: MIT
 // clang-format on
 
 #pragma once
@@ -21,37 +19,33 @@
 
 using json = nlohmann::json;
 
-struct Window final : public glow::Window
-{
-    struct Page
-    {
-        std::unique_ptr<Browser> browser{};
-        wil::unique_hicon hicon{};
-        std::string favicon{};
-        std::string source{};
-        std::string title{"Airglow"};
+struct Window final : public glow::Window {
+    struct Page {
+        std::unique_ptr<Browser> browser {};
+        wil::unique_hicon hicon {};
+        std::string favicon {};
+        std::string source {};
+        std::string title { "Airglow" };
 
         NLOHMANN_DEFINE_TYPE_INTRUSIVE(Page, favicon, source, title)
     };
 
-    struct Positions
-    {
-        glow::Position full{};
-        glow::Position empty{};
-        glow::Position left{};
-        glow::Position right{};
-        glow::Position top{};
-        glow::Position bottom{};
+    struct Positions {
+        glow::Position full {};
+        glow::Position empty {};
+        glow::Position left {};
+        glow::Position right {};
+        glow::Position top {};
+        glow::Position bottom {};
     };
 
-    struct Layout
-    {
-        int bar{0};
-        int border{0};
-        std::string focus{"first"};
-        bool split{false};
-        bool swap{false};
-        bool vertical{true};
+    struct Layout {
+        int bar { 0 };
+        int border { 0 };
+        std::string focus { "first" };
+        bool split { false };
+        bool swap { false };
+        bool vertical { true };
 
         NLOHMANN_DEFINE_TYPE_INTRUSIVE(Layout, bar, border, focus, split, swap, vertical)
     };
@@ -71,19 +65,29 @@ struct Window final : public glow::Window
 
     auto update_caption() -> void;
 
-    ::HWND m_app{nullptr};
+    ::HWND m_app { nullptr };
     State& m_state;
-    Page m_first{};
-    Page m_second{};
-    Page m_url{};
-    Positions m_positions{};
-    Layout m_layout{};
-    bool m_init{};
-    Keys m_keys{};
+    Page m_first {};
+    Page m_second {};
+    Page m_url {};
+    Positions m_positions {};
+    Layout m_layout {};
+    bool m_init {};
+    Keys m_keys {};
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Window, m_window, m_dpi, m_scale, m_maximize, m_fullscreen,
-                                   m_topmost, m_state, m_first, m_second, m_url, m_layout)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Window,
+                                   m_window,
+                                   m_dpi,
+                                   m_scale,
+                                   m_maximize,
+                                   m_fullscreen,
+                                   m_topmost,
+                                   m_state,
+                                   m_first,
+                                   m_second,
+                                   m_url,
+                                   m_layout)
 
-  private:
+private:
     static auto EnumChildProc(::HWND hWnd, ::LPARAM lParam) -> ::BOOL;
 };

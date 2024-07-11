@@ -44,34 +44,16 @@ add_executable(
     WIN32
     )
 
-configure_file(
-    ${PROJECT_SOURCE_DIR}/src/config.hxx
-    ${PROJECT_BINARY_DIR}/include/airglow/config.hxx
-    )
-
 target_sources(
     Airglow
-    PRIVATE ${PROJECT_SOURCE_DIR}/src/app.cxx
-            ${PROJECT_SOURCE_DIR}/src/browser.cxx
-            ${PROJECT_SOURCE_DIR}/src/global.cxx
-            ${PROJECT_SOURCE_DIR}/src/main.cxx
-            ${PROJECT_SOURCE_DIR}/src/settings.cxx
-            ${PROJECT_SOURCE_DIR}/src/window.cxx
-            ${PROJECT_SOURCE_DIR}/data/airglow.manifest
-            ${PROJECT_BINARY_DIR}/data/airglow.rc
-    PRIVATE FILE_SET
-            HEADERS
-            BASE_DIRS
-            ${PROJECT_SOURCE_DIR}/src
-            ${PROJECT_BINARY_DIR}/include
-            FILES
-            ${PROJECT_SOURCE_DIR}/src/app.hxx
-            ${PROJECT_SOURCE_DIR}/src/browser.hxx
-            ${PROJECT_SOURCE_DIR}/src/global.hxx
-            ${PROJECT_SOURCE_DIR}/src/settings.hxx
-            ${PROJECT_SOURCE_DIR}/src/state.hxx
-            ${PROJECT_SOURCE_DIR}/src/window.hxx
-            ${PROJECT_BINARY_DIR}/include/airglow/config.hxx
+    PRIVATE "src/app.cxx"
+            "src/browser.cxx"
+            "src/global.cxx"
+            "src/main.cxx"
+            "src/settings.cxx"
+            "src/window.cxx"
+            "data/airglow.manifest"
+            "data/airglow.rc"
     )
 
 target_link_libraries(
