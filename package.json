@@ -13,7 +13,7 @@
         "build": "tsc && vite build",
         "watch": "tsc && vite build --watch",
         "preview": "vite preview",
-        "manifest": "tsc && node --no-warnings=ExperimentalWarning tools/manifest.js"
+        "manifest": "tsc --project tsconfig.node.json && node --no-warnings=ExperimentalWarning tools/manifest.js"
     },
     "dependencies": {
         "react": "^18.3.1",
