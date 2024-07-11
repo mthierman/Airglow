@@ -34,16 +34,12 @@ struct App final : glow::window::Window {
     auto save_settings() -> void;
     auto load_settings() -> void;
 
-    // auto new_window() -> void;
-
     State m_state;
-    std::unique_ptr<Settings> m_settings;
-    // std::map<size_t, std::unique_ptr<Window>> m_windows {};
-    // size_t m_active {};
+    std::unique_ptr<Settings> m_settings { std::make_unique<Settings>() };
 
     std::vector<std::string>& m_args;
     glow::system::Event& m_singleInstance;
-    ::ULONG_PTR& m_gdiToken;
+    ::ULONG_PTR m_gdiPlusToken { glow::system::gdi_plus_startup() };
     std::filesystem::path m_appData { glow::filesystem::known_folder(FOLDERID_LocalAppData,
                                                                      { "Airglow" }) };
     std::filesystem::path m_settingsFile { glow::filesystem::known_folder(

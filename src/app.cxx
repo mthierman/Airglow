@@ -12,8 +12,7 @@
 
 App::App(std::vector<std::string>& args, glow::system::Event& singleInstance)
     : m_args { args },
-      m_singleInstance { singleInstance },
-      m_gdiToken { glow::system::gdi_plus_startup() } {
+      m_singleInstance { singleInstance } {
     if (!std::filesystem::exists(m_appData)) {
         std::filesystem::create_directory(m_appData);
     }
@@ -38,12 +37,6 @@ App::App(std::vector<std::string>& args, glow::system::Event& singleInstance)
         m_state.args.first = m_args.at(1);
         m_state.args.second = m_args.at(2);
     }
-
-    m_settings = std::make_unique<Settings>();
-    glow::window::activate(m_settings->m_hwnd.get());
-    // m_settings->create_window();
-
-    // new_window();
 
     message(WM_NOTIFY, [this](glow::messages::wm_notify message) {
         //     auto notification { reinterpret_cast<glow::Notification*>(lParam) };
@@ -121,7 +114,7 @@ App::App(std::vector<std::string>& args, glow::system::Event& singleInstance)
     });
 }
 
-App::~App() { glow::system::gdi_plus_shutdown(m_gdiToken); }
+App::~App() { glow::system::gdi_plus_shutdown(m_gdiPlusToken); }
 
 auto App::operator()() -> int { return glow::messages::run_loop(); }
 
