@@ -36,10 +36,9 @@ struct App final : glow::window::Window {
     auto save() -> void;
     auto load() -> void;
 
-    // auto parse_args() -> void;
+    auto parse_args(int argc, char* argv[]) -> void;
     // auto new_window() -> void;
 
-    // glow::GdiPlus m_gdiInit {};
     State m_state;
     // std::unique_ptr<Settings> m_settings {};
     // std::map<size_t, std::unique_ptr<Window>> m_windows {};

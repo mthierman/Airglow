@@ -142,22 +142,22 @@ auto App::load() -> void {
     }
 }
 
-// auto App::parse_args() -> void {
-//     auto argv { cmd_to_argv() };
+auto App::parse_args(int argc, char* argv[]) -> void {
+    auto args { std::vector<std::string>(argv, argv + argc) };
 
-//     if (argv.size() > 1) {
-//         m_state.withArgs = true;
-//     }
+    if (args.size() > 1) {
+        m_state.withArgs = true;
+    }
 
-//     if (argv.size() == 2) {
-//         m_state.args.first = argv.at(1);
-//     }
+    if (args.size() == 2) {
+        m_state.args.first = args.at(1);
+    }
 
-//     else if (argv.size() > 2) {
-//         m_state.args.first = argv.at(1);
-//         m_state.args.second = argv.at(2);
-//     }
-// }
+    else if (args.size() > 2) {
+        m_state.args.first = args.at(1);
+        m_state.args.second = args.at(2);
+    }
+}
 
 // auto App::new_window() -> void {
 //     auto id { glow::random<size_t>() };
