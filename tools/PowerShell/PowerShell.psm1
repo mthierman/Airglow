@@ -72,3 +72,13 @@ function Convert-Icons
     ConvertTo-WixIco 32 data/ic_fluent_error_circle_48_regular.svg data/WixUIExclamationIco.ico
     ConvertTo-WixIco 32 data/ic_fluent_info_48_regular.svg data/WixUIInfoIco.ico
 }
+
+function Test-AirglowCI
+{
+    pnpm manifest
+    Invoke-DevShell
+    Invoke-CMake
+    Compress-Airglow
+    Restore-Wix
+    Build-AirglowInstaller
+}
