@@ -38,6 +38,19 @@ Settings::Settings(glow::webview::WebViewEnvironment& webViewEnvironment)
             m_webView.put_bounds(m_hwnd.get());
             return 0;
         });
+
+        message(WM_SHOWWINDOW, [this](glow::messages::wm_showwindow message) {
+            switch (message.show()) {
+                case true: {
+                    m_webView.show();
+
+                } break;
+                case false: {
+                    m_webView.hide();
+                } break;
+            }
+            return 0;
+        });
     });
 }
 
@@ -137,30 +150,6 @@ Settings::Settings(glow::webview::WebViewEnvironment& webViewEnvironment)
 
 //         default:
 //             break;
-//     }
-
-//     return 0;
-// }
-
-// auto Settings::on_setting_change(::WPARAM wParam, ::LPARAM lParam) -> int {
-//     theme();
-
-//     return 0;
-// }
-
-// auto Settings::on_show_window(::WPARAM wParam, ::LPARAM lParam) -> int {
-//     switch (wParam) {
-//         case true: {
-//             m_browser->put_is_visible(true);
-
-//             break;
-//         }
-
-//         case false: {
-//             m_browser->put_is_visible(false);
-
-//             break;
-//         }
 //     }
 
 //     return 0;
