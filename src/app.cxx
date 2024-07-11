@@ -39,78 +39,65 @@ App::App(std::vector<std::string>& args, glow::system::Event& singleInstance)
     }
 
     message(WM_NOTIFY, [this](glow::messages::wm_notify message) {
-        //     auto notification { reinterpret_cast<glow::Notification*>(lParam) };
+        auto& notification { message.notification() };
 
-        //     switch (notification->code) {
-        //         using enum CODE;
+        switch (notification.notice) {
+            using enum glow::messages::notice;
+            case SETTINGS_TOGGLE: {
+                // if (!m_settings->is_visible()) {
+                //     m_settings->show();
+                //     m_settings->m_browser->move_focus();
+                // }
 
-        //         case SETTINGS_TOGGLE: {
-        //             if (!m_settings->is_visible()) {
-        //                 m_settings->show();
-        //                 m_settings->m_browser->move_focus();
-        //             }
+                // else if (m_settings->is_visible()) {
+                //     if (!m_settings->is_foreground()) {
+                //         m_settings->foreground();
+                //         m_settings->m_browser->move_focus();
+                //     }
 
-        //             else if (m_settings->is_visible()) {
-        //                 if (!m_settings->is_foreground()) {
-        //                     m_settings->foreground();
-        //                     m_settings->m_browser->move_focus();
-        //                 }
+                //     else {
+                //         m_settings->hide();
 
-        //                 else {
-        //                     m_settings->hide();
+                //         if (!m_windows.empty()) {
+                //             m_windows.find(m_active)->second->m_first.browser->move_focus();
+                //         }
+                //     }
+                // }
+            } break;
 
-        //                     if (!m_windows.empty()) {
-        //                         m_windows.find(m_active)->second->m_first.browser->move_focus();
-        //                     }
-        //                 }
-        //             }
+            case SETTINGS_SAVE: {
+                // save();
+            } break;
 
-        //             break;
-        //         }
+            case CREATE_WINDOW: {
+                // new_window();
+            } break;
 
-        //         case SETTINGS_SAVE: {
-        //             save();
+            case CLOSE_WINDOW: {
+                // m_windows.erase(notification->id);
 
-        //             break;
-        //         }
+                // if (m_windows.empty()) {
+                //     save();
 
-        //         case WINDOW_NEW: {
-        //             new_window();
+                //     close();
+                // }
+            } break;
 
-        //             break;
-        //         }
-
-        //         case WINDOW_CLOSE: {
-        //             m_windows.erase(notification->id);
-
-        //             if (m_windows.empty()) {
-        //                 save();
-
-        //                 close();
-        //             }
-
-        //             break;
-        //         }
-
-        //         case WINDOW_ACTIVATE: {
-        //             m_active = notification->id;
-
-        //             break;
-        //         }
-
-        //         default:
-        //             break;
-        //     }
-
-        create_message_only();
-
-        m_webViewEnvironment.create([this]() {
-            // m_singleInstance.m_callback = [this]() { notify(CREATE_FOREGROUND_WINDOW); };
-
-            // notify(CREATE_WINDOW);
-        });
+            case ACTIVATE_WINDOW: {
+                // m_active = notification->id;
+            } break;
+        }
 
         return 0;
+    });
+
+    create_message_only();
+
+    m_webViewEnvironment.create([this]() {
+        m_singleInstance.m_callback
+            = [this]() { notify(glow::messages::notice::CREATE_FOREGROUND_WINDOW); };
+        m_settings = std::make_unique<Settings>();
+        notify(glow::messages::notice::CREATE_WINDOW);
     });
 }
 
@@ -137,10 +124,3 @@ auto App::load_settings() -> void {
         return;
     }
 }
-
-// auto App::new_window() -> void {
-//     auto id { glow::random<size_t>() };
-//     m_windows.try_emplace(id, std::make_unique<Window>(m_hwnd.get(), m_state, id));
-//     m_windows.at(id)->create_window();
-//     m_windows.at(id)->reveal();
-// }

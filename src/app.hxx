@@ -19,6 +19,7 @@
 
 #include <nlohmann/json.hpp>
 
+#include "global.hxx"
 #include "settings.hxx"
 #include "state.hxx"
 // #include "window.hxx"
@@ -35,7 +36,7 @@ struct App final : glow::window::Window {
     auto load_settings() -> void;
 
     State m_state;
-    std::unique_ptr<Settings> m_settings { std::make_unique<Settings>() };
+    std::unique_ptr<Settings> m_settings;
 
     std::vector<std::string>& m_args;
     glow::system::Event& m_singleInstance;

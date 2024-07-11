@@ -10,12 +10,14 @@
 
 #include <set>
 
-enum struct CODE : unsigned int {
+namespace glow::messages {
+enum struct notice : unsigned int {
     SETTINGS_TOGGLE = WM_APP,
     SETTINGS_SAVE,
-    WINDOW_NEW,
-    WINDOW_CLOSE,
-    WINDOW_ACTIVATE,
+    SINGLE_INSTANCE,
+    CREATE_WINDOW,
+    CLOSE_WINDOW,
+    ACTIVATE_WINDOW,
     SETTING_CHANGE,
     DPI_CHANGE,
     LAYOUT_CHANGE,
@@ -24,14 +26,7 @@ enum struct CODE : unsigned int {
     FAVICON_CHANGED,
     TITLE_CHANGED,
     HOME_CHANGED,
-    FOCUS_CHANGED
-};
-
-namespace glow::messages {
-enum struct notice : unsigned int {
-    CREATE_WINDOW = WM_APP,
-    CREATE_FOREGROUND_WINDOW,
-    CLOSE_WINDOW,
+    FOCUS_CHANGED,
 };
 }
 
