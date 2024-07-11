@@ -39,6 +39,8 @@ struct App final : glow::window::Window {
     State m_state;
     std::unique_ptr<Settings> m_settings;
 
+    ::UINT_PTR m_active { 0 };
+
     std::vector<std::string>& m_args;
     glow::system::Event& m_singleInstance;
     ::ULONG_PTR m_gdiPlusToken { glow::system::gdi_plus_startup() };

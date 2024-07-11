@@ -79,17 +79,11 @@ App::App(std::vector<std::string>& args, glow::system::Event& singleInstance)
                 } break;
 
                 case CLOSE_BROWSER: {
-                    // m_windows.erase(notification->id);
-
-                    // if (m_windows.empty()) {
-                    //     save();
-
-                    //     close();
-                    // }
+                    m_windows.remove(notification.idFrom);
                 } break;
 
                 case ACTIVE_BROWSER: {
-                    // m_active = notification->id;
+                    m_active = notification.idFrom;
                 } break;
             }
 
