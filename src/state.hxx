@@ -9,13 +9,12 @@
 #include <string>
 #include <utility>
 
-#include <glow/glow.hxx>
-
 struct State {
     bool withArgs {};
     std::pair<std::string, std::string> args {};
-    glow::Colors colors {};
+    // glow::Colors colors {};
     std::pair<std::string, std::string> home {};
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(State, args, colors, home)
+    // NLOHMANN_DEFINE_TYPE_INTRUSIVE(State, args, colors, home)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(State, args, home)
 };

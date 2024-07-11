@@ -47,11 +47,9 @@ add_executable(
 target_sources(
     Airglow
     PRIVATE "src/app.cxx"
-            # "src/browser.cxx"
-            # "src/global.cxx"
+            # "src/browser.cxx" "src/global.cxx"
             "src/main.cxx"
-            # "src/settings.cxx"
-            # "src/window.cxx"
+            # "src/settings.cxx" "src/window.cxx"
             "data/airglow.manifest"
             "${PROJECT_BINARY_DIR}/data/airglow.rc"
     )
@@ -60,6 +58,8 @@ target_link_libraries(
     Airglow
     PRIVATE glow::glow
             common::flags
+            ada-url::ada
+            nlohmann::json
     )
 
 add_dependencies(

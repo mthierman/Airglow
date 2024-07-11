@@ -11,36 +11,39 @@
 // #include <map>
 // #include <memory>
 
+#include <glow/filesystem.hxx>
 #include <glow/input.hxx>
 #include <glow/messages.hxx>
 #include <glow/webview.hxx>
 #include <glow/window.hxx>
 
+#include <nlohmann/json.hpp>
+
 // #include "settings.hxx"
-// #include "state.hxx"
+#include "state.hxx"
 // #include "window.hxx"
 
-// using json = nlohmann::json;
+using json = nlohmann::json;
 
 struct App final : glow::window::Window {
     App(glow::system::Event& singleInstance);
     ~App();
 
+    auto operator()() -> int;
+
+    auto data() -> std::filesystem::path;
+    auto file() -> std::filesystem::path;
+    auto save() -> void;
+    auto load() -> void;
+
     // auto parse_args() -> void;
     // auto new_window() -> void;
-    // auto data() -> std::filesystem::path;
-    // auto file() -> std::filesystem::path;
-    // auto save() -> void;
-    // auto load() -> void;
 
     // glow::GdiPlus m_gdiInit {};
-    // glow::CoInitialize m_coInit {};
-    // State m_state {};
+    State m_state;
     // std::unique_ptr<Settings> m_settings {};
     // std::map<size_t, std::unique_ptr<Window>> m_windows {};
     // size_t m_active {};
-
-    auto operator()() -> int;
 
     glow::system::Event& m_singleInstance;
     ::ULONG_PTR& m_gdiToken;

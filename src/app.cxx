@@ -7,19 +7,19 @@
 #include "app.hxx"
 // #include "global.hxx"
 
-// #include <filesystem>
-// #include <fstream>
+#include <filesystem>
+#include <fstream>
 
 App::App(glow::system::Event& singleInstance)
     : m_singleInstance { singleInstance },
       m_gdiToken { glow::system::gdi_plus_startup() } {
-    // if (!std::filesystem::exists(file())) {
-    //     save();
-    // }
+    if (!std::filesystem::exists(file())) {
+        save();
+    }
 
-    // else {
-    //     load();
-    // }
+    else {
+        load();
+    }
 
     // parse_args();
 
@@ -106,6 +106,42 @@ App::App(glow::system::Event& singleInstance)
 
 App::~App() { glow::system::gdi_plus_shutdown(m_gdiToken); }
 
+auto App::operator()() -> int { return glow::messages::run_loop(); }
+
+auto App::data() -> std::filesystem::path {
+    auto data { glow::filesystem::known_folder(FOLDERID_LocalAppData, { "Airglow" }) };
+
+    if (!std::filesystem::exists(data)) {
+        std::filesystem::create_directory(data);
+    }
+
+    return data;
+}
+
+auto App::file() -> std::filesystem::path {
+    return std::filesystem::path { { data() / "Airglow.json" } };
+}
+
+auto App::save() -> void {
+    try {
+        std::ofstream f(file());
+        f << std::setw(4) << nlohmann::json(m_state) << std::endl;
+        f.close();
+    } catch (const std::exception& e) {
+        return;
+    }
+}
+
+auto App::load() -> void {
+    try {
+        std::ifstream f(file());
+        m_state = nlohmann::json::parse(f, nullptr, false, true);
+        f.close();
+    } catch (const std::exception& e) {
+        return;
+    }
+}
+
 // auto App::parse_args() -> void {
 //     auto argv { cmd_to_argv() };
 
@@ -129,39 +165,3 @@ App::~App() { glow::system::gdi_plus_shutdown(m_gdiToken); }
 //     m_windows.at(id)->create_window();
 //     m_windows.at(id)->reveal();
 // }
-
-// auto App::data() -> std::filesystem::path {
-//     auto path { glow::known_folder() / "Airglow" };
-
-//     if (!std::filesystem::exists(path)) {
-//         std::filesystem::create_directory(path);
-//     }
-
-//     return path;
-// }
-
-// auto App::file() -> std::filesystem::path {
-//     return std::filesystem::path { { glow::app_path() / "Airglow.json" } };
-// }
-
-// auto App::save() -> void {
-//     try {
-//         std::ofstream f(file());
-//         f << std::setw(4) << nlohmann::json(m_state) << std::endl;
-//         f.close();
-//     } catch (const std::exception& e) {
-//         return;
-//     }
-// }
-
-// auto App::load() -> void {
-//     try {
-//         std::ifstream f(file());
-//         m_state = nlohmann::json::parse(f, nullptr, false, true);
-//         f.close();
-//     } catch (const std::exception& e) {
-//         return;
-//     }
-// }
-
-auto App::operator()() -> int { return glow::messages::run_loop(); }
