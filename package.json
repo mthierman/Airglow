@@ -20,26 +20,26 @@
         "react-dom": "^18.3.1"
     },
     "devDependencies": {
-        "@types/node": "^20.14.10",
+        "@types/node": "^20.14.11",
         "@types/react": "^18.3.3",
         "@types/react-dom": "^18.3.0",
         "@vitejs/plugin-react-swc": "^3.7.0",
         "autoprefixer": "^10.4.19",
         "colorjs.io": "^0.5.2",
         "esbuild": "^0.23.0",
-        "eslint": "^9.6.0",
-        "eslint-plugin-react": "^7.34.3",
+        "eslint": "^9.7.0",
+        "eslint-plugin-react": "^7.35.0",
         "eslint-plugin-react-hooks": "^4.6.2",
         "globals": "^15.8.0",
         "postcss": "^8.4.39",
         "postcss-load-config": "^6.0.1",
-        "prettier": "^3.3.2",
+        "prettier": "^3.3.3",
         "prettier-plugin-tailwindcss": "^0.6.5",
-        "rollup": "^4.18.1",
-        "tailwindcss": "^3.4.4",
+        "rollup": "^4.19.0",
+        "tailwindcss": "^3.4.6",
         "tsx": "^4.16.2",
         "typescript": "^5.5.3",
-        "typescript-eslint": "^7.16.0",
-        "vite": "^5.3.3"
+        "typescript-eslint": "^7.16.1",
+        "vite": "^5.3.4"
     }
 }
