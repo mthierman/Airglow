@@ -9,7 +9,6 @@
         "check": "tsc",
         "dev": "vite",
         "host": "vite --host",
-        "lint": "eslint .",
         "build": "tsc && vite build",
         "watch": "tsc && vite build --watch",
         "preview": "vite preview",
@@ -26,20 +25,12 @@
         "@vitejs/plugin-react-swc": "^3.7.0",
         "autoprefixer": "^10.4.19",
         "colorjs.io": "^0.5.2",
-        "esbuild": "^0.23.0",
-        "eslint": "^9.7.0",
-        "eslint-plugin-react": "^7.35.0",
-        "eslint-plugin-react-hooks": "^4.6.2",
-        "globals": "^15.8.0",
         "postcss": "^8.4.39",
         "postcss-load-config": "^6.0.1",
         "prettier": "^3.3.3",
         "prettier-plugin-tailwindcss": "^0.6.5",
-        "rollup": "^4.19.0",
         "tailwindcss": "^3.4.6",
-        "tsx": "^4.16.2",
         "typescript": "^5.5.3",
-        "typescript-eslint": "^7.16.1",
         "vite": "^5.3.4"
     }
 }
