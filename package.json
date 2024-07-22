@@ -11,8 +11,7 @@
         "host": "vite --host",
         "build": "tsc && vite build",
         "watch": "tsc && vite build --watch",
-        "preview": "vite preview",
-        "manifest": "tsc --project tsconfig.node.json && node --no-warnings=ExperimentalWarning tools/manifest.js"
+        "preview": "vite preview"
     },
     "dependencies": {
         "react": "^18.3.1",
