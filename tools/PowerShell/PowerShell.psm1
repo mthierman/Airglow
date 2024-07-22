@@ -1,3 +1,20 @@
+function New-AirglowManifest
+{
+    if (!(Test-Path "build")) { New-Item -ItemType Directory "build" }
+    $manifest = Get-Content "package.json" | ConvertFrom-Json
+
+([PSCustomObject]@{
+        name        = $manifest.name
+        description = $manifest.description
+        version     = $manifest.version
+        date        = Get-Date -Format "yyyy'/'MM'/'dd HH:mm:ss"
+        hash        = $(git rev-parse HEAD)
+        symbol      = "🔵"
+        github      = "https://github.com/mthierman/Airglow"
+        download    = "https://github.com/mthierman/Airglow/releases/download/v$($manifest.version)/Glow.zip"
+    }) | ConvertTo-Json | Out-File -FilePath "build/manifest.json"
+}
+
 function Compress-Airglow
 {
     [CmdletBinding()]

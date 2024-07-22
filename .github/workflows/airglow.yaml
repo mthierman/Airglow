@@ -45,7 +45,6 @@ jobs:
         run: |
           Set-Location ${{ github.workspace }}\airglow
           pnpm install
-          pnpm manifest
 
       - name: Cache
         uses: actions/cache@v4
@@ -62,6 +61,7 @@ jobs:
           Import-Module ${{ github.workspace }}\airglow\libs\Glow\tools\PowerShell
           Import-Module ${{ github.workspace }}\airglow\tools\PowerShell
           Invoke-DevShell
+          New-AirglowManifest
           Invoke-CMake
           Compress-Airglow
           Restore-Wix
